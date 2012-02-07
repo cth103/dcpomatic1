@@ -1,0 +1,1 @@
+cmd='<SOURCE_DIR>/configure;--prefix=/home/carl/src/OpenDCP/contrib;CFLAGS=-m32;--disable-dependency-tracking;--enable-static=yes;--enable-shared=no;--enable-png=no;--enable-tiff=no;--target=i686'
