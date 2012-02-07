@@ -5,11 +5,87 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
+#include "lut.h"
+
 using namespace std;
 
 char const video[] = "/home/carl/Films/Ghostbusters/DVD_VIDEO/VIDEO_TS/VTS_02_1.VOB";
 int const nframes = 25 * 60;
 
+/* TODO: cropping */
+
+/* from opendcp */
+
+/* Color Matrices */
+static float color_matrix[3][3][3] = {
+    /* SRGB */
+    {{0.4124564, 0.3575761, 0.1804375},
+     {0.2126729, 0.7151522, 0.0721750},
+     {0.0193339, 0.1191920, 0.9503041}},
+
+    /* REC.709 */
+    {{0.4124564, 0.3575761, 0.1804375},
+     {0.2126729, 0.7151522, 0.0721750},
+     {0.0193339, 0.1191920, 0.9503041}},
+
+    /* DC28.30 (2006-02-24) */
+    {{0.4451698156, 0.2771344092, 0.1722826698},
+     {0.2094916779, 0.7215952542, 0.0689130679},
+     {0.0000000000, 0.0470605601, 0.9073553944}}
+};
+
+/* complex gamma function */
+float complex_gamma(float p, float gamma) {
+    float v;
+
+    if ( p > 0.04045) {
+        v = pow((p+0.055)/1.055,gamma);
+    } else {
+        v = p/12.92;
+    }
+
+    return v;
+}
+
+#define DCI_GAMMA      (2.6)
+#define DCI_DEGAMMA    (1/DCI_GAMMA)
+#define DCI_COEFFICENT (48.0/52.37)
+
+void
+rgb_to_xyz (uint8_t* data, int size)
+{
+	int const index = 0; /* for sRGB; could use 1 for REC 709 or 2 for DCI */
+
+	uint8_t* p = data;
+
+	cout << "RGB -> XYZ for " << size << "\n";
+	
+	for (int i = 0; i < size; i++) {
+
+		/* in gamma lut */
+		float sr = lut_in[index][p[0]];
+		float sg = lut_in[index][p[1]];
+		float sb = lut_in[index][p[2]];
+
+		/* RGB to XYZ Matrix */
+		float dx = ((sr * color_matrix[index][0][0]) + (sg * color_matrix[index][0][1]) + (sb * color_matrix[index][0][2]));
+		float dy = ((sr * color_matrix[index][1][0]) + (sg * color_matrix[index][1][1]) + (sb * color_matrix[index][1][2]));
+		float dz = ((sr * color_matrix[index][2][0]) + (sg * color_matrix[index][2][1]) + (sb * color_matrix[index][2][2]));
+
+		/* DCI Companding */
+		dx = dx * DCI_COEFFICENT * (DCI_LUT_SIZE-1);
+		dy = dy * DCI_COEFFICENT * (DCI_LUT_SIZE-1);
+		dz = dz * DCI_COEFFICENT * (DCI_LUT_SIZE-1);
+	
+		/* out gamma lut */
+		p[0] = lut_out[0][(int)dx] >> 4;
+		p[1] = lut_out[0][(int)dy] >> 4;
+		p[2] = lut_out[0][(int)dz] >> 4;
+		
+		p += 3;
+	}
+}
+	    
 int
 main (int argc, char* argv[])
 {
@@ -129,7 +205,12 @@ main (int argc, char* argv[])
 					decoder_context->height, frame_RGB->data, frame_RGB->linesize
 					);
 
+				++i;
+				printf("%d\n", i);
 				if (i == 200) {
+					printf ("%p %p %p\n", frame_RGB->data[0], frame_RGB->data[1], frame_RGB->data[2]);
+					printf ("linesize %d\n", frame_RGB->linesize[0]);
+					rgb_to_xyz (frame_RGB->data[0], encoder_context->width * encoder_context->height);
 					out_size = avcodec_encode_video (encoder_context, outbuf, outbuf_size, frame_RGB);
 					fwrite (outbuf, 1, out_size, outfile);
 					fclose (outfile);
