@@ -17,12 +17,12 @@ public:
 	void set_right_crop (int);
 	void set_format (Format *);
 	
-	void make_tiffs (std::string const &, int N = 0);
+	void make_tiffs_and_wavs (std::string const &, std::string const &, int N = 0);
 	
 private:
 	std::pair<AVFilterContext *, AVFilterContext *> setup_filters (AVCodecContext *, std::string const &);
 	void write_tiff (std::string const &, int, uint8_t *, int, int) const;
-	
+
 	std::string _content;
 	Format* _format;
 	int _left_crop;

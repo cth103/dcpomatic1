@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <vector>
 #include <sstream>
 #include <iomanip>
 #include <iostream>
@@ -11,6 +12,7 @@ extern "C" {
 #include <libavfilter/avcodec.h>
 #include <libavfilter/buffersink.h>
 }
+#include <sndfile.h>
 #include "film.h"
 #include "format.h"
 
@@ -28,14 +30,14 @@ Film::Film (string const & c)
 }
 
 void
-Film::make_tiffs (string const & dir, int N)
+Film::make_tiffs_and_wavs (string const & tiffs, string const & wavs, int N)
 {
 	if (_format == 0) {
 		throw runtime_error ("Film format unknown");
 	}
 	
 	av_register_all();
-    
+
 	AVFormatContext* format_context = 0;
 	if (avformat_open_input (&format_context, _content.c_str(), 0, 0) != 0) {
 		throw runtime_error ("Could not open content file");
@@ -46,26 +48,60 @@ Film::make_tiffs (string const & dir, int N)
 	}
 
 	int video_stream = -1;
+	int audio_stream = -1;
 	for (uint32_t i = 0; i < format_context->nb_streams; ++i) {
 		if (format_context->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
 			video_stream = i;
-			break;
+		} else if (format_context->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
+			audio_stream = i;
 		}
 	}
 
 	if (video_stream < 0) {
 		throw runtime_error ("Could not find video stream");
 	}
-
-	AVCodecContext* codec_context = format_context->streams[video_stream]->codec;
-	AVCodec* codec = avcodec_find_decoder (codec_context->codec_id);
-	if (codec == 0) {
-		throw runtime_error ("Could not find decoder");
+	if (audio_stream < 0) {
+		throw runtime_error ("Could not find audio stream");
+	}
+	
+	AVCodecContext* video_codec_context = format_context->streams[video_stream]->codec;
+	AVCodec* video_codec = avcodec_find_decoder (video_codec_context->codec_id);
+	if (video_codec == 0) {
+		throw runtime_error ("Could not find video decoder");
+	}
+	if (avcodec_open2 (video_codec_context, video_codec, 0) < 0) {
+		throw runtime_error ("Could not open video decoder");
 	}
 
-	if (avcodec_open2 (codec_context, codec, 0) < 0) {
-		throw runtime_error ("Could not open decoder");
+	AVCodecContext* audio_codec_context = format_context->streams[audio_stream]->codec;
+	AVCodec* audio_codec = avcodec_find_decoder (audio_codec_context->codec_id);
+	if (audio_codec == 0) {
+		throw runtime_error ("Could not find audio decoder");
 	}
+	if (avcodec_open2 (audio_codec_context, audio_codec, 0) < 0) {
+		throw runtime_error ("Could not open audio decoder");
+	}
+
+	/* Create sound output files */
+	vector<SNDFILE*> sound_files;
+	for (int i = 0; i < audio_codec_context->channels; ++i) {
+		stringstream wav_path;
+		wav_path << wavs << "/" << (i + 1) << ".wav";
+		SF_INFO sf_info;
+		sf_info.samplerate = audio_codec_context->sample_rate;
+		/* We write mono files */
+		sf_info.channels = 1;
+		sf_info.format = SF_FORMAT_WAV | SF_FORMAT_PCM_24;
+		SNDFILE* f = sf_open (wav_path.str().c_str(), SFM_WRITE, &sf_info);
+		if (f == 0) {
+			throw runtime_error ("Could not create audio output file");
+		}
+		sound_files.push_back (f);
+	}
+
+	/* Create buffer for deinterleaving audio */
+	int const deinterleave_buffer_size = 8192;
+	uint8_t* deinterleave_buffer = new uint8_t[deinterleave_buffer_size];
 
 	AVFrame* frame_in = avcodec_alloc_frame ();
 	if (frame_in == 0) {
@@ -82,11 +118,11 @@ Film::make_tiffs (string const & dir, int N)
 
 	avpicture_fill ((AVPicture *) frame_out, frame_out_buffer, PIX_FMT_RGB24, _format->dci_width(), _format->dci_height ());
 
-	int const post_filter_width = codec_context->width - _left_crop - _right_crop;
-	int const post_filter_height = codec_context->height - _top_crop - _bottom_crop;
+	int const post_filter_width = video_codec_context->width - _left_crop - _right_crop;
+	int const post_filter_height = video_codec_context->height - _top_crop - _bottom_crop;
 
 	struct SwsContext* conversion_context = sws_getContext (
-		post_filter_width, post_filter_height, codec_context->pix_fmt,
+		post_filter_width, post_filter_height, video_codec_context->pix_fmt,
 		_format->dci_width(), _format->dci_height(), PIX_FMT_RGB24,
 		SWS_BICUBIC, 0, 0, 0
 		);
@@ -101,12 +137,15 @@ Film::make_tiffs (string const & dir, int N)
 	stringstream fs;
 	fs << "crop=" << post_filter_width << ":" << post_filter_height << ":" << _left_crop << ":" << _top_crop << " ";
 
-	pair<AVFilterContext *, AVFilterContext *> filters = setup_filters (codec_context, fs.str());
+	pair<AVFilterContext *, AVFilterContext *> filters = setup_filters (video_codec_context, fs.str());
 	while (av_read_frame (format_context, &packet) >= 0 && (N == 0 || frame < N)) {
 
 		if (packet.stream_index == video_stream) {
+
+			/* VIDEO */
+			
 			int frame_finished;
-			if (avcodec_decode_video2 (codec_context, frame_in, &frame_finished, &packet) < 0) {
+			if (avcodec_decode_video2 (video_codec_context, frame_in, &frame_finished, &packet) < 0) {
 				throw runtime_error ("Error decoding video");
 			}
 			av_free_packet (&packet);
@@ -131,18 +170,75 @@ Film::make_tiffs (string const & dir, int N)
 							);
 
 						++frame;
-						write_tiff (dir, frame, frame_out->data[0], _format->dci_width(), _format->dci_height());
+//						write_tiff (tiffs, frame, frame_out->data[0], _format->dci_width(), _format->dci_height());
 					}
+				}
+			}
+
+		} else if (packet.stream_index == audio_stream) {
+
+			/* AUDIO */
+
+			avcodec_get_frame_defaults (frame_in);
+
+			int frame_finished;
+			if (avcodec_decode_audio4 (audio_codec_context, frame_in, &frame_finished, &packet) < 0) {
+				throw runtime_error ("Error decoding video");
+			}
+			av_free_packet (&packet);
+
+			if (frame_finished) {
+
+				write_wav (audio_codec_context, frame_in);
+
+				int const channels = audio_codec_context->channels;
+
+				int const data_size = av_samples_get_buffer_size (
+					0, channels, frame_in->nb_samples, audio_codec_context->sample_fmt, 1
+					);
+
+				/* Size of a sample in bytes */
+				int const sample_size = 2;
+
+				/* Number of samples left to read this time */
+				int remaining_samples = data_size / (channels * sample_size);
+				/* Our position in the output buffers, in samples */
+				int position = 0;
+				while (remaining_samples > 0) {
+					/* How many samples to do this time; we can fill a buffer with single-sample frames */
+					int this_time = min (remaining_samples, deinterleave_buffer_size / sample_size);
+					for (int i = 0; i < channels; ++i) {
+						for (int j = 0; j < this_time; ++j) {
+							for (int k = 0; k < sample_size; ++k) {
+								deinterleave_buffer[j * sample_size] = frame_in->data[0][position + (j + i) * sample_size + k];
+							}
+						}
+
+						switch (audio_codec_context->sample_fmt) {
+						case AV_SAMPLE_FMT_S16:
+							sf_write_int (sound_files[i], (const int *) deinterleave_buffer, this_time);
+							break;
+						default:
+							throw runtime_error ("Unknown audio sample format");
+						}
+					}
+
+					position += this_time;
+					remaining_samples -= this_time;
 				}
 			}
 		}
 	}
 	
 	delete[] frame_out_buffer;
+	delete[] deinterleave_buffer;
 	av_free (frame_in);
 	av_free (frame_out);
-	avcodec_close (codec_context);
+	avcodec_close (video_codec_context);
 	avformat_close_input (&format_context);
+	for (vector<SNDFILE*>::iterator i = sound_files.begin(); i != sound_files.end(); ++i) {
+		sf_close (*i);
+	}
 }
 
 void
@@ -172,6 +268,17 @@ Film::write_tiff (string const & dir, int frame, uint8_t* data, int w, int h) co
 	}
 
 	TIFFClose (output);
+}
+
+void
+Film::write_wav (AVContext* codec_context, AVFrame* frame)
+{
+	int const channels = codec_context->channels;
+	int const data_size = av_samples_get_buffer_size (
+		0, channels, frame->nb_samples, codec_context->sample_fmt, 1
+		);
+
+	if (
 }
 
 std::pair<AVFilterContext*, AVFilterContext*>

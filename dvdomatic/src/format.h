@@ -17,8 +17,13 @@ public:
 	int dci_height () const {
 		return _dci_height;
 	}
+
+	std::string nickname () const {
+		return _nickname;
+	}
 	
 	static Format * get (float);
+	static Format * get (std::string const &);
 	static void setup_formats ();
 	
 private:
