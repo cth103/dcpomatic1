@@ -12,11 +12,13 @@ extern "C" {
 #include <libavfilter/buffersink.h>
 }
 #include "film.h"
+#include "format.h"
 
 using namespace std;
 
 Film::Film (string const & c)
 	: _content (c)
+	, _format (0)
 	, _left_crop (0)
 	, _right_crop (0)
 	, _top_crop (0)
@@ -28,6 +30,10 @@ Film::Film (string const & c)
 void
 Film::make_tiffs (string const & dir, int N)
 {
+	if (_format == 0) {
+		throw runtime_error ("Film format unknown");
+	}
+	
 	av_register_all();
     
 	AVFormatContext* format_context = 0;
@@ -71,20 +77,17 @@ Film::make_tiffs (string const & dir, int N)
 		throw runtime_error ("Could not allocate frame");
 	}
 
-	int shit = 1000;
-	int piss = 500;
-
-	int num_bytes = avpicture_get_size (PIX_FMT_RGB24, shit, piss);
+	int num_bytes = avpicture_get_size (PIX_FMT_RGB24, _format->dci_width (), _format->dci_height ());
 	uint8_t* frame_out_buffer = new uint8_t[num_bytes];
 
-	avpicture_fill ((AVPicture *) frame_out, frame_out_buffer, PIX_FMT_RGB24, shit, piss);
+	avpicture_fill ((AVPicture *) frame_out, frame_out_buffer, PIX_FMT_RGB24, _format->dci_width(), _format->dci_height ());
 
 	int const post_filter_width = codec_context->width - _left_crop - _right_crop;
 	int const post_filter_height = codec_context->height - _top_crop - _bottom_crop;
 
 	struct SwsContext* conversion_context = sws_getContext (
 		post_filter_width, post_filter_height, codec_context->pix_fmt,
-		shit, piss, PIX_FMT_RGB24,
+		_format->dci_width(), _format->dci_height(), PIX_FMT_RGB24,
 		SWS_BICUBIC, 0, 0, 0
 		);
 
@@ -128,7 +131,7 @@ Film::make_tiffs (string const & dir, int N)
 							);
 
 						++frame;
-						write_tiff (dir, frame, frame_out->data[0], shit, piss);
+						write_tiff (dir, frame, frame_out->data[0], _format->dci_width(), _format->dci_height());
 					}
 				}
 			}
@@ -262,3 +265,8 @@ Film::set_right_crop (int c)
 	_right_crop = c;
 }
 
+void
+Film::set_format (Format* f)
+{
+	_format = f;
+}

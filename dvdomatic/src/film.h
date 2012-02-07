@@ -4,6 +4,7 @@
 struct AVFilterGraph;
 struct AVCodecContext;
 struct AVFilterContext;
+class Format;
 
 class Film
 {
@@ -14,6 +15,7 @@ public:
 	void set_bottom_crop (int);
 	void set_left_crop (int);
 	void set_right_crop (int);
+	void set_format (Format *);
 	
 	void make_tiffs (std::string const &, int N = 0);
 	
@@ -22,6 +24,7 @@ private:
 	void write_tiff (std::string const &, int, uint8_t *, int, int) const;
 	
 	std::string _content;
+	Format* _format;
 	int _left_crop;
 	int _right_crop;
 	int _top_crop;
