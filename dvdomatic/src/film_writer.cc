@@ -227,7 +227,7 @@ FilmWriter::decode_video ()
 					);
 				
 				++_frame;
-				// write_tiff (_tiffs, _frame, frame_out->data[0], _format->dci_width(), _format->dci_height());
+				write_tiff (_tiffs, _frame, frame_out->data[0], _format->dci_width(), _format->dci_height());
 			}
 		}
 	}
