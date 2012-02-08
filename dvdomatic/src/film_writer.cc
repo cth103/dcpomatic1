@@ -321,7 +321,7 @@ FilmWriter::write_tiff (string const & dir, int frame, uint8_t* data, int w, int
 						
 	TIFFSetField (output, TIFFTAG_IMAGEWIDTH, w);
 	TIFFSetField (output, TIFFTAG_IMAGELENGTH, h);
-	TIFFSetField (output, TIFFTAG_COMPRESSION, COMPRESSION_DEFLATE);
+	TIFFSetField (output, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
 	TIFFSetField (output, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
 	TIFFSetField (output, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
 	TIFFSetField (output, TIFFTAG_BITSPERSAMPLE, 8);

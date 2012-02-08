@@ -20,8 +20,14 @@ Progress::set_total (int t)
 	g_atomic_int_set (&_total, t);
 }
 
+/** @return fractional progress, or -1 if not known */
 float
 Progress::get_fraction () const
 {
-	return float (g_atomic_int_get (&_progress)) / g_atomic_int_get (&_total);
+	int const t = g_atomic_int_get (&_total);
+	if (t == 0) {
+		return -1;
+	}
+	
+	return float (g_atomic_int_get (&_progress)) / t;
 }
