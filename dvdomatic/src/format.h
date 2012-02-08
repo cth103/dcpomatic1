@@ -21,9 +21,12 @@ public:
 	std::string nickname () const {
 		return _nickname;
 	}
+
+	std::string get_as_metadata () const;
 	
-	static Format * get (float);
-	static Format * get (std::string const &);
+	static Format * get_from_ratio (float);
+	static Format * get_from_nickname (std::string const &);
+	static Format * get_from_metadata (std::string const &);
 	static void setup_formats ();
 	
 private:

@@ -1,3 +1,5 @@
+#include <sstream>
+#include <cstdlib>
 #include "format.h"
 
 using namespace std;
@@ -13,6 +15,14 @@ Format::Format (float r, int dw, int dh, string const & n)
 
 }
 
+string
+Format::get_as_metadata () const
+{
+	stringstream s;
+	s << _ratio;
+	return s.str ();
+}
+
 void
 Format::setup_formats ()
 {
@@ -22,7 +32,7 @@ Format::setup_formats ()
 }
 
 Format *
-Format::get (float r)
+Format::get_from_ratio (float r)
 {
 	list<Format*>::iterator i = _formats.begin ();
 	while (i != _formats.end() && (*i)->ratio() != r) {
@@ -37,7 +47,7 @@ Format::get (float r)
 }
 
 Format *
-Format::get (string const & n)
+Format::get_from_nickname (string const & n)
 {
 	list<Format*>::iterator i = _formats.begin ();
 	while (i != _formats.end() && (*i)->nickname() != n) {
@@ -50,3 +60,10 @@ Format::get (string const & n)
 
 	return *i;
 }
+
+Format *
+Format::get_from_metadata (string const & m)
+{
+	return get_from_ratio (atof (m.c_str ()));
+}
+

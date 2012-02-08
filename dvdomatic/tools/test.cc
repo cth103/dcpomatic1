@@ -20,7 +20,7 @@ int main ()
 	Film f ("/home/carl/Films/Ghostbusters/DVD_VIDEO/VIDEO_TS/VTS_02_1.VOB");
 	f.set_top_crop (75);
 	f.set_bottom_crop (75);
-	f.set_format (Format::get ("Scope"));
+	f.set_format (Format::get_from_nickname ("Scope"));
 
 	Progress p;
 	boost::thread t (boost::bind (&thread, &f, &p));

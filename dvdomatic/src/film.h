@@ -8,6 +8,8 @@ class Film
 public:
 	Film (std::string const &);
 
+	void save_metadata () const;
+
 	std::string content () const {
 		return _content;
 	}
@@ -39,6 +41,12 @@ public:
 	void set_format (Format *);
 	
 private:
+	void load_metadata ();
+	std::string metadata_file () const;
+	
+	/** Directory containing the film metadata */
+	std::string _directory;
+	/** File containing content */
 	std::string _content;
 	Format* _format;
 	int _left_crop;
