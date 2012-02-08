@@ -67,7 +67,7 @@ FilmWriter::~FilmWriter ()
 		avcodec_close (_audio_codec_context);
 	}
 	
-	delete [] _frame_out_buffer;
+	av_free (_frame_out_buffer);
 	if (_video_codec_context) {
 		avcodec_close (_video_codec_context);
 	}
@@ -130,7 +130,7 @@ FilmWriter::setup_video ()
 	}
 	
 	int num_bytes = avpicture_get_size (PIX_FMT_RGB24, _film->format()->dci_width (), _film->format()->dci_height ());
-	_frame_out_buffer = new uint8_t[num_bytes];
+	_frame_out_buffer = av_malloc (num_bytes);
 
 	avpicture_fill ((AVPicture *) _frame_out, _frame_out_buffer, PIX_FMT_RGB24, _film->format()->dci_width(), _film->format()->dci_height ());
 
