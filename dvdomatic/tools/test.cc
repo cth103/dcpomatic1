@@ -11,6 +11,6 @@ int main ()
 	f.set_bottom_crop (75);
 	f.set_format (Format::get ("Test"));
 
-	FilmWriter w (&f, "/home/carl/Films/Ghostbusters/tiffs", "/home/carl/Films/Ghostbusters/wavs", 4000);
+	FilmWriter w (&f, "/home/carl/Films/Ghostbusters/tiffs", "/home/carl/Films/Ghostbusters/wavs");
 	return 0;
 }

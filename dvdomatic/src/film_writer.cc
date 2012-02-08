@@ -57,6 +57,8 @@ FilmWriter::~FilmWriter ()
 	
 	delete[] _deinterleave_buffer;
 
+	sws_freeContext (_conversion_context);
+
 	for (vector<SNDFILE*>::iterator i = _sound_files.begin(); i != _sound_files.end(); ++i) {
 		sf_close (*i);
 	}
@@ -228,6 +230,7 @@ FilmWriter::decode_video ()
 				
 				++_frame;
 				write_tiff (_tiffs, _frame, _frame_out->data[0], _film->format()->dci_width(), _film->format()->dci_height());
+				avfilter_unref_buffer (filter_buffer);
 			}
 		}
 	}
