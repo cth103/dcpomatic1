@@ -1,4 +1,3 @@
-#include <boost/thread/thread.hpp>
 #include <iostream>
 #include "film.h"
 #include "format.h"
@@ -7,28 +6,19 @@
 
 using namespace std;
 
-void
-thread (Film* f, Progress* p)
-{
-	FilmWriter w (f, "/home/carl/Films/Ghostbusters/tiffs", "/home/carl/Films/Ghostbusters/wavs", p);
-}
-
 int main ()
 {
 	Format::setup_formats ();
 
-	Film f ("/home/carl/Films/Ghostbusters/DVD_VIDEO/VIDEO_TS/VTS_02_1.VOB");
+	Film f ("/home/carl/Video/Ghostbusters/");
+	f.set_content ("DVD_VIDEO/VIDEO_TS/VTS_02_1.VOB");
 	f.set_top_crop (75);
 	f.set_bottom_crop (75);
-	f.set_format (Format::get_from_nickname ("Scope"));
+	f.set_format (Format::get_from_nickname ("Test"));
 
-	Progress p;
-	boost::thread t (boost::bind (&thread, &f, &p));
+	Progress progress;
 
-	while (1) {
-		sleep (1);
-		cout << (p.get_fraction() * 100) << "%\n";
-	}
-
+	FilmWriter w (&f, &progress, 2000);
+	
 	return 0;
 }

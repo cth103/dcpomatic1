@@ -115,3 +115,26 @@ Film::set_format (Format* f)
 	_format = f;
 }
 
+string
+Film::content () const
+{
+	stringstream s;
+	s << _directory << "/" << _content;
+	return s.str ();
+}
+
+void
+Film::set_content (string const & c)
+{
+	_content = c;
+}
+
+string
+Film::dir (string const & d)
+{
+	stringstream s;
+	s << _directory << "/" << d;
+	boost::filesystem::create_directories (s.str ());
+	return s.str ();
+}
+

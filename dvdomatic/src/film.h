@@ -10,9 +10,7 @@ public:
 
 	void save_metadata () const;
 
-	std::string content () const {
-		return _content;
-	}
+	std::string content () const;
 
 	int top_crop () const {
 		return _top_crop;
@@ -33,7 +31,9 @@ public:
 	Format* format () const {
 		return _format;
 	}
-	
+
+	void set_content (std::string const &);
+	std::string dir (std::string const &);
 	void set_top_crop (int);
 	void set_bottom_crop (int);
 	void set_left_crop (int);
@@ -46,7 +46,7 @@ private:
 	
 	/** Directory containing the film metadata */
 	std::string _directory;
-	/** File containing content */
+	/** File containing content (relative to _directory) */
 	std::string _content;
 	Format* _format;
 	int _left_crop;

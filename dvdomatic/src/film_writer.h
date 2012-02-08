@@ -19,7 +19,7 @@ class Progress;
 class FilmWriter : public Decoder
 {
 public:
-	FilmWriter (Film *, std::string const &, std::string const &, Progress *, int N = 0);
+	FilmWriter (Film *, Progress *, int N = 0);
 	~FilmWriter ();
 
 	void process_video (uint8_t *);

@@ -20,17 +20,18 @@ extern "C" {
 
 using namespace std;
 
-FilmWriter::FilmWriter (Film* f, string const & t, string const & w, Progress* p, int N)
+FilmWriter::FilmWriter (Film* f, Progress* p, int N)
 	: Decoder (f)
 	, _film (f)
-	, _tiffs (t)
-	, _wavs (w)
 	, _progress (p)
 	, _nframes (N)
 	, _deinterleave_buffer_size (8192)
 	, _deinterleave_buffer (0)
 	, _frame (0)
 {
+	_tiffs = _film->dir ("tiffs");
+	_wavs = _film->dir ("wavs");
+	
 	if (have_video_stream ()) {
 		_progress->set_total (length_in_frames ());
 	}
@@ -69,7 +70,8 @@ FilmWriter::~FilmWriter ()
 void
 FilmWriter::decode ()
 {
-	while (pass () >= 0) {
+	while (pass () >= 0 && (_nframes == 0 || _frame < _nframes)) {
+		_progress->set_progress (_frame);
 		/* Decoder will call our decode_{video,audio} methods */
 	}
 }

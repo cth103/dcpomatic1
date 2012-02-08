@@ -67,10 +67,14 @@ Decoder::~Decoder ()
 void
 Decoder::setup_general ()
 {
+	int r;
+	
 	av_register_all ();
 
-	if (avformat_open_input (&_format_context, _film->content().c_str(), 0, 0) != 0) {
-		throw runtime_error ("Could not open content file");
+	if ((r = avformat_open_input (&_format_context, _film->content().c_str(), 0, 0)) != 0) {
+		stringstream s;
+		s << "Could not open content file " << _film->content() << " (" << r << ")";
+		throw runtime_error (s.str ());
 	}
 
 	if (avformat_find_stream_info (_format_context, 0) < 0) {
