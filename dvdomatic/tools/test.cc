@@ -10,14 +10,14 @@ using namespace std;
 void
 thread (Film* f, Progress* p)
 {
-	FilmWriter w (f, "/home/carl/Video/Ghostbusters/tiffs", "/home/carl/Video/Ghostbusters/wavs", p);
+	FilmWriter w (f, "/home/carl/Films/Ghostbusters/tiffs", "/home/carl/Films/Ghostbusters/wavs", p);
 }
 
 int main ()
 {
 	Format::setup_formats ();
 
-	Film f ("/home/carl/Video/Ghostbusters/DVD_VIDEO/VIDEO_TS/VTS_02_1.VOB");
+	Film f ("/home/carl/Films/Ghostbusters/DVD_VIDEO/VIDEO_TS/VTS_02_1.VOB");
 	f.set_top_crop (75);
 	f.set_bottom_crop (75);
 	f.set_format (Format::get ("Scope"));

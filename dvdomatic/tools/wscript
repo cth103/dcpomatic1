@@ -1,0 +1,6 @@
+def build(bld):
+    obj = bld(features = 'cxx cxxprogram')
+    obj.uselib = 'BOOST_THREAD'
+    obj.use    = 'libdvdomatic'
+    obj.source = 'test.cc'
+    obj.target = 'test'

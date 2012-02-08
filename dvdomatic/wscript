@@ -1,0 +1,18 @@
+def options(opt):
+    opt.load('compiler_cxx')
+
+def configure(conf):
+    conf.load('compiler_cxx')
+    conf.env.append_value('CXXFLAGS', '-D__STDC_CONSTANT_MACROS')
+    conf.check_cfg(package = 'glib-2.0', args = '--cflags --libs', uselib_store = 'GLIB', mandatory = True)
+    conf.check_cfg(package = 'libavformat', args = '--cflags --libs', uselib_store = 'AVFORMAT', mandatory = True)
+    conf.check_cfg(package = 'libavfilter', args = '--cflags --libs', uselib_store = 'AVFILTER', mandatory = True)
+    conf.check_cfg(package = 'libswscale', args = '--cflags --libs', uselib_store = 'SWSCALE', mandatory = True)
+    conf.check_cfg(package = 'libswresample', args = '--cflags --libs', uselib_store = 'SWRESAMPLE', mandatory = True)
+    conf.check_cfg(package = 'sndfile', args = '--cflags --libs', uselib_store = 'SNDFILE', mandatory = True)
+    conf.check_cc(lib = 'tiff', uselib_store = 'TIFF')
+    conf.check_cc(lib = 'boost_thread', uselib_store = 'BOOST_THREAD')
+
+def build(bld):
+    bld.recurse('src')
+    bld.recurse('tools')
