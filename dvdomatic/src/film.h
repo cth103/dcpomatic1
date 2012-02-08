@@ -1,9 +1,6 @@
 #include <string>
 #include <inttypes.h>
 
-struct AVFilterGraph;
-struct AVCodecContext;
-struct AVFilterContext;
 class Format;
 
 class Film
@@ -11,18 +8,37 @@ class Film
 public:
 	Film (std::string const &);
 
+	std::string content () const {
+		return _content;
+	}
+
+	int top_crop () const {
+		return _top_crop;
+	}
+
+	int bottom_crop () const {
+		return _bottom_crop;
+	}
+
+	int left_crop () const {
+		return _left_crop;
+	}
+
+	int right_crop () const {
+		return _right_crop;
+	}
+
+	Format* format () const {
+		return _format;
+	}
+	
 	void set_top_crop (int);
 	void set_bottom_crop (int);
 	void set_left_crop (int);
 	void set_right_crop (int);
 	void set_format (Format *);
 	
-	void make_tiffs_and_wavs (std::string const &, std::string const &, int N = 0);
-	
 private:
-	std::pair<AVFilterContext *, AVFilterContext *> setup_filters (AVCodecContext *, std::string const &);
-	void write_tiff (std::string const &, int, uint8_t *, int, int) const;
-
 	std::string _content;
 	Format* _format;
 	int _left_crop;

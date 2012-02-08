@@ -1,5 +1,6 @@
 #include "film.h"
 #include "format.h"
+#include "film_writer.h"
 
 int main ()
 {
@@ -10,6 +11,7 @@ int main ()
 	f.set_top_crop (75);
 	f.set_bottom_crop (75);
 	f.set_format (Format::get ("Test"));
-	f.make_tiffs_and_wavs ("foo", "bar", 8000);
+
+	FilmWriter w (&f, "foo", "bar", 4000);
 	return 0;
 }
