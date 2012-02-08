@@ -1,4 +1,5 @@
 #include <boost/thread/thread.hpp>
+#include <iostream>
 #include "film.h"
 #include "format.h"
 #include "film_writer.h"
