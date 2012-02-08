@@ -8,7 +8,7 @@ class Film
 public:
 	Film (std::string const &);
 
-	void save_metadata () const;
+	void write_metadata () const;
 
 	std::string content () const;
 
@@ -41,7 +41,7 @@ public:
 	void set_format (Format *);
 	
 private:
-	void load_metadata ();
+	void read_metadata ();
 	std::string metadata_file () const;
 	
 	/** Directory containing the film metadata */

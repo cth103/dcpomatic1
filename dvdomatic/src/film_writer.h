@@ -32,7 +32,6 @@ private:
 	void write_tiff (std::string const &, int, uint8_t *, int, int) const;
 	void decode ();
 	
-	Film* _film;
 	std::string _tiffs;
 	std::string _wavs;
 	Progress* _progress;

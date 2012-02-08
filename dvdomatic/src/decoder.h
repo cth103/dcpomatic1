@@ -40,6 +40,8 @@ protected:
 	int length_in_frames () const;
 	AVSampleFormat audio_sample_format () const;
 
+	Film* _film;
+	
 private:
 
 	void setup_general ();
@@ -50,7 +52,6 @@ private:
 	void decode_audio ();
 	void write_tiff (std::string const &, int, uint8_t *, int, int) const;
 	
-	Film* _film;
 	AVFormatContext* _format_context;
 	int _video_stream;
 	int _audio_stream;

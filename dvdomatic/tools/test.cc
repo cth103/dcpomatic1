@@ -15,7 +15,10 @@ int main ()
 	f.set_top_crop (75);
 	f.set_bottom_crop (75);
 	f.set_format (Format::get_from_nickname ("Scope"));
+	f.write_metadata ();
 
+	return 0;
+	
 	Progress progress;
 
 	FilmWriter w (&f, &progress, 2000);

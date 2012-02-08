@@ -16,11 +16,11 @@ Film::Film (string const & d)
 	, _top_crop (0)
 	, _bottom_crop (0)
 {
-	load_metadata ();
+	read_metadata ();
 }
 
 void
-Film::load_metadata ()
+Film::read_metadata ()
 {
 	ifstream f (metadata_file().c_str ());
 	string line;
@@ -58,7 +58,7 @@ Film::load_metadata ()
 }
 
 void
-Film::save_metadata () const
+Film::write_metadata () const
 {
 	boost::filesystem::create_directories (_directory);
 	

@@ -22,7 +22,6 @@ using namespace std;
 
 FilmWriter::FilmWriter (Film* f, Progress* p, int N)
 	: Decoder (f)
-	, _film (f)
 	, _progress (p)
 	, _nframes (N)
 	, _deinterleave_buffer_size (8192)
