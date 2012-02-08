@@ -4,10 +4,14 @@
 class Format
 {
 public:
-	Format (float, int, int, std::string const &);
+	Format (int, int, int, std::string const &);
 
-	float ratio () const {
+	int ratio_as_integer () const {
 		return _ratio;
+	}
+
+	float ratio_as_float () const {
+		return _ratio / 100.0;
 	}
 
 	int dci_width () const {
@@ -23,15 +27,16 @@ public:
 	}
 
 	std::string get_as_metadata () const;
-	
-	static Format * get_from_ratio (float);
+
+	static Format * get_from_ratio (int);
 	static Format * get_from_nickname (std::string const &);
 	static Format * get_from_metadata (std::string const &);
 	static void setup_formats ();
 	
 private:
 
-	float _ratio;
+	/** Ratio expressed as the actual ratio multiplied by 100 */
+	int _ratio;
 	int _dci_width;
 	int _dci_height;
 	std::string _nickname;

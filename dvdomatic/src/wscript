@@ -2,7 +2,7 @@ def build(bld):
     obj = bld(features = 'cxx cxxshlib')
     obj.name   = 'libdvdomatic'
     obj.export_includes = ['.']
-    obj.uselib = 'GLIB AVFORMAT AVFILTER SWSCALE SWRESAMPLE SNDFILE'
+    obj.uselib = 'GLIB AVFORMAT AVFILTER SWSCALE SWRESAMPLE SNDFILE BOOST_FILESYSTEM'
     obj.lib    = 'tiff'
     obj.source = 'film.cc film_writer.cc format.cc progress.cc'
     obj.target = 'dvdomatic'

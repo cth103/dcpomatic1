@@ -3,16 +3,29 @@ def options(opt):
 
 def configure(conf):
     conf.load('compiler_cxx')
-    conf.env.append_value('CXXFLAGS', '-D__STDC_CONSTANT_MACROS')
+    conf.env.append_value('CXXFLAGS', ['-D__STDC_CONSTANT_MACROS', '-g', '-Wall'])
     conf.check_cfg(package = 'glib-2.0', args = '--cflags --libs', uselib_store = 'GLIB', mandatory = True)
     conf.check_cfg(package = 'libavformat', args = '--cflags --libs', uselib_store = 'AVFORMAT', mandatory = True)
     conf.check_cfg(package = 'libavfilter', args = '--cflags --libs', uselib_store = 'AVFILTER', mandatory = True)
     conf.check_cfg(package = 'libswscale', args = '--cflags --libs', uselib_store = 'SWSCALE', mandatory = True)
     conf.check_cfg(package = 'libswresample', args = '--cflags --libs', uselib_store = 'SWRESAMPLE', mandatory = True)
     conf.check_cfg(package = 'sndfile', args = '--cflags --libs', uselib_store = 'SNDFILE', mandatory = True)
-    conf.check_cc(lib = 'tiff', uselib_store = 'TIFF')
-    conf.check_cc(lib = 'boost_thread', uselib_store = 'BOOST_THREAD')
+    conf.check_cc(msg = 'Checking for library libtiff', function_name = 'TIFFOpen', header_name = 'tiffio.h', lib = 'tiff', uselib_store = 'TIFF')
+    conf.check_cxx(fragment = """
+    			      #include <boost/thread.hpp>\n
+    			      int main() { boost::thread t (); }\n
+			      """, msg = 'Checking for boost threading library', lib = 'boost_thread', uselib_store = 'BOOST_THREAD')
+    conf.check_cxx(fragment = """
+    			      #include <boost/filesystem.hpp>\n
+    			      int main() { boost::filesystem::copy_file ("a", "b"); }\n
+			      """, msg = 'Checking for boost filesystem library', lib = ['boost_filesystem', 'boost_system'], uselib_store = 'BOOST_FILESYSTEM')
+    conf.check_cxx(fragment = """
+                              #define BOOST_TEST_MODULE Config test\n
+    			      #include <boost/test/unit_test.hpp>\n
+                              int main() {}
+                              """, msg = 'Checking for boost unit testing library', lib = 'boost_unit_test_framework', uselib_store = 'BOOST_TEST')
 
 def build(bld):
     bld.recurse('src')
     bld.recurse('tools')
+    bld.recurse('test')

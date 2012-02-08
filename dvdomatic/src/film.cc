@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <sstream>
+#include <boost/filesystem.hpp>
 #include "film.h"
 #include "format.h"
 
@@ -59,6 +60,8 @@ Film::load_metadata ()
 void
 Film::save_metadata () const
 {
+	boost::filesystem::create_directories (_directory);
+	
 	ofstream f (metadata_file().c_str ());
 	if (!f.good ()) {
 		throw runtime_error ("Could not open metadata file for writing");
@@ -79,6 +82,7 @@ Film::metadata_file () const
 {
 	stringstream s;
 	s << _directory << "/metadata";
+	return s.str();
 }
 
 void
