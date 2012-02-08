@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 #include <inttypes.h>
 
 class Format;
@@ -40,7 +41,16 @@ public:
 	void set_right_crop (int);
 	void set_format (Format *);
 
-	void update_thumbs () const;
+	void update_thumbs ();
+	int num_thumbs () const;
+	int thumb_frame (int) const;
+	std::string thumb_file (int) const;
+	int thumb_width () const {
+		return _thumb_width;
+	}
+	int thumb_height () const {
+		return _thumb_height;
+	}
 	
 private:
 	void read_metadata ();
@@ -55,4 +65,9 @@ private:
 	int _right_crop;
 	int _top_crop;
 	int _bottom_crop;
+
+	/* Data which is cached to speed things up */
+	std::vector<int> _thumbs;
+	int _thumb_width;
+	int _thumb_height;
 };

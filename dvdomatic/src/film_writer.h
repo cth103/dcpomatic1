@@ -23,7 +23,7 @@ public:
 	~FilmWriter ();
 
 	void go ();
-	
+
 private:
 
 	void process_video (uint8_t *, int);

@@ -1,7 +1,7 @@
 #include <gtkmm.h>
 #include "decoder.h"
 
-class FilmViewer : public Decoder
+class FilmViewer
 {
 public:
 	FilmViewer (Film *);
@@ -10,12 +10,12 @@ public:
 		return _vbox;
 	}
 
-	void process_video (uint8_t *, int);
-	void process_audio (uint8_t *, int, int) {}
-	
 private:
 	void position_slider_changed ();
+	std::string format_position_slider_value (double) const;
+	void load_thumbnail (int);
 
+	Film* _film;
 	Gtk::VBox _vbox;
 	Gtk::Image _image;
 	Glib::RefPtr<Gdk::Pixbuf> _pixbuf;

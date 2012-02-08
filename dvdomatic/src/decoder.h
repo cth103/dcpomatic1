@@ -29,8 +29,8 @@ public:
 	
 protected:
 
-	virtual void process_video (uint8_t *, int) {}
-	virtual void process_audio (uint8_t *, int, int) {}
+	virtual void process_video (uint8_t *, int) = 0;
+	virtual void process_audio (uint8_t *, int, int) = 0;
 
 	enum PassResult {
 		PASS_DONE,

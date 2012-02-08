@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <sstream>
+#include <iomanip>
 #include <boost/filesystem.hpp>
 #include "film.h"
 #include "format.h"
@@ -18,6 +19,8 @@ Film::Film (string const & d)
 	, _right_crop (0)
 	, _top_crop (0)
 	, _bottom_crop (0)
+	, _thumb_width (0)
+	, _thumb_height (0)
 {
 	read_metadata ();
 }
@@ -44,6 +47,7 @@ Film::read_metadata ()
 		string const k = line.substr (0, s);
 		string const v = line.substr (s + 1);
 
+		/* User-specified stuff */
 		if (k == "content") {
 			_content = v;
 		} else if (k == "format") {
@@ -56,6 +60,15 @@ Film::read_metadata ()
 			_left_crop = atoi (v.c_str ());
 		} else if (k == "right_crop") {
 			_right_crop = atoi (v.c_str ());
+		}
+
+		/* Cached stuff */
+		if (k == "thumb") {
+			_thumbs.push_back (atoi (v.c_str ()));
+		} else if (k == "thumb_width") {
+			_thumb_width = atoi (v.c_str ());
+		} else if (k == "thumb_height") {
+			_thumb_height = atoi (v.c_str ());
 		}
 	}
 }
@@ -70,6 +83,7 @@ Film::write_metadata () const
 		throw runtime_error ("Could not open metadata file for writing");
 	}
 
+	/* User stuff */
 	f << "content " << _content << "\n";
 	if (_format) {
 		f << "format " << _format->get_as_metadata () << "\n";
@@ -78,6 +92,13 @@ Film::write_metadata () const
 	f << "bottom_crop " << _bottom_crop << "\n";
 	f << "left_crop " << _left_crop << "\n";
 	f << "right_crop " << _right_crop << "\n";
+
+	/* Cached stuff */
+	for (vector<int>::const_iterator i = _thumbs.begin(); i != _thumbs.end(); ++i) {
+		f << "thumb " << *i << "\n";
+	}
+	f << "thumb_width " << _thumb_width << "\n";
+	f << "thumb_height " << _thumb_height << "\n";
 }
 
 string
@@ -142,18 +163,57 @@ Film::dir (string const & d) const
 }
 
 void
-Film::update_thumbs () const
+Film::update_thumbs ()
 {
-	boost::filesystem::remove_all (dir ("thumbs"));
+	using namespace boost::filesystem;
+	remove_all (dir ("thumbs"));
 
-	int const height = 256;
+	_thumb_height = 256;
 	int const number = 128;
 	
-	int const width = height * _format->ratio_as_float ();
+	_thumb_width = _thumb_height * _format->ratio_as_float ();
 
+	/* This call will recreate the directory */
+	string const tdir = dir ("thumbs");
+	
 	Progress progress;
-	FilmWriter w (this, &progress, width, height, dir("thumbs"), dir("thumbs"));
+	FilmWriter w (this, &progress, _thumb_width, _thumb_height, tdir, tdir);
 	w.decode_audio (false);
 	w.set_decode_video_period (w.length_in_frames() / number);
 	w.go ();
+
+	for (directory_iterator i = directory_iterator (tdir); i != directory_iterator(); ++i) {
+		string const l = i->leaf ();
+		size_t const d = l.find (".tiff");
+		if (d != string::npos) {
+			_thumbs.push_back (atoi (l.substr (0, d).c_str()));
+		}
+	}
+
+	sort (_thumbs.begin(), _thumbs.end());
+
+	write_metadata ();
+}
+
+int
+Film::num_thumbs () const
+{
+	return _thumbs.size ();
+}
+
+int
+Film::thumb_frame (int n) const
+{
+	assert (n <= int (_thumbs.size ()));
+	return _thumbs[n];
+}
+
+string
+Film::thumb_file (int n) const
+{
+	stringstream s;
+	s << dir("thumbs") << "/";
+	s.width (8);
+	s << setfill('0') << thumb_frame (n) << ".tiff";
+	return s.str ();
 }
