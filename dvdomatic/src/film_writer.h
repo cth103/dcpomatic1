@@ -13,11 +13,12 @@ struct AVFrame;
 struct AVBufferContext;
 struct AVCodec;
 class Film;
+class Progress;
 
 class FilmWriter
 {
 public:
-	FilmWriter (Film *, std::string const &, std::string const &, int N = 0);
+	FilmWriter (Film *, std::string const &, std::string const &, Progress *, int N = 0);
 	~FilmWriter ();
 
 private:
@@ -34,6 +35,7 @@ private:
 	Film* _film;
 	std::string _tiffs;
 	std::string _wavs;
+	Progress* _progress;
 	int _nframes;
 	AVFormatContext* _format_context;
 	int _video_stream;

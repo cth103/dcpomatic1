@@ -16,13 +16,15 @@ extern "C" {
 #include "film_writer.h"
 #include "film.h"
 #include "format.h"
+#include "progress.h"
 
 using namespace std;
 
-FilmWriter::FilmWriter (Film* f, string const & t, string const & w, int N)
+FilmWriter::FilmWriter (Film* f, string const & t, string const & w, Progress* p, int N)
 	: _film (f)
 	, _tiffs (t)
 	, _wavs (w)
+	, _progress (p)
 	, _nframes (N)
 	, _format_context (0)
 	, _video_stream (-1)
@@ -48,6 +50,11 @@ FilmWriter::FilmWriter (Film* f, string const & t, string const & w, int N)
 	setup_general ();
 	setup_video ();
 	setup_audio ();
+
+	if (_video_stream != -1) {
+		_progress->set_total ((_format_context->duration / AV_TIME_BASE) * av_q2d (_format_context->streams[_video_stream]->avg_frame_rate));
+	}
+	
 	decode ();
 }
 
@@ -130,7 +137,7 @@ FilmWriter::setup_video ()
 	}
 	
 	int num_bytes = avpicture_get_size (PIX_FMT_RGB24, _film->format()->dci_width (), _film->format()->dci_height ());
-	_frame_out_buffer = av_malloc (num_bytes);
+	_frame_out_buffer = (uint8_t *) av_malloc (num_bytes);
 
 	avpicture_fill ((AVPicture *) _frame_out, _frame_out_buffer, PIX_FMT_RGB24, _film->format()->dci_width(), _film->format()->dci_height ());
 
@@ -191,6 +198,9 @@ void
 FilmWriter::decode ()
 {
 	while (av_read_frame (_format_context, &_packet) >= 0 && (_nframes == 0 || _frame < _nframes)) {
+
+		_progress->set_progress (_frame);
+		
 		if (_packet.stream_index == _video_stream) {
 			decode_video ();
 		} else if (_packet.stream_index == _audio_stream) {
