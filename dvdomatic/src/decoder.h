@@ -21,6 +21,16 @@ public:
 	Decoder (Film *);
 	~Decoder ();
 
+	void decode_video (bool);
+	void decode_audio (bool);
+	
+protected:
+
+	virtual void process_video (uint8_t *) = 0;
+	virtual void process_audio (uint8_t *, int, int) = 0;
+	
+	int pass ();
+
 	bool have_video_stream () const {
 		return _video_stream != -1;
 	}
@@ -30,10 +40,6 @@ public:
 	int length_in_frames () const;
 	AVSampleFormat audio_sample_format () const;
 
-	int pass ();
-	virtual void process_video (uint8_t *) = 0;
-	virtual void process_audio (uint8_t *, int, int) = 0;
-	
 private:
 
 	void setup_general ();
@@ -62,4 +68,7 @@ private:
 	AVCodec* _audio_codec;
 
 	AVPacket _packet;
+
+	bool _decode_video;
+	bool _decode_audio;
 };

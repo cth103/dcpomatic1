@@ -54,7 +54,11 @@ FilmWriter::FilmWriter (Film* f, Progress* p, int N)
 
 	/* Create buffer for deinterleaving audio */
 	_deinterleave_buffer = new uint8_t[_deinterleave_buffer_size];
-	
+}
+
+void
+FilmWriter::go ()
+{
 	decode ();
 }
 

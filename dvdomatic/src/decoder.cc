@@ -35,6 +35,8 @@ Decoder::Decoder (Film* f)
 	, _conversion_context (0)
 	, _audio_codec_context (0)
 	, _audio_codec (0)
+	, _decode_video (true)
+	, _decode_audio (true)
 {
 	if (_film->format() == 0) {
 		throw runtime_error ("Film format unknown");
@@ -167,7 +169,7 @@ Decoder::pass ()
 		return r;
 	}
 	
-	if (_packet.stream_index == _video_stream) {
+	if (_packet.stream_index == _video_stream && _decode_video) {
 		
 		int frame_finished;
 		if (avcodec_decode_video2 (_video_codec_context, _frame_in, &frame_finished, &_packet) < 0) {
@@ -200,7 +202,7 @@ Decoder::pass ()
 			}
 		}
 		
-	} else if (_packet.stream_index == _audio_stream) {
+	} else if (_packet.stream_index == _audio_stream && _decode_audio) {
 		
 		avcodec_get_frame_defaults (_frame_in);
 		
@@ -316,4 +318,17 @@ AVSampleFormat
 Decoder::audio_sample_format () const
 {
 	return _audio_codec_context->sample_fmt;
+}
+
+
+void
+Decoder::decode_video (bool w)
+{
+	_decode_video = w;
+}
+
+void
+Decoder::decode_audio (bool w)
+{
+	_decode_audio = w;
 }
