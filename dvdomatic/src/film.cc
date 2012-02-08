@@ -165,6 +165,8 @@ Film::dir (string const & d) const
 void
 Film::update_thumbs ()
 {
+	_thumbs.clear ();
+	
 	using namespace boost::filesystem;
 	remove_all (dir ("thumbs"));
 

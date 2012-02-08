@@ -14,7 +14,7 @@ int main ()
 	f.set_content ("DVD_VIDEO/VIDEO_TS/VTS_02_1.VOB");
 	f.set_top_crop (75);
 	f.set_bottom_crop (75);
-	f.set_format (Format::get_from_nickname ("Test"));
+	f.set_format (Format::get_from_nickname ("Scope"));
 	f.write_metadata ();
 	f.update_thumbs ();
 	
