@@ -1,6 +1,7 @@
 def build(bld):
-    obj = bld(features = 'cxx cxxprogram')
-    obj.uselib = 'BOOST_THREAD'
-    obj.use    = 'libdvdomatic'
-    obj.source = 'test.cc'
-    obj.target = 'test'
+    for t in ['test', 'testg']:
+        obj = bld(features = 'cxx cxxprogram')
+    	obj.uselib = 'BOOST_THREAD GTKMM'
+        obj.use    = 'libdvdomatic'
+        obj.source = '%s.cc' % t
+        obj.target = t

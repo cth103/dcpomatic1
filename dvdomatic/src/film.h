@@ -33,12 +33,14 @@ public:
 	}
 
 	void set_content (std::string const &);
-	std::string dir (std::string const &);
+	std::string dir (std::string const &) const;
 	void set_top_crop (int);
 	void set_bottom_crop (int);
 	void set_left_crop (int);
 	void set_right_crop (int);
 	void set_format (Format *);
+
+	void update_thumbs () const;
 	
 private:
 	void read_metadata ();

@@ -20,17 +20,15 @@ extern "C" {
 
 using namespace std;
 
-FilmWriter::FilmWriter (Film* f, Progress* p, int N)
-	: Decoder (f)
+FilmWriter::FilmWriter (Film const * film, Progress* p, int width, int height, string const & tiffs, string const & wavs, int N)
+	: Decoder (film, width, height)
+	, _tiffs (tiffs)
+	, _wavs (wavs)
 	, _progress (p)
 	, _nframes (N)
 	, _deinterleave_buffer_size (8192)
 	, _deinterleave_buffer (0)
-	, _frame (0)
 {
-	_tiffs = _film->dir ("tiffs");
-	_wavs = _film->dir ("wavs");
-	
 	if (have_video_stream ()) {
 		_progress->set_total (length_in_frames ());
 	}
@@ -73,17 +71,16 @@ FilmWriter::~FilmWriter ()
 void
 FilmWriter::decode ()
 {
-	while (pass () >= 0 && (_nframes == 0 || _frame < _nframes)) {
-		_progress->set_progress (_frame);
+	while (pass () != PASS_DONE && (_nframes == 0 || video_frame() < _nframes)) {
+		_progress->set_progress (video_frame ());
 		/* Decoder will call our decode_{video,audio} methods */
 	}
 }
 
 void
-FilmWriter::process_video (uint8_t* data)
+FilmWriter::process_video (uint8_t* data, int line_size)
 {
-	++_frame;
-	write_tiff (_tiffs, _frame, data, _film->format()->dci_width(), _film->format()->dci_height());
+	write_tiff (_tiffs, video_frame(), data, out_width(), out_height());
 }
 
 void

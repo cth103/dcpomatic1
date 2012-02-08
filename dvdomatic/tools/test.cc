@@ -14,16 +14,9 @@ int main ()
 	f.set_content ("DVD_VIDEO/VIDEO_TS/VTS_02_1.VOB");
 	f.set_top_crop (75);
 	f.set_bottom_crop (75);
-	f.set_format (Format::get_from_nickname ("Scope"));
+	f.set_format (Format::get_from_nickname ("Test"));
 	f.write_metadata ();
-
-	return 0;
-	
-	Progress progress;
-
-	FilmWriter w (&f, &progress, 2000);
-	w.decode_video (false);
-	w.go ();
+	f.update_thumbs ();
 	
 	return 0;
 }

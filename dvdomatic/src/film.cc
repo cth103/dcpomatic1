@@ -1,10 +1,13 @@
 #include <stdexcept>
+#include <iostream>
 #include <fstream>
 #include <cstdlib>
 #include <sstream>
 #include <boost/filesystem.hpp>
 #include "film.h"
 #include "format.h"
+#include "progress.h"
+#include "film_writer.h"
 
 using namespace std;
 
@@ -130,7 +133,7 @@ Film::set_content (string const & c)
 }
 
 string
-Film::dir (string const & d)
+Film::dir (string const & d) const
 {
 	stringstream s;
 	s << _directory << "/" << d;
@@ -138,3 +141,19 @@ Film::dir (string const & d)
 	return s.str ();
 }
 
+void
+Film::update_thumbs () const
+{
+	boost::filesystem::remove_all (dir ("thumbs"));
+
+	int const height = 256;
+	int const number = 128;
+	
+	int const width = height * _format->ratio_as_float ();
+
+	Progress progress;
+	FilmWriter w (this, &progress, width, height, dir("thumbs"), dir("thumbs"));
+	w.decode_audio (false);
+	w.set_decode_video_period (w.length_in_frames() / number);
+	w.go ();
+}
