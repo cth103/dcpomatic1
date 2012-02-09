@@ -20,6 +20,12 @@ Progress::set_total (int t)
 	g_atomic_int_set (&_total, t);
 }
 
+void
+Progress::set_done (bool d)
+{
+	g_atomic_int_set (&_done, (d ? 1 : 0));
+}
+
 /** @return fractional progress, or -1 if not known */
 float
 Progress::get_fraction () const
@@ -30,4 +36,10 @@ Progress::get_fraction () const
 	}
 	
 	return float (g_atomic_int_get (&_progress)) / t;
+}
+
+bool
+Progress::get_done () const
+{
+	return g_atomic_int_get (&_done) == 1;
 }

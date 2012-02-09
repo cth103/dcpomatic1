@@ -15,7 +15,8 @@ int main ()
 	f.set_top_crop (75);
 	f.set_bottom_crop (75);
 	f.set_format (Format::get_from_nickname ("Scope"));
-	f.update_thumbs ();
+	Progress p;
+	f.update_thumbs (&p);
 	
 	return 0;
 }

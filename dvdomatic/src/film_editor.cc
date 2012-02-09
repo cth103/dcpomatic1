@@ -1,7 +1,10 @@
 #include <gtkmm.h>
+#include <boost/thread.hpp>
 #include "film_editor.h"
+#include "progress_dialog.h"
 #include "format.h"
 #include "film.h"
+#include "progress.h"
 
 using namespace std;
 using namespace Gtk;
@@ -146,7 +149,11 @@ FilmEditor::crop_changed ()
 void
 FilmEditor::update_thumbs_clicked ()
 {
-	_film->update_thumbs ();
+	Progress progress;
+	boost::thread (boost::bind (&Film::update_thumbs, _film, &progress));
+
+	ProgressDialog d (&progress, "Updating Thumbnails...");
+	d.spin ();
 }
 
 void

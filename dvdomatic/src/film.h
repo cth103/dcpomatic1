@@ -7,6 +7,7 @@
 #include <sigc++/signal.h>
 
 class Format;
+class Progress;
 
 class Film
 {
@@ -62,7 +63,7 @@ public:
 		return _height;
 	}
 	
-	void update_thumbs ();
+	void update_thumbs (Progress *);
 	int num_thumbs () const;
 	int thumb_frame (int) const;
 	std::string thumb_file (int) const;

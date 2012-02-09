@@ -211,7 +211,7 @@ Film::dir (string const & d) const
 }
 
 void
-Film::update_thumbs ()
+Film::update_thumbs (Progress* progress)
 {
 	_thumbs.clear ();
 	
@@ -223,8 +223,7 @@ Film::update_thumbs ()
 	/* This call will recreate the directory */
 	string const tdir = dir ("thumbs");
 	
-	Progress progress;
-	FilmWriter w (this, &progress, _width, _height, tdir, tdir);
+	FilmWriter w (this, progress, _width, _height, tdir, tdir);
 	w.decode_audio (false);
 	w.apply_crop (false);
 	w.set_decode_video_period (w.length_in_frames() / number);
@@ -250,6 +249,7 @@ Film::update_thumbs ()
 	write_metadata ();
 
 	ThumbsChanged ();
+	progress->set_done (true);
 }
 
 int
