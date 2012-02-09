@@ -1,3 +1,4 @@
+#include <iostream>
 #include <boost/filesystem.hpp>
 #include "film_viewer.h"
 #include "film_editor.h"
