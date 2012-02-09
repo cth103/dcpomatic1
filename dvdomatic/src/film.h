@@ -1,3 +1,6 @@
+#ifndef DVDOMATIC_FILM_H
+#define DVDOMATIC_FILM_H
+
 #include <string>
 #include <vector>
 #include <inttypes.h>
@@ -11,8 +14,16 @@ public:
 
 	void write_metadata () const;
 
+	std::string directory () const {
+		return _directory;
+	}
+	
 	std::string content () const;
 
+	std::string name () const {
+		return _name;
+	}
+	
 	int top_crop () const {
 		return _top_crop;
 	}
@@ -33,6 +44,7 @@ public:
 		return _format;
 	}
 
+	void set_name (std::string const &);
 	void set_content (std::string const &);
 	std::string dir (std::string const &) const;
 	void set_top_crop (int);
@@ -58,6 +70,7 @@ private:
 	
 	/** Directory containing the film metadata */
 	std::string _directory;
+	std::string _name;
 	/** File containing content (relative to _directory) */
 	std::string _content;
 	Format* _format;
@@ -71,3 +84,5 @@ private:
 	int _thumb_width;
 	int _thumb_height;
 };
+
+#endif

@@ -1,5 +1,5 @@
 #include <string>
-#include <list>
+#include <vector>
 
 class Format
 {
@@ -22,6 +22,8 @@ public:
 		return _dci_height;
 	}
 
+	std::string name () const;
+
 	std::string nickname () const {
 		return _nickname;
 	}
@@ -31,6 +33,9 @@ public:
 	static Format * get_from_ratio (int);
 	static Format * get_from_nickname (std::string const &);
 	static Format * get_from_metadata (std::string const &);
+	static Format * get_from_index (int);
+	static int get_as_index (Format *);
+	static std::vector<Format*> get_all ();
 	static void setup_formats ();
 	
 private:
@@ -41,7 +46,7 @@ private:
 	int _dci_height;
 	std::string _nickname;
 
-	static std::list<Format *> _formats;
+	static std::vector<Format *> _formats;
 };
 
 	

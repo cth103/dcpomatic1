@@ -12,11 +12,19 @@ FilmViewer::FilmViewer (Film* f)
 {
 	_vbox.pack_start (_image, true, true);
 	_vbox.pack_start (_position_slider, false, false);
+	_vbox.set_border_width (12);
 
-	_pixbuf = Gdk::Pixbuf::create (Gdk::COLORSPACE_RGB, false, 8, _film->thumb_width(), _film->thumb_height());
-	_image.set (_pixbuf);
+	if (_film->thumb_width() > 0) {
+		_pixbuf = Gdk::Pixbuf::create (Gdk::COLORSPACE_RGB, false, 8, _film->thumb_width(), _film->thumb_height());
+		_image.set (_pixbuf);
+	}
 
-	_position_slider.set_range (0, _film->num_thumbs () - 1);
+	if (_film->num_thumbs() > 0) {
+		_position_slider.set_range (0, _film->num_thumbs () - 1);
+	} else {
+		_position_slider.set_range (0, 1);
+	}
+	
 	_position_slider.set_value (0);
 	_position_slider.set_digits (0);
 	_position_slider.signal_format_value().connect (sigc::mem_fun (*this, &FilmViewer::format_position_slider_value));
@@ -28,6 +36,10 @@ FilmViewer::FilmViewer (Film* f)
 void
 FilmViewer::load_thumbnail (int n)
 {
+	if (_film->num_thumbs() <= n) {
+		return;
+	}
+	
 	TIFF* t = TIFFOpen (_film->thumb_file(n).c_str (), "r");
 	if (t == 0) {
 		throw runtime_error ("Could not open thumbnail file");
@@ -64,6 +76,12 @@ string
 FilmViewer::format_position_slider_value (double v) const
 {
 	stringstream s;
-	s << _film->thumb_frame (int (v));
+
+	if (int (v) < _film->num_thumbs ()) {
+		s << _film->thumb_frame (int (v));
+	} else {
+		s << "-";
+	}
+	
 	return s.str ();
 }

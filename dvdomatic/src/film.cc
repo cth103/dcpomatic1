@@ -48,7 +48,9 @@ Film::read_metadata ()
 		string const v = line.substr (s + 1);
 
 		/* User-specified stuff */
-		if (k == "content") {
+		if (k == "name") {
+			_name = v;
+		} else if (k == "content") {
 			_content = v;
 		} else if (k == "format") {
 			_format = Format::get_from_metadata (v);
@@ -84,6 +86,7 @@ Film::write_metadata () const
 	}
 
 	/* User stuff */
+	f << "name " << _name << "\n";
 	f << "content " << _content << "\n";
 	if (_format) {
 		f << "format " << _format->get_as_metadata () << "\n";
@@ -145,6 +148,12 @@ Film::content () const
 	stringstream s;
 	s << _directory << "/" << _content;
 	return s.str ();
+}
+
+void
+Film::set_name (string const & n)
+{
+	_name = n;
 }
 
 void
@@ -213,7 +222,7 @@ Film::num_thumbs () const
 int
 Film::thumb_frame (int n) const
 {
-	assert (n <= int (_thumbs.size ()));
+	assert (n < int (_thumbs.size ()));
 	return _thumbs[n];
 }
 

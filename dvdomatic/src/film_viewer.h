@@ -6,7 +6,7 @@ class FilmViewer
 public:
 	FilmViewer (Film *);
 
-	Gtk::Widget& get_container () {
+	Gtk::Widget& get_widget () {
 		return _vbox;
 	}
 

@@ -1,10 +1,12 @@
 #include <sstream>
 #include <cstdlib>
+#include <cassert>
+#include <iomanip>
 #include "format.h"
 
 using namespace std;
 
-list<Format *> Format::_formats;
+vector<Format *> Format::_formats;
 
 Format::Format (int r, int dw, int dh, string const & n)
 	: _ratio (r)
@@ -13,6 +15,23 @@ Format::Format (int r, int dw, int dh, string const & n)
 	, _nickname (n)
 {
 
+}
+
+string
+Format::name () const
+{
+	stringstream s;
+	if (!_nickname.empty ()) {
+		s << _nickname << " (";
+	}
+
+	s << setprecision(3) << (_ratio / 100.0) << ":1";
+
+	if (!_nickname.empty ()) {
+		s << ")";
+	}
+
+	return s.str ();
 }
 
 string
@@ -34,7 +53,7 @@ Format::setup_formats ()
 Format *
 Format::get_from_ratio (int r)
 {
-	list<Format*>::iterator i = _formats.begin ();
+	vector<Format*>::iterator i = _formats.begin ();
 	while (i != _formats.end() && (*i)->ratio_as_integer() != r) {
 		++i;
 	}
@@ -49,7 +68,7 @@ Format::get_from_ratio (int r)
 Format *
 Format::get_from_nickname (string const & n)
 {
-	list<Format*>::iterator i = _formats.begin ();
+	vector<Format*>::iterator i = _formats.begin ();
 	while (i != _formats.end() && (*i)->nickname() != n) {
 		++i;
 	}
@@ -67,3 +86,30 @@ Format::get_from_metadata (string const & m)
 	return get_from_ratio (atoi (m.c_str ()));
 }
 
+int
+Format::get_as_index (Format* f)
+{
+	vector<Format*>::size_type i = 0;
+	while (i < _formats.size() && _formats[i] != f) {
+		++i;
+	}
+
+	if (i == _formats.size ()) {
+		return -1;
+	}
+
+	return i;
+}
+
+Format *
+Format::get_from_index (int i)
+{
+	assert (i <= int(_formats.size ()));
+	return _formats[i];
+}
+
+vector<Format*>
+Format::get_all ()
+{
+	return _formats;
+}
