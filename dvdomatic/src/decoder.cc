@@ -41,6 +41,7 @@ Decoder::Decoder (Film const * f, int w, int h)
 	, _decode_video_period (1)
 	, _video_frame (0)
 	, _decode_audio (true)
+	, _apply_crop (true)
 {
 	if (_film->format() == 0) {
 		throw runtime_error ("Film format unknown");
@@ -126,14 +127,19 @@ Decoder::setup_video ()
 	if (avcodec_open2 (_video_codec_context, _video_codec, 0) < 0) {
 		throw runtime_error ("Could not open video decoder");
 	}
-	
+
 	int num_bytes = avpicture_get_size (PIX_FMT_RGB24, _out_width, _out_height);
 	_frame_out_buffer = (uint8_t *) av_malloc (num_bytes);
 
 	avpicture_fill ((AVPicture *) _frame_out, _frame_out_buffer, PIX_FMT_RGB24, _out_width, _out_height);
 
-	int const post_filter_width = _video_codec_context->width - _film->left_crop() - _film->right_crop();
-	int const post_filter_height = _video_codec_context->height - _film->top_crop() - _film->bottom_crop();
+	int post_filter_width = _video_codec_context->width;
+	int post_filter_height = _video_codec_context->height;
+	
+	if (_apply_crop) {
+		post_filter_width -= _film->left_crop() - _film->right_crop();
+		post_filter_height -= _film->top_crop() - _film->bottom_crop();		
+	}
 
 	_conversion_context = sws_getContext (
 		post_filter_width, post_filter_height, _video_codec_context->pix_fmt,
@@ -146,7 +152,9 @@ Decoder::setup_video ()
 	}
 
 	stringstream fs;
-	fs << "crop=" << post_filter_width << ":" << post_filter_height << ":" << _film->left_crop() << ":" << _film->top_crop() << " ";
+	if (_apply_crop) {
+		fs << "crop=" << post_filter_width << ":" << post_filter_height << ":" << _film->left_crop() << ":" << _film->top_crop() << " ";
+	}
 	setup_video_filters (fs.str());
 }
 
@@ -351,3 +359,24 @@ Decoder::set_decode_video_period (int p)
 {
 	_decode_video_period = p;
 }
+
+void
+Decoder::apply_crop (bool c)
+{
+	_apply_crop = c;
+}
+
+int
+Decoder::native_width () const
+{
+	return _video_codec_context->width;
+}
+
+int
+Decoder::native_height () const
+{
+	return _video_codec_context->height;
+}
+
+	
+       

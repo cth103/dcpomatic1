@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iomanip>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include "film.h"
 #include "format.h"
 #include "progress.h"
@@ -19,8 +20,8 @@ Film::Film (string const & d)
 	, _right_crop (0)
 	, _top_crop (0)
 	, _bottom_crop (0)
-	, _thumb_width (0)
-	, _thumb_height (0)
+	, _width (0)
+	, _height (0)
 {
 	read_metadata ();
 }
@@ -67,10 +68,10 @@ Film::read_metadata ()
 		/* Cached stuff */
 		if (k == "thumb") {
 			_thumbs.push_back (atoi (v.c_str ()));
-		} else if (k == "thumb_width") {
-			_thumb_width = atoi (v.c_str ());
-		} else if (k == "thumb_height") {
-			_thumb_height = atoi (v.c_str ());
+		} else if (k == "width") {
+			_width = atoi (v.c_str ());
+		} else if (k == "height") {
+			_height = atoi (v.c_str ());
 		}
 	}
 }
@@ -100,8 +101,8 @@ Film::write_metadata () const
 	for (vector<int>::const_iterator i = _thumbs.begin(); i != _thumbs.end(); ++i) {
 		f << "thumb " << *i << "\n";
 	}
-	f << "thumb_width " << _thumb_width << "\n";
-	f << "thumb_height " << _thumb_height << "\n";
+	f << "width " << _width << "\n";
+	f << "height " << _height << "\n";
 }
 
 string
@@ -115,25 +116,45 @@ Film::metadata_file () const
 void
 Film::set_top_crop (int c)
 {
+	if (c == _top_crop) {
+		return;
+	}
+	
 	_top_crop = c;
+	CropChanged ();
 }
 
 void
 Film::set_bottom_crop (int c)
 {
+	if (c == _bottom_crop) {
+		return;
+	}
+	
 	_bottom_crop = c;
+	CropChanged ();
 }
 
 void
 Film::set_left_crop (int c)
 {
+	if (c == _left_crop) {
+		return;
+	}
+	
 	_left_crop = c;
+	CropChanged ();
 }
 
 void
 Film::set_right_crop (int c)
 {
+	if (c == _right_crop) {
+		return;
+	}
+	
 	_right_crop = c;
+	CropChanged ();
 }
 
 void
@@ -159,7 +180,25 @@ Film::set_name (string const & n)
 void
 Film::set_content (string const & c)
 {
-	_content = c;
+	bool const absolute = boost::filesystem::path(c).has_root_directory ();
+	if (absolute && !boost::starts_with (c, _directory)) {
+		throw runtime_error ("Content is outside the film's directory");
+	}
+
+	string f = c;
+	if (absolute) {
+		f = f.substr (_directory.length());
+	}
+	
+	if (f == _content) {
+		return;
+	}
+	
+	_content = f;
+
+	Decoder d (this, 1, 1);
+	_width = d.native_width ();
+	_height = d.native_height ();
 }
 
 string
@@ -179,17 +218,15 @@ Film::update_thumbs ()
 	using namespace boost::filesystem;
 	remove_all (dir ("thumbs"));
 
-	_thumb_height = 256;
 	int const number = 128;
-	
-	_thumb_width = _thumb_height * _format->ratio_as_float ();
 
 	/* This call will recreate the directory */
 	string const tdir = dir ("thumbs");
 	
 	Progress progress;
-	FilmWriter w (this, &progress, _thumb_width, _thumb_height, tdir, tdir);
+	FilmWriter w (this, &progress, _width, _height, tdir, tdir);
 	w.decode_audio (false);
+	w.apply_crop (false);
 	w.set_decode_video_period (w.length_in_frames() / number);
 	w.go ();
 
@@ -211,6 +248,8 @@ Film::update_thumbs ()
 	sort (_thumbs.begin(), _thumbs.end());
 
 	write_metadata ();
+
+	ThumbsChanged ();
 }
 
 int

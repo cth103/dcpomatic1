@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <inttypes.h>
+#include <sigc++/signal.h>
 
 class Format;
 
@@ -53,20 +54,26 @@ public:
 	void set_right_crop (int);
 	void set_format (Format *);
 
+	int width () const {
+		return _width;
+	}
+	
+	int height () const {
+		return _height;
+	}
+	
 	void update_thumbs ();
 	int num_thumbs () const;
 	int thumb_frame (int) const;
 	std::string thumb_file (int) const;
-	int thumb_width () const {
-		return _thumb_width;
-	}
-	int thumb_height () const {
-		return _thumb_height;
-	}
+
+	sigc::signal0<void> ThumbsChanged;
+	sigc::signal0<void> CropChanged;
 	
 private:
 	void read_metadata ();
 	std::string metadata_file () const;
+	void update_dimensions ();
 	
 	/** Directory containing the film metadata */
 	std::string _directory;
@@ -81,8 +88,8 @@ private:
 
 	/* Data which is cached to speed things up */
 	std::vector<int> _thumbs;
-	int _thumb_width;
-	int _thumb_height;
+	int _width;
+	int _height;
 };
 
 #endif

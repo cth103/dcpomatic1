@@ -24,13 +24,16 @@ public:
 	void decode_video (bool);
 	void set_decode_video_period (int);
 	void decode_audio (bool);
+	void apply_crop (bool);
 	
 	int length_in_frames () const;
+	int native_width () const;
+	int native_height () const;
 	
 protected:
 
-	virtual void process_video (uint8_t *, int) = 0;
-	virtual void process_audio (uint8_t *, int, int) = 0;
+	virtual void process_video (uint8_t *, int) {} 
+	virtual void process_audio (uint8_t *, int, int) {}
 
 	enum PassResult {
 		PASS_DONE,
@@ -99,4 +102,6 @@ private:
 	int _decode_video_period;
 	int _video_frame;
 	bool _decode_audio;
+
+	bool _apply_crop;
 };
