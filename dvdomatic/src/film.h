@@ -63,7 +63,8 @@ public:
 		return _height;
 	}
 	
-	void update_thumbs (Progress *);
+	void update_thumbs_non_gui (Progress *);
+	void update_thumbs_gui ();
 	int num_thumbs () const;
 	int thumb_frame (int) const;
 	std::string thumb_file (int) const;

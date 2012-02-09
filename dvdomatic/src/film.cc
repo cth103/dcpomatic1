@@ -211,7 +211,7 @@ Film::dir (string const & d) const
 }
 
 void
-Film::update_thumbs (Progress* progress)
+Film::update_thumbs_non_gui (Progress* progress)
 {
 	_thumbs.clear ();
 	
@@ -245,11 +245,14 @@ Film::update_thumbs (Progress* progress)
 	}
 
 	sort (_thumbs.begin(), _thumbs.end());
-
 	write_metadata ();
-
-	ThumbsChanged ();
 	progress->set_done (true);
+}
+
+void
+Film::update_thumbs_gui ()
+{
+	ThumbsChanged ();
 }
 
 int

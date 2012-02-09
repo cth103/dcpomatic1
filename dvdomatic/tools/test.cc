@@ -16,7 +16,7 @@ int main ()
 	f.set_bottom_crop (75);
 	f.set_format (Format::get_from_nickname ("Scope"));
 	Progress p;
-	f.update_thumbs (&p);
+	f.update_thumbs_non_gui (&p);
 	
 	return 0;
 }

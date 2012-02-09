@@ -150,10 +150,12 @@ void
 FilmEditor::update_thumbs_clicked ()
 {
 	Progress progress;
-	boost::thread (boost::bind (&Film::update_thumbs, _film, &progress));
+	boost::thread (boost::bind (&Film::update_thumbs_non_gui, _film, &progress));
 
 	ProgressDialog d (&progress, "Updating Thumbnails...");
 	d.spin ();
+
+	_film->update_thumbs_gui ();
 }
 
 void
