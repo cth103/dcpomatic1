@@ -1,6 +1,8 @@
 #include <iostream>
+#include <iomanip>
 #include "film_viewer.h"
 #include "film.h"
+#include "util.h"
 
 using namespace std;
 
@@ -56,7 +58,8 @@ FilmViewer::format_position_slider_value (double v) const
 	stringstream s;
 
 	if (int (v) < _film->num_thumbs ()) {
-		s << _film->thumb_frame (int (v));
+		int const f = _film->thumb_frame (int (v));
+		s << f << " " << seconds_to_hms (f / _film->frames_per_second ());
 	} else {
 		s << "-";
 	}

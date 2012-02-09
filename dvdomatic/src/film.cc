@@ -22,6 +22,7 @@ Film::Film (string const & d)
 	, _bottom_crop (0)
 	, _width (0)
 	, _height (0)
+	, _frames_per_second (0)
 {
 	read_metadata ();
 }
@@ -72,6 +73,8 @@ Film::read_metadata ()
 			_width = atoi (v.c_str ());
 		} else if (k == "height") {
 			_height = atoi (v.c_str ());
+		} else if (k == "frames_per_second") {
+			_frames_per_second = atof (v.c_str ());
 		}
 	}
 }
@@ -103,6 +106,7 @@ Film::write_metadata () const
 	}
 	f << "width " << _width << "\n";
 	f << "height " << _height << "\n";
+	f << "frames_per_second " << _frames_per_second << "\n";
 }
 
 string
@@ -199,6 +203,7 @@ Film::set_content (string const & c)
 	Decoder d (this, 1, 1);
 	_width = d.native_width ();
 	_height = d.native_height ();
+	_frames_per_second = d.frames_per_second ();
 }
 
 string

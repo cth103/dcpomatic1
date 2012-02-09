@@ -312,7 +312,13 @@ Decoder::setup_video_filters (string const & filters)
 int
 Decoder::length_in_frames () const
 {
-	return (_format_context->duration / AV_TIME_BASE) * av_q2d (_format_context->streams[_video_stream]->avg_frame_rate);
+	return (_format_context->duration / AV_TIME_BASE) * frames_per_second ();
+}
+
+float
+Decoder::frames_per_second () const
+{
+	return av_q2d (_format_context->streams[_video_stream]->avg_frame_rate);
 }
 
 int

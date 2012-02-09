@@ -62,6 +62,10 @@ public:
 	int height () const {
 		return _height;
 	}
+
+	float frames_per_second () const {
+		return _frames_per_second;
+	}
 	
 	void update_thumbs_non_gui (Progress *);
 	void update_thumbs_gui ();
@@ -92,6 +96,7 @@ private:
 	std::vector<int> _thumbs;
 	int _width;
 	int _height;
+	float _frames_per_second;
 };
 
 #endif

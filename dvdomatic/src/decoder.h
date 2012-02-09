@@ -27,6 +27,7 @@ public:
 	void apply_crop (bool);
 	
 	int length_in_frames () const;
+	float frames_per_second () const;
 	int native_width () const;
 	int native_height () const;
 	
