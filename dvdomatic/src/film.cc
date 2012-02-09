@@ -185,7 +185,14 @@ Film::update_thumbs ()
 	w.go ();
 
 	for (directory_iterator i = directory_iterator (tdir); i != directory_iterator(); ++i) {
+
+		/* Aah, the sweet smell of progress */
+#if BOOST_FILESYSTEM_VERSION == 3		
+		string const l = path(*i).leaf().generic_string();
+#else
 		string const l = i->leaf ();
+#endif
+		
 		size_t const d = l.find (".tiff");
 		if (d != string::npos) {
 			_thumbs.push_back (atoi (l.substr (0, d).c_str()));
