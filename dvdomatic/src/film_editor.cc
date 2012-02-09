@@ -44,6 +44,9 @@ FilmEditor::FilmEditor (Film* f)
 	_bottom_crop.set_range (0, 1024);
 	_bottom_crop.set_increments (1, 16);
 	_bottom_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::crop_changed));
+
+	_original_size.set_alignment (0, 0.5);
+	_frames_per_second.set_alignment (0, 0.5);
 	
 	int n = 0;
 	t->attach (left_aligned_label ("Directory"), 0, 1, n, n + 1);
@@ -69,6 +72,12 @@ FilmEditor::FilmEditor (Film* f)
 	++n;
 	t->attach (left_aligned_label ("Bottom Crop"), 0, 1, n, n + 1);
 	t->attach (_bottom_crop, 1, 2, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("Original Size"), 0, 1, n, n + 1);
+	t->attach (_original_size, 1, 2, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("Frames Per Second"), 0, 1, n, n + 1);
+	t->attach (_frames_per_second, 1, 2, n, n + 1);
 	++n;
 
 	t->show_all ();
@@ -102,6 +111,12 @@ FilmEditor::model_to_view ()
 	_right_crop.set_value (_film->right_crop ());
 	_top_crop.set_value (_film->top_crop ());
 	_bottom_crop.set_value (_film->bottom_crop ());
+	stringstream os;
+	os << _film->width() << " x " << _film->height();
+	_original_size.set_text (os.str ());
+	stringstream fps;
+	fps << _film->frames_per_second ();
+	_frames_per_second.set_text (fps.str ());
 
 	_inhibit_view_to_model = false;
 }
