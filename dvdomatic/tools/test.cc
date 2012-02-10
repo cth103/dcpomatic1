@@ -2,7 +2,8 @@
 #include "film.h"
 #include "format.h"
 #include "film_writer.h"
-#include "progress.h"
+#include "demux_job.h"
+#include "job_manager.h"
 
 using namespace std;
 
@@ -10,13 +11,13 @@ int main ()
 {
 	Format::setup_formats ();
 
-	Film f ("/home/carl/Video/Ghostbusters/");
-	f.set_content ("DVD_VIDEO/VIDEO_TS/VTS_02_1.VOB");
-	f.set_top_crop (75);
-	f.set_bottom_crop (75);
-	f.set_format (Format::get_from_nickname ("Scope"));
-	Progress p;
-	f.update_thumbs_non_gui (&p);
+	Film f ("/home/carl/Video/Aurora/");
+	DemuxJob* j = new DemuxJob (&f);
+	JobManager::instance()->add (j);
+
+	while (1) {
+		sleep (1);
+	}
 	
 	return 0;
 }

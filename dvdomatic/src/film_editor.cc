@@ -1,10 +1,11 @@
 #include <gtkmm.h>
 #include <boost/thread.hpp>
 #include "film_editor.h"
-#include "progress_dialog.h"
 #include "format.h"
 #include "film.h"
 #include "progress.h"
+#include "demux_job.h"
+#include "job_manager.h"
 
 using namespace std;
 using namespace Gtk;
@@ -162,13 +163,11 @@ FilmEditor::bottom_crop_changed ()
 void
 FilmEditor::update_thumbs_clicked ()
 {
-	Progress progress;
-	boost::thread (boost::bind (&Film::update_thumbs_non_gui, _film, &progress));
+//	ThumbsJob* j = new ThumbsJob (_film);
+//	JobManager::instance()->add (j, boost::bind (&Film::update_thumbs_gui, _film));
 
-	ProgressDialog d (&progress, "Updating Thumbnails...");
-	d.spin ();
-
-	_film->update_thumbs_gui ();
+	/* XXX */
+//	_film->update_thumbs_gui ();
 }
 
 void
@@ -245,11 +244,6 @@ FilmEditor::format_changed ()
 void
 FilmEditor::demux_clicked ()
 {
-	Progress progress;
-	boost::thread (boost::bind (&Film::demux, _film, &progress));
-
-	ProgressDialog d (&progress, "Demuxing...");
-	d.spin ();
-
-	_film->update_thumbs_gui ();
+	DemuxJob* j = new DemuxJob (_film);
+	JobManager::instance()->add (j);
 }

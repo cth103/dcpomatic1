@@ -71,8 +71,6 @@ FilmWriter::decode ()
 		_progress->set_progress (float (video_frame()) / length_in_frames ());
 		/* Decoder will call our decode_{video,audio} methods */
 	}
-
-	_progress->set_done ();
 }
 
 void

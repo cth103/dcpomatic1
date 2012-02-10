@@ -228,7 +228,6 @@ void
 Film::update_thumbs_non_gui (Progress* progress)
 {
 	if (_content.empty ()) {
-		progress->set_done ();
 		return;
 	}
 	
@@ -267,7 +266,6 @@ Film::update_thumbs_non_gui (Progress* progress)
 
 	sort (_thumbs.begin(), _thumbs.end());
 	write_metadata ();
-	progress->set_done ();
 }
 
 void

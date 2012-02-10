@@ -4,7 +4,6 @@
 using namespace std;
 
 Progress::Progress ()
-	: _done (false)
 {
 	descend (1);
 }
@@ -15,16 +14,6 @@ Progress::set_progress (float p)
 	boost::mutex::scoped_lock (_mutex);
 	
 	_stack.back().normalised = p;
-}
-
-void
-Progress::set_done ()
-{
-	boost::mutex::scoped_lock (_mutex);
-	
-	if (_stack.size() == 1) {
-		_done = true;
-	}
 }
 
 /** @return fractional overall progress, or -1 if not known */
@@ -45,14 +34,6 @@ Progress::get_overall_progress () const
 	}
 	
 	return overall;
-}
-
-bool
-Progress::get_done () const
-{
-	boost::mutex::scoped_lock (_mutex);
-	
-	return _done;
 }
 
 void
