@@ -29,10 +29,6 @@ FilmWriter::FilmWriter (Film const * film, Progress* p, int width, int height, s
 	, _deinterleave_buffer_size (8192)
 	, _deinterleave_buffer (0)
 {
-	if (have_video_stream ()) {
-		_progress->set_total (length_in_frames ());
-	}
-
 	/* Create sound output files */
 	for (int i = 0; i < audio_channels(); ++i) {
 		stringstream wav_path;
@@ -72,11 +68,11 @@ void
 FilmWriter::decode ()
 {
 	while (pass () != PASS_DONE && (_nframes == 0 || video_frame() < _nframes)) {
-		_progress->set_progress (video_frame ());
+		_progress->set_progress (float (video_frame()) / length_in_frames ());
 		/* Decoder will call our decode_{video,audio} methods */
 	}
 
-	_progress->set_done (true);
+	_progress->set_done ();
 }
 
 void

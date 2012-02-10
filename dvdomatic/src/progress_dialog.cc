@@ -23,12 +23,7 @@ ProgressDialog::ProgressDialog (Progress* p, string const & t)
 void
 ProgressDialog::update ()
 {
-	float f = _progress->get_fraction ();
-	if (f < 0) {
-		_bar.pulse ();
-	} else {
-		_bar.set_fraction (f);
-	}
+	_bar.set_fraction (_progress->get_overall_progress ());
 }
 
 void

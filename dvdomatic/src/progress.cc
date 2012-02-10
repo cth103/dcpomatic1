@@ -1,51 +1,81 @@
 #include <iostream>
-#include <glib/gatomic.h>
 #include "progress.h"
 
 using namespace std;
 
 Progress::Progress ()
-	: _progress (0)
-	, _total (0)
+	: _done (false)
 {
-
+	descend (1);
 }
 
 void
-Progress::set_progress (int p)
+Progress::set_progress (float p)
 {
-	g_atomic_int_set (&_progress, p);
+	boost::mutex::scoped_lock (_mutex);
+	
+	_stack.back().normalised = p;
 }
 
 void
-Progress::set_total (int t)
+Progress::set_done ()
 {
-	g_atomic_int_set (&_total, t);
+	boost::mutex::scoped_lock (_mutex);
+	
+	if (_stack.size() == 1) {
+		_done = true;
+	}
 }
 
-void
-Progress::set_done (bool d)
-{
-	g_atomic_int_set (&_done, (d ? 1 : 0));
-}
-
-/** @return fractional progress, or -1 if not known */
+/** @return fractional overall progress, or -1 if not known */
 float
-Progress::get_fraction () const
+Progress::get_overall_progress () const
 {
-	int const t = g_atomic_int_get (&_total);
-	if (t == 0) {
-		return -1;
+	boost::mutex::scoped_lock (_mutex);
+
+	float overall = 0;
+	float factor = 1;
+	for (list<Level>::const_iterator i = _stack.begin(); i != _stack.end(); ++i) {
+		factor *= i->allocation;
+		overall += i->normalised * factor;
 	}
 
-	float p = float (g_atomic_int_get (&_progress)) / t;
-	p = max (0.0f, p);
-	p = min (1.0f, p);
-	return p;
+	if (overall > 1) {
+		overall = 1;
+	}
+	
+	return overall;
 }
 
 bool
 Progress::get_done () const
 {
-	return g_atomic_int_get (&_done) == 1;
+	boost::mutex::scoped_lock (_mutex);
+	
+	return _done;
+}
+
+void
+Progress::ascend ()
+{
+	boost::mutex::scoped_lock (_mutex);
+	
+	assert (!_stack.empty ());
+	float const a = _stack.back().allocation;
+	_stack.pop_back ();
+	_stack.back().normalised += a;
+}
+
+/** Descend down one level in terms of progress reporting; e.g. if
+ *  there is a task which is split up into N subtasks, each of which
+ *  report their progress from 0 to 100%, call descend() before executing
+ *  each subtask, and ascend() afterwards to ensure that overall progress
+ *  is reported correctly.
+ *
+ *  @param p Percentage (from 0 to 1) of the current task to allocate to the subtask.
+ */
+void
+Progress::descend (float a)
+{
+	_stack.push_back (Level (a));
 }

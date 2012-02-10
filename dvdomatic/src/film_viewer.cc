@@ -9,7 +9,9 @@ using namespace std;
 FilmViewer::FilmViewer (Film* f)
 	: _film (f)
 {
-	_vbox.pack_start (_image, true, true);
+	Gtk::ScrolledWindow* s = manage (new Gtk::ScrolledWindow);
+	s->add (_image);
+	_vbox.pack_start (*s, true, true);
 	_vbox.pack_start (_position_slider, false, false);
 	_vbox.set_border_width (12);
 
@@ -20,6 +22,7 @@ FilmViewer::FilmViewer (Film* f)
 	thumbs_changed ();
 
 	_film->Changed.connect (sigc::mem_fun (*this, &FilmViewer::film_changed));
+	_film->ThumbsChanged.connect (sigc::mem_fun (*this, &FilmViewer::thumbs_changed));
 }
 
 void

@@ -206,7 +206,7 @@ Film::set_content (string const & c)
 	_content = f;
 	Changed (Content);
 
-	Decoder d (this, 16, 16);
+	Decoder d (this, 1024, 1024);
 	_width = d.native_width ();
 	_height = d.native_height ();
 	_frames_per_second = d.frames_per_second ();
@@ -228,7 +228,7 @@ void
 Film::update_thumbs_non_gui (Progress* progress)
 {
 	if (_content.empty ()) {
-		progress->set_done (true);
+		progress->set_done ();
 		return;
 	}
 	
@@ -241,12 +241,14 @@ Film::update_thumbs_non_gui (Progress* progress)
 
 	/* This call will recreate the directory */
 	string const tdir = dir ("thumbs");
-	
+
+	progress->descend (1);
 	FilmWriter w (this, progress, _width, _height, tdir, tdir);
 	w.decode_audio (false);
 	w.apply_crop (false);
 	w.set_decode_video_period (w.length_in_frames() / number);
 	w.go ();
+	progress->ascend ();
 
 	for (directory_iterator i = directory_iterator (tdir); i != directory_iterator(); ++i) {
 
@@ -265,7 +267,7 @@ Film::update_thumbs_non_gui (Progress* progress)
 
 	sort (_thumbs.begin(), _thumbs.end());
 	write_metadata ();
-	progress->set_done (true);
+	progress->set_done ();
 }
 
 void
