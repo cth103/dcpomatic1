@@ -2,6 +2,7 @@
 #include <boost/filesystem.hpp>
 #include "film_viewer.h"
 #include "film_editor.h"
+#include "job_manager_view.h"
 #include "film.h"
 #include "format.h"
 
@@ -24,19 +25,28 @@ int main (int argc, char* argv[])
 
 	Film f (argv[1]);
 	
-	FilmViewer view (&f);
-	FilmEditor editor (&f);
+	FilmViewer film_view (&f);
+	FilmEditor film_editor (&f);
+	JobManagerView jobs_view;
 
 	Gtk::Window window;
 	window.set_title ("DVD-o-matic: Film Editor");
 
+	Gtk::VBox vbox;
+	vbox.set_spacing (12);
+	
 	Gtk::HBox hbox;
 	hbox.set_spacing (12);
-	hbox.pack_start (editor.get_widget (), false, false);
-	hbox.pack_start (view.get_widget ());
+	hbox.pack_start (film_editor.get_widget (), false, false);
+	hbox.pack_start (film_view.get_widget ());
+	vbox.pack_start (hbox, true, true);
 
-	window.add (hbox);
+	vbox.pack_start (jobs_view.get_widget(), false, false);
+
+	window.add (vbox);
 	window.show_all ();
+	
+	Glib::signal_timeout().connect (sigc::bind_return (sigc::mem_fun (jobs_view, &JobManagerView::update), true), 1000);
 	
 	Gtk::Main::run (window);
 

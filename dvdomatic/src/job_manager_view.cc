@@ -16,7 +16,8 @@ JobManagerView::JobManagerView ()
 	Gtk::TreeViewColumn* c = _view.get_column (n - 1);
 	c->add_attribute (r->property_value(), _columns.progress);
 	c->add_attribute (r->property_text(), _columns.resolution);
-	
+
+	_view.show_all ();
 	update ();
 }
 

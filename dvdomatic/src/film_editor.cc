@@ -245,7 +245,7 @@ FilmEditor::format_changed ()
 void
 FilmEditor::make_dcp_clicked ()
 {
-//	JobManager::instance()->add (new DemuxJob (_film));
-//	JobManager::instance()->add (new EncodeJob (_film));
+	JobManager::instance()->add (new DemuxJob (_film));
+	JobManager::instance()->add (new EncodeJob (_film));
 	JobManager::instance()->add (new MakeVideoMXFJob (_film));
 }
