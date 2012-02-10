@@ -75,6 +75,8 @@ FilmWriter::decode ()
 		_progress->set_progress (video_frame ());
 		/* Decoder will call our decode_{video,audio} methods */
 	}
+
+	_progress->set_done (true);
 }
 
 void

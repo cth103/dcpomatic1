@@ -125,7 +125,7 @@ Film::set_top_crop (int c)
 	}
 	
 	_top_crop = c;
-	CropChanged ();
+	Changed (TopCrop);
 }
 
 void
@@ -136,7 +136,7 @@ Film::set_bottom_crop (int c)
 	}
 	
 	_bottom_crop = c;
-	CropChanged ();
+	Changed (BottomCrop);
 }
 
 void
@@ -147,7 +147,7 @@ Film::set_left_crop (int c)
 	}
 	
 	_left_crop = c;
-	CropChanged ();
+	Changed (LeftCrop);
 }
 
 void
@@ -158,7 +158,7 @@ Film::set_right_crop (int c)
 	}
 	
 	_right_crop = c;
-	CropChanged ();
+	Changed (RightCrop);
 }
 
 void
@@ -181,12 +181,17 @@ Film::set_name (string const & n)
 	_name = n;
 }
 
+/** Set the content file for this film.
+ *  @param c New content file; if specified as an absolute path, the content should
+ *  be within the film's _directory; if specified as a relative path, the content
+ *  will be assumed to be within the film's _directory.
+ */
 void
 Film::set_content (string const & c)
 {
 	bool const absolute = boost::filesystem::path(c).has_root_directory ();
 	if (absolute && !boost::starts_with (c, _directory)) {
-		throw runtime_error ("Content is outside the film's directory");
+		throw runtime_error ("content is outside the film's directory");
 	}
 
 	string f = c;
@@ -199,11 +204,15 @@ Film::set_content (string const & c)
 	}
 	
 	_content = f;
+	Changed (Content);
 
-	Decoder d (this, 1, 1);
+	Decoder d (this, 16, 16);
 	_width = d.native_width ();
 	_height = d.native_height ();
 	_frames_per_second = d.frames_per_second ();
+
+	Changed (Size);
+	Changed (FramesPerSecond);
 }
 
 string
@@ -218,6 +227,11 @@ Film::dir (string const & d) const
 void
 Film::update_thumbs_non_gui (Progress* progress)
 {
+	if (_content.empty ()) {
+		progress->set_done (true);
+		return;
+	}
+	
 	_thumbs.clear ();
 	
 	using namespace boost::filesystem;
@@ -281,4 +295,11 @@ Film::thumb_file (int n) const
 	s.width (8);
 	s << setfill('0') << thumb_frame (n) << ".tiff";
 	return s.str ();
+}
+
+void
+Film::demux (Progress* p)
+{
+	FilmWriter w (this, p, _format->dci_width(), _format->dci_height(), dir ("tiffs"), dir ("wavs"));
+	w.go ();
 }

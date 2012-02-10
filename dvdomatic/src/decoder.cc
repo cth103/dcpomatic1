@@ -43,10 +43,6 @@ Decoder::Decoder (Film const * f, int w, int h)
 	, _decode_audio (true)
 	, _apply_crop (true)
 {
-	if (_film->format() == 0) {
-		throw runtime_error ("Film format unknown");
-	}
-
 	setup_general ();
 	setup_video ();
 	setup_audio ();
@@ -137,8 +133,8 @@ Decoder::setup_video ()
 	int post_filter_height = _video_codec_context->height;
 	
 	if (_apply_crop) {
-		post_filter_width -= _film->left_crop() - _film->right_crop();
-		post_filter_height -= _film->top_crop() - _film->bottom_crop();		
+		post_filter_width -= _film->left_crop() + _film->right_crop();
+		post_filter_height -= _film->top_crop() + _film->bottom_crop();		
 	}
 
 	_conversion_context = sws_getContext (

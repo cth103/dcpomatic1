@@ -73,8 +73,23 @@ public:
 	int thumb_frame (int) const;
 	std::string thumb_file (int) const;
 
+	void demux (Progress *);
+
 	sigc::signal0<void> ThumbsChanged;
-	sigc::signal0<void> CropChanged;
+	
+	enum Property {
+		Name,
+		LeftCrop,
+		RightCrop,
+		TopCrop,
+		BottomCrop,
+		Size,
+		Content,
+		FilmFormat,
+		FramesPerSecond
+	};
+
+	sigc::signal1<void, Property> Changed;
 	
 private:
 	void read_metadata ();

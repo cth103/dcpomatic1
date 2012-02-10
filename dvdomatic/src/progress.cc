@@ -1,5 +1,8 @@
+#include <iostream>
 #include <glib/gatomic.h>
 #include "progress.h"
+
+using namespace std;
 
 Progress::Progress ()
 	: _progress (0)
@@ -34,8 +37,11 @@ Progress::get_fraction () const
 	if (t == 0) {
 		return -1;
 	}
-	
-	return float (g_atomic_int_get (&_progress)) / t;
+
+	float p = float (g_atomic_int_get (&_progress)) / t;
+	p = max (0.0f, p);
+	p = min (1.0f, p);
+	return p;
 }
 
 bool

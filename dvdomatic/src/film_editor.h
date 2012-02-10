@@ -1,6 +1,5 @@
 #include <gtkmm.h>
-
-class Film;
+#include "film.h"
 
 class FilmEditor
 {
@@ -10,12 +9,22 @@ public:
 	Gtk::Widget& get_widget ();
 
 private:
-	void model_to_view ();
-	void view_to_model ();
+	/* Handle changes to the view */
+	void name_changed ();
+	void left_crop_changed ();
+	void right_crop_changed ();
+	void top_crop_changed ();
+	void bottom_crop_changed ();
+	void content_changed ();
+	void format_changed ();
 
-	void crop_changed ();
+	/* Handle changes to the model */
+	void film_changed (Film::Property);
+
+	/* Button clicks */
 	void update_thumbs_clicked ();
 	void save_metadata_clicked ();
+	void demux_clicked ();
 
 	Gtk::Label& left_aligned_label (std::string const &) const;
 
@@ -29,10 +38,10 @@ private:
 	Gtk::SpinButton _right_crop;
 	Gtk::SpinButton _top_crop;
 	Gtk::SpinButton _bottom_crop;
+	Gtk::Label _original_size;
+	Gtk::Label _frames_per_second;
 
 	Gtk::Button _update_thumbs_button;
 	Gtk::Button _save_metadata_button;
-
-	bool _inhibit_model_to_view;
-	bool _inhibit_view_to_model;
+	Gtk::Button _demux_button;
 };

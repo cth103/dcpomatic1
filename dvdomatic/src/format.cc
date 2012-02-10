@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <iomanip>
+#include <iostream>
 #include "format.h"
 
 using namespace std;
@@ -104,6 +105,7 @@ Format::get_as_index (Format* f)
 Format *
 Format::get_from_index (int i)
 {
+	cout << "gfi " << i << "\n";
 	assert (i <= int(_formats.size ()));
 	return _formats[i];
 }

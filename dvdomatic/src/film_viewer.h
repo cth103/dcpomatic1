@@ -1,5 +1,6 @@
 #include <gtkmm.h>
 #include "decoder.h"
+#include "film.h"
 
 class FilmViewer
 {
@@ -15,7 +16,7 @@ private:
 	std::string format_position_slider_value (double) const;
 	void load_thumbnail (int);
 	void thumbs_changed ();
-	void crop_changed ();
+	void film_changed (Film::Property);
 	void reload_current_thumbnail ();
 
 	Film* _film;
