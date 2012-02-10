@@ -27,7 +27,7 @@ int main (int argc, char* argv[])
 	window.add (hbox);
 	window.show_all ();
 
-	Glib::signal_idle().connect (sigc::bind_return (sigc::mem_fun (job_manager_view, &JobManagerView::update), true));
+	Glib::signal_timeout().connect (sigc::bind_return (sigc::mem_fun (job_manager_view, &JobManagerView::update), true), 1000);
 	
 	Gtk::Main::run (window);
 
