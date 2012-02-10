@@ -45,6 +45,7 @@ JobManager::scheduler ()
 
 				if (running == 0 && first_new) {
 					first_new->start ();
+					break;
 				}
 			}
 		}

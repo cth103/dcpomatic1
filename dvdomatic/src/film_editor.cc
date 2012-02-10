@@ -5,6 +5,7 @@
 #include "film.h"
 #include "progress.h"
 #include "demux_job.h"
+#include "encode_job.h"
 #include "thumbs_job.h"
 #include "job_manager.h"
 
@@ -15,7 +16,7 @@ FilmEditor::FilmEditor (Film* f)
 	: _film (f)
 	, _update_thumbs_button ("Update Thumbs")
 	, _save_metadata_button ("Save Metadata")
-	, _demux_button ("Demux")
+	, _make_dcp_button ("Make DCP")
 {
 	_vbox.set_border_width (12);
 	_vbox.set_spacing (12);
@@ -99,10 +100,10 @@ FilmEditor::FilmEditor (Film* f)
 	h->set_spacing (12);
 	h->pack_start (_update_thumbs_button, false, false);
 	h->pack_start (_save_metadata_button, false, false);
-	h->pack_start (_demux_button, false, false);
+	h->pack_start (_make_dcp_button, false, false);
 	_update_thumbs_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::update_thumbs_clicked));
 	_save_metadata_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::save_metadata_clicked));
-	_demux_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::demux_clicked));
+	_make_dcp_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked));
 	_vbox.pack_start (*h, false, false);
 
 	/* Connect to our film to find out when it changes */
@@ -241,8 +242,9 @@ FilmEditor::format_changed ()
 }
 
 void
-FilmEditor::demux_clicked ()
+FilmEditor::make_dcp_clicked ()
 {
-	DemuxJob* j = new DemuxJob (_film);
-	JobManager::instance()->add (j);
+	/* XXX: dependency */
+//	JobManager::instance()->add (new DemuxJob (_film));
+	JobManager::instance()->add (new EncodeJob (_film));
 }

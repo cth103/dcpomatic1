@@ -24,7 +24,7 @@ private:
 	/* Button clicks */
 	void update_thumbs_clicked ();
 	void save_metadata_clicked ();
-	void demux_clicked ();
+	void make_dcp_clicked ();
 
 	Gtk::Label& left_aligned_label (std::string const &) const;
 
@@ -43,5 +43,5 @@ private:
 
 	Gtk::Button _update_thumbs_button;
 	Gtk::Button _save_metadata_button;
-	Gtk::Button _demux_button;
+	Gtk::Button _make_dcp_button;
 };
