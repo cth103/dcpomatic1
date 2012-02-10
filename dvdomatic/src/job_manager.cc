@@ -31,11 +31,8 @@ JobManager::get () const
 void
 JobManager::scheduler ()
 {
-	cout << "JobManager::scheduler starts.\n";
-	
 	while (1) {
 		{
-			cout << "JobManager::scheduler wakes.\n";
 			boost::mutex::scoped_lock (_mutex);
 			int running = 0;
 			Job* first_new = 0;
@@ -46,8 +43,6 @@ JobManager::scheduler ()
 					first_new = *i;
 				}
 
-				cout << "\trunning=" << running << ", first new " << first_new << "\n";
-				
 				if (running == 0 && first_new) {
 					first_new->start ();
 				}

@@ -18,5 +18,6 @@ def build(bld):
 		 demux_job.cc
 		 job_manager.cc
 		 job_manager_view.cc
+		 thumbs_job.cc
 		 """
     obj.target = 'dvdomatic'

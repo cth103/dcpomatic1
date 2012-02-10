@@ -4,6 +4,7 @@
 
 using namespace std;
 
+/* Must be called in the GUI thread */
 JobManagerView::JobManagerView ()
 {
 	_store = Gtk::TreeStore::create (_columns);
@@ -19,6 +20,7 @@ JobManagerView::JobManagerView ()
 	update ();
 }
 
+/* Must be called in the GUI thread */
 void
 JobManagerView::update ()
 {
@@ -31,6 +33,7 @@ JobManagerView::update ()
 			if (r[_columns.job] == *i) {
 				break;
 			}
+			++j;
 		}
 
 		Gtk::TreeRow r;
@@ -43,11 +46,30 @@ JobManagerView::update ()
 			r = *j;
 		}
 
+		bool inform_of_finish = false;
+
+		/* Hack to work around our lack of cross-thread
+		   signalling; we tell the job to emit_finished()
+		   from here (the GUI thread).
+		*/
+		
 		r[_columns.progress] = (*i)->progress() * 100;
 		if ((*i)->finished_ok ()) {
-			r[_columns.resolution] = "OK";
+			string const c = r[_columns.resolution];
+			if (c != "OK") {
+				r[_columns.resolution] = "OK";
+				inform_of_finish = true;
+			}
 		} else if ((*i)->finished_in_error ()) {
-			r[_columns.resolution] = "Error";
+			string const c = r[_columns.resolution];
+			if (c != "Error") {
+				r[_columns.resolution] = "Error";
+				inform_of_finish = true;
+			}
+		}
+
+		if (inform_of_finish) {
+			(*i)->emit_finished ();
 		}
 	}
 }

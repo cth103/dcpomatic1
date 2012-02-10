@@ -5,6 +5,7 @@
 #include "film.h"
 #include "progress.h"
 #include "demux_job.h"
+#include "thumbs_job.h"
 #include "job_manager.h"
 
 using namespace std;
@@ -163,11 +164,9 @@ FilmEditor::bottom_crop_changed ()
 void
 FilmEditor::update_thumbs_clicked ()
 {
-//	ThumbsJob* j = new ThumbsJob (_film);
-//	JobManager::instance()->add (j, boost::bind (&Film::update_thumbs_gui, _film));
-
-	/* XXX */
-//	_film->update_thumbs_gui ();
+	ThumbsJob* j = new ThumbsJob (_film);
+	j->Finished.connect (sigc::mem_fun (_film, &Film::update_thumbs_gui));
+	JobManager::instance()->add (j);
 }
 
 void

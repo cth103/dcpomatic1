@@ -1,4 +1,8 @@
+#ifndef DVDOMATIC_JOB_H
+#define DVDOMATIC_JOB_H
+
 #include <string>
+#include <sigc++/sigc++.h>
 #include "progress.h"
 
 class Film;
@@ -18,6 +22,11 @@ public:
 	bool finished_ok () const;
 	bool finished_in_error () const;
 	float progress () const;
+
+	void emit_finished ();
+
+	/** Emitted from the GUI thread */
+	sigc::signal0<void> Finished;
 
 protected:
 
@@ -39,3 +48,5 @@ private:
 	mutable boost::mutex _state_mutex;
 	State _state;
 };
+
+#endif

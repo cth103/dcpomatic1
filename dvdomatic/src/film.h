@@ -73,8 +73,6 @@ public:
 	int thumb_frame (int) const;
 	std::string thumb_file (int) const;
 
-	void demux (Progress *);
-
 	sigc::signal0<void> ThumbsChanged;
 	
 	enum Property {

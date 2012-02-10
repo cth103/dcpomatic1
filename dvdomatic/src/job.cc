@@ -57,3 +57,14 @@ Job::progress () const
 {
 	return _progress.get_overall_progress ();
 }
+
+/** A hack to work around our lack of cross-thread
+ *  signalling; this emits Finished, and listeners
+ *  assume that it will be emitted in the GUI thread,
+ *  so this method must be called from the GUI thread.
+ */
+void
+Job::emit_finished ()
+{
+	Finished ();
+}

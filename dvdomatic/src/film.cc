@@ -297,9 +297,3 @@ Film::thumb_file (int n) const
 	return s.str ();
 }
 
-void
-Film::demux (Progress* p)
-{
-	FilmWriter w (this, p, _format->dci_width(), _format->dci_height(), dir ("tiffs"), dir ("wavs"));
-	w.go ();
-}
