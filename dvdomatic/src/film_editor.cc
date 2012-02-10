@@ -7,6 +7,7 @@
 #include "demux_job.h"
 #include "encode_job.h"
 #include "thumbs_job.h"
+#include "make_video_mxf_job.h"
 #include "job_manager.h"
 
 using namespace std;
@@ -244,7 +245,7 @@ FilmEditor::format_changed ()
 void
 FilmEditor::make_dcp_clicked ()
 {
-	/* XXX: dependency */
 //	JobManager::instance()->add (new DemuxJob (_film));
-	JobManager::instance()->add (new EncodeJob (_film));
+//	JobManager::instance()->add (new EncodeJob (_film));
+	JobManager::instance()->add (new MakeVideoMXFJob (_film));
 }

@@ -1,3 +1,6 @@
+#ifndef DVDOMATIC_OPENDCP_JOB_H
+#define DVDOMATIC_OPENDCP_JOB_H
+
 #include "job.h"
 
 class OpenDCPJob : public Job
@@ -9,4 +12,4 @@ protected:
 	void command (std::string const &);
 };
 
-	
+#endif

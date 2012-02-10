@@ -1,4 +1,5 @@
 #include "make_video_mxf_job.h"
+#include "film.h"
 
 using namespace std;
 
@@ -21,5 +22,5 @@ MakeVideoMXFJob::run ()
 {
 	stringstream c;
 	c << "opendcp_mxf -r " << _film->frames_per_second() << " -i " << _film->dir ("j2c") << " -o " << _film->file ("video.mxf");
-	command (c);
+	command (c.str ());
 }

@@ -21,5 +21,6 @@ def build(bld):
 		 thumbs_job.cc
 		 encode_job.cc
 		 opendcp_job.cc
+		 make_video_mxf_job.cc
 		 """
     obj.target = 'dvdomatic'
