@@ -224,6 +224,14 @@ Film::dir (string const & d) const
 	return s.str ();
 }
 
+string
+Film::file (string const & f) const
+{
+	stringstream s;
+	s << _directory << "/" << f;
+	return s.str ();
+}
+
 void
 Film::update_thumbs_non_gui (Progress* progress)
 {

@@ -20,5 +20,6 @@ def build(bld):
 		 job_manager_view.cc
 		 thumbs_job.cc
 		 encode_job.cc
+		 opendcp_job.cc
 		 """
     obj.target = 'dvdomatic'
