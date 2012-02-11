@@ -23,5 +23,6 @@ def build(bld):
 		 make_dcp_job.cc
 		 content_type.cc
 		 j2k_wav_transcoder.cc
+		 image.cc
 		 """
     obj.target = 'dvdomatic'

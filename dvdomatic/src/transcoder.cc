@@ -404,8 +404,12 @@ Transcoder::native_height () const
 void
 Transcoder::go ()
 {
+	process_begin ();
+		       
 	while (pass () != PASS_DONE && (_nframes == 0 || video_frame() < _nframes)) {
 		_progress->set_progress (float (video_frame()) / length_in_frames ());
 	}
+
+	process_end ();
 }
 

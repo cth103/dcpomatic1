@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Taken from code Copyright (C) 2010-2011 Terrence Meiczinger
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,38 +18,21 @@
 
 */
 
-#include <list>
-#include <boost/thread/condition.hpp>
-#include <boost/thread/mutex.hpp>
-#include <sndfile.h>
-#include "transcoder.h"
-#include "image.h"
+#include <openjpeg.h>
 
-class Progress;
+class Film;
 
-class J2KWAVTranscoder : public Transcoder
+class Image
 {
 public:
-	J2KWAVTranscoder (Film *, Progress *, int, int);
-	~J2KWAVTranscoder ();
-
+	Image (Film const *, uint8_t *, int, int, int);
+	~Image ();
+	
+	void encode ();
+	
 private:
-
-	void process_begin ();
-	void process_video (uint8_t *, int);
-	void process_audio (uint8_t *, int, int);
-	void process_end ();
-
-	void encoder_thread ();
-
-	std::vector<SNDFILE*> _sound_files;
-	int _deinterleave_buffer_size;
-	uint8_t* _deinterleave_buffer;
-
-	bool _worker_threads_should_quit;
-	std::list<boost::shared_ptr<Image> > _queue;
-	std::list<boost::thread *> _worker_threads;
-	int _num_worker_threads;
-	boost::mutex _worker_mutex;
-	boost::condition _worker_condition;
+	Film const * _film;
+	int _frame;
+	opj_image_cmptparm_t _cmptparm[3];
+	opj_image* _image;
 };
