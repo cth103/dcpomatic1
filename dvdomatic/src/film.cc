@@ -268,6 +268,7 @@ void
 Film::update_thumbs_non_gui (Progress* progress)
 {
 	if (_content.empty ()) {
+		progress->set_progress (1);
 		return;
 	}
 	
