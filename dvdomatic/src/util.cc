@@ -24,6 +24,14 @@
 
 using namespace std;
 
+/** Convert some number of seconds to a string representation
+ *  in hours, minutes and seconds.
+ *
+ *  @param s Seconds.
+ *  @return String of the form H:M:S (where H is hours, M
+ *  is minutes and S is seconds).
+ */
+ 
 string
 seconds_to_hms (int s)
 {

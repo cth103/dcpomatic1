@@ -143,17 +143,28 @@ private:
 	std::string _dcp_long_name;
 	/** DCP pretty name (e.g. The Blues Brothers) */
 	std::string _dcp_pretty_name;
+	/** The type of content that this Film represents (feature, trailer etc.) */
 	ContentType* _dcp_content_type;
+	/** The format to present this Film in (flat, scope, etc.) */
 	Format* _format;
+	/** Number of pixels to crop from the left-hand side of the original picture */
 	int _left_crop;
+	/** Number of pixels to crop from the right-hand side of the original picture */
 	int _right_crop;
+	/** Number of pixels to crop from the top of the original picture */
 	int _top_crop;
+	/** Number of pixels to crop from the bottom of the original picture */
 	int _bottom_crop;
 
 	/* Data which is cached to speed things up */
+
+	/* Vector of frame indices for each of our `thumbnails */
 	std::vector<int> _thumbs;
+	/* Width, in pixels, of the source */
 	int _width;
+	/* Height, in pixels, of the source */
 	int _height;
+	/* Frames per second of the source */
 	float _frames_per_second;
 };
 

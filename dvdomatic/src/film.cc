@@ -32,6 +32,12 @@
 
 using namespace std;
 
+/** Construct a Film object in a given directory, reading any metadat
+ *  file that exists in that directory.
+ *
+ *  @param d Film directory.
+ */
+
 Film::Film (string const & d)
 	: _directory (d)
 	, _dcp_content_type (0)
@@ -46,6 +52,10 @@ Film::Film (string const & d)
 {
 	read_metadata ();
 }
+
+/** Read the `metadata' file inside this Film's directory, and fill the
+ *  object's data with its content.
+ */
 
 void
 Film::read_metadata ()
