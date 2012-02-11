@@ -114,10 +114,8 @@ J2KWAVTranscoder::process_video (uint8_t* rgb, int line_size)
 
 	/* Encode */
 
-	/* XXX: bandwidth */
 	/* Maximum DCI compliant bitrate for JPEG2000 */
 	int const bw = 250000000;
-//	int const bw = 125 * 1000000;
 
 	/* Set the max image and component sizes based on frame_rate */
 	int const max_cs_len = ((float) bw) / 8 / _film->frames_per_second ();
