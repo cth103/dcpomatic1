@@ -132,6 +132,7 @@ private:
 	void read_metadata ();
 	std::string metadata_file () const;
 	void update_dimensions ();
+	std::string thumb_file_for_frame (int) const;
 	
 	/** Directory containing the film metadata */
 	std::string _directory;

@@ -104,7 +104,11 @@ Film::read_metadata ()
 
 		/* Cached stuff */
 		if (k == "thumb") {
-			_thumbs.push_back (atoi (v.c_str ()));
+			int const n = atoi (v.c_str ());
+			/* Only add it to the list if it still exists */
+			if (boost::filesystem::exists (thumb_file_for_frame (n))) {
+				_thumbs.push_back (n);
+			}
 		} else if (k == "width") {
 			_width = atoi (v.c_str ());
 		} else if (k == "height") {
@@ -145,7 +149,9 @@ Film::write_metadata () const
 	f << "frames_per_second " << _frames_per_second << "\n";
 	f << "dcp_long_name " << _dcp_long_name << "\n";
 	f << "dcp_pretty_name " << _dcp_pretty_name << "\n";
-	f << "dcp_content_type " << _dcp_content_type->pretty_name () << "\n";
+	if (_dcp_content_type) {
+		f << "dcp_content_type " << _dcp_content_type->pretty_name () << "\n";
+	}
 }
 
 string
@@ -360,9 +366,15 @@ Film::thumb_frame (int n) const
 string
 Film::thumb_file (int n) const
 {
+	return thumb_file_for_frame (thumb_frame (n));
+}
+
+string
+Film::thumb_file_for_frame (int n) const
+{
 	stringstream s;
 	s << dir("thumbs") << "/";
 	s.width (8);
-	s << setfill('0') << thumb_frame (n) << ".tiff";
+	s << setfill('0') << n << ".tiff";
 	return s.str ();
 }
