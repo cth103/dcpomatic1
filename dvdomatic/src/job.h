@@ -23,6 +23,8 @@ public:
 	bool finished_in_error () const;
 	float progress () const;
 
+	int elapsed_time () const;
+
 	void emit_finished ();
 
 	/** Emitted from the GUI thread */
@@ -47,6 +49,7 @@ private:
 	
 	mutable boost::mutex _state_mutex;
 	State _state;
+	time_t _start_time;
 };
 
 #endif

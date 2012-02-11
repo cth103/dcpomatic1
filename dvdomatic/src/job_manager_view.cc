@@ -1,6 +1,7 @@
 #include "job_manager_view.h"
 #include "job_manager.h"
 #include "job.h"
+#include "util.h"
 
 using namespace std;
 
@@ -57,13 +58,13 @@ JobManagerView::update ()
 		r[_columns.progress] = (*i)->progress() * 100;
 		if ((*i)->finished_ok ()) {
 			string const c = r[_columns.resolution];
-			if (c != "OK") {
-				r[_columns.resolution] = "OK";
+			if (c.substr (0, 2) != "OK") {
+				r[_columns.resolution] = "OK (running for " + seconds_to_hms ((*i)->elapsed_time ()) + ")";
 				inform_of_finish = true;
 			}
 		} else if ((*i)->finished_in_error ()) {
 			string const c = r[_columns.resolution];
-			if (c != "Error") {
+			if (c.substr (0, 5) != "Error") {
 				r[_columns.resolution] = "Error";
 				inform_of_finish = true;
 			}

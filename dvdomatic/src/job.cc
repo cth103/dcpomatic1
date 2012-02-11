@@ -5,6 +5,7 @@ using namespace std;
 
 Job::Job (Film* f)
 	: _film (f)
+	, _start_time (0)
 {
 
 }
@@ -14,6 +15,7 @@ void
 Job::start ()
 {
 	set_state (RUNNING);
+	_start_time = time (0);
 	boost::thread (boost::bind (&Job::run, this));
 }
 
@@ -67,4 +69,14 @@ void
 Job::emit_finished ()
 {
 	Finished ();
+}
+
+int
+Job::elapsed_time () const
+{
+	if (_start_time == 0) {
+		return 0;
+	}
+	
+	return time (0) - _start_time;
 }
