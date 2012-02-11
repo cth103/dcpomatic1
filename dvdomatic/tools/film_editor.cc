@@ -32,7 +32,7 @@ int main (int argc, char* argv[])
 	JobManagerView jobs_view;
 
 	Gtk::Window window;
-	window.set_title ("DVD-o-matic: Film Editor");
+	window.set_title ("DVD-o-matic");
 
 	Gtk::VBox vbox;
 	vbox.set_spacing (12);
