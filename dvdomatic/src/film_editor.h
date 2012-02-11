@@ -17,6 +17,9 @@ private:
 	void bottom_crop_changed ();
 	void content_changed ();
 	void format_changed ();
+	void dcp_long_name_changed ();
+	void dcp_pretty_name_changed ();
+	void dcp_content_type_changed ();
 
 	/* Handle changes to the model */
 	void film_changed (Film::Property);
@@ -38,6 +41,9 @@ private:
 	Gtk::SpinButton _right_crop;
 	Gtk::SpinButton _top_crop;
 	Gtk::SpinButton _bottom_crop;
+	Gtk::Entry _dcp_long_name;
+	Gtk::Entry _dcp_pretty_name;
+	Gtk::ComboBoxText _dcp_content_type;
 	Gtk::Label _original_size;
 	Gtk::Label _frames_per_second;
 

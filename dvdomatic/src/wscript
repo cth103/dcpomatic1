@@ -11,7 +11,6 @@ def build(bld):
 		 progress.cc
 		 decoder.cc
 		 film_viewer.cc
-		 dcp_name.cc
 		 film_editor.cc
 		 util.cc
 		 job.cc
@@ -21,6 +20,8 @@ def build(bld):
 		 thumbs_job.cc
 		 encode_job.cc
 		 opendcp_job.cc
-		 make_video_mxf_job.cc
+		 make_mxf_job.cc
+		 make_dcp_job.cc
+		 content_type.cc
 		 """
     obj.target = 'dvdomatic'

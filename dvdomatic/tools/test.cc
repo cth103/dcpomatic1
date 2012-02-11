@@ -10,6 +10,7 @@ using namespace std;
 int main ()
 {
 	Format::setup_formats ();
+	ContentType::setup_content_types ();
 
 	Film f ("/home/carl/Video/Aurora/");
 	DemuxJob* j = new DemuxJob (&f);

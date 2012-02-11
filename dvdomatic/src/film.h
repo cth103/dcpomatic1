@@ -5,6 +5,7 @@
 #include <vector>
 #include <inttypes.h>
 #include <sigc++/signal.h>
+#include "content_type.h"
 
 class Format;
 class Progress;
@@ -46,6 +47,18 @@ public:
 		return _format;
 	}
 
+	std::string dcp_long_name () const {
+		return _dcp_long_name;
+	}
+
+	std::string dcp_pretty_name () const {
+		return _dcp_pretty_name;
+	}
+
+	ContentType * dcp_content_type () {
+		return _dcp_content_type;
+	}
+	
 	void set_name (std::string const &);
 	void set_content (std::string const &);
 	std::string dir (std::string const &) const;
@@ -55,6 +68,9 @@ public:
 	void set_left_crop (int);
 	void set_right_crop (int);
 	void set_format (Format *);
+	void set_dcp_long_name (std::string const &);
+	void set_dcp_pretty_name (std::string const &);
+	void set_dcp_content_type (ContentType *);
 
 	int width () const {
 		return _width;
@@ -85,7 +101,10 @@ public:
 		Size,
 		Content,
 		FilmFormat,
-		FramesPerSecond
+		FramesPerSecond,
+		DCPLongName,
+		DCPPrettyName,
+		ContentTypeChange
 	};
 
 	sigc::signal1<void, Property> Changed;
@@ -97,9 +116,15 @@ private:
 	
 	/** Directory containing the film metadata */
 	std::string _directory;
+	/** Name for DVD-o-matic */
 	std::string _name;
 	/** File containing content (relative to _directory) */
 	std::string _content;
+	/** DCP long name (e.g. BLUES-BROTHERS_FTR_F_EN-XX ...) */
+	std::string _dcp_long_name;
+	/** DCP pretty name (e.g. The Blues Brothers) */
+	std::string _dcp_pretty_name;
+	ContentType* _dcp_content_type;
 	Format* _format;
 	int _left_crop;
 	int _right_crop;

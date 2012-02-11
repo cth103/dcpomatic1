@@ -7,6 +7,8 @@
 int main (int argc, char* argv[])
 {
 	Format::setup_formats ();
+	ContentType::setup_content_types ();
+	
 	Gtk::Main kit (argc, argv);
 
 	Film f ("/home/carl/Video/Aurora");

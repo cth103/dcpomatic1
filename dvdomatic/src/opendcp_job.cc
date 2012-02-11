@@ -36,7 +36,7 @@ OpenDCPJob::command (string const & c)
 	}
 
 	int const r = pclose (f);
-	if (r == -1) {
+	if (WEXITSTATUS (r) != 0) {
 		set_state (FINISHED_ERROR);
 	} else {
 		set_state (FINISHED_OK);

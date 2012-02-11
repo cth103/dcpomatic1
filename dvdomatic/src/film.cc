@@ -15,6 +15,7 @@ using namespace std;
 
 Film::Film (string const & d)
 	: _directory (d)
+	, _dcp_content_type (0)
 	, _format (0)
 	, _left_crop (0)
 	, _right_crop (0)
@@ -64,6 +65,12 @@ Film::read_metadata ()
 			_left_crop = atoi (v.c_str ());
 		} else if (k == "right_crop") {
 			_right_crop = atoi (v.c_str ());
+		} else if (k == "dcp_long_name") {
+			_dcp_long_name = v;
+		} else if (k == "dcp_pretty_name") {
+			_dcp_pretty_name = v;
+		} else if (k == "dcp_content_type") {
+			_dcp_content_type = ContentType::get_from_pretty_name (v);
 		}
 
 		/* Cached stuff */
@@ -107,6 +114,9 @@ Film::write_metadata () const
 	f << "width " << _width << "\n";
 	f << "height " << _height << "\n";
 	f << "frames_per_second " << _frames_per_second << "\n";
+	f << "dcp_long_name " << _dcp_long_name << "\n";
+	f << "dcp_pretty_name " << _dcp_pretty_name << "\n";
+	f << "dcp_content_type " << _dcp_content_type->pretty_name () << "\n";
 }
 
 string
@@ -165,6 +175,28 @@ void
 Film::set_format (Format* f)
 {
 	_format = f;
+	Changed (FilmFormat);
+}
+
+void
+Film::set_dcp_long_name (string const & n)
+{
+	_dcp_long_name = n;
+	Changed (DCPLongName);
+}
+
+void
+Film::set_dcp_pretty_name (string const & n)
+{
+	_dcp_pretty_name = n;
+	Changed (DCPPrettyName);
+}
+
+void
+Film::set_dcp_content_type (ContentType* t)
+{
+	_dcp_content_type = t;
+	Changed (ContentTypeChange);
 }
 
 string
@@ -304,4 +336,3 @@ Film::thumb_file (int n) const
 	s << setfill('0') << thumb_frame (n) << ".tiff";
 	return s.str ();
 }
-

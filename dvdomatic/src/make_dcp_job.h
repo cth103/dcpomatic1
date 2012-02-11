@@ -1,9 +1,9 @@
 #include "opendcp_job.h"
 
-class MakeVideoMXFJob : public OpenDCPJob
+class MakeDCPJob : public OpenDCPJob
 {
 public:
-	MakeVideoMXFJob (Film *);
+	MakeDCPJob (Film *);
 
 	std::string name () const;
 	void run ();

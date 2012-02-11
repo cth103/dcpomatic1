@@ -11,6 +11,8 @@ using namespace std;
 int main (int argc, char* argv[])
 {
 	Format::setup_formats ();
+	ContentType::setup_content_types ();
+	
 	Gtk::Main kit (argc, argv);
 
 	if (argc < 2) {
@@ -47,7 +49,8 @@ int main (int argc, char* argv[])
 	window.show_all ();
 	
 	Glib::signal_timeout().connect (sigc::bind_return (sigc::mem_fun (jobs_view, &JobManagerView::update), true), 1000);
-	
+
+	window.maximize ();
 	Gtk::Main::run (window);
 
 	return 0;

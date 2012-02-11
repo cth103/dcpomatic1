@@ -7,7 +7,8 @@
 #include "demux_job.h"
 #include "encode_job.h"
 #include "thumbs_job.h"
-#include "make_video_mxf_job.h"
+#include "make_mxf_job.h"
+#include "make_dcp_job.h"
 #include "job_manager.h"
 
 using namespace std;
@@ -28,6 +29,8 @@ FilmEditor::FilmEditor (Film* f)
 	t->set_col_spacings (12);
 
 	/* Set up our widgets and connect to them to find out when they change */
+
+	_directory.set_alignment (0, 0.5);
 
 	vector<Format*> fmt = Format::get_all ();
 	for (vector<Format*>::iterator i = fmt.begin(); i != fmt.end(); ++i) {
@@ -55,6 +58,15 @@ FilmEditor::FilmEditor (Film* f)
 	_bottom_crop.set_increments (1, 16);
 	_bottom_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::bottom_crop_changed));
 
+	vector<ContentType*> const ct = ContentType::get_all ();
+	for (vector<ContentType*>::const_iterator i = ct.begin(); i != ct.end(); ++i) {
+		_dcp_content_type.append_text ((*i)->pretty_name ());
+	}
+
+	_dcp_long_name.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_long_name_changed));
+	_dcp_pretty_name.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_pretty_name_changed));
+	_dcp_content_type.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_content_type_changed));
+
 	_original_size.set_alignment (0, 0.5);
 	_frames_per_second.set_alignment (0, 0.5);
 
@@ -67,11 +79,26 @@ FilmEditor::FilmEditor (Film* f)
 	t->attach (left_aligned_label ("Name"), 0, 1, n, n + 1);
 	t->attach (_name, 1, 2, n, n + 1);
 	++n;
+	t->attach (left_aligned_label ("DCP Long Name"), 0, 1, n, n + 1);
+	t->attach (_dcp_long_name, 1, 2, n, n + 1);
+	++n;
+
+	Label* hint = manage (new Label ("<small>e.g. THE-BLUES-BROS_FTR_F_EN-XX_EN-GB_51-EN_2K_ST_20120101_FAC_2D_OV</small>"));
+	hint->set_use_markup ();
+	t->attach (*hint, 0, 2, n, n + 1);
+	++n;
+	
+	t->attach (left_aligned_label ("DCP Pretty Name"), 0, 1, n, n + 1);
+	t->attach (_dcp_pretty_name, 1, 2, n, n + 1);
+	++n;
 	t->attach (left_aligned_label ("Format"), 0, 1, n, n + 1);
 	t->attach (_format, 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Content"), 0, 1, n, n + 1);
 	t->attach (_content, 1, 2, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("Content Type"), 0, 1, n, n + 1);
+	t->attach (_dcp_content_type, 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Left Crop"), 0, 1, n, n + 1);
 	t->attach (_left_crop, 1, 2, n, n + 1);
@@ -123,6 +150,9 @@ FilmEditor::FilmEditor (Film* f)
 	film_changed (Film::Size);
 	film_changed (Film::Content);
 	film_changed (Film::FramesPerSecond);
+	film_changed (Film::DCPLongName);
+	film_changed (Film::DCPPrettyName);
+	film_changed (Film::ContentTypeChange);
 }
 
 Widget&
@@ -233,6 +263,15 @@ FilmEditor::film_changed (Film::Property p)
 		s << _film->width() << " x " << _film->height();
 		_original_size.set_text (s.str ());
 		break;
+	case Film::DCPLongName:
+		_dcp_long_name.set_text (_film->dcp_long_name ());
+		break;
+	case Film::DCPPrettyName:
+		_dcp_pretty_name.set_text (_film->dcp_pretty_name ());
+		break;
+	case Film::ContentTypeChange:
+		_dcp_content_type.set_active (ContentType::get_as_index (_film->dcp_content_type ()));
+		break;
 	}
 }
 
@@ -247,5 +286,25 @@ FilmEditor::make_dcp_clicked ()
 {
 	JobManager::instance()->add (new DemuxJob (_film));
 	JobManager::instance()->add (new EncodeJob (_film));
-	JobManager::instance()->add (new MakeVideoMXFJob (_film));
+	JobManager::instance()->add (new MakeMXFJob (_film, MakeMXFJob::VIDEO));
+	JobManager::instance()->add (new MakeMXFJob (_film, MakeMXFJob::AUDIO));
+	JobManager::instance()->add (new MakeDCPJob (_film));
+}
+
+void
+FilmEditor::dcp_content_type_changed ()
+{
+	_film->set_dcp_content_type (ContentType::get_from_index (_dcp_content_type.get_active_row_number ()));
+}
+
+void
+FilmEditor::dcp_long_name_changed ()
+{
+	_film->set_dcp_long_name (_dcp_long_name.get_text ());
+}
+
+void
+FilmEditor::dcp_pretty_name_changed ()
+{
+	_film->set_dcp_pretty_name (_dcp_pretty_name.get_text ());
 }
