@@ -6,7 +6,7 @@ using namespace std;
 ThumbsJob::ThumbsJob (Film* f)
 	: Job (f)
 {
-	cout << "new ThumbsJob for " << f->name() << "\n";
+	
 }
 
 string
