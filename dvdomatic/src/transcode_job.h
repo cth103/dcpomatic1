@@ -17,14 +17,13 @@
 
 */
 
-#include "opendcp_job.h"
+#include "job.h"
 
-class EncodeJob : public OpenDCPJob
+class TranscodeJob : public Job
 {
 public:
-	EncodeJob (Film *);
+	TranscodeJob (Film *);
 
 	std::string name () const;
 	void run ();
 };
-

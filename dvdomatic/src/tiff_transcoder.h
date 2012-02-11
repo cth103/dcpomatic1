@@ -17,13 +17,23 @@
 
 */
 
-#include "job.h"
+#include <string>
+#include <sndfile.h>
+#include "transcoder.h"
 
-class DemuxJob : public Job
+class Film;
+class Progress;
+
+class TIFFTranscoder : public Transcoder
 {
 public:
-	DemuxJob (Film *);
+	TIFFTranscoder (Film const *, Progress *, int, int, std::string const &, int N = 0);
+	~TIFFTranscoder ();
 
-	std::string name () const;
-	void run ();
+private:
+
+	void process_video (uint8_t *, int);
+	void process_audio (uint8_t *, int, int) {}
+
+	std::string _tiffs;
 };

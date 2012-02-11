@@ -28,7 +28,7 @@
 #include "film.h"
 #include "format.h"
 #include "progress.h"
-#include "film_writer.h"
+#include "tiff_transcoder.h"
 
 using namespace std;
 
@@ -267,7 +267,8 @@ Film::set_content (string const & c)
 	_content = f;
 	Changed (Content);
 
-	Decoder d (this, 1024, 1024);
+	Progress p;
+	Transcoder d (this, &p, 1024, 1024);
 	_width = d.native_width ();
 	_height = d.native_height ();
 	_frames_per_second = d.frames_per_second ();
@@ -312,8 +313,7 @@ Film::update_thumbs_non_gui (Progress* progress)
 	string const tdir = dir ("thumbs");
 
 	progress->descend (1);
-	FilmWriter w (this, progress, _width, _height, tdir, tdir);
-	w.decode_audio (false);
+	TIFFTranscoder w (this, progress, _width, _height, tdir);
 	w.apply_crop (false);
 	w.set_decode_video_period (w.length_in_frames() / number);
 	w.go ();

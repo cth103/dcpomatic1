@@ -19,10 +19,10 @@
 
 #include <vector>
 #include <string>
+#include <stdint.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
 }
-#include <sndfile.h>
 
 struct AVFilterGraph;
 struct AVCodecContext;
@@ -34,11 +34,11 @@ struct AVCodec;
 class Film;
 class Progress;
 
-class Decoder
+class Transcoder
 {
 public:
-	Decoder (Film const *, int, int);
-	~Decoder ();
+	Transcoder (Film const *, Progress *, int, int, int N = 0);
+	~Transcoder ();
 
 	void decode_video (bool);
 	void set_decode_video_period (int);
@@ -49,6 +49,8 @@ public:
 	float frames_per_second () const;
 	int native_width () const;
 	int native_height () const;
+
+	void go ();
 	
 protected:
 
@@ -93,10 +95,10 @@ private:
 	void setup_video ();
 	void setup_video_filters (std::string const &);
 	void setup_audio ();
-	void decode_video ();
-	void decode_audio ();
-	void write_tiff (std::string const &, int, uint8_t *, int, int) const;
 
+	Progress* _progress;
+	int _nframes;
+	
 	int _out_width;
 	int _out_height;
 	

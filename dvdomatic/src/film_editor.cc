@@ -23,8 +23,7 @@
 #include "format.h"
 #include "film.h"
 #include "progress.h"
-#include "demux_job.h"
-#include "encode_job.h"
+#include "transcode_job.h"
 #include "thumbs_job.h"
 #include "make_mxf_job.h"
 #include "make_dcp_job.h"
@@ -303,8 +302,7 @@ FilmEditor::format_changed ()
 void
 FilmEditor::make_dcp_clicked ()
 {
-	JobManager::instance()->add (new DemuxJob (_film));
-	JobManager::instance()->add (new EncodeJob (_film));
+	JobManager::instance()->add (new TranscodeJob (_film));
 	JobManager::instance()->add (new MakeMXFJob (_film, MakeMXFJob::VIDEO));
 	JobManager::instance()->add (new MakeMXFJob (_film, MakeMXFJob::AUDIO));
 	JobManager::instance()->add (new MakeDCPJob (_film));

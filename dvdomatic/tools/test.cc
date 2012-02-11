@@ -1,8 +1,8 @@
 #include <iostream>
 #include "film.h"
 #include "format.h"
-#include "film_writer.h"
-#include "demux_job.h"
+#include "tiff_transcoder.h"
+#include "transcode_job.h"
 #include "job_manager.h"
 
 using namespace std;
@@ -13,7 +13,7 @@ int main ()
 	ContentType::setup_content_types ();
 
 	Film f ("/home/carl/Video/Aurora/");
-	DemuxJob* j = new DemuxJob (&f);
+	TranscodeJob* j = new TranscodeJob (&f);
 	JobManager::instance()->add (j);
 
 	while (1) {

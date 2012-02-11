@@ -17,29 +17,40 @@
 
 */
 
-#include "encode_job.h"
+#include <stdexcept>
+#include "transcode_job.h"
+#include "j2k_wav_transcoder.h"
 #include "film.h"
+#include "format.h"
 
 using namespace std;
 
-EncodeJob::EncodeJob (Film* f)
-	: OpenDCPJob (f)
+TranscodeJob::TranscodeJob (Film* f)
+	: Job (f)
 {
 
 }
 
 string
-EncodeJob::name () const
+TranscodeJob::name () const
 {
 	stringstream s;
-	s << "Encode " << _film->name();
+	s << "Transcode " << _film->name();
 	return s.str ();
 }
 
 void
-EncodeJob::run ()
+TranscodeJob::run ()
 {
-	stringstream c;
-	c << "opendcp_j2k -r " << _film->frames_per_second() << " -i " << _film->dir ("tiffs") << " -o " << _film->dir ("j2c");
-	command (c.str ());
+	try {
+
+		J2KWAVTranscoder w (_film, &_progress, _film->format()->dci_width(), _film->format()->dci_height());
+		w.go ();
+		set_state (FINISHED_OK);
+
+	} catch (runtime_error& e) {
+
+		set_state (FINISHED_ERROR);
+
+	}
 }

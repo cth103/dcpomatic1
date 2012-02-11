@@ -32,15 +32,17 @@ extern "C" {
 #include <libavfilter/buffersink.h>
 }
 #include <sndfile.h>
-#include "film_writer.h"
 #include "film.h"
 #include "format.h"
 #include "progress.h"
+#include "transcoder.h"
 
 using namespace std;
 
-Decoder::Decoder (Film const * f, int w, int h)
+Transcoder::Transcoder (Film const * f, Progress* p, int w, int h, int N)
 	: _film (f)
+	, _progress (p)
+	, _nframes (N)
 	, _out_width (w)
 	, _out_height (h)
 	, _format_context (0)
@@ -67,7 +69,7 @@ Decoder::Decoder (Film const * f, int w, int h)
 	setup_audio ();
 }
 
-Decoder::~Decoder ()
+Transcoder::~Transcoder ()
 {
 	sws_freeContext (_conversion_context);
 
@@ -87,7 +89,7 @@ Decoder::~Decoder ()
 }	
 
 void
-Decoder::setup_general ()
+Transcoder::setup_general ()
 {
 	int r;
 	
@@ -130,7 +132,7 @@ Decoder::setup_general ()
 }
 
 void
-Decoder::setup_video ()
+Transcoder::setup_video ()
 {
 	_video_codec_context = _format_context->streams[_video_stream]->codec;
 	_video_codec = avcodec_find_decoder (_video_codec_context->codec_id);
@@ -174,7 +176,7 @@ Decoder::setup_video ()
 }
 
 void
-Decoder::setup_audio ()
+Transcoder::setup_audio ()
 {
 	_audio_codec_context = _format_context->streams[_audio_stream]->codec;
 	_audio_codec = avcodec_find_decoder (_audio_codec_context->codec_id);
@@ -188,8 +190,8 @@ Decoder::setup_audio ()
 	}
 }
 
-Decoder::PassResult
-Decoder::pass ()
+Transcoder::PassResult
+Transcoder::pass ()
 {
 	int r = av_read_frame (_format_context, &_packet);
 	if (r < 0) {
@@ -262,7 +264,7 @@ Decoder::pass ()
 }
 
 void
-Decoder::setup_video_filters (string const & filters)
+Transcoder::setup_video_filters (string const & filters)
 {
 	int r;
 
@@ -325,19 +327,19 @@ Decoder::setup_video_filters (string const & filters)
 }
 
 int
-Decoder::length_in_frames () const
+Transcoder::length_in_frames () const
 {
 	return (_format_context->duration / AV_TIME_BASE) * frames_per_second ();
 }
 
 float
-Decoder::frames_per_second () const
+Transcoder::frames_per_second () const
 {
 	return av_q2d (_format_context->streams[_video_stream]->avg_frame_rate);
 }
 
 int
-Decoder::audio_channels () const
+Transcoder::audio_channels () const
 {
 	if (_audio_codec_context == 0) {
 		return 0;
@@ -347,7 +349,7 @@ Decoder::audio_channels () const
 }
 
 int
-Decoder::audio_sample_rate () const
+Transcoder::audio_sample_rate () const
 {
 	if (_audio_codec_context == 0) {
 		return 0;
@@ -357,47 +359,53 @@ Decoder::audio_sample_rate () const
 }
 
 AVSampleFormat
-Decoder::audio_sample_format () const
+Transcoder::audio_sample_format () const
 {
 	return _audio_codec_context->sample_fmt;
 }
 
 
 void
-Decoder::decode_video (bool w)
+Transcoder::decode_video (bool w)
 {
 	_decode_video = w;
 }
 
 void
-Decoder::decode_audio (bool w)
+Transcoder::decode_audio (bool w)
 {
 	_decode_audio = w;
 }
 
 void
-Decoder::set_decode_video_period (int p)
+Transcoder::set_decode_video_period (int p)
 {
 	_decode_video_period = p;
 }
 
 void
-Decoder::apply_crop (bool c)
+Transcoder::apply_crop (bool c)
 {
 	_apply_crop = c;
 }
 
 int
-Decoder::native_width () const
+Transcoder::native_width () const
 {
 	return _video_codec_context->width;
 }
 
 int
-Decoder::native_height () const
+Transcoder::native_height () const
 {
 	return _video_codec_context->height;
 }
 
-	
-       
+void
+Transcoder::go ()
+{
+	while (pass () != PASS_DONE && (_nframes == 0 || video_frame() < _nframes)) {
+		_progress->set_progress (float (video_frame()) / length_in_frames ());
+	}
+}
+

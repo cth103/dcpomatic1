@@ -18,7 +18,6 @@
 */
 
 #include <gtkmm.h>
-#include "decoder.h"
 #include "film.h"
 
 class FilmViewer
