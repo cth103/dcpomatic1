@@ -38,4 +38,6 @@ MakeDCPJob::run ()
 
 	rename (path (_film->file ("video.mxf")), path (d + "/video.mxf"));
 	rename (path (_film->file ("audio.mxf")), path (d + "/audio.mxf"));
+
+	_progress.set_progress (1);
 }
