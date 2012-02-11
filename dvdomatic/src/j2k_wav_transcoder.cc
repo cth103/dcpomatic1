@@ -26,6 +26,7 @@
 #include <openjpeg.h>
 #include "j2k_wav_transcoder.h"
 #include "film.h"
+#include "config.h"
 
 using namespace std;
 
@@ -34,7 +35,7 @@ J2KWAVTranscoder::J2KWAVTranscoder (Film* f, Progress* p, int w, int h)
 	, _deinterleave_buffer_size (8192)
 	, _deinterleave_buffer (0)
 	, _worker_threads_should_quit (false)
-	, _num_worker_threads (2)
+	, _num_worker_threads (Config::instance()->num_encoding_threads ())
 {
 	/* Create sound output files */
 	for (int i = 0; i < audio_channels(); ++i) {
@@ -97,8 +98,6 @@ J2KWAVTranscoder::encoder_thread ()
 
 		_worker_condition.notify_all ();
 	}
-
-	cout << "Bye bye from worker thread.\n";
 }
 
 void
@@ -112,8 +111,6 @@ J2KWAVTranscoder::process_begin ()
 void
 J2KWAVTranscoder::process_end ()
 {
-	cout << "Stopping process\n";
-	
 	boost::mutex::scoped_lock lock (_worker_mutex);
 	_worker_threads_should_quit = true;
 	lock.unlock ();

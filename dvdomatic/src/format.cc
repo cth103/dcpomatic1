@@ -67,6 +67,7 @@ Format::setup_formats ()
 {
 	_formats.push_back (new Format (185, 1998, 1080, "Flat"));
 	_formats.push_back (new Format (239, 2048, 858, "Scope"));
+	_formats.push_back (new Format (137, 1480, 1080, "Academy"));
 	_formats.push_back (new Format (185, 200, 100, "Test"));
 }
 

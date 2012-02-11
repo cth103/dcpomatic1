@@ -29,6 +29,7 @@
 #include "film.h"
 #include "image.h"
 #include "lut.h"
+#include "config.h"
 
 using namespace std;
 
@@ -73,7 +74,7 @@ Image::Image (Film const * f, uint8_t* rgb, int w, int h, int fr)
 	/* Copy our RGB into it, converting to XYZ in the process */
 
 	/* XXX: configure this */
-	int lut_index = 0;
+	int const lut_index = Config::instance()->colour_lut_index ();
 	
 	uint8_t* p = rgb;
 	for (int i = 0; i < size; ++i) {
@@ -107,11 +108,7 @@ Image::~Image ()
 void
 Image::encode ()
 {
-	cout << "encode " << _frame << " in " << pthread_self() << "\n";
-		
-	/* Maximum DCI compliant bitrate for JPEG2000 */
-	/* XXX: configure this */
-	int const bw = 250000000;
+	int const bw = Config::instance()->j2k_bandwidth ();
 
 	/* Set the max image and component sizes based on frame_rate */
 	int const max_cs_len = ((float) bw) / 8 / _film->frames_per_second ();

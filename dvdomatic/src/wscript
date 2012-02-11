@@ -24,5 +24,7 @@ def build(bld):
 		 content_type.cc
 		 j2k_wav_transcoder.cc
 		 image.cc
+		 config.cc
+		 lut.cc
 		 """
     obj.target = 'dvdomatic'
