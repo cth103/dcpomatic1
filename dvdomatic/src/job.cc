@@ -24,6 +24,7 @@ using namespace std;
 
 Job::Job (Film* f)
 	: _film (f)
+	, _state (NEW)
 	, _start_time (0)
 {
 

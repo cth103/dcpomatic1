@@ -46,6 +46,7 @@ TranscodeJob::run ()
 
 		J2KWAVTranscoder w (_film, &_progress, _film->format()->dci_width(), _film->format()->dci_height());
 		w.go ();
+		_progress.set_progress (1);
 		set_state (FINISHED_OK);
 
 	} catch (runtime_error& e) {

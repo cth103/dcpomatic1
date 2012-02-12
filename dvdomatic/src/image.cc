@@ -108,7 +108,13 @@ Image::~Image ()
 void
 Image::encode ()
 {
+<<<<<<< HEAD
 	int const bw = Config::instance()->j2k_bandwidth ();
+=======
+	/* Maximum DCI compliant bitrate for JPEG2000 */
+	/* XXX: configure this */
+	int const bw = 250000000;
+>>>>>>> 5066e974976a57088d3c8d06de3dbfda17b65f26
 
 	/* Set the max image and component sizes based on frame_rate */
 	int const max_cs_len = ((float) bw) / 8 / _film->frames_per_second ();

@@ -34,7 +34,7 @@ J2KWAVTranscoder::J2KWAVTranscoder (Film* f, Progress* p, int w, int h)
 	: Transcoder (f, p, w, h)
 	, _deinterleave_buffer_size (8192)
 	, _deinterleave_buffer (0)
-	, _worker_threads_should_quit (false)
+	, _process_end (false)
 	, _num_worker_threads (Config::instance()->num_encoding_threads ())
 {
 	/* Create sound output files */
@@ -72,8 +72,12 @@ J2KWAVTranscoder::process_video (uint8_t* rgb, int line_size)
 	boost::mutex::scoped_lock lock (_worker_mutex);
 
 	/* Wait until the queue has gone down a bit */
-	while (int (_queue.size()) >= _num_worker_threads * 2) {
+	while (int (_queue.size()) >= _num_worker_threads * 2 && !_process_end) {
 		_worker_condition.wait (lock);
+	}
+
+	if (_process_end) {
+		return;
 	}
 
 	_queue.push_back (boost::shared_ptr<Image> (new Image (_film, rgb, out_width(), out_height(), video_frame())));
@@ -85,8 +89,12 @@ J2KWAVTranscoder::encoder_thread ()
 {
 	while (1) {
 		boost::mutex::scoped_lock lock (_worker_mutex);
-		while (_queue.empty () && !_worker_threads_should_quit) {
+		while (_queue.empty () && !_process_end) {
 			_worker_condition.wait (_worker_mutex);
+		}
+
+		if (_process_end) {
+			return;
 		}
 
 		boost::shared_ptr<Image> im = _queue.front ();
@@ -112,7 +120,7 @@ void
 J2KWAVTranscoder::process_end ()
 {
 	boost::mutex::scoped_lock lock (_worker_mutex);
-	_worker_threads_should_quit = true;
+	_process_end = true;
 	lock.unlock ();
 	
 	_worker_condition.notify_all ();

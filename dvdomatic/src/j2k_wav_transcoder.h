@@ -45,7 +45,7 @@ private:
 	int _deinterleave_buffer_size;
 	uint8_t* _deinterleave_buffer;
 
-	bool _worker_threads_should_quit;
+	bool _process_end;
 	std::list<boost::shared_ptr<Image> > _queue;
 	std::list<boost::thread *> _worker_threads;
 	int _num_worker_threads;
