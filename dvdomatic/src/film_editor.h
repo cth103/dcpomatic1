@@ -27,6 +27,8 @@ public:
 
 	Gtk::Widget& get_widget ();
 
+	void set_film (Film *);
+
 private:
 	/* Handle changes to the view */
 	void name_changed ();

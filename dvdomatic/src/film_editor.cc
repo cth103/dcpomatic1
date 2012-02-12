@@ -152,25 +152,7 @@ FilmEditor::FilmEditor (Film* f)
 	_make_dcp_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked));
 	_vbox.pack_start (*h, false, false);
 
-	/* Connect to our film to find out when it changes */
-
-	_film->Changed.connect (sigc::mem_fun (*this, &FilmEditor::film_changed));
-
-	/* Initial set up */
-
-	_directory.set_text (_film->directory ());
-	film_changed (Film::Name);
-	film_changed (Film::LeftCrop);
-	film_changed (Film::FilmFormat);
-	film_changed (Film::RightCrop);
-	film_changed (Film::TopCrop);
-	film_changed (Film::BottomCrop);
-	film_changed (Film::Size);
-	film_changed (Film::Content);
-	film_changed (Film::FramesPerSecond);
-	film_changed (Film::DCPLongName);
-	film_changed (Film::DCPPrettyName);
-	film_changed (Film::ContentTypeChange);
+	set_film (_film);
 }
 
 Widget&
@@ -324,4 +306,25 @@ void
 FilmEditor::dcp_pretty_name_changed ()
 {
 	_film->set_dcp_pretty_name (_dcp_pretty_name.get_text ());
+}
+
+void
+FilmEditor::set_film (Film* f)
+{
+	_film = f;
+	_film->Changed.connect (sigc::mem_fun (*this, &FilmEditor::film_changed));
+
+	_directory.set_text (_film->directory ());
+	film_changed (Film::Name);
+	film_changed (Film::LeftCrop);
+	film_changed (Film::FilmFormat);
+	film_changed (Film::RightCrop);
+	film_changed (Film::TopCrop);
+	film_changed (Film::BottomCrop);
+	film_changed (Film::Size);
+	film_changed (Film::Content);
+	film_changed (Film::FramesPerSecond);
+	film_changed (Film::DCPLongName);
+	film_changed (Film::DCPPrettyName);
+	film_changed (Film::ContentTypeChange);
 }
