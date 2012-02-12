@@ -52,7 +52,7 @@ FilmViewer::FilmViewer (Film* f)
 	_zoom_in_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmViewer::zoom_in_button_clicked));
 	_zoom_out_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmViewer::zoom_out_button_clicked));
 
-	thumbs_changed ();
+	set_film (_film);
 }
 
 void
