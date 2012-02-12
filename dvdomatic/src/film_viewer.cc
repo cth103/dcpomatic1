@@ -28,29 +28,20 @@ using namespace std;
 
 FilmViewer::FilmViewer (Film* f)
 	: _film (f)
-	, _zoom_in_button (Gtk::Stock::ZOOM_IN)
-	, _zoom_out_button (Gtk::Stock::ZOOM_OUT)
-	, _zoom (1)
 {
-	Gtk::ScrolledWindow* s = manage (new Gtk::ScrolledWindow);
-	s->add (_image);
+	_scroller.add (_image);
 
 	Gtk::HBox* controls = manage (new Gtk::HBox);
 	controls->set_spacing (6);
-	controls->pack_start (_zoom_in_button, false, false);
-	controls->pack_start (_zoom_out_button, false, false);
 	controls->pack_start (_position_slider);
 	
-	_vbox.pack_start (*s, true, true);
+	_vbox.pack_start (_scroller, true, true);
 	_vbox.pack_start (*controls, false, false);
 	_vbox.set_border_width (12);
 
 	_position_slider.set_digits (0);
 	_position_slider.signal_format_value().connect (sigc::mem_fun (*this, &FilmViewer::format_position_slider_value));
 	_position_slider.signal_value_changed().connect (sigc::mem_fun (*this, &FilmViewer::position_slider_changed));
-
-	_zoom_in_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmViewer::zoom_in_button_clicked));
-	_zoom_out_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmViewer::zoom_out_button_clicked));
 
 	set_film (_film);
 }
@@ -139,35 +130,33 @@ FilmViewer::set_film (Film* f)
 	thumbs_changed ();
 }
 
-void
-FilmViewer::zoom_in_button_clicked ()
-{
-	_zoom *= 1.5;
-	update_scaled_pixbuf ();
-}
-
-void
-FilmViewer::zoom_out_button_clicked ()
-{
-	_zoom *= 0.75;
-	update_scaled_pixbuf ();
-}
-
-void
-FilmViewer::update_scaled_pixbuf ()
+pair<int, int>
+FilmViewer::scaled_pixbuf_size () const
 {
 	if (_film == 0) {
-		return;
+		return make_pair (0, 0);
 	}
 	
-	int const cw = _film->width() - _film->left_crop() - _film->right_crop();
+	int const cw = _film->width() - _film->left_crop() - _film->right_crop(); 
 	int const ch = _film->height() - _film->top_crop() - _film->bottom_crop();
 
 	float ratio = 1;
 	if (_film->format()) {
 		ratio = _film->format()->ratio_as_float() * _film->height() / _film->width();
 	}
+
+	Gtk::Allocation const a = _scroller.get_allocation ();
+	float const zoom = min (float (a.get_width()) / (cw * ratio), float (a.get_height()) / cw);
+	return make_pair (cw * zoom * ratio, ch * zoom);
+}
 	
-	_scaled_pixbuf = _cropped_pixbuf->scale_simple (cw * _zoom * ratio, ch * _zoom, Gdk::INTERP_HYPER);
-	_image.set (_scaled_pixbuf);
+void
+FilmViewer::update_scaled_pixbuf ()
+{
+	pair<int, int> const s = scaled_pixbuf_size ();
+	
+	if (s.first > 0 && s.second > 0) {
+		_scaled_pixbuf = _cropped_pixbuf->scale_simple (s.first, s.second, Gdk::INTERP_HYPER);
+		_image.set (_scaled_pixbuf);
+	}
 }
