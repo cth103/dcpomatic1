@@ -32,11 +32,26 @@ public:
 	int j2k_bandwidth () const {
 		return _j2k_bandwidth;
 	}
+
+	void set_num_encoding_threads (int n) {
+		_num_encoding_threads = n;
+	}
+
+	void set_colour_lut_index (int i) {
+		_colour_lut_index = i;
+	}
+
+	void set_j2k_bandwidth (int b) {
+		_j2k_bandwidth = b;
+	}
+
+	void write ();
 	
 	static Config* instance ();
 
 private:
 	Config ();
+	std::string get_file () const;
 
 	int _num_encoding_threads;
 	int _colour_lut_index;

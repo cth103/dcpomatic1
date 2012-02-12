@@ -31,9 +31,7 @@ Config::Config ()
 	, _colour_lut_index (0)
 	, _j2k_bandwidth (250000000)
 {
-	stringstream s;
-	s << getenv ("HOME") << "/.dvdomatic";
-	ifstream f (s.str().c_str ());
+	ifstream f (get_file().c_str ());
 	string line;
 	while (getline (f, line)) {
 		if (line.empty ()) {
@@ -62,6 +60,14 @@ Config::Config ()
 	}
 }
 
+string
+Config::get_file () const
+{
+	stringstream s;
+	s << getenv ("HOME") << "/.dvdomatic";
+	return s.str ();
+}
+
 Config *
 Config::instance ()
 {
@@ -70,4 +76,13 @@ Config::instance ()
 	}
 
 	return _instance;
+}
+
+void
+Config::write ()
+{
+	ofstream f (get_file().c_str ());
+	f << "num_encoding_threads " << _num_encoding_threads << "\n"
+	  << "colour_lut_index " << _colour_lut_index << "\n"
+	  << "j2k_bandwidth " << _j2k_bandwidth << "\n";
 }

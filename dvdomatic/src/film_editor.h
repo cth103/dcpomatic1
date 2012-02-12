@@ -50,8 +50,6 @@ private:
 	void save_metadata_clicked ();
 	void make_dcp_clicked ();
 
-	Gtk::Label& left_aligned_label (std::string const &) const;
-
 	Film* _film;
 	Gtk::VBox _vbox;
 	Gtk::Label _directory;

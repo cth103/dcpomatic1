@@ -49,3 +49,12 @@ seconds_to_hms (int s)
 
 	return hms.str ();
 }
+
+Gtk::Label &
+left_aligned_label (string const & t)
+{
+	Gtk::Label* l = Gtk::manage (new Gtk::Label (t));
+	l->set_alignment (0, 0.5);
+	return *l;
+}
+

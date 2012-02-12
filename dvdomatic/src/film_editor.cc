@@ -28,6 +28,7 @@
 #include "make_mxf_job.h"
 #include "make_dcp_job.h"
 #include "job_manager.h"
+#include "util.h"
 
 using namespace std;
 using namespace Gtk;
@@ -159,14 +160,6 @@ Widget&
 FilmEditor::get_widget ()
 {
 	return _vbox;
-}
-
-Label&
-FilmEditor::left_aligned_label (string const & t) const
-{
-	Label* l = manage (new Label (t));
-	l->set_alignment (0, 0.5);
-	return *l;
 }
 
 void

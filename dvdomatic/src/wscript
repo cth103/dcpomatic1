@@ -26,5 +26,6 @@ def build(bld):
 		 image.cc
 		 config.cc
 		 lut.cc
+		 config_dialog.cc
 		 """
     obj.target = 'dvdomatic'

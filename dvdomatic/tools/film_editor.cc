@@ -1,3 +1,22 @@
+/*
+    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+*/
+
 #include <iostream>
 #include <boost/filesystem.hpp>
 #include "film_viewer.h"
@@ -5,6 +24,8 @@
 #include "job_manager_view.h"
 #include "film.h"
 #include "format.h"
+#include "config_dialog.h"
+#include "config.h"
 
 using namespace std;
 
@@ -30,6 +51,14 @@ file_open ()
 }
 
 void
+edit_preferences ()
+{
+	ConfigDialog d;
+	d.run ();
+	Config::instance()->write ();
+}
+
+void
 setup_menu (Gtk::MenuBar& m)
 {
 	using namespace Gtk::Menu_Helpers;
@@ -38,8 +67,13 @@ setup_menu (Gtk::MenuBar& m)
 	MenuList& file_items (file->items ());
 	file_items.push_back (MenuElem ("Open...", sigc::ptr_fun (file_open)));
 
+	Gtk::Menu* edit = manage (new Gtk::Menu);
+	MenuList& edit_items (edit->items ());
+	edit_items.push_back (MenuElem ("Preferences...", sigc::ptr_fun (edit_preferences)));
+	
 	MenuList& items (m.items ());
 	items.push_back (MenuElem ("File", *file));
+	items.push_back (MenuElem ("Edit", *edit));
 }
 
 int
