@@ -27,16 +27,30 @@ using namespace std;
 
 FilmViewer::FilmViewer (Film* f)
 	: _film (f)
+	, _zoom_in_button (Gtk::Stock::ZOOM_IN)
+	, _zoom_out_button (Gtk::Stock::ZOOM_OUT)
+	, _x_zoom (1)
+	, _y_zoom (1)
 {
 	Gtk::ScrolledWindow* s = manage (new Gtk::ScrolledWindow);
 	s->add (_image);
+
+	Gtk::HBox* controls = manage (new Gtk::HBox);
+	controls->set_spacing (6);
+	controls->pack_start (_zoom_in_button, false, false);
+	controls->pack_start (_zoom_out_button, false, false);
+	controls->pack_start (_position_slider);
+	
 	_vbox.pack_start (*s, true, true);
-	_vbox.pack_start (_position_slider, false, false);
+	_vbox.pack_start (*controls, false, false);
 	_vbox.set_border_width (12);
 
 	_position_slider.set_digits (0);
 	_position_slider.signal_format_value().connect (sigc::mem_fun (*this, &FilmViewer::format_position_slider_value));
 	_position_slider.signal_value_changed().connect (sigc::mem_fun (*this, &FilmViewer::position_slider_changed));
+
+	_zoom_in_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmViewer::zoom_in_button_clicked));
+	_zoom_out_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmViewer::zoom_out_button_clicked));
 
 	thumbs_changed ();
 }
@@ -54,8 +68,12 @@ FilmViewer::load_thumbnail (int n)
 	int const bottom = _film->bottom_crop ();
 
 	_pixbuf = Gdk::Pixbuf::create_from_file (_film->thumb_file (n));
-	_cropped_pixbuf = Gdk::Pixbuf::create_subpixbuf (_pixbuf, left, top, _film->width() - left - right, _film->height() - top - bottom);
-	_image.set (_cropped_pixbuf);
+
+	int const cw = _film->width() - left - right;
+	int const ch = _film->height() - top - bottom;
+	_cropped_pixbuf = Gdk::Pixbuf::create_subpixbuf (_pixbuf, left, top, cw, ch);
+	update_scaled_pixbuf ();
+	_image.set (_scaled_pixbuf);
 }
 
 void
@@ -115,4 +133,29 @@ FilmViewer::set_film (Film* f)
 	_film->ThumbsChanged.connect (sigc::mem_fun (*this, &FilmViewer::thumbs_changed));
 	
 	thumbs_changed ();
+}
+
+void
+FilmViewer::zoom_in_button_clicked ()
+{
+	_x_zoom *= 1.5;
+	_y_zoom *= 1.5;
+	update_scaled_pixbuf ();
+}
+
+void
+FilmViewer::zoom_out_button_clicked ()
+{
+	_x_zoom *= 0.75;
+	_y_zoom *= 0.75;
+	update_scaled_pixbuf ();
+}
+
+void
+FilmViewer::update_scaled_pixbuf ()
+{
+	int const cw = _film->width() - _film->left_crop() - _film->right_crop();
+	int const ch = _film->height() - _film->top_crop() - _film->bottom_crop();
+	_scaled_pixbuf = _cropped_pixbuf->scale_simple (cw * _x_zoom, ch * _y_zoom, Gdk::INTERP_HYPER);
+	_image.set (_scaled_pixbuf);
 }

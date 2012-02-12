@@ -38,11 +38,19 @@ private:
 	void thumbs_changed ();
 	void film_changed (Film::Property);
 	void reload_current_thumbnail ();
+	void zoom_in_button_clicked ();
+	void zoom_out_button_clicked ();
+	void update_scaled_pixbuf ();
 
 	Film* _film;
 	Gtk::VBox _vbox;
 	Gtk::Image _image;
 	Glib::RefPtr<Gdk::Pixbuf> _pixbuf;
 	Glib::RefPtr<Gdk::Pixbuf> _cropped_pixbuf;
+	Glib::RefPtr<Gdk::Pixbuf> _scaled_pixbuf;
+	Gtk::Button _zoom_in_button;
+	Gtk::Button _zoom_out_button;
 	Gtk::HScale _position_slider;
+	float _x_zoom;
+	float _y_zoom;
 };
