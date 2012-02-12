@@ -21,6 +21,7 @@
 #include <iomanip>
 #include "film_viewer.h"
 #include "film.h"
+#include "format.h"
 #include "util.h"
 
 using namespace std;
@@ -29,8 +30,7 @@ FilmViewer::FilmViewer (Film* f)
 	: _film (f)
 	, _zoom_in_button (Gtk::Stock::ZOOM_IN)
 	, _zoom_out_button (Gtk::Stock::ZOOM_OUT)
-	, _x_zoom (1)
-	, _y_zoom (1)
+	, _zoom (1)
 {
 	Gtk::ScrolledWindow* s = manage (new Gtk::ScrolledWindow);
 	s->add (_image);
@@ -142,16 +142,14 @@ FilmViewer::set_film (Film* f)
 void
 FilmViewer::zoom_in_button_clicked ()
 {
-	_x_zoom *= 1.5;
-	_y_zoom *= 1.5;
+	_zoom *= 1.5;
 	update_scaled_pixbuf ();
 }
 
 void
 FilmViewer::zoom_out_button_clicked ()
 {
-	_x_zoom *= 0.75;
-	_y_zoom *= 0.75;
+	_zoom *= 0.75;
 	update_scaled_pixbuf ();
 }
 
@@ -164,6 +162,12 @@ FilmViewer::update_scaled_pixbuf ()
 	
 	int const cw = _film->width() - _film->left_crop() - _film->right_crop();
 	int const ch = _film->height() - _film->top_crop() - _film->bottom_crop();
-	_scaled_pixbuf = _cropped_pixbuf->scale_simple (cw * _x_zoom, ch * _y_zoom, Gdk::INTERP_HYPER);
+
+	float ratio = 1;
+	if (_film->format()) {
+		ratio = _film->format()->ratio_as_float() * _film->height() / _film->width();
+	}
+	
+	_scaled_pixbuf = _cropped_pixbuf->scale_simple (cw * _zoom * ratio, ch * _zoom, Gdk::INTERP_HYPER);
 	_image.set (_scaled_pixbuf);
 }

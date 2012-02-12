@@ -51,6 +51,5 @@ private:
 	Gtk::Button _zoom_in_button;
 	Gtk::Button _zoom_out_button;
 	Gtk::HScale _position_slider;
-	float _x_zoom;
-	float _y_zoom;
+	float _zoom;
 };
