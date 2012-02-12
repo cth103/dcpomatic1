@@ -107,8 +107,6 @@ Image::~Image ()
 void
 Image::encode ()
 {
-	cout << "encode " << _frame << " in " << pthread_self() << "\n";
-		
 	/* Maximum DCI compliant bitrate for JPEG2000 */
 	/* XXX: configure this */
 	int const bw = 250000000;
