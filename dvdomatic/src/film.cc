@@ -157,9 +157,7 @@ Film::write_metadata () const
 string
 Film::metadata_file () const
 {
-	stringstream s;
-	s << _directory << "/metadata";
-	return s.str();
+	return file ("metadata");
 }
 
 void
@@ -237,9 +235,7 @@ Film::set_dcp_content_type (ContentType* t)
 string
 Film::content () const
 {
-	stringstream s;
-	s << _directory << "/" << _content;
-	return s.str ();
+	return file (_content);
 }
 
 void
@@ -273,6 +269,9 @@ Film::set_content (string const & c)
 	_content = f;
 	Changed (Content);
 
+	/* Create a temporary transcoder so that we can get information
+	   about the content.
+	*/
 	Progress p;
 	Transcoder d (this, &p, 1024, 1024);
 	_width = d.native_width ();
