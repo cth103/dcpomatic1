@@ -6,5 +6,5 @@ if [ "$1" == "--debug" ]; then
 elif [ "$1" == "--valgrind" ]; then
     valgrind --tool="memcheck" build/tools/film_editor $2
 else
-    build/tools/film_editor $1
+    build/tools/film_editor "$1"
 fi
