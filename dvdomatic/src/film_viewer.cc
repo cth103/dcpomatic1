@@ -38,7 +38,7 @@ FilmViewer::FilmViewer (Film* f)
 	_position_slider.signal_format_value().connect (sigc::mem_fun (*this, &FilmViewer::format_position_slider_value));
 	_position_slider.signal_value_changed().connect (sigc::mem_fun (*this, &FilmViewer::position_slider_changed));
 
-	thumbs_changed ();
+	set_film (_film);
 }
 
 void
