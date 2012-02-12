@@ -34,6 +34,21 @@ static FilmViewer* film_viewer = 0;
 static FilmEditor* film_editor = 0;
 
 void
+file_new ()
+{
+	Gtk::FileChooserDialog c (*window, "New Film", Gtk::FILE_CHOOSER_ACTION_CREATE_FOLDER);
+	c.add_button ("Cancel", Gtk::RESPONSE_CANCEL);
+	c.add_button ("Create", Gtk::RESPONSE_ACCEPT);
+
+	int const r = c.run ();
+	if (r == Gtk::RESPONSE_ACCEPT) {
+		Film* film = new Film (c.get_filename ());
+		film_viewer->set_film (film);
+		film_editor->set_film (film);
+	}
+}
+
+void
 file_open ()
 {
 	Gtk::FileChooserDialog c (*window, "Open Film", Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
@@ -43,11 +58,9 @@ file_open ()
 	int const r = c.run ();
 	if (r == Gtk::RESPONSE_ACCEPT) {
 		Film* film = new Film (c.get_filename ());
-		cout << "Load film " << film << "\n";
 		film_viewer->set_film (film);
 		film_editor->set_film (film);
 	}
-		
 }
 
 void
@@ -65,6 +78,7 @@ setup_menu (Gtk::MenuBar& m)
 
 	Gtk::Menu* file = manage (new Gtk::Menu);
 	MenuList& file_items (file->items ());
+	file_items.push_back (MenuElem ("New...", sigc::ptr_fun (file_new)));
 	file_items.push_back (MenuElem ("Open...", sigc::ptr_fun (file_open)));
 
 	Gtk::Menu* edit = manage (new Gtk::Menu);
@@ -84,22 +98,16 @@ main (int argc, char* argv[])
 	
 	Gtk::Main kit (argc, argv);
 
-	if (argc < 2) {
-		cerr << "Syntax: " << argv[0] << " <film>\n";
-		exit (EXIT_FAILURE);
-	}
+	Film* film = 0;
 
-	if (!boost::filesystem::is_directory (argv[1])) {
-		cerr << argv[0] << ": could not find film " << argv[1] << "\n";
-		exit (EXIT_FAILURE);
+	if (argc == 2 && boost::filesystem::is_directory (argv[1])) {
+		film = new Film (argv[1]);
 	}
-
-	Film film (argv[1]);
 
 	window = new Gtk::Window ();
 	
-	film_viewer = new FilmViewer (&film);
-	film_editor = new FilmEditor (&film);
+	film_viewer = new FilmViewer (film);
+	film_editor = new FilmEditor (film);
 	JobManagerView jobs_view;
 
 	window->set_title ("DVD-o-matic");

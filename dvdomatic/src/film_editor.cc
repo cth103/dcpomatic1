@@ -164,30 +164,42 @@ FilmEditor::get_widget ()
 void
 FilmEditor::left_crop_changed ()
 {
-	_film->set_left_crop (_left_crop.get_value ());
+	if (_film) {
+		_film->set_left_crop (_left_crop.get_value ());
+	}
 }
 
 void
 FilmEditor::right_crop_changed ()
 {
-	_film->set_right_crop (_right_crop.get_value ());
+	if (_film) {
+		_film->set_right_crop (_right_crop.get_value ());
+	}
 }
 
 void
 FilmEditor::top_crop_changed ()
 {
-	_film->set_top_crop (_top_crop.get_value ());
+	if (_film) {
+		_film->set_top_crop (_top_crop.get_value ());
+	}
 }
 
 void
 FilmEditor::bottom_crop_changed ()
 {
-	_film->set_bottom_crop (_bottom_crop.get_value ());
+	if (_film) {
+		_film->set_bottom_crop (_bottom_crop.get_value ());
+	}
 }
 
 void
 FilmEditor::update_thumbs_clicked ()
 {
+	if (!_film) {
+		return;
+	}
+			
 	ThumbsJob* j = new ThumbsJob (_film);
 	j->Finished.connect (sigc::mem_fun (_film, &Film::update_thumbs_gui));
 	JobManager::instance()->add (j);
@@ -196,14 +208,18 @@ FilmEditor::update_thumbs_clicked ()
 void
 FilmEditor::save_metadata_clicked ()
 {
-	_film->write_metadata ();
+	if (_film) {
+		_film->write_metadata ();
+	}
 }
 
 void
 FilmEditor::content_changed ()
 {
 	try {
-		_film->set_content (_content.get_filename ());
+		if (_film) {
+			_film->set_content (_content.get_filename ());
+		}
 	} catch (runtime_error& e) {
 		_content.set_filename (_film->directory ());
 		stringstream m;
@@ -217,12 +233,18 @@ FilmEditor::content_changed ()
 void
 FilmEditor::name_changed ()
 {
-	_film->set_name (_name.get_text ());
+	if (_film) {
+		_film->set_name (_name.get_text ());
+	}
 }
 
 void
 FilmEditor::film_changed (Film::Property p)
 {
+	if (!_film) {
+		return;
+	}
+	
 	stringstream s;
 		
 	switch (p) {
@@ -270,12 +292,18 @@ FilmEditor::film_changed (Film::Property p)
 void
 FilmEditor::format_changed ()
 {
-	_film->set_format (Format::get_from_index (_format.get_active_row_number ()));
+	if (_film) {
+		_film->set_format (Format::get_from_index (_format.get_active_row_number ()));
+	}
 }
 
 void
 FilmEditor::make_dcp_clicked ()
 {
+	if (!_film) {
+		return;
+	}
+	
 	JobManager::instance()->add (new TranscodeJob (_film));
 	JobManager::instance()->add (new MakeMXFJob (_film, MakeMXFJob::VIDEO));
 	JobManager::instance()->add (new MakeMXFJob (_film, MakeMXFJob::AUDIO));
@@ -285,28 +313,44 @@ FilmEditor::make_dcp_clicked ()
 void
 FilmEditor::dcp_content_type_changed ()
 {
-	_film->set_dcp_content_type (ContentType::get_from_index (_dcp_content_type.get_active_row_number ()));
+	if (_film) {
+		_film->set_dcp_content_type (ContentType::get_from_index (_dcp_content_type.get_active_row_number ()));
+	}
 }
 
 void
 FilmEditor::dcp_long_name_changed ()
 {
-	_film->set_dcp_long_name (_dcp_long_name.get_text ());
+	if (_film) {
+		_film->set_dcp_long_name (_dcp_long_name.get_text ());
+	}
 }
 
 void
 FilmEditor::dcp_pretty_name_changed ()
 {
-	_film->set_dcp_pretty_name (_dcp_pretty_name.get_text ());
+	if (_film) {
+		_film->set_dcp_pretty_name (_dcp_pretty_name.get_text ());
+	}
 }
 
 void
 FilmEditor::set_film (Film* f)
 {
 	_film = f;
-	_film->Changed.connect (sigc::mem_fun (*this, &FilmEditor::film_changed));
 
-	_directory.set_text (_film->directory ());
+	set_things_sensitive (_film != 0);
+
+	if (_film) {
+		_film->Changed.connect (sigc::mem_fun (*this, &FilmEditor::film_changed));
+	}
+
+	if (_film) {
+		_directory.set_text (_film->directory ());
+	} else {
+		_directory.set_text ("");
+	}
+	
 	film_changed (Film::Name);
 	film_changed (Film::LeftCrop);
 	film_changed (Film::FilmFormat);
@@ -319,4 +363,23 @@ FilmEditor::set_film (Film* f)
 	film_changed (Film::DCPLongName);
 	film_changed (Film::DCPPrettyName);
 	film_changed (Film::ContentTypeChange);
+}
+
+void
+FilmEditor::set_things_sensitive (bool s)
+{
+	_name.set_sensitive (s);
+	_format.set_sensitive (s);
+	_content.set_sensitive (s);
+	_left_crop.set_sensitive (s);
+	_right_crop.set_sensitive (s);
+	_top_crop.set_sensitive (s);
+	_bottom_crop.set_sensitive (s);
+	_dcp_long_name.set_sensitive (s);
+	_dcp_pretty_name.set_sensitive (s);
+	_dcp_content_type.set_sensitive (s);
+	
+	_update_thumbs_button.set_sensitive (s);
+	_save_metadata_button.set_sensitive (s);
+	_make_dcp_button.set_sensitive (s);
 }

@@ -50,6 +50,8 @@ private:
 	void save_metadata_clicked ();
 	void make_dcp_clicked ();
 
+	void set_things_sensitive (bool);
+
 	Film* _film;
 	Gtk::VBox _vbox;
 	Gtk::Label _directory;

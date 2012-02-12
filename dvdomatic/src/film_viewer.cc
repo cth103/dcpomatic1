@@ -58,7 +58,7 @@ FilmViewer::FilmViewer (Film* f)
 void
 FilmViewer::load_thumbnail (int n)
 {
-	if (_film->num_thumbs() <= n) {
+	if (_film == 0 || _film->num_thumbs() <= n) {
 		return;
 	}
 
@@ -93,7 +93,7 @@ FilmViewer::format_position_slider_value (double v) const
 {
 	stringstream s;
 
-	if (int (v) < _film->num_thumbs ()) {
+	if (_film && int (v) < _film->num_thumbs ()) {
 		int const f = _film->thumb_frame (int (v));
 		s << f << " " << seconds_to_hms (f / _film->frames_per_second ());
 	} else {
@@ -106,7 +106,7 @@ FilmViewer::format_position_slider_value (double v) const
 void
 FilmViewer::thumbs_changed ()
 {
-	if (_film->num_thumbs() > 0) {
+	if (_film && _film->num_thumbs() > 0) {
 		_position_slider.set_range (0, _film->num_thumbs () - 1);
 	} else {
 		_position_slider.set_range (0, 1);
@@ -129,9 +129,13 @@ FilmViewer::set_film (Film* f)
 {
 	_film = f;
 
+	if (!_film) {
+		return;
+	}
+	
 	_film->Changed.connect (sigc::mem_fun (*this, &FilmViewer::film_changed));
 	_film->ThumbsChanged.connect (sigc::mem_fun (*this, &FilmViewer::thumbs_changed));
-	
+		
 	thumbs_changed ();
 }
 
@@ -154,6 +158,10 @@ FilmViewer::zoom_out_button_clicked ()
 void
 FilmViewer::update_scaled_pixbuf ()
 {
+	if (_film == 0) {
+		return;
+	}
+	
 	int const cw = _film->width() - _film->left_crop() - _film->right_crop();
 	int const ch = _film->height() - _film->top_crop() - _film->bottom_crop();
 	_scaled_pixbuf = _cropped_pixbuf->scale_simple (cw * _x_zoom, ch * _y_zoom, Gdk::INTERP_HYPER);
