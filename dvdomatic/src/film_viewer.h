@@ -29,6 +29,8 @@ public:
 		return _vbox;
 	}
 
+	void set_film (Film *);
+
 private:
 	void position_slider_changed ();
 	std::string format_position_slider_value (double) const;

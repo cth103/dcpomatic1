@@ -39,9 +39,6 @@ FilmViewer::FilmViewer (Film* f)
 	_position_slider.signal_value_changed().connect (sigc::mem_fun (*this, &FilmViewer::position_slider_changed));
 
 	thumbs_changed ();
-
-	_film->Changed.connect (sigc::mem_fun (*this, &FilmViewer::film_changed));
-	_film->ThumbsChanged.connect (sigc::mem_fun (*this, &FilmViewer::thumbs_changed));
 }
 
 void
@@ -107,4 +104,15 @@ FilmViewer::film_changed (Film::Property p)
 	if (p == Film::LeftCrop || p == Film::RightCrop || p == Film::TopCrop || p == Film::BottomCrop) {
 		reload_current_thumbnail ();
 	}
+}
+
+void
+FilmViewer::set_film (Film* f)
+{
+	_film = f;
+
+	_film->Changed.connect (sigc::mem_fun (*this, &FilmViewer::film_changed));
+	_film->ThumbsChanged.connect (sigc::mem_fun (*this, &FilmViewer::thumbs_changed));
+	
+	thumbs_changed ();
 }
