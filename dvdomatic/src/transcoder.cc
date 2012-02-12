@@ -34,14 +34,14 @@ extern "C" {
 #include <sndfile.h>
 #include "film.h"
 #include "format.h"
-#include "progress.h"
 #include "transcoder.h"
+#include "job.h"
 
 using namespace std;
 
-Transcoder::Transcoder (Film const * f, Progress* p, int w, int h, int N)
+Transcoder::Transcoder (Film const * f, Job* j, int w, int h, int N)
 	: _film (f)
-	, _progress (p)
+	, _job (j)
 	, _nframes (N)
 	, _out_width (w)
 	, _out_height (h)
@@ -407,7 +407,9 @@ Transcoder::go ()
 	process_begin ();
 		       
 	while (pass () != PASS_DONE && (_nframes == 0 || video_frame() < _nframes)) {
-		_progress->set_progress (float (video_frame()) / length_in_frames ());
+		if (_job) {
+			_job->set_progress (float (video_frame()) / length_in_frames ());
+		}
 	}
 
 	process_end ();

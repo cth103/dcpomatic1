@@ -27,7 +27,7 @@
 #include "content_type.h"
 
 class Format;
-class Progress;
+class Job;
 
 class Film
 {
@@ -105,7 +105,7 @@ public:
 
 	std::string j2k_sub_directory () const;
 	
-	void update_thumbs_non_gui (Progress *);
+	void update_thumbs_non_gui (Job *);
 	void update_thumbs_gui ();
 	int num_thumbs () const;
 	int thumb_frame (int) const;

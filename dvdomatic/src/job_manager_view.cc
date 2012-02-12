@@ -80,7 +80,7 @@ JobManagerView::update ()
 		   from here (the GUI thread).
 		*/
 		
-		r[_columns.progress] = (*i)->progress() * 100;
+		r[_columns.progress] = (*i)->get_overall_progress() * 100;
 		if ((*i)->finished_ok ()) {
 			string const c = r[_columns.resolution];
 			if (c.substr (0, 2) != "OK") {

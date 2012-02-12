@@ -27,8 +27,8 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include "film.h"
 #include "format.h"
-#include "progress.h"
 #include "tiff_transcoder.h"
+#include "job.h"
 
 using namespace std;
 
@@ -272,8 +272,7 @@ Film::set_content (string const & c)
 	/* Create a temporary transcoder so that we can get information
 	   about the content.
 	*/
-	Progress p;
-	Transcoder d (this, &p, 1024, 1024);
+	Transcoder d (this, 0, 1024, 1024);
 	_width = d.native_width ();
 	_height = d.native_height ();
 	_frames_per_second = d.frames_per_second ();
@@ -300,10 +299,12 @@ Film::file (string const & f) const
 }
 
 void
-Film::update_thumbs_non_gui (Progress* progress)
+Film::update_thumbs_non_gui (Job* job)
 {
 	if (_content.empty ()) {
-		progress->set_progress (1);
+		if (job) {
+			job->set_progress (1);
+		}
 		return;
 	}
 	
@@ -317,12 +318,12 @@ Film::update_thumbs_non_gui (Progress* progress)
 	/* This call will recreate the directory */
 	string const tdir = dir ("thumbs");
 
-	progress->descend (1);
-	TIFFTranscoder w (this, progress, _width, _height, tdir);
+	job->descend (1);
+	TIFFTranscoder w (this, job, _width, _height, tdir);
 	w.apply_crop (false);
 	w.set_decode_video_period (w.length_in_frames() / number);
 	w.go ();
-	progress->ascend ();
+	job->ascend ();
 
 	for (directory_iterator i = directory_iterator (tdir); i != directory_iterator(); ++i) {
 

@@ -31,8 +31,8 @@
 
 using namespace std;
 
-J2KWAVTranscoder::J2KWAVTranscoder (Film* f, Progress* p, int w, int h)
-	: Transcoder (f, p, w, h)
+J2KWAVTranscoder::J2KWAVTranscoder (Film* f, Job* j, int w, int h)
+	: Transcoder (f, j, w, h)
 	, _deinterleave_buffer_size (8192)
 	, _deinterleave_buffer (0)
 	, _process_end (false)

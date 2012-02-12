@@ -24,12 +24,12 @@
 #include "transcoder.h"
 #include "image.h"
 
-class Progress;
+class Job;
 
 class J2KWAVTranscoder : public Transcoder
 {
 public:
-	J2KWAVTranscoder (Film *, Progress *, int, int);
+	J2KWAVTranscoder (Film *, Job *, int, int);
 	~J2KWAVTranscoder ();
 
 private:

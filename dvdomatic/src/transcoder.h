@@ -32,12 +32,12 @@ struct AVFrame;
 struct AVBufferContext;
 struct AVCodec;
 class Film;
-class Progress;
+class Job;
 
 class Transcoder
 {
 public:
-	Transcoder (Film const *, Progress *, int, int, int N = 0);
+	Transcoder (Film const *, Job *, int, int, int N = 0);
 	~Transcoder ();
 
 	void decode_video (bool);
@@ -98,7 +98,7 @@ private:
 	void setup_video_filters (std::string const &);
 	void setup_audio ();
 
-	Progress* _progress;
+	Job* _job;
 	int _nframes;
 	
 	int _out_width;

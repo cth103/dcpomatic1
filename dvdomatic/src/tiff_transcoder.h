@@ -22,12 +22,12 @@
 #include "transcoder.h"
 
 class Film;
-class Progress;
+class Job;
 
 class TIFFTranscoder : public Transcoder
 {
 public:
-	TIFFTranscoder (Film const *, Progress *, int, int, std::string const &, int N = 0);
+	TIFFTranscoder (Film const *, Job *, int, int, std::string const &, int N = 0);
 	~TIFFTranscoder ();
 
 private:

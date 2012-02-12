@@ -21,8 +21,8 @@
 #define DVDOMATIC_JOB_H
 
 #include <string>
+#include <boost/thread/mutex.hpp>
 #include <sigc++/sigc++.h>
-#include "progress.h"
 
 class Film;
 
@@ -40,9 +40,13 @@ public:
 	bool finished () const;
 	bool finished_ok () const;
 	bool finished_in_error () const;
-	float progress () const;
 
 	int elapsed_time () const;
+
+	void set_progress (float);
+	void ascend ();
+	void descend (float);
+	float get_overall_progress () const;
 
 	void emit_finished ();
 
@@ -61,7 +65,6 @@ protected:
 	void set_state (State);
 	
 	Film* _film;
-	Progress _progress;
 	std::string _name;
 
 private:
@@ -69,6 +72,17 @@ private:
 	mutable boost::mutex _state_mutex;
 	State _state;
 	time_t _start_time;
+
+	mutable boost::mutex _progress_mutex;
+
+	struct Level {
+		Level (float a) : allocation (a), normalised (0) {}
+
+		float allocation;
+		float normalised;
+	};
+
+	std::list<Level> _stack;
 };
 
 #endif

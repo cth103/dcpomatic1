@@ -22,7 +22,6 @@
 #include "film_editor.h"
 #include "format.h"
 #include "film.h"
-#include "progress.h"
 #include "transcode_job.h"
 #include "thumbs_job.h"
 #include "make_mxf_job.h"

@@ -26,12 +26,11 @@
 #include "tiff_transcoder.h"
 #include "film.h"
 #include "format.h"
-#include "progress.h"
 
 using namespace std;
 
-TIFFTranscoder::TIFFTranscoder (Film const * film, Progress* p, int width, int height, string const & tiffs, int N)
-	: Transcoder (film, p, width, height, N)
+TIFFTranscoder::TIFFTranscoder (Film const * film, Job* j, int width, int height, string const & tiffs, int N)
+	: Transcoder (film, j, width, height, N)
 	, _tiffs (tiffs)
 {
 	decode_audio (false);

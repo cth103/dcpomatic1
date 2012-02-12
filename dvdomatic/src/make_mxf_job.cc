@@ -67,5 +67,5 @@ MakeMXFJob::run ()
 	}
 	
 	command (c.str ());
-	_progress.set_progress (1);
+	set_progress (1);
 }

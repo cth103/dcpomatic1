@@ -27,7 +27,7 @@ Job::Job (Film* f)
 	, _state (NEW)
 	, _start_time (0)
 {
-
+	descend (1);
 }
 
 /** Start the job in a separate thread, returning immediately */
@@ -74,12 +74,6 @@ Job::set_state (State s)
 	_state = s;
 }
 
-float
-Job::progress () const
-{
-	return _progress.get_overall_progress ();
-}
-
 /** A hack to work around our lack of cross-thread
  *  signalling; this emits Finished, and listeners
  *  assume that it will be emitted in the GUI thread,
@@ -99,4 +93,57 @@ Job::elapsed_time () const
 	}
 	
 	return time (0) - _start_time;
+}
+
+void
+Job::set_progress (float p)
+{
+	boost::mutex::scoped_lock (_progress_mutex);
+	_stack.back().normalised = p;
+}
+
+/** @return fractional overall progress, or -1 if not known */
+float
+Job::get_overall_progress () const
+{
+	boost::mutex::scoped_lock (_progress_mutex);
+
+	float overall = 0;
+	float factor = 1;
+	for (list<Level>::const_iterator i = _stack.begin(); i != _stack.end(); ++i) {
+		factor *= i->allocation;
+		overall += i->normalised * factor;
+	}
+
+	if (overall > 1) {
+		overall = 1;
+	}
+	
+	return overall;
+}
+
+void
+Job::ascend ()
+{
+	boost::mutex::scoped_lock (_progress_mutex);
+	
+	assert (!_stack.empty ());
+	float const a = _stack.back().allocation;
+	_stack.pop_back ();
+	_stack.back().normalised += a;
+}
+
+/** Descend down one level in terms of progress reporting; e.g. if
+ *  there is a task which is split up into N subtasks, each of which
+ *  report their progress from 0 to 100%, call descend() before executing
+ *  each subtask, and ascend() afterwards to ensure that overall progress
+ *  is reported correctly.
+ *
+ *  @param p Percentage (from 0 to 1) of the current task to allocate to the subtask.
+ */
+void
+Job::descend (float a)
+{
+	boost::mutex::scoped_lock (_progress_mutex);
+	_stack.push_back (Level (a));
 }

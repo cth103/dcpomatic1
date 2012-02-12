@@ -39,6 +39,6 @@ ThumbsJob::name () const
 void
 ThumbsJob::run ()
 {
-	_film->update_thumbs_non_gui (&_progress);
+	_film->update_thumbs_non_gui (this);
 	set_state (FINISHED_OK);
 }

@@ -47,7 +47,7 @@ OpenDCPJob::command (string const & c)
 					int const current = atoi (s.substr(1, slash).c_str ());
 					int const total = atoi (s.substr(slash + 1, s.length() - 1).c_str ());
 					if (total > 0) {
-						_progress.set_progress (float (current) / total);
+						set_progress (float (current) / total);
 					}
 				}
 			}
