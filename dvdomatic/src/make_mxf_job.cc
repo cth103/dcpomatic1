@@ -48,8 +48,15 @@ MakeMXFJob::name () const
 void
 MakeMXFJob::run ()
 {
+	float fps = _film->frames_per_second ();
+	
+	/* XXX: experimental hack; round FPS for audio MXFs */
+	if (_type == AUDIO) {
+		fps = rintf (fps);
+	}
+	
 	stringstream c;
-	c << "opendcp_mxf -r " << _film->frames_per_second() << " -i ";
+	c << "opendcp_mxf -r " << fps << " -i ";
 	switch (_type) {
 	case VIDEO:
 		c << _film->dir ("j2c") << " -o " << _film->file ("video.mxf");
