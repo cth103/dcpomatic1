@@ -59,13 +59,13 @@ MakeMXFJob::run ()
 	c << "opendcp_mxf -r " << fps << " -i ";
 	switch (_type) {
 	case VIDEO:
-		c << _film->dir ("j2c") << " -o " << _film->file ("video.mxf");
+		c << _film->j2k_dir () << " -o " << _film->file ("video.mxf");
 		break;
 	case AUDIO:
 		c << _film->dir ("wavs") << " -o " << _film->file ("audio.mxf");
 		break;
 	}
-	
+
 	command (c.str ());
 	set_progress (1);
 }

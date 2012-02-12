@@ -103,8 +103,9 @@ public:
 		return _frames_per_second;
 	}
 
-	std::string j2k_sub_directory () const;
-	
+	std::string j2k_dir () const;
+	std::string j2k_path (int, bool) const;
+
 	void update_thumbs_non_gui (Job *);
 	void update_thumbs_gui ();
 	int num_thumbs () const;
@@ -135,7 +136,8 @@ private:
 	std::string metadata_file () const;
 	void update_dimensions ();
 	std::string thumb_file_for_frame (int) const;
-	
+	std::string j2k_sub_directory () const;
+
 	/** Directory containing the film metadata */
 	std::string _directory;
 	/** Name for DVD-o-matic */

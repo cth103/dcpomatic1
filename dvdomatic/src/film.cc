@@ -388,3 +388,27 @@ Film::j2k_sub_directory () const
 	s << _format->nickname() << "_" << _content << "_" << _left_crop << "_" << _right_crop << "_" << _top_crop << "_" << _bottom_crop;
 	return s.str ();
 }
+
+
+string
+Film::j2k_dir () const
+{
+	stringstream s;
+	s << "j2c/" << j2k_sub_directory();
+	return dir (s.str ());
+}
+
+string
+Film::j2k_path (int f, bool tmp) const
+{
+	stringstream s;
+	s << j2k_dir() << "/";
+	s.width (8);
+	s << setfill('0') << f << ".j2c";
+
+	if (tmp) {
+		s << ".tmp";
+	}
+
+	return s.str ();
+}

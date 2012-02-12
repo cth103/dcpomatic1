@@ -100,6 +100,7 @@ FilmViewer::thumbs_changed ()
 	if (_film && _film->num_thumbs() > 0) {
 		_position_slider.set_range (0, _film->num_thumbs () - 1);
 	} else {
+		_image.clear ();
 		_position_slider.set_range (0, 1);
 	}
 	
@@ -121,6 +122,7 @@ FilmViewer::set_film (Film* f)
 	_film = f;
 
 	if (!_film) {
+		_image.clear ();
 		return;
 	}
 	

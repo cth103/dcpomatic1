@@ -29,8 +29,6 @@ public:
 	~Image ();
 	
 	void encode ();
-
-	static std::string j2k_path (Film const *, int, bool);
 	
 private:
 	
