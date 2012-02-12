@@ -31,7 +31,7 @@ public:
 	void encode ();
 	
 private:
-	std::string j2k_name (int, bool) const;
+	std::string j2k_path (int, bool) const;
 	
 	Film const * _film;
 	int _frame;

@@ -102,6 +102,8 @@ public:
 	float frames_per_second () const {
 		return _frames_per_second;
 	}
+
+	std::string j2k_sub_directory () const;
 	
 	void update_thumbs_non_gui (Progress *);
 	void update_thumbs_gui ();

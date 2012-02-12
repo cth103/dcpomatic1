@@ -74,7 +74,6 @@ Image::Image (Film const * f, uint8_t* rgb, int w, int h, int fr)
 
 	/* Copy our RGB into it, converting to XYZ in the process */
 
-	/* XXX: configure this */
 	int const lut_index = Config::instance()->colour_lut_index ();
 	
 	uint8_t* p = rgb;
@@ -185,10 +184,12 @@ Image::encode ()
 
 	int const codestream_length = cio_tell (cio);
 
-	FILE* f = fopen (j2k_name (_frame, true).c_str (), "wb");
+	FILE* f = fopen (j2k_path (_frame, true).c_str (), "wb");
 	
 	if (!f) {
-		throw runtime_error ("Unable to create jpeg2000 file for writing");
+		stringstream s;
+		s << "Unable to create jpeg2000 file `" << j2k_path (_frame, true) << "' for writing";
+		throw runtime_error (s.str ());
 		opj_cio_close(cio);
 		opj_destroy_compress(cinfo);
 	}
@@ -197,7 +198,7 @@ Image::encode ()
 	fclose (f);
 
 	/*  Rename the file from foo.j2c.tmp to foo.j2c now that it is complete */
-	boost::filesystem::rename (j2k_name (_frame, true), j2k_name (_frame, false));
+	boost::filesystem::rename (j2k_path (_frame, true), j2k_path (_frame, false));
 
 	/* Free openjpeg structure */
 	opj_cio_close (cio);
@@ -209,10 +210,13 @@ Image::encode ()
 }
 
 string
-Image::j2k_name (int f, bool tmp) const
+Image::j2k_path (int f, bool tmp) const
 {
+	stringstream d;
+	d << "j2c/" << _film->j2k_sub_directory();
+	
 	stringstream s;
-	s << _film->dir ("j2c") << "/";
+	s << _film->dir (d.str ()) << "/";
 	s.width (8);
 	s << setfill('0') << _frame << ".j2c";
 

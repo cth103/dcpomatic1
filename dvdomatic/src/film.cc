@@ -377,3 +377,13 @@ Film::thumb_file_for_frame (int n) const
 	s << setfill('0') << n << ".tiff";
 	return s.str ();
 }
+
+string
+Film::j2k_sub_directory () const
+{
+	assert (_format);
+	
+	stringstream s;
+	s << _format->nickname() << "_" << _content << "_" << _left_crop << "_" << _right_crop << "_" << _top_crop << "_" << _bottom_crop;
+	return s.str ();
+}
