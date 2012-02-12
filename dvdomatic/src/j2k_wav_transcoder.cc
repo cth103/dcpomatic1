@@ -81,8 +81,11 @@ J2KWAVTranscoder::process_video (uint8_t* rgb, int line_size)
 		return;
 	}
 
-	_queue.push_back (boost::shared_ptr<Image> (new Image (_film, rgb, out_width(), out_height(), video_frame())));
-	_worker_condition.notify_all ();
+	/* Only do the processing if we don't already have a file for this frame */
+	if (!boost::filesystem::exists (Image::j2k_path (_film, video_frame(), false))) {
+		_queue.push_back (boost::shared_ptr<Image> (new Image (_film, rgb, out_width(), out_height(), video_frame())));
+		_worker_condition.notify_all ();
+	}
 }
 
 void
