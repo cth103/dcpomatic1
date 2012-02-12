@@ -31,6 +31,8 @@ public:
 	void encode ();
 	
 private:
+	std::string j2k_name (int, bool) const;
+	
 	Film const * _film;
 	int _frame;
 	opj_image_cmptparm_t _cmptparm[3];

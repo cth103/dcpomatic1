@@ -22,6 +22,7 @@
 #include <iomanip>
 #include <iostream>
 #include <boost/thread.hpp>
+#include <boost/filesystem.hpp>
 #include <sndfile.h>
 #include <openjpeg.h>
 #include "j2k_wav_transcoder.h"
@@ -37,16 +38,16 @@ J2KWAVTranscoder::J2KWAVTranscoder (Film* f, Progress* p, int w, int h)
 	, _process_end (false)
 	, _num_worker_threads (Config::instance()->num_encoding_threads ())
 {
-	/* Create sound output files */
+	/* Create sound output files with .tmp suffixes; we will rename
+	   them if and when we complete.
+	*/
 	for (int i = 0; i < audio_channels(); ++i) {
-		stringstream wav_path;
-		wav_path << _film->dir ("wavs") << "/" << (i + 1) << ".wav";
 		SF_INFO sf_info;
 		sf_info.samplerate = audio_sample_rate();
 		/* We write mono files */
 		sf_info.channels = 1;
 		sf_info.format = SF_FORMAT_WAV | SF_FORMAT_PCM_24;
-		SNDFILE* f = sf_open (wav_path.str().c_str(), SFM_WRITE, &sf_info);
+		SNDFILE* f = sf_open (wav_path(i, true).c_str(), SFM_WRITE, &sf_info);
 		if (f == 0) {
 			throw runtime_error ("Could not create audio output file");
 		}
@@ -129,6 +130,24 @@ J2KWAVTranscoder::process_end ()
 		(*i)->join ();
 		delete *i;
 	}
+
+	/* Rename .wav.tmp files to .wav */
+	for (int i = 0; i < audio_channels(); ++i) {
+		boost::filesystem::rename (wav_path (i, true), wav_path (i, false));
+	}
+}
+
+/** @param i 0-based index */
+string
+J2KWAVTranscoder::wav_path (int i, bool tmp) const
+{
+	stringstream s;
+	s << _film->dir ("wavs") << "/" << (i + 1) << ".wav";
+	if (tmp) {
+		s << ".tmp";
+	}
+
+	return s.str ();
 }
 
 void

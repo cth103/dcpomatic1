@@ -41,6 +41,8 @@ private:
 
 	void encoder_thread ();
 
+	std::string wav_path (int, bool) const;
+
 	std::vector<SNDFILE*> _sound_files;
 	int _deinterleave_buffer_size;
 	uint8_t* _deinterleave_buffer;

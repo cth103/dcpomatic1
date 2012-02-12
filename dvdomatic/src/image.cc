@@ -26,6 +26,7 @@
 #include <iomanip>
 #include <sstream>
 #include <iostream>
+#include <boost/filesystem.hpp>
 #include "film.h"
 #include "image.h"
 #include "lut.h"
@@ -184,11 +185,7 @@ Image::encode ()
 
 	int const codestream_length = cio_tell (cio);
 
-	stringstream j2c;
-	j2c << _film->dir ("j2c") << "/";
-	j2c.width (8);
-	j2c << setfill('0') << _frame << ".j2c";
-	FILE* f = fopen (j2c.str().c_str (), "wb");
+	FILE* f = fopen (j2k_name (_frame, true).c_str (), "wb");
 	
 	if (!f) {
 		throw runtime_error ("Unable to create jpeg2000 file for writing");
@@ -199,6 +196,9 @@ Image::encode ()
 	fwrite (cio->buffer, 1, codestream_length, f);
 	fclose (f);
 
+	/*  Rename the file from foo.j2c.tmp to foo.j2c now that it is complete */
+	boost::filesystem::rename (j2k_name (_frame, true), j2k_name (_frame, false));
+
 	/* Free openjpeg structure */
 	opj_cio_close (cio);
 	opj_destroy_compress (cinfo);
@@ -206,4 +206,19 @@ Image::encode ()
 	/* Free user parameters structure */
 	free (parameters.cp_comment);
 	free (parameters.cp_matrice);
+}
+
+string
+Image::j2k_name (int f, bool tmp) const
+{
+	stringstream s;
+	s << _film->dir ("j2c") << "/";
+	s.width (8);
+	s << setfill('0') << _frame << ".j2c";
+
+	if (tmp) {
+		s << ".tmp";
+	}
+
+	return s.str ();
 }
