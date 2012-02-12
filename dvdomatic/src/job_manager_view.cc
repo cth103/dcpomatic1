@@ -27,6 +27,8 @@ using namespace std;
 /* Must be called in the GUI thread */
 JobManagerView::JobManagerView ()
 {
+	_scroller.set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_ALWAYS);
+	
 	_store = Gtk::TreeStore::create (_columns);
 	_view.set_model (_store);
 	_view.append_column ("Name", _columns.name);
@@ -37,7 +39,11 @@ JobManagerView::JobManagerView ()
 	c->add_attribute (r->property_value(), _columns.progress);
 	c->add_attribute (r->property_text(), _columns.resolution);
 
-	_view.show_all ();
+	_scroller.add (_view);
+	_scroller.show_all ();
+
+	_scroller.set_size_request (-1, 150);
+	
 	update ();
 }
 

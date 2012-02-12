@@ -28,12 +28,13 @@ public:
 	JobManagerView ();
 
 	Gtk::Widget& get_widget () {
-		return _view;
+		return _scroller;
 	}
 
 	void update ();
 
 private:
+	Gtk::ScrolledWindow _scroller;
 	Gtk::TreeView _view;
 	Glib::RefPtr<Gtk::TreeStore> _store;
 
