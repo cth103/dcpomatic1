@@ -197,7 +197,7 @@ Image::encode ()
 	fwrite (cio->buffer, 1, codestream_length, f);
 	fclose (f);
 
-	/*  Rename the file from foo.j2c.tmp to foo.j2c now that it is complete */
+	/* Rename the file from foo.j2c.tmp to foo.j2c now that it is complete */
 	boost::filesystem::rename (_film->j2k_path (_frame, true), _film->j2k_path (_frame, false));
 
 	/* Free openjpeg structure */
