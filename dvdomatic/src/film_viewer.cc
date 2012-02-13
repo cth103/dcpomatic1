@@ -144,7 +144,7 @@ FilmViewer::scaled_pixbuf_size () const
 
 	float ratio = 1;
 	if (_film->format()) {
-		ratio = _film->format()->ratio_as_float() * _film->height() / _film->width();
+		ratio = _film->format()->ratio_as_float() * ch / cw;
 	}
 
 	Gtk::Allocation const a = _scroller.get_allocation ();

@@ -316,6 +316,8 @@ Transcoder::setup_video_filters ()
 		}
 		filters += fs.str ();
 	}
+
+	cout << "-vf " << filters << "\n";
 	
 	avfilter_register_all ();
 	
@@ -471,6 +473,8 @@ Transcoder::setup_post_process_filters ()
 	if (s.second.empty ()) {
 		return;
 	}
+
+	cout << "-pp " << s.second << "\n";
 	
 	_pp_mode = pp_get_mode_by_name_and_quality (s.second.c_str(), PP_QUALITY_MAX);
 	_pp_context = pp_get_context (_post_filter_width, _post_filter_height, PP_FORMAT_420 | PP_CPU_CAPS_MMX2);

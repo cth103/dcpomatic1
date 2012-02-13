@@ -29,6 +29,7 @@
 #include "format.h"
 #include "tiff_transcoder.h"
 #include "job.h"
+#include "filter.h"
 
 using namespace std;
 
@@ -383,9 +384,14 @@ string
 Film::j2k_sub_directory () const
 {
 	assert (_format);
+
+	pair<string, string> f = Filter::ffmpeg_strings (get_filters ());
 	
 	stringstream s;
-	s << _format->nickname() << "_" << _content << "_" << _left_crop << "_" << _right_crop << "_" << _top_crop << "_" << _bottom_crop;
+	s << _format->nickname()
+	  << "_" << _content
+	  << "_" << _left_crop << "_" << _right_crop << "_" << _top_crop << "_" << _bottom_crop
+	  << "_" << f.first << "_" << f.second;
 	return s.str ();
 }
 

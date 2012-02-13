@@ -54,16 +54,16 @@ Filter::setup_filters ()
 	_filters.push_back (new Filter ("ppmd", "Median deinterlacer", "", "md"));
 	_filters.push_back (new Filter ("ppfd", "FFMPEG deinterlacer", "", "fd"));
 	_filters.push_back (new Filter ("ppfd", "FIR low-pass deinterlacer", "", "l5"));
-	_filters.push_back (new Filter ("mcdeint", "Motion compensating deinterlacer", "", "mcdeint"));
-	_filters.push_back (new Filter ("kerndeint", "Kernel deinterlacer", "", "kerndeint"));
+	_filters.push_back (new Filter ("mcdeint", "Motion compensating deinterlacer", "mcdeint", ""));
+	_filters.push_back (new Filter ("kerndeint", "Kernel deinterlacer", "kerndeint", ""));
 	_filters.push_back (new Filter ("pptn", "Temporal noise reducer", "", "tn"));
 	_filters.push_back (new Filter ("ppfq", "Force quantizer", "", "fq"));
 	_filters.push_back (new Filter ("gradfun", "Gradient debander", "gradfun", ""));
-	_filters.push_back (new Filter ("unsharp", "Unsharp mask and Gaussian blur", "", "unsharp"));
-	_filters.push_back (new Filter ("denoise3d", "3D denoiser", "", "denoise3d"));
-	_filters.push_back (new Filter ("hqdn3d", "High quality 3D denoiser", "", "hqdn3d"));
-	_filters.push_back (new Filter ("telecine", "Telecine filter", "", "telecine"));
-	_filters.push_back (new Filter ("ow", "Overcomplete wavelet denoiser", "", "ow"));
+	_filters.push_back (new Filter ("unsharp", "Unsharp mask and Gaussian blur", "unsharp", ""));
+	_filters.push_back (new Filter ("denoise3d", "3D denoiser", "denoise3d", ""));
+	_filters.push_back (new Filter ("hqdn3d", "High quality 3D denoiser", "hqdn3d", ""));
+	_filters.push_back (new Filter ("telecine", "Telecine filter", "telecine", ""));
+	_filters.push_back (new Filter ("ow", "Overcomplete wavelet denoiser", "mp=ow", ""));
 }
 
 pair<string, string>
