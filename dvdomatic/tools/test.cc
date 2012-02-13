@@ -1,7 +1,7 @@
 #include <iostream>
 #include "film.h"
 #include "format.h"
-#include "tiff_transcoder.h"
+#include "tiff_encoder.h"
 #include "transcode_job.h"
 #include "job_manager.h"
 

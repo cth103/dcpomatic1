@@ -25,25 +25,33 @@
 #include <boost/filesystem.hpp>
 #include <sndfile.h>
 #include <openjpeg.h>
-#include "j2k_wav_transcoder.h"
+#include "j2k_wav_encoder.h"
 #include "film.h"
 #include "config.h"
+#include "decoder.h"
 
 using namespace std;
 
-J2KWAVTranscoder::J2KWAVTranscoder (Film* f, Job* j, int w, int h)
-	: Transcoder (f, j, w, h)
-	, _deinterleave_buffer_size (8192)
+J2KWAVEncoder::J2KWAVEncoder ()
+	: _deinterleave_buffer_size (8192)
 	, _deinterleave_buffer (0)
 	, _process_end (false)
 	, _num_worker_threads (Config::instance()->num_encoding_threads ())
 {
+
+}
+
+void
+J2KWAVEncoder::set_decoder (Decoder* d)
+{
+	Encoder::set_decoder (d);
+	
 	/* Create sound output files with .tmp suffixes; we will rename
 	   them if and when we complete.
 	*/
-	for (int i = 0; i < audio_channels(); ++i) {
+	for (int i = 0; i < _decoder->audio_channels(); ++i) {
 		SF_INFO sf_info;
-		sf_info.samplerate = audio_sample_rate();
+		sf_info.samplerate = d->audio_sample_rate();
 		/* We write mono files */
 		sf_info.channels = 1;
 		sf_info.format = SF_FORMAT_WAV | SF_FORMAT_PCM_24;
@@ -58,7 +66,7 @@ J2KWAVTranscoder::J2KWAVTranscoder (Film* f, Job* j, int w, int h)
 	_deinterleave_buffer = new uint8_t[_deinterleave_buffer_size];
 }
 
-J2KWAVTranscoder::~J2KWAVTranscoder ()
+J2KWAVEncoder::~J2KWAVEncoder ()
 {
 	delete[] _deinterleave_buffer;
 
@@ -68,7 +76,7 @@ J2KWAVTranscoder::~J2KWAVTranscoder ()
 }	
 
 void
-J2KWAVTranscoder::process_video (uint8_t* rgb, int line_size)
+J2KWAVEncoder::process_video (uint8_t* rgb, int line_size, int frame)
 {
 	boost::mutex::scoped_lock lock (_worker_mutex);
 
@@ -82,14 +90,14 @@ J2KWAVTranscoder::process_video (uint8_t* rgb, int line_size)
 	}
 
 	/* Only do the processing if we don't already have a file for this frame */
-	if (!boost::filesystem::exists (_film->j2k_path (video_frame(), false))) {
-		_queue.push_back (boost::shared_ptr<Image> (new Image (_film, rgb, out_width(), out_height(), video_frame())));
+	if (!boost::filesystem::exists (_decoder->film()->j2k_path (frame, false))) {
+		_queue.push_back (boost::shared_ptr<Image> (new Image (_decoder->film(), rgb, _decoder->out_width(), _decoder->out_height(), frame)));
 		_worker_condition.notify_all ();
 	}
 }
 
 void
-J2KWAVTranscoder::encoder_thread ()
+J2KWAVEncoder::encoder_thread ()
 {
 	while (1) {
 		boost::mutex::scoped_lock lock (_worker_mutex);
@@ -113,15 +121,15 @@ J2KWAVTranscoder::encoder_thread ()
 }
 
 void
-J2KWAVTranscoder::process_begin ()
+J2KWAVEncoder::process_begin ()
 {
 	for (int i = 0; i < _num_worker_threads; ++i) {
-		_worker_threads.push_back (new boost::thread (boost::bind (&J2KWAVTranscoder::encoder_thread, this)));
+		_worker_threads.push_back (new boost::thread (boost::bind (&J2KWAVEncoder::encoder_thread, this)));
 	}
 }
 
 void
-J2KWAVTranscoder::process_end ()
+J2KWAVEncoder::process_end ()
 {
 	boost::mutex::scoped_lock lock (_worker_mutex);
 	_process_end = true;
@@ -135,17 +143,17 @@ J2KWAVTranscoder::process_end ()
 	}
 
 	/* Rename .wav.tmp files to .wav */
-	for (int i = 0; i < audio_channels(); ++i) {
+	for (int i = 0; i < _decoder->audio_channels(); ++i) {
 		boost::filesystem::rename (wav_path (i, true), wav_path (i, false));
 	}
 }
 
 /** @param i 0-based index */
 string
-J2KWAVTranscoder::wav_path (int i, bool tmp) const
+J2KWAVEncoder::wav_path (int i, bool tmp) const
 {
 	stringstream s;
-	s << _film->dir ("wavs") << "/" << (i + 1) << ".wav";
+	s << _decoder->film()->dir ("wavs") << "/" << (i + 1) << ".wav";
 	if (tmp) {
 		s << ".tmp";
 	}
@@ -154,7 +162,7 @@ J2KWAVTranscoder::wav_path (int i, bool tmp) const
 }
 
 void
-J2KWAVTranscoder::process_audio (uint8_t* data, int channels, int data_size)
+J2KWAVEncoder::process_audio (uint8_t* data, int channels, int data_size)
 {
 	/* Size of a sample in bytes */
 	int const sample_size = 2;
@@ -181,7 +189,7 @@ J2KWAVTranscoder::process_audio (uint8_t* data, int channels, int data_size)
 				}
 			}
 			
-			switch (audio_sample_format ()) {
+			switch (_decoder->audio_sample_format ()) {
 			case AV_SAMPLE_FMT_S16:
 				sf_write_short (_sound_files[i], (const short *) _deinterleave_buffer, this_time / sample_size);
 				break;

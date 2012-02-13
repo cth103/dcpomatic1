@@ -17,40 +17,25 @@
 
 */
 
-#include <list>
-#include <boost/thread/condition.hpp>
-#include <boost/thread/mutex.hpp>
+#include <string>
 #include <sndfile.h>
-#include "transcoder.h"
-#include "image.h"
+#include "encoder.h"
 
+class Film;
 class Job;
+class Decoder;
 
-class J2KWAVTranscoder : public Transcoder
+class TIFFEncoder : public Encoder
 {
 public:
-	J2KWAVTranscoder (Film *, Job *, int, int);
-	~J2KWAVTranscoder ();
+	TIFFEncoder (std::string const &);
+	~TIFFEncoder ();
 
-private:
+	void process_begin () {}
+	void process_video (uint8_t *, int, int);
+	void process_audio (uint8_t *, int, int) {}
+	void process_end () {}
 
-	void process_begin ();
-	void process_video (uint8_t *, int);
-	void process_audio (uint8_t *, int, int);
-	void process_end ();
-
-	void encoder_thread ();
-
-	std::string wav_path (int, bool) const;
-
-	std::vector<SNDFILE*> _sound_files;
-	int _deinterleave_buffer_size;
-	uint8_t* _deinterleave_buffer;
-
-	bool _process_end;
-	std::list<boost::shared_ptr<Image> > _queue;
-	std::list<boost::thread *> _worker_threads;
-	int _num_worker_threads;
-	boost::mutex _worker_mutex;
-	boost::condition _worker_condition;
+private:	
+	std::string _tiffs;
 };

@@ -19,9 +19,10 @@
 
 #include <stdexcept>
 #include "transcode_job.h"
-#include "j2k_wav_transcoder.h"
+#include "j2k_wav_encoder.h"
 #include "film.h"
 #include "format.h"
+#include "transcoder.h"
 
 using namespace std;
 
@@ -44,7 +45,8 @@ TranscodeJob::run ()
 {
 	try {
 
-		J2KWAVTranscoder w (_film, this, _film->format()->dci_width(), _film->format()->dci_height());
+		J2KWAVEncoder e;
+		Transcoder w (_film, this, &e, _film->format()->dci_width(), _film->format()->dci_height());
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

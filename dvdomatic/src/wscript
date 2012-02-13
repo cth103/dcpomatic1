@@ -6,9 +6,9 @@ def build(bld):
     obj.lib    = 'tiff'
     obj.source = """
     	         film.cc
-	         tiff_transcoder.cc
+	         tiff_encoder.cc
 		 format.cc
-		 transcoder.cc
+		 decoder.cc
 		 film_viewer.cc
 		 film_editor.cc
 		 util.cc
@@ -21,7 +21,7 @@ def build(bld):
 		 make_mxf_job.cc
 		 make_dcp_job.cc
 		 content_type.cc
-		 j2k_wav_transcoder.cc
+		 j2k_wav_encoder.cc
 		 image.cc
 		 config.cc
 		 lut.cc
@@ -29,5 +29,7 @@ def build(bld):
 		 filter_view.cc
 		 filter_dialog.cc
 		 filter.cc
+		 transcoder.cc
+		 encoder.cc
 		 """
     obj.target = 'dvdomatic'

@@ -27,9 +27,10 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include "film.h"
 #include "format.h"
-#include "tiff_transcoder.h"
+#include "tiff_encoder.h"
 #include "job.h"
 #include "filter.h"
+#include "transcoder.h"
 
 using namespace std;
 
@@ -274,10 +275,10 @@ Film::set_content (string const & c)
 	_content = f;
 	Changed (Content);
 
-	/* Create a temporary transcoder so that we can get information
+	/* Create a temporary decoder so that we can get information
 	   about the content.
 	*/
-	Transcoder d (this, 0, 1024, 1024);
+	Decoder d (this, 0, 1024, 1024);
 	_width = d.native_width ();
 	_height = d.native_height ();
 	_frames_per_second = d.frames_per_second ();
@@ -324,9 +325,10 @@ Film::update_thumbs_non_gui (Job* job)
 	string const tdir = dir ("thumbs");
 
 	job->descend (1);
-	TIFFTranscoder w (this, job, _width, _height, tdir);
-	w.apply_crop (false);
-	w.set_decode_video_period (w.length_in_frames() / number);
+	TIFFEncoder e (tdir);
+	Transcoder w (this, job, &e, _width, _height);
+	w.decoder()->apply_crop (false);
+	w.decoder()->set_decode_video_period (w.decoder()->length_in_frames() / number);
 	w.go ();
 	job->ascend ();
 
