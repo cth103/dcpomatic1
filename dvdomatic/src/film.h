@@ -28,6 +28,7 @@
 
 class Format;
 class Job;
+class Filter;
 
 class Film
 {
@@ -65,6 +66,12 @@ public:
 	Format* format () const {
 		return _format;
 	}
+
+	std::vector<Filter*> get_filters () const {
+		return _filters;
+	}
+
+	void set_filters (std::vector<Filter*> const &);
 
 	std::string dcp_long_name () const {
 		return _dcp_long_name;
@@ -120,6 +127,7 @@ public:
 		RightCrop,
 		TopCrop,
 		BottomCrop,
+		Filters,
 		Size,
 		Content,
 		FilmFormat,
@@ -160,6 +168,7 @@ private:
 	int _top_crop;
 	/** Number of pixels to crop from the bottom of the original picture */
 	int _bottom_crop;
+	std::vector<Filter*> _filters;
 
 	/* Data which is cached to speed things up */
 

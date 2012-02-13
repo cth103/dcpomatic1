@@ -412,3 +412,11 @@ Film::j2k_path (int f, bool tmp) const
 
 	return s.str ();
 }
+
+void
+Film::set_filters (vector<Filter*> const & f)
+{
+	cout << "now " << f.size() << " active.\n";
+	_filters = f;
+	Changed (Filters);
+}

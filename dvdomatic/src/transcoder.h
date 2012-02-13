@@ -22,6 +22,7 @@
 #include <stdint.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
+#include <libpostproc/postprocess.h>
 }
 
 struct AVFilterGraph;
@@ -95,8 +96,9 @@ private:
 
 	void setup_general ();
 	void setup_video ();
-	void setup_video_filters (std::string const &);
+	void setup_video_filters ();
 	void setup_audio ();
+	void setup_post_process_filters ();
 
 	Job* _job;
 	int _nframes;
@@ -128,4 +130,14 @@ private:
 	bool _decode_audio;
 
 	bool _apply_crop;
+
+	int _post_filter_width;
+	int _post_filter_height;
+
+	/** libpostprocess mode, or 0 if no post-processing is to be done */
+	pp_mode* _pp_mode;
+	/** libpostprocess context, 0 if no post-processing is to be done */
+	pp_context* _pp_context;
+	uint8_t** _pp_buffer;
+	int _pp_stride[3];
 };

@@ -28,12 +28,15 @@
 #include "make_dcp_job.h"
 #include "job_manager.h"
 #include "util.h"
+#include "filter_dialog.h"
+#include "filter.h"
 
 using namespace std;
 using namespace Gtk;
 
 FilmEditor::FilmEditor (Film* f)
 	: _film (f)
+	, _filters_button ("Edit...")
 	, _update_thumbs_button ("Update Thumbs")
 	, _save_metadata_button ("Save Metadata")
 	, _make_dcp_button ("Make DCP")
@@ -75,6 +78,9 @@ FilmEditor::FilmEditor (Film* f)
 	_bottom_crop.set_range (0, 1024);
 	_bottom_crop.set_increments (1, 16);
 	_bottom_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::bottom_crop_changed));
+
+	_filters.set_alignment (0, 0.5);
+	_filters_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::edit_filters_clicked));
 
 	vector<ContentType*> const ct = ContentType::get_all ();
 	for (vector<ContentType*>::const_iterator i = ct.begin(); i != ct.end(); ++i) {
@@ -129,6 +135,10 @@ FilmEditor::FilmEditor (Film* f)
 	++n;
 	t->attach (left_aligned_label ("Bottom Crop"), 0, 1, n, n + 1);
 	t->attach (_bottom_crop, 1, 2, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("Filters"), 0, 1, n, n + 1);
+	t->attach (_filters, 1, 2, n, n + 1);
+	t->attach (_filters_button, 2, 3, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Original Size"), 0, 1, n, n + 1);
 	t->attach (_original_size, 1, 2, n, n + 1);
@@ -266,6 +276,12 @@ FilmEditor::film_changed (Film::Property p)
 	case Film::BottomCrop:
 		_bottom_crop.set_value (_film->bottom_crop ());
 		break;
+	case Film::Filters:
+	{
+		pair<string, string> p = Filter::ffmpeg_strings (_film->get_filters ());
+		_filters.set_text (p.first + " " + p.second);
+		break;
+	}
 	case Film::Name:
 		_name.set_text (_film->name ());
 		break;
@@ -382,4 +398,11 @@ FilmEditor::set_things_sensitive (bool s)
 	_update_thumbs_button.set_sensitive (s);
 	_save_metadata_button.set_sensitive (s);
 	_make_dcp_button.set_sensitive (s);
+}
+
+void
+FilmEditor::edit_filters_clicked ()
+{
+	FilterDialog d (_film);
+	d.run ();
 }

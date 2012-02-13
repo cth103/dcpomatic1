@@ -2,7 +2,7 @@ def build(bld):
     obj = bld(features = 'cxx cxxshlib')
     obj.name   = 'libdvdomatic'
     obj.export_includes = ['.']
-    obj.uselib = 'GLIB AVFORMAT AVFILTER SWSCALE SWRESAMPLE SNDFILE BOOST_FILESYSTEM BOOST_THREAD GTKMM OPENJPEG'
+    obj.uselib = 'GLIB AVFORMAT AVFILTER SWSCALE SWRESAMPLE SNDFILE BOOST_FILESYSTEM BOOST_THREAD GTKMM OPENJPEG POSTPROC'
     obj.lib    = 'tiff'
     obj.source = """
     	         film.cc
@@ -26,5 +26,8 @@ def build(bld):
 		 config.cc
 		 lut.cc
 		 config_dialog.cc
+		 filter_view.cc
+		 filter_dialog.cc
+		 filter.cc
 		 """
     obj.target = 'dvdomatic'

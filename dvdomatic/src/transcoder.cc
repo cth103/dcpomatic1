@@ -30,12 +30,14 @@ extern "C" {
 #include <libavfilter/avfiltergraph.h>
 #include <libavfilter/avcodec.h>
 #include <libavfilter/buffersink.h>
+#include <libpostproc/postprocess.h>
 }
 #include <sndfile.h>
 #include "film.h"
 #include "format.h"
 #include "transcoder.h"
 #include "job.h"
+#include "filter.h"
 
 using namespace std;
 
@@ -63,6 +65,10 @@ Transcoder::Transcoder (Film const * f, Job* j, int w, int h, int N)
 	, _video_frame (0)
 	, _decode_audio (true)
 	, _apply_crop (true)
+	, _post_filter_width (0)
+	, _post_filter_height (0)
+	, _pp_mode (0)
+	, _pp_context (0)
 {
 	setup_general ();
 	setup_video ();
@@ -86,6 +92,22 @@ Transcoder::~Transcoder ()
 	av_free (_frame_out);
 	av_free (_frame_in);
 	avformat_close_input (&_format_context);
+
+	if (_pp_mode) {
+		pp_free_mode (_pp_mode);
+	}
+
+	if (_pp_context) {
+		pp_free_context (_pp_context);
+	}
+
+	if (_pp_buffer) {
+		for (int i = 0; i < 3; ++i) {
+			delete[] _pp_buffer[i];
+		}
+	}
+
+	delete[] _pp_buffer;
 }	
 
 void
@@ -150,16 +172,18 @@ Transcoder::setup_video ()
 
 	avpicture_fill ((AVPicture *) _frame_out, _frame_out_buffer, PIX_FMT_RGB24, _out_width, _out_height);
 
-	int post_filter_width = _video_codec_context->width;
-	int post_filter_height = _video_codec_context->height;
+	_post_filter_width = _video_codec_context->width;
+	_post_filter_height = _video_codec_context->height;
 	
 	if (_apply_crop) {
-		post_filter_width -= _film->left_crop() + _film->right_crop();
-		post_filter_height -= _film->top_crop() + _film->bottom_crop();		
+		_post_filter_width -= _film->left_crop() + _film->right_crop();
+		_post_filter_height -= _film->top_crop() + _film->bottom_crop();		
 	}
 
+	setup_post_process_filters ();
+
 	_conversion_context = sws_getContext (
-		post_filter_width, post_filter_height, _video_codec_context->pix_fmt,
+		_post_filter_width, _post_filter_height, _video_codec_context->pix_fmt,
 		_out_width, _out_height, PIX_FMT_RGB24,
 		SWS_BICUBIC, 0, 0, 0
 		);
@@ -168,11 +192,7 @@ Transcoder::setup_video ()
 		throw runtime_error ("Could not obtain YUV -> RGB conversion context");
 	}
 
-	stringstream fs;
-	if (_apply_crop) {
-		fs << "crop=" << post_filter_width << ":" << post_filter_height << ":" << _film->left_crop() << ":" << _film->top_crop() << " ";
-	}
-	setup_video_filters (fs.str());
+	setup_video_filters ();
 }
 
 void
@@ -221,15 +241,32 @@ Transcoder::pass ()
 				AVFilterBufferRef* filter_buffer;
 				av_buffersink_get_buffer_ref (_buffer_sink_context, &filter_buffer, 0);
 				if (filter_buffer) {
-					
+
+					uint8_t** p = filter_buffer->data;
+					int* s = filter_buffer->linesize;
+
+					if (_pp_mode) {
+						/* Do FFMPEG post-processing */
+						pp_postprocess (
+							(const uint8_t **) filter_buffer->data, filter_buffer->linesize,
+							_pp_buffer, _pp_stride,
+							_post_filter_width, _post_filter_height,
+							0, 0, _pp_mode, _pp_context, 0
+							);
+
+						p = _pp_buffer;
+						s = _pp_stride;
+					}
+
 					/* Scale and convert from YUV to RGB */
 					sws_scale (
 						_conversion_context,
-						filter_buffer->data, filter_buffer->linesize,
+						p, s,
 						0, filter_buffer->video->h,
 						_frame_out->data, _frame_out->linesize
 						);
-					
+
+					/* Pass to our subclass */
 					process_video (_frame_out->data[0], _frame_out->linesize[0]);
 					
 					avfilter_unref_buffer (filter_buffer);
@@ -264,10 +301,23 @@ Transcoder::pass ()
 }
 
 void
-Transcoder::setup_video_filters (string const & filters)
+Transcoder::setup_video_filters ()
 {
 	int r;
+	
+	string filters = Filter::ffmpeg_strings (_film->get_filters ()).first;
 
+	cout << "video filters " << filters << "\n";
+	
+	if (_apply_crop) {
+		stringstream fs;
+		fs << "crop=" << _post_filter_width << ":" << _post_filter_height << ":" << _film->left_crop() << ":" << _film->top_crop() << " ";
+		if (!filters.empty ()) {
+			filters += ",";
+		}
+		filters += fs.str ();
+	}
+	
 	avfilter_register_all ();
 	
 	AVFilterGraph* graph = avfilter_graph_alloc();
@@ -415,3 +465,20 @@ Transcoder::go ()
 	process_end ();
 }
 
+void
+Transcoder::setup_post_process_filters ()
+{
+	pair<string, string> s = Filter::ffmpeg_strings (_film->get_filters ());
+	if (s.second.empty ()) {
+		return;
+	}
+	
+	_pp_mode = pp_get_mode_by_name_and_quality (s.second.c_str(), PP_QUALITY_MAX);
+	_pp_context = pp_get_context (_post_filter_width, _post_filter_height, PP_FORMAT_420 | PP_CPU_CAPS_MMX2);
+
+	_pp_buffer = new uint8_t*[3];
+	for (int i = 0; i < 3; ++i) {
+		_pp_buffer[i] = new uint8_t[_post_filter_width * _post_filter_height];
+		_pp_stride[i] = _post_filter_width * 3;
+	}
+}

@@ -26,6 +26,7 @@
 #include "format.h"
 #include "config_dialog.h"
 #include "config.h"
+#include "filter.h"
 
 using namespace std;
 
@@ -94,6 +95,7 @@ int
 main (int argc, char* argv[])
 {
 	Format::setup_formats ();
+	Filter::setup_filters ();
 	ContentType::setup_content_types ();
 	
 	Gtk::Main kit (argc, argv);

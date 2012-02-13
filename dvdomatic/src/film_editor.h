@@ -46,6 +46,7 @@ private:
 	void film_changed (Film::Property);
 
 	/* Button clicks */
+	void edit_filters_clicked ();
 	void update_thumbs_clicked ();
 	void save_metadata_clicked ();
 	void make_dcp_clicked ();
@@ -62,6 +63,8 @@ private:
 	Gtk::SpinButton _right_crop;
 	Gtk::SpinButton _top_crop;
 	Gtk::SpinButton _bottom_crop;
+	Gtk::Label _filters;
+	Gtk::Button _filters_button;
 	Gtk::Entry _dcp_long_name;
 	Gtk::Entry _dcp_pretty_name;
 	Gtk::ComboBoxText _dcp_content_type;
