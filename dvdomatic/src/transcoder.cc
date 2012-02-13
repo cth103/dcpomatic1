@@ -102,7 +102,7 @@ Transcoder::~Transcoder ()
 	}
 
 	if (_pp_buffer) {
-		for (int i = 0; i < 3; ++i) {
+		for (int i = 0; i < 4; ++i) {
 			delete[] _pp_buffer[i];
 		}
 	}
@@ -476,9 +476,9 @@ Transcoder::setup_post_process_filters ()
 	_pp_mode = pp_get_mode_by_name_and_quality (s.second.c_str(), PP_QUALITY_MAX);
 	_pp_context = pp_get_context (_post_filter_width, _post_filter_height, PP_FORMAT_420 | PP_CPU_CAPS_MMX2);
 
-	_pp_buffer = new uint8_t*[3];
-	for (int i = 0; i < 3; ++i) {
+	_pp_buffer = new uint8_t*[4];
+	for (int i = 0; i < 4; ++i) {
 		_pp_buffer[i] = new uint8_t[_post_filter_width * _post_filter_height];
-		_pp_stride[i] = _post_filter_width * 3;
+		_pp_stride[i] = _post_filter_width;
 	}
 }
