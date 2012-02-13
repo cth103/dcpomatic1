@@ -23,13 +23,13 @@
 
 using namespace std;
 
-FilterView::FilterView (vector<Filter*> const & active)
+FilterView::FilterView (vector<Filter const *> const & active)
 {
 	_box.set_spacing (4);
 	
-	vector<Filter*> filters = Filter::get_all ();
+	vector<Filter const *> filters = Filter::get_all ();
 
-	for (vector<Filter*>::iterator i = filters.begin(); i != filters.end(); ++i) {
+	for (vector<Filter const *>::iterator i = filters.begin(); i != filters.end(); ++i) {
 		Gtk::CheckButton* b = Gtk::manage (new Gtk::CheckButton ((*i)->name()));
 		bool const a = find (active.begin(), active.end(), *i) != active.end ();
 		b->set_active (a);
@@ -48,17 +48,17 @@ FilterView::get_widget ()
 }
 
 void
-FilterView::filter_toggled (Filter* f)
+FilterView::filter_toggled (Filter const * f)
 {
 	_filters[f] = !_filters[f];
 	ActiveChanged ();
 }
 
-vector<Filter*>
+vector<Filter const*>
 FilterView::get_active () const
 {
-	vector<Filter*> active;
-	for (map<Filter *, bool>::const_iterator i = _filters.begin(); i != _filters.end(); ++i) {
+	vector<Filter const *> active;
+	for (map<Filter const *, bool>::const_iterator i = _filters.begin(); i != _filters.end(); ++i) {
 		if (i->second) {
 			active.push_back (i->first);
 		}

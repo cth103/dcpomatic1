@@ -424,7 +424,7 @@ Film::j2k_path (int f, bool tmp) const
 }
 
 void
-Film::set_filters (vector<Filter*> const & f)
+Film::set_filters (vector<Filter const *> const & f)
 {
 	_filters = f;
 	Changed (Filters);

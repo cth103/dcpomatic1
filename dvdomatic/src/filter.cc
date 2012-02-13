@@ -21,7 +21,7 @@
 
 using namespace std;
 
-vector<Filter*> Filter::_filters;
+vector<Filter const *> Filter::_filters;
 
 Filter::Filter (string const & i, string const & n, string const & v, string const & p)
 	: _id (i)
@@ -32,7 +32,7 @@ Filter::Filter (string const & i, string const & n, string const & v, string con
 
 }
 
-vector<Filter*>
+vector<Filter const *>
 Filter::get_all ()
 {
 	return _filters;
@@ -67,12 +67,12 @@ Filter::setup_filters ()
 }
 
 pair<string, string>
-Filter::ffmpeg_strings (vector<Filter*> const & filters)
+Filter::ffmpeg_strings (vector<Filter const *> const & filters)
 {
 	string vf;
 	string pp;
 
-	for (vector<Filter*>::const_iterator i = filters.begin(); i != filters.end(); ++i) {
+	for (vector<Filter const *>::const_iterator i = filters.begin(); i != filters.end(); ++i) {
 		if (!(*i)->vf().empty ()) {
 			if (!vf.empty ()) {
 				vf += ",";

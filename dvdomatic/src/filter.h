@@ -41,9 +41,9 @@ public:
 		return _vf;
 	}
 	
-	static std::vector<Filter*> get_all ();
+	static std::vector<Filter const *> get_all ();
 	static void setup_filters ();
-	static std::pair<std::string, std::string> ffmpeg_strings (std::vector<Filter*> const &);
+	static std::pair<std::string, std::string> ffmpeg_strings (std::vector<Filter const *> const &);
 
 private:
 
@@ -52,5 +52,5 @@ private:
 	std::string _vf;
 	std::string _pp;
 
-	static std::vector<Filter*> _filters;
+	static std::vector<Filter const *> _filters;
 };

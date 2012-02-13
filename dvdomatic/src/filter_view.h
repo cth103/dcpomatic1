@@ -25,16 +25,16 @@ class Filter;
 class FilterView
 {
 public:
-	FilterView (std::vector<Filter*> const &);
+	FilterView (std::vector<Filter const *> const &);
 
 	Gtk::Widget & get_widget ();
-	std::vector<Filter*> get_active () const;
+	std::vector<Filter const *> get_active () const;
 
 	sigc::signal0<void> ActiveChanged;
 
 private:
-	void filter_toggled (Filter *);
+	void filter_toggled (Filter const *);
 
 	Gtk::VBox _box;
-	std::map<Filter*, bool> _filters;
+	std::map<Filter const *, bool> _filters;
 };

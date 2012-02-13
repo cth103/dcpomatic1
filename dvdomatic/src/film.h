@@ -67,11 +67,11 @@ public:
 		return _format;
 	}
 
-	std::vector<Filter*> get_filters () const {
+	std::vector<Filter const *> get_filters () const {
 		return _filters;
 	}
 
-	void set_filters (std::vector<Filter*> const &);
+	void set_filters (std::vector<Filter const *> const &);
 
 	std::string dcp_long_name () const {
 		return _dcp_long_name;
@@ -168,7 +168,7 @@ private:
 	int _top_crop;
 	/** Number of pixels to crop from the bottom of the original picture */
 	int _bottom_crop;
-	std::vector<Filter*> _filters;
+	std::vector<Filter const *> _filters;
 
 	/* Data which is cached to speed things up */
 
