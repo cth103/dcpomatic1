@@ -69,6 +69,7 @@ Transcoder::Transcoder (Film const * f, Job* j, int w, int h, int N)
 	, _post_filter_height (0)
 	, _pp_mode (0)
 	, _pp_context (0)
+	, _pp_buffer (0)
 {
 	setup_general ();
 	setup_video ();
