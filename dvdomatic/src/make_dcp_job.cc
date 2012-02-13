@@ -48,7 +48,7 @@ MakeDCPJob::run ()
 	string const d = _film->dir (n);
 	
 	c << "cd " << d << " &&"
-	  << " opendcp_xml -d -a"
+	  << " opendcp_xml -d -a " << n
 	  << " -t \"" << _film->dcp_pretty_name () << "\""
 	  << " -k " << _film->dcp_content_type()->opendcp_name ()
 	  << " --reel " << _film->file ("video.mxf") << " " << _film->file ("audio.mxf");
