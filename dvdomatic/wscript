@@ -13,7 +13,15 @@ def configure(conf):
     conf.check_cfg(package = 'libpostproc', args = '--cflags --libs', uselib_store = 'POSTPROC', mandatory = True)
     conf.check_cfg(package = 'sndfile', args = '--cflags --libs', uselib_store = 'SNDFILE', mandatory = True)
     conf.check_cc(msg = 'Checking for library libtiff', function_name = 'TIFFOpen', header_name = 'tiffio.h', lib = 'tiff', uselib_store = 'TIFF')
-    conf.check_cc(msg = 'Checking for library libopenjpeg', function_name = 'opj_image_create', header_name = 'openjpeg.h', lib = 'openjpeg', uselib_store = 'OPENJPEG')
+    conf.check_cc(fragment  = """
+    			      #include <stdio.h>\n
+			      #include <openjpeg.h>\n
+			      int main () {\n
+			      void* p = (void *) opj_image_create;\n
+			      return 0;\n
+			      }
+			      """, msg = 'Checking for library openjpeg', lib = 'openjpeg', uselib_store = 'OPENJPEG')
+			      
     conf.check_cxx(fragment = """
     			      #include <boost/thread.hpp>\n
     			      int main() { boost::thread t (); }\n
