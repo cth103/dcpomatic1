@@ -51,7 +51,6 @@ void
 FilterView::filter_toggled (Filter* f)
 {
 	_filters[f] = !_filters[f];
-	cout << "toggled " << f->name() << " now " << _filters[f] << "\n";
 	ActiveChanged ();
 }
 

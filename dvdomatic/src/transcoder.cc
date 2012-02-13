@@ -308,8 +308,6 @@ Transcoder::setup_video_filters ()
 	
 	string filters = Filter::ffmpeg_strings (_film->get_filters ()).first;
 
-	cout << "video filters " << filters << "\n";
-	
 	if (_apply_crop) {
 		stringstream fs;
 		fs << "crop=" << _post_filter_width << ":" << _post_filter_height << ":" << _film->left_crop() << ":" << _film->top_crop() << " ";
