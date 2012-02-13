@@ -148,7 +148,7 @@ Film::write_metadata () const
 	f << "left_crop " << _left_crop << "\n";
 	f << "right_crop " << _right_crop << "\n";
 	for (vector<Filter const *>::const_iterator i = _filters.begin(); i != _filters.end(); ++i) {
-		f << "filter " << (*i)->id ();
+		f << "filter " << (*i)->id () << "\n";
 	}
 
 	/* Cached stuff */

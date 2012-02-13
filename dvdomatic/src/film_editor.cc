@@ -373,6 +373,7 @@ FilmEditor::set_film (Film* f)
 	film_changed (Film::RightCrop);
 	film_changed (Film::TopCrop);
 	film_changed (Film::BottomCrop);
+	film_changed (Film::Filters);
 	film_changed (Film::Size);
 	film_changed (Film::Content);
 	film_changed (Film::FramesPerSecond);
