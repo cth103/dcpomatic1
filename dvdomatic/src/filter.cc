@@ -90,3 +90,19 @@ Filter::ffmpeg_strings (vector<Filter const *> const & filters)
 
 	return make_pair (vf, pp);
 }
+
+Filter const *
+Filter::get_from_id (string const & d)
+{
+	vector<Filter const *>::iterator i = _filters.begin ();
+	while (i != _filters.end() && (*i)->id() != d) {
+		++i;
+	}
+
+	if (i == _filters.end ()) {
+		return 0;
+	}
+
+	return *i;
+}
+
