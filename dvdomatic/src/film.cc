@@ -105,6 +105,8 @@ Film::read_metadata ()
 			_dcp_pretty_name = v;
 		} else if (k == "dcp_content_type") {
 			_dcp_content_type = ContentType::get_from_pretty_name (v);
+		} else if (k == "filter") {
+			_filters.push_back (Filter::get_from_id (v));
 		}
 
 		/* Cached stuff */
@@ -144,6 +146,9 @@ Film::write_metadata () const
 	f << "bottom_crop " << _bottom_crop << "\n";
 	f << "left_crop " << _left_crop << "\n";
 	f << "right_crop " << _right_crop << "\n";
+	for (vector<Filter const *>::const_iterator i = _filters.begin(); i != _filters.end(); ++i) {
+		f << "filter " << (*i)->id ();
+	}
 
 	/* Cached stuff */
 	for (vector<int>::const_iterator i = _thumbs.begin(); i != _thumbs.end(); ++i) {
