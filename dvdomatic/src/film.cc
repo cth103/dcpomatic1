@@ -33,13 +33,13 @@
 
 using namespace std;
 
-/** Construct a Film object in a given directory, reading any metadat
+/** Construct a Film object in a given directory, reading any metadata
  *  file that exists in that directory.
  *
  *  @param d Film directory.
  */
 
-Film::Film (string const & d)
+Film::Film (string const & d, bool must_exist)
 	: _directory (d)
 	, _dcp_content_type (0)
 	, _format (0)
@@ -51,6 +51,10 @@ Film::Film (string const & d)
 	, _height (0)
 	, _frames_per_second (0)
 {
+	if (must_exist && !boost::filesystem::exists (_directory)) {
+		throw runtime_error ("film not found");
+	}
+	
 	read_metadata ();
 }
 

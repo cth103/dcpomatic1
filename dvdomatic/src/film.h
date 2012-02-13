@@ -33,7 +33,7 @@ class Filter;
 class Film
 {
 public:
-	Film (std::string const &);
+	Film (std::string const &, bool must_exist = true);
 
 	void write_metadata () const;
 
