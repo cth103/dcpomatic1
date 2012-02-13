@@ -398,6 +398,11 @@ Film::j2k_sub_directory () const
 	  << "_" << _content
 	  << "_" << _left_crop << "_" << _right_crop << "_" << _top_crop << "_" << _bottom_crop
 	  << "_" << f.first << "_" << f.second;
+
+	if (!_extra_j2k_dir.empty ()) {
+		s << "/" << _extra_j2k_dir;
+	}
+	
 	return s.str ();
 }
 
@@ -430,4 +435,10 @@ Film::set_filters (vector<Filter const *> const & f)
 {
 	_filters = f;
 	Changed (Filters);
+}
+
+void
+Film::set_extra_j2k_dir (string const & d)
+{
+	_extra_j2k_dir = d;
 }

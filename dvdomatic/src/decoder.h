@@ -51,8 +51,6 @@ public:
 	int native_width () const;
 	int native_height () const;
 
-	void go ();
-
 	int out_width () const {
 		return _out_width;
 	}
@@ -69,10 +67,7 @@ public:
 		return _film;
 	}
 
-	sigc::signal<void, uint8_t *, int, int> Video;
-	sigc::signal<void, uint8_t *, int, int> Audio;
-	
-protected:
+	void go ();
 
 	enum PassResult {
 		PASS_DONE,
@@ -84,6 +79,11 @@ protected:
 
 	PassResult pass ();
 	
+	sigc::signal<void, uint8_t *, int, int> Video;
+	sigc::signal<void, uint8_t *, int, int> Audio;
+	
+protected:
+
 	bool have_video_stream () const {
 		return _video_stream != -1;
 	}

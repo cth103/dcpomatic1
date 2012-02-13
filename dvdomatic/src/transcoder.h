@@ -18,5 +18,6 @@ public:
 protected:
 	Film* _film;
 	Job* _job;
+	Encoder* _encoder;
 	Decoder _decoder;
 };

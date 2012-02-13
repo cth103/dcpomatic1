@@ -5,6 +5,7 @@
 Transcoder::Transcoder (Film* f, Job* j, Encoder* e, int w, int h, int N)
 	: _film (f)
 	, _job (j)
+	, _encoder (e)
 	, _decoder (f, j, w, h, N)
 {
 	e->set_decoder (&_decoder);
@@ -16,5 +17,7 @@ Transcoder::Transcoder (Film* f, Job* j, Encoder* e, int w, int h, int N)
 void
 Transcoder::go ()
 {
+	_encoder->process_begin ();
 	_decoder.go ();
+	_encoder->process_end ();
 }

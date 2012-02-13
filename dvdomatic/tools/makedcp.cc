@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <boost/program_options.hpp>
 #include "format.h"
 #include "film.h"
 #include "filter.h"
@@ -26,29 +27,59 @@
 #include "make_mxf_job.h"
 #include "make_dcp_job.h"
 #include "job_manager.h"
+#include "ab_transcode_job.h"
 
 using namespace std;
 
 int main (int argc, char* argv[])
 {
-	if (argc != 2) {
-		cerr << "Syntax: " << argv[0] << " <film>\n";
-		exit (EXIT_FAILURE);
-	}
+	bool ab;
+	string film_dir;
+	
+	boost::program_options::options_description desc ("Allowed options");
+	desc.add_options ()
+		("help", "give help")
+		("film", boost::program_options::value<string> (&film_dir), "film")
+		("ab", boost::program_options::value<bool> (&ab)->zero_tokens (), "make an AB comparison with and without filtering")
+		;
+	boost::program_options::positional_options_description pos;
+	pos.add ("film", 1);
 
+	boost::program_options::variables_map vm;
+
+	/* Ha ha ha! */
+	boost::program_options::parsed_options parsed = boost::program_options::command_line_parser (argc, argv).
+		options(desc).allow_unregistered().positional(pos).run();
+	
+	boost::program_options::store (parsed, vm);
+	boost::program_options::notify (vm);
+		
 	Format::setup_formats ();
 	Filter::setup_filters ();
 	ContentType::setup_content_types ();
 
 	Film* film = 0;
 	try {
-		film = new Film (argv[1], true);
+		film = new Film (film_dir, true);
 	} catch (runtime_error& e) {
-		cerr << argv[0] << ": error reading film (" << e.what() << ")\n";
+		cerr << argv[0] << ": error reading film `" << film_dir << "' (" << e.what() << ")\n";
 		exit (EXIT_FAILURE);
 	}
 
-	JobManager::instance()->add (new TranscodeJob (film));
+	cout << "\nMaking ";
+	if (ab) {
+		cout << "A/B ";
+	}
+	cout << "DCP for " << film->name() << "\n";
+	cout << "Content: " << film->content() << "\n";
+	pair<string, string> const f = Filter::ffmpeg_strings (film->get_filters ());
+	cout << "Filters: " << f.first << " " << f.second << "\n";
+
+	if (ab) {
+		JobManager::instance()->add (new ABTranscodeJob (film));
+	} else {
+		JobManager::instance()->add (new TranscodeJob (film));
+	}
 	JobManager::instance()->add (new MakeMXFJob (film, MakeMXFJob::VIDEO));
 	JobManager::instance()->add (new MakeMXFJob (film, MakeMXFJob::AUDIO));
 	JobManager::instance()->add (new MakeDCPJob (film));

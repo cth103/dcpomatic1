@@ -46,7 +46,7 @@ public:
 	std::string name () const {
 		return _name;
 	}
-	
+
 	int top_crop () const {
 		return _top_crop;
 	}
@@ -110,6 +110,7 @@ public:
 		return _frames_per_second;
 	}
 
+	void set_extra_j2k_dir (std::string const &);
 	std::string j2k_dir () const;
 	std::string j2k_path (int, bool) const;
 
@@ -180,6 +181,9 @@ private:
 	int _height;
 	/* Frames per second of the source */
 	float _frames_per_second;
+
+	/* Data which is just for the session */
+	std::string _extra_j2k_dir;
 };
 
 #endif

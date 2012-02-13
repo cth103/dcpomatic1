@@ -184,11 +184,13 @@ Image::encode ()
 
 	int const codestream_length = cio_tell (cio);
 
-	FILE* f = fopen (_film->j2k_path (_frame, true).c_str (), "wb");
+	string const tmp_j2k = _film->j2k_path (_frame, true);
+
+	FILE* f = fopen (tmp_j2k.c_str (), "wb");
 	
 	if (!f) {
 		stringstream s;
-		s << "Unable to create jpeg2000 file `" << _film->j2k_path (_frame, true) << "' for writing";
+		s << "Unable to create jpeg2000 file `" << tmp_j2k << "' for writing";
 		throw runtime_error (s.str ());
 		opj_cio_close(cio);
 		opj_destroy_compress(cinfo);
@@ -198,7 +200,7 @@ Image::encode ()
 	fclose (f);
 
 	/* Rename the file from foo.j2c.tmp to foo.j2c now that it is complete */
-	boost::filesystem::rename (_film->j2k_path (_frame, true), _film->j2k_path (_frame, false));
+	boost::filesystem::rename (tmp_j2k, _film->j2k_path (_frame, false));
 
 	/* Free openjpeg structure */
 	opj_cio_close (cio);
