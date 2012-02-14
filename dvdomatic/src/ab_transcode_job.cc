@@ -26,8 +26,9 @@
 
 using namespace std;
 
-ABTranscodeJob::ABTranscodeJob (Film* f)
+ABTranscodeJob::ABTranscodeJob (Film* f, int N)
 	: Job (f)
+	, _num_frames (N)
 {
 
 }
@@ -47,7 +48,7 @@ ABTranscodeJob::run ()
 
 		J2KWAVEncoder e;
 		_film->set_extra_j2k_dir ("ab");
-		ABTranscoder w (_film, this, &e, _film->format()->dci_width(), _film->format()->dci_height());
+		ABTranscoder w (_film, this, &e, _film->format()->dci_width(), _film->format()->dci_height(), _num_frames);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

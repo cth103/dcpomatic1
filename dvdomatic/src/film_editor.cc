@@ -24,6 +24,7 @@
 #include "format.h"
 #include "film.h"
 #include "transcode_job.h"
+#include "ab_transcode_job.h"
 #include "thumbs_job.h"
 #include "make_mxf_job.h"
 #include "make_dcp_job.h"
@@ -39,8 +40,9 @@ FilmEditor::FilmEditor (Film* f)
 	: _film (f)
 	, _filters_button ("Edit...")
 	, _make_dcp_button ("Make DCP")
-	, _make_dcp_whole_radio_button ("Whole Film")
-	, _make_dcp_for_radio_button ("For")
+	, _make_dcp_whole ("Whole Film")
+	, _make_dcp_for ("For")
+	, _make_dcp_ab ("A/B")
 {
 	_vbox.set_border_width (12);
 	_vbox.set_spacing (12);
@@ -153,14 +155,15 @@ FilmEditor::FilmEditor (Film* f)
 	h->set_spacing (12);
 	h->pack_start (_make_dcp_button, false, false);
 	_make_dcp_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked));
-	h->pack_start (_make_dcp_whole_radio_button, false, false);
-	h->pack_start (_make_dcp_for_radio_button, false, false);
-	Gtk::RadioButtonGroup g = _make_dcp_whole_radio_button.get_group ();
-	_make_dcp_for_radio_button.set_group (g);
+	h->pack_start (_make_dcp_whole, false, false);
+	h->pack_start (_make_dcp_for, false, false);
+	Gtk::RadioButtonGroup g = _make_dcp_whole.get_group ();
+	_make_dcp_for.set_group (g);
 	h->pack_start (_make_dcp_for_frames, true, true);
 	h->pack_start (left_aligned_label ("frames"), false, false);
 	_make_dcp_for_frames.set_range (0, 65536);
 	_make_dcp_for_frames.set_increments (24, 60 * 24);
+	h->pack_start (_make_dcp_ab);
 	_vbox.pack_start (*h, false, false);
 }
 
@@ -302,13 +305,19 @@ FilmEditor::make_dcp_clicked ()
 	}
 
 	int N = 0;
-	if (_make_dcp_for_radio_button.get_active ()) {
+	if (_make_dcp_for.get_active ()) {
 		N = _make_dcp_for_frames.get_value ();
 	}
+
+	if (_make_dcp_ab.get_active ()) {
+		JobManager::instance()->add (new ABTranscodeJob (_film, N));
+	} else {
+		JobManager::instance()->add (new TranscodeJob (_film, N));
+	}
 	
-	JobManager::instance()->add (new TranscodeJob (_film, N));
 	JobManager::instance()->add (new MakeMXFJob (_film, MakeMXFJob::VIDEO));
 	JobManager::instance()->add (new MakeMXFJob (_film, MakeMXFJob::AUDIO));
+	JobManager::instance()->add (new MakeDCPJob (_film));
 	JobManager::instance()->add (new MakeDCPJob (_film));
 }
 

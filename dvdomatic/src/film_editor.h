@@ -70,7 +70,8 @@ private:
 	Gtk::Label _frames_per_second;
 
 	Gtk::Button _make_dcp_button;
-	Gtk::RadioButton _make_dcp_whole_radio_button;
-	Gtk::RadioButton _make_dcp_for_radio_button;
+	Gtk::RadioButton _make_dcp_whole;
+	Gtk::RadioButton _make_dcp_for;
 	Gtk::SpinButton _make_dcp_for_frames;
+	Gtk::CheckButton _make_dcp_ab;
 };
