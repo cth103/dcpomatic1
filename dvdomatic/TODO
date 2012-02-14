@@ -1,8 +1,8 @@
 Thumbnails are poorly named
 x-thread signaller
 Restartable jobs somehow
-DCP title not written properly
 restore Tifftranscoder not bothering with audio
 trim decoder public / protected API
-would be nice to not have to initialise encoders with stuff
 maybe TranscodingParameters or something to stop the crap with encoder knowing the decoder
+use something other than TIFF
+THUMBS ARE BEING CROPPED!!!!
