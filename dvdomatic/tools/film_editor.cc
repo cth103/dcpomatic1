@@ -53,6 +53,10 @@ public:
 bool
 maybe_save_then_delete_film ()
 {
+	if (!film) {
+		return false;
+	}
+			
 	if (film->dirty ()) {
 		FilmChangedDialog d;
 		switch (d.run ()) {
