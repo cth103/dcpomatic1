@@ -1,5 +1,5 @@
 def build(bld):
-    for t in ['test', 'testg', 'film_editor', 'makedcp']:
+    for t in ['film_editor', 'makedcp']:
         obj = bld(features = 'cxx cxxprogram')
     	obj.uselib = 'BOOST_THREAD GTKMM BOOST_PROGRAM_OPTIONS'
         obj.use    = 'libdvdomatic'
