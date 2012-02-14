@@ -35,7 +35,6 @@ private:
 	void position_slider_changed ();
 	std::string format_position_slider_value (double) const;
 	void load_thumbnail (int);
-	void thumbs_changed ();
 	void film_changed (Film::Property);
 	void reload_current_thumbnail ();
 	void update_scaled_pixbuf ();

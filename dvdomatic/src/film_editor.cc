@@ -17,6 +17,7 @@
 
 */
 
+#include <iostream>
 #include <gtkmm.h>
 #include <boost/thread.hpp>
 #include "film_editor.h"
@@ -44,57 +45,53 @@ FilmEditor::FilmEditor (Film* f)
 	_vbox.set_border_width (12);
 	_vbox.set_spacing (12);
 	
-	Table* t = manage (new Table);
-	
-	t->set_row_spacings (4);
-	t->set_col_spacings (12);
-
-	/* Set up our widgets and connect to them to find out when they change */
-
+	/* Set up our editing widgets */
 	_directory.set_alignment (0, 0.5);
+	_left_crop.set_range (0, 1024);
+	_left_crop.set_increments (1, 16);
+	_top_crop.set_range (0, 1024);
+	_top_crop.set_increments (1, 16);
+	_right_crop.set_range (0, 1024);
+	_right_crop.set_increments (1, 16);
+	_bottom_crop.set_range (0, 1024);
+	_bottom_crop.set_increments (1, 16);
+	_filters.set_alignment (0, 0.5);
 
 	vector<Format*> fmt = Format::get_all ();
 	for (vector<Format*>::iterator i = fmt.begin(); i != fmt.end(); ++i) {
 		_format.append_text ((*i)->name ());
 	}
 
-	_name.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::name_changed));
-
-	_format.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::format_changed));
-	_content.signal_file_set().connect (sigc::mem_fun (*this, &FilmEditor::content_changed));
-
-	_left_crop.set_range (0, 1024);
-	_left_crop.set_increments (1, 16);
-	_left_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::left_crop_changed));
-
-	_right_crop.set_range (0, 1024);
-	_right_crop.set_increments (1, 16);
-	_right_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::right_crop_changed));
-
-	_top_crop.set_range (0, 1024);
-	_top_crop.set_increments (1, 16);
-	_top_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::top_crop_changed));
-
-	_bottom_crop.set_range (0, 1024);
-	_bottom_crop.set_increments (1, 16);
-	_bottom_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::bottom_crop_changed));
-
-	_filters.set_alignment (0, 0.5);
-	_filters_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::edit_filters_clicked));
-
 	vector<ContentType*> const ct = ContentType::get_all ();
 	for (vector<ContentType*>::const_iterator i = ct.begin(); i != ct.end(); ++i) {
 		_dcp_content_type.append_text ((*i)->pretty_name ());
 	}
 
+	_original_size.set_alignment (0, 0.5);
+	_frames_per_second.set_alignment (0, 0.5);
+	
+	/* And set their values from the Film */
+	set_film (f);
+	
+	/* Now connect to them, since initial values are safely set */
+	_name.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::name_changed));
+	_format.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::format_changed));
+	_content.signal_file_set().connect (sigc::mem_fun (*this, &FilmEditor::content_changed));
+	_left_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::left_crop_changed));
+	_right_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::right_crop_changed));
+	_top_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::top_crop_changed));
+	_bottom_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::bottom_crop_changed));
+	_filters_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::edit_filters_clicked));
 	_dcp_long_name.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_long_name_changed));
 	_dcp_pretty_name.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_pretty_name_changed));
 	_dcp_content_type.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_content_type_changed));
 
-	_original_size.set_alignment (0, 0.5);
-	_frames_per_second.set_alignment (0, 0.5);
-
 	/* Set up the table */
+
+	Table* t = manage (new Table);
+	
+	t->set_row_spacings (4);
+	t->set_col_spacings (12);
 	
 	int n = 0;
 	t->attach (left_aligned_label ("Directory"), 0, 1, n, n + 1);
@@ -161,8 +158,6 @@ FilmEditor::FilmEditor (Film* f)
 	_save_metadata_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::save_metadata_clicked));
 	_make_dcp_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked));
 	_vbox.pack_start (*h, false, false);
-
-	set_film (_film);
 }
 
 Widget&
@@ -301,6 +296,8 @@ FilmEditor::film_changed (Film::Property p)
 		break;
 	case Film::ContentTypeChange:
 		_dcp_content_type.set_active (ContentType::get_as_index (_film->dcp_content_type ()));
+		break;
+	case Film::Thumbs:
 		break;
 	}
 }

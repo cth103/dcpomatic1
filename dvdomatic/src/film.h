@@ -120,8 +120,10 @@ public:
 	int thumb_frame (int) const;
 	std::string thumb_file (int) const;
 
-	sigc::signal0<void> ThumbsChanged;
-	
+	bool dirty () const {
+		return _dirty;
+	}
+
 	enum Property {
 		Name,
 		LeftCrop,
@@ -135,7 +137,8 @@ public:
 		FramesPerSecond,
 		DCPLongName,
 		DCPPrettyName,
-		ContentTypeChange
+		ContentTypeChange,
+		Thumbs
 	};
 
 	sigc::signal1<void, Property> Changed;
@@ -146,6 +149,7 @@ private:
 	void update_dimensions ();
 	std::string thumb_file_for_frame (int) const;
 	std::string j2k_sub_directory () const;
+	void signal_changed (Property);
 
 	/** Directory containing the film metadata */
 	std::string _directory;
@@ -184,6 +188,8 @@ private:
 
 	/* Data which is just for the session */
 	std::string _extra_j2k_dir;
+
+	mutable bool _dirty;
 };
 
 #endif

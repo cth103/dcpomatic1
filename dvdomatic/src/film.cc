@@ -31,6 +31,7 @@
 #include "job.h"
 #include "filter.h"
 #include "transcoder.h"
+#include "util.h"
 
 using namespace std;
 
@@ -51,6 +52,7 @@ Film::Film (string const & d, bool must_exist)
 	, _width (0)
 	, _height (0)
 	, _frames_per_second (0)
+	, _dirty (false)
 {
 	if (must_exist && !boost::filesystem::exists (_directory)) {
 		throw runtime_error ("film not found");
@@ -125,6 +127,8 @@ Film::read_metadata ()
 			_frames_per_second = atof (v.c_str ());
 		}
 	}
+
+	_dirty = false;
 }
 
 void
@@ -163,6 +167,8 @@ Film::write_metadata () const
 	if (_dcp_content_type) {
 		f << "dcp_content_type " << _dcp_content_type->pretty_name () << "\n";
 	}
+
+	_dirty = false;
 }
 
 string
@@ -179,7 +185,7 @@ Film::set_top_crop (int c)
 	}
 	
 	_top_crop = c;
-	Changed (TopCrop);
+	signal_changed (TopCrop);
 }
 
 void
@@ -190,7 +196,7 @@ Film::set_bottom_crop (int c)
 	}
 	
 	_bottom_crop = c;
-	Changed (BottomCrop);
+	signal_changed (BottomCrop);
 }
 
 void
@@ -201,7 +207,7 @@ Film::set_left_crop (int c)
 	}
 	
 	_left_crop = c;
-	Changed (LeftCrop);
+	signal_changed (LeftCrop);
 }
 
 void
@@ -212,35 +218,35 @@ Film::set_right_crop (int c)
 	}
 	
 	_right_crop = c;
-	Changed (RightCrop);
+	signal_changed (RightCrop);
 }
 
 void
 Film::set_format (Format* f)
 {
 	_format = f;
-	Changed (FilmFormat);
+	signal_changed (FilmFormat);
 }
 
 void
 Film::set_dcp_long_name (string const & n)
 {
 	_dcp_long_name = n;
-	Changed (DCPLongName);
+	signal_changed (DCPLongName);
 }
 
 void
 Film::set_dcp_pretty_name (string const & n)
 {
 	_dcp_pretty_name = n;
-	Changed (DCPPrettyName);
+	signal_changed (DCPPrettyName);
 }
 
 void
 Film::set_dcp_content_type (ContentType* t)
 {
 	_dcp_content_type = t;
-	Changed (ContentTypeChange);
+	signal_changed (ContentTypeChange);
 }
 
 string
@@ -253,6 +259,7 @@ void
 Film::set_name (string const & n)
 {
 	_name = n;
+	signal_changed (Name);
 }
 
 /** Set the content file for this film.
@@ -288,8 +295,8 @@ Film::set_content (string const & c)
 	_height = d.native_height ();
 	_frames_per_second = d.frames_per_second ();
 
-	Changed (Size);
-	Changed (FramesPerSecond);
+	signal_changed (Size);
+	signal_changed (FramesPerSecond);
 }
 
 string
@@ -359,7 +366,7 @@ Film::update_thumbs_non_gui (Job* job)
 void
 Film::update_thumbs_gui ()
 {
-	ThumbsChanged ();
+	signal_changed (Thumbs);
 }
 
 int
@@ -439,11 +446,18 @@ void
 Film::set_filters (vector<Filter const *> const & f)
 {
 	_filters = f;
-	Changed (Filters);
+	signal_changed (Filters);
 }
 
 void
 Film::set_extra_j2k_dir (string const & d)
 {
 	_extra_j2k_dir = d;
+}
+
+void
+Film::signal_changed (Property p)
+{
+	_dirty = true;
+	Changed (p);
 }

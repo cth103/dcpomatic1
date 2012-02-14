@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2000-2007 Paul Davis
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,3 +23,4 @@
 
 extern std::string seconds_to_hms (int);
 extern Gtk::Label & left_aligned_label (std::string const &);
+extern void stacktrace (std::ostream&, int);

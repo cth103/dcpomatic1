@@ -95,23 +95,19 @@ FilmViewer::format_position_slider_value (double v) const
 }
 
 void
-FilmViewer::thumbs_changed ()
-{
-	if (_film && _film->num_thumbs() > 0) {
-		_position_slider.set_range (0, _film->num_thumbs () - 1);
-	} else {
-		_image.clear ();
-		_position_slider.set_range (0, 1);
-	}
-	
-	_position_slider.set_value (0);
-	reload_current_thumbnail ();
-}
-
-void
 FilmViewer::film_changed (Film::Property p)
 {
 	if (p == Film::LeftCrop || p == Film::RightCrop || p == Film::TopCrop || p == Film::BottomCrop) {
+		reload_current_thumbnail ();
+	} else if (p == Film::Thumbs) {
+		if (_film && _film->num_thumbs() > 0) {
+			_position_slider.set_range (0, _film->num_thumbs () - 1);
+		} else {
+			_image.clear ();
+			_position_slider.set_range (0, 1);
+		}
+		
+		_position_slider.set_value (0);
 		reload_current_thumbnail ();
 	}
 }
@@ -127,9 +123,8 @@ FilmViewer::set_film (Film* f)
 	}
 	
 	_film->Changed.connect (sigc::mem_fun (*this, &FilmViewer::film_changed));
-	_film->ThumbsChanged.connect (sigc::mem_fun (*this, &FilmViewer::thumbs_changed));
-		
-	thumbs_changed ();
+
+	film_changed (Film::Thumbs);
 }
 
 pair<int, int>

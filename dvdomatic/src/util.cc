@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2000-2007 Paul Davis
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +21,8 @@
 #include <sstream>
 #include <iomanip>
 #include <iostream>
+#include <execinfo.h>
+#include <cxxabi.h>
 #include "util.h"
 
 using namespace std;
@@ -58,3 +61,56 @@ left_aligned_label (string const & t)
 	return *l;
 }
 
+static string
+demangle (string const & l)
+{
+	string::size_type const b = l.find_first_of ("(");
+	if (b == string::npos) {
+		return l;
+	}
+
+	string::size_type const p = l.find_last_of ("+");
+	if (p == string::npos) {
+		return l;
+	}
+
+	if ((p - b) <= 1) {
+		return l;
+	}
+	
+	string const fn = l.substr (b + 1, p - b - 1);
+
+	int status;
+	try {
+		
+		char* realname = abi::__cxa_demangle (fn.c_str(), 0, 0, &status);
+		string d (realname);
+		free (realname);
+		return d;
+		
+	} catch (exception) {
+		
+	}
+	
+	return l;
+}
+
+void
+stacktrace (ostream& out, int levels)
+{
+	void *array[200];
+	size_t size;
+	char **strings;
+	size_t i;
+     
+	size = backtrace (array, 200);
+	strings = backtrace_symbols (array, size);
+     
+	if (strings) {
+		for (i = 0; i < size && (levels == 0 || i < size_t(levels)); i++) {
+			out << "  " << demangle (strings[i]) << endl;
+		}
+		
+		free (strings);
+	}
+}
