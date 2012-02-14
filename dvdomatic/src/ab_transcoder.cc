@@ -71,7 +71,10 @@ ABTranscoder::process_video (uint8_t* rgb, int line_size, int frame, int index)
 		rgb += line_size;
 	}
 
-	_encoder->process_video (_rgb, line_size, frame);
+	if (index == 1) {
+		/* Now we have a complete frame, so pass it on to the encoder */
+		_encoder->process_video (_rgb, line_size, frame);
+	}
 	
 	_last_frame = frame;
 }
