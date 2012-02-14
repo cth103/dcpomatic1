@@ -31,7 +31,7 @@ ABTranscoder::ABTranscoder (Film* f, Job* j, Encoder* e, int w, int h, int N)
 	: _film (f)
 	, _job (j)
 	, _encoder (e)
-	, _nframes (N)
+	, _num_frames (N)
 	, _last_frame (0)
 {
 	Film* original = new Film (*f);
@@ -94,7 +94,7 @@ ABTranscoder::go ()
 			break;
 		}
 
-		if (_nframes != 0 && _last_frame >= _nframes) {
+		if (_num_frames != 0 && _last_frame >= _num_frames) {
 			break;
 		}
 	}

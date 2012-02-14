@@ -38,7 +38,7 @@ private:
 	Film* _film;
 	Job* _job;
 	Encoder* _encoder;
-	int _nframes;
+	int _num_frames;
 	Decoder* _da;
 	Decoder* _db;
 	uint8_t* _rgb;

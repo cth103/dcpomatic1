@@ -22,8 +22,11 @@
 class TranscodeJob : public Job
 {
 public:
-	TranscodeJob (Film *);
+	TranscodeJob (Film *, int N = 0);
 
 	std::string name () const;
 	void run ();
+
+private:
+	int _num_frames;
 };

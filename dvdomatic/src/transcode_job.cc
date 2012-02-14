@@ -26,8 +26,9 @@
 
 using namespace std;
 
-TranscodeJob::TranscodeJob (Film* f)
+TranscodeJob::TranscodeJob (Film* f, int N)
 	: Job (f)
+	, _num_frames (N)
 {
 
 }
@@ -46,7 +47,7 @@ TranscodeJob::run ()
 	try {
 
 		J2KWAVEncoder e;
-		Transcoder w (_film, this, &e, _film->format()->dci_width(), _film->format()->dci_height());
+		Transcoder w (_film, this, &e, _film->format()->dci_width(), _film->format()->dci_height(), _num_frames);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

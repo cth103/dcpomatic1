@@ -45,7 +45,7 @@ using namespace std;
 Decoder::Decoder (Film const * f, Job* j, int w, int h, int N)
 	: _film (f)
 	, _job (j)
-	, _nframes (N)
+	, _num_frames (N)
 	, _out_width (w)
 	, _out_height (h)
 	, _format_context (0)
@@ -318,8 +318,6 @@ Decoder::setup_video_filters ()
 		filters += fs.str ();
 	}
 
-	cout << "-vf " << filters << "\n";
-	
 	avfilter_register_all ();
 	
 	AVFilterGraph* graph = avfilter_graph_alloc();
@@ -456,7 +454,7 @@ Decoder::native_height () const
 void
 Decoder::go ()
 {
-	while (pass () != PASS_DONE && (_nframes == 0 || _video_frame < _nframes)) {
+	while (pass () != PASS_DONE && (_num_frames == 0 || _video_frame < _num_frames)) {
 		if (_job) {
 			_job->set_progress (float (_video_frame) / length_in_frames ());
 		}
@@ -471,8 +469,6 @@ Decoder::setup_post_process_filters ()
 		return;
 	}
 
-	cout << "-pp " << s.second << "\n";
-	
 	_pp_mode = pp_get_mode_by_name_and_quality (s.second.c_str(), PP_QUALITY_MAX);
 	_pp_context = pp_get_context (_post_filter_width, _post_filter_height, PP_FORMAT_420 | PP_CPU_CAPS_MMX2);
 

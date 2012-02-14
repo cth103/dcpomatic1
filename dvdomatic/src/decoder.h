@@ -99,7 +99,7 @@ private:
 	void setup_post_process_filters ();
 
 	Job* _job;
-	int _nframes;
+	int _num_frames;
 	
 	int _out_width;
 	int _out_height;

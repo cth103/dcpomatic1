@@ -39,6 +39,8 @@ FilmEditor::FilmEditor (Film* f)
 	: _film (f)
 	, _filters_button ("Edit...")
 	, _make_dcp_button ("Make DCP")
+	, _make_dcp_whole_radio_button ("Whole Film")
+	, _make_dcp_for_radio_button ("For")
 {
 	_vbox.set_border_width (12);
 	_vbox.set_spacing (12);
@@ -145,12 +147,20 @@ FilmEditor::FilmEditor (Film* f)
 	t->show_all ();
 	_vbox.pack_start (*t, false, false);
 
-	/* Set up the buttons */
+	/* Set up the Make DCP widgets */
 
 	HBox* h = manage (new HBox);
 	h->set_spacing (12);
 	h->pack_start (_make_dcp_button, false, false);
 	_make_dcp_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked));
+	h->pack_start (_make_dcp_whole_radio_button, false, false);
+	h->pack_start (_make_dcp_for_radio_button, false, false);
+	Gtk::RadioButtonGroup g = _make_dcp_whole_radio_button.get_group ();
+	_make_dcp_for_radio_button.set_group (g);
+	h->pack_start (_make_dcp_for_frames, true, true);
+	h->pack_start (left_aligned_label ("frames"), false, false);
+	_make_dcp_for_frames.set_range (0, 65536);
+	_make_dcp_for_frames.set_increments (24, 60 * 24);
 	_vbox.pack_start (*h, false, false);
 }
 
@@ -290,8 +300,13 @@ FilmEditor::make_dcp_clicked ()
 	if (!_film) {
 		return;
 	}
+
+	int N = 0;
+	if (_make_dcp_for_radio_button.get_active ()) {
+		N = _make_dcp_for_frames.get_value ();
+	}
 	
-	JobManager::instance()->add (new TranscodeJob (_film));
+	JobManager::instance()->add (new TranscodeJob (_film, N));
 	JobManager::instance()->add (new MakeMXFJob (_film, MakeMXFJob::VIDEO));
 	JobManager::instance()->add (new MakeMXFJob (_film, MakeMXFJob::AUDIO));
 	JobManager::instance()->add (new MakeDCPJob (_film));
