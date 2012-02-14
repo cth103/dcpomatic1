@@ -38,8 +38,6 @@ using namespace Gtk;
 FilmEditor::FilmEditor (Film* f)
 	: _film (f)
 	, _filters_button ("Edit...")
-	, _update_thumbs_button ("Update Thumbs")
-	, _save_metadata_button ("Save Metadata")
 	, _make_dcp_button ("Make DCP")
 {
 	_vbox.set_border_width (12);
@@ -151,11 +149,7 @@ FilmEditor::FilmEditor (Film* f)
 
 	HBox* h = manage (new HBox);
 	h->set_spacing (12);
-	h->pack_start (_update_thumbs_button, false, false);
-	h->pack_start (_save_metadata_button, false, false);
 	h->pack_start (_make_dcp_button, false, false);
-	_update_thumbs_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::update_thumbs_clicked));
-	_save_metadata_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::save_metadata_clicked));
 	_make_dcp_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked));
 	_vbox.pack_start (*h, false, false);
 }
@@ -195,26 +189,6 @@ FilmEditor::bottom_crop_changed ()
 {
 	if (_film) {
 		_film->set_bottom_crop (_bottom_crop.get_value ());
-	}
-}
-
-void
-FilmEditor::update_thumbs_clicked ()
-{
-	if (!_film) {
-		return;
-	}
-			
-	ThumbsJob* j = new ThumbsJob (_film);
-	j->Finished.connect (sigc::mem_fun (_film, &Film::update_thumbs_gui));
-	JobManager::instance()->add (j);
-}
-
-void
-FilmEditor::save_metadata_clicked ()
-{
-	if (_film) {
-		_film->write_metadata ();
 	}
 }
 
@@ -392,9 +366,6 @@ FilmEditor::set_things_sensitive (bool s)
 	_dcp_long_name.set_sensitive (s);
 	_dcp_pretty_name.set_sensitive (s);
 	_dcp_content_type.set_sensitive (s);
-	
-	_update_thumbs_button.set_sensitive (s);
-	_save_metadata_button.set_sensitive (s);
 	_make_dcp_button.set_sensitive (s);
 }
 

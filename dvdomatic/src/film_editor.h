@@ -47,8 +47,6 @@ private:
 
 	/* Button clicks */
 	void edit_filters_clicked ();
-	void update_thumbs_clicked ();
-	void save_metadata_clicked ();
 	void make_dcp_clicked ();
 
 	void set_things_sensitive (bool);
@@ -71,7 +69,5 @@ private:
 	Gtk::Label _original_size;
 	Gtk::Label _frames_per_second;
 
-	Gtk::Button _update_thumbs_button;
-	Gtk::Button _save_metadata_button;
 	Gtk::Button _make_dcp_button;
 };

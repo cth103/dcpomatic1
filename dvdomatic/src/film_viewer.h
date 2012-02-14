@@ -33,6 +33,7 @@ public:
 
 private:
 	void position_slider_changed ();
+	void update_button_clicked ();
 	std::string format_position_slider_value (double) const;
 	void load_thumbnail (int);
 	void film_changed (Film::Property);
@@ -48,4 +49,5 @@ private:
 	Glib::RefPtr<Gdk::Pixbuf> _cropped_pixbuf;
 	Glib::RefPtr<Gdk::Pixbuf> _scaled_pixbuf;
 	Gtk::HScale _position_slider;
+	Gtk::Button _update_button;
 };

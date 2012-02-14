@@ -23,21 +23,27 @@
 #include "film.h"
 #include "format.h"
 #include "util.h"
+#include "thumbs_job.h"
+#include "job_manager.h"
 
 using namespace std;
 
 FilmViewer::FilmViewer (Film* f)
 	: _film (f)
+	, _update_button ("Update")
 {
 	_scroller.add (_image);
 
 	Gtk::HBox* controls = manage (new Gtk::HBox);
 	controls->set_spacing (6);
+	controls->pack_start (_update_button, false, false);
 	controls->pack_start (_position_slider);
 	
 	_vbox.pack_start (_scroller, true, true);
 	_vbox.pack_start (*controls, false, false);
 	_vbox.set_border_width (12);
+
+	_update_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmViewer::update_button_clicked));
 
 	_position_slider.set_digits (0);
 	_position_slider.signal_format_value().connect (sigc::mem_fun (*this, &FilmViewer::format_position_slider_value));
@@ -157,3 +163,16 @@ FilmViewer::update_scaled_pixbuf ()
 		_image.set (_scaled_pixbuf);
 	}
 }
+
+void
+FilmViewer::update_button_clicked ()
+{
+	if (!_film) {
+		return;
+	}
+			
+	ThumbsJob* j = new ThumbsJob (_film);
+	j->Finished.connect (sigc::mem_fun (_film, &Film::update_thumbs_gui));
+	JobManager::instance()->add (j);
+}
+
