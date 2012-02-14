@@ -151,7 +151,9 @@ private:
 	std::string j2k_sub_directory () const;
 	void signal_changed (Property);
 
-	/** Directory containing the film metadata */
+	/** Complete path to directory containing the film metadata;
+	    must not be relative.
+	*/
 	std::string _directory;
 	/** Name for DVD-o-matic */
 	std::string _name;

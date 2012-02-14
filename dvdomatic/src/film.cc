@@ -42,8 +42,7 @@ using namespace std;
  */
 
 Film::Film (string const & d, bool must_exist)
-	: _directory (d)
-	, _dcp_content_type (0)
+	: _dcp_content_type (0)
 	, _format (0)
 	, _left_crop (0)
 	, _right_crop (0)
@@ -54,10 +53,12 @@ Film::Film (string const & d, bool must_exist)
 	, _frames_per_second (0)
 	, _dirty (false)
 {
+	_directory = boost::filesystem::system_complete (d).string ();
+	
 	if (must_exist && !boost::filesystem::exists (_directory)) {
 		throw runtime_error ("film not found");
 	}
-	
+
 	read_metadata ();
 }
 
