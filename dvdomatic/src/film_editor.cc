@@ -31,6 +31,7 @@
 #include "job_manager.h"
 #include "util.h"
 #include "filter_dialog.h"
+#include "error_dialog.h"
 #include "filter.h"
 
 using namespace std;
@@ -40,9 +41,9 @@ FilmEditor::FilmEditor (Film* f)
 	: _film (f)
 	, _filters_button ("Edit...")
 	, _make_dcp_button ("Make DCP")
-	, _make_dcp_whole ("Whole Film")
-	, _make_dcp_for ("For")
-	, _make_dcp_ab ("A/B")
+	, _dcp_whole ("Whole Film")
+	, _dcp_for ("For")
+	, _dcp_ab ("A/B")
 {
 	_vbox.set_border_width (12);
 	_vbox.set_spacing (12);
@@ -71,6 +72,11 @@ FilmEditor::FilmEditor (Film* f)
 
 	_original_size.set_alignment (0, 0.5);
 	_frames_per_second.set_alignment (0, 0.5);
+
+	Gtk::RadioButtonGroup g = _dcp_whole.get_group ();
+	_dcp_for.set_group (g);
+	_dcp_for_frames.set_range (24, 65536);
+	_dcp_for_frames.set_increments (24, 60 * 24);
 	
 	/* And set their values from the Film */
 	set_film (f);
@@ -87,6 +93,9 @@ FilmEditor::FilmEditor (Film* f)
 	_dcp_long_name.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_long_name_changed));
 	_dcp_pretty_name.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_pretty_name_changed));
 	_dcp_content_type.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_content_type_changed));
+	_dcp_for.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::dcp_frames_changed));
+	_dcp_for_frames.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_frames_changed));
+	_dcp_ab.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::dcp_ab_toggled));
 
 	/* Set up the table */
 
@@ -149,22 +158,17 @@ FilmEditor::FilmEditor (Film* f)
 	t->show_all ();
 	_vbox.pack_start (*t, false, false);
 
-	/* Set up the Make DCP widgets */
-
+	_make_dcp_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked));
 	HBox* h = manage (new HBox);
 	h->set_spacing (12);
 	h->pack_start (_make_dcp_button, false, false);
-	_make_dcp_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked));
-	h->pack_start (_make_dcp_whole, false, false);
-	h->pack_start (_make_dcp_for, false, false);
-	Gtk::RadioButtonGroup g = _make_dcp_whole.get_group ();
-	_make_dcp_for.set_group (g);
-	h->pack_start (_make_dcp_for_frames, true, true);
+	h->pack_start (_dcp_whole, false, false);
+	h->pack_start (_dcp_for, false, false);
+	h->pack_start (_dcp_for_frames, true, true);
 	h->pack_start (left_aligned_label ("frames"), false, false);
-	_make_dcp_for_frames.set_range (0, 65536);
-	_make_dcp_for_frames.set_increments (24, 60 * 24);
-	h->pack_start (_make_dcp_ab);
+	h->pack_start (_dcp_ab);
 	_vbox.pack_start (*h, false, false);
+	
 }
 
 Widget&
@@ -219,6 +223,28 @@ FilmEditor::content_changed ()
 		Gtk::MessageDialog d (m.str(), false, MESSAGE_ERROR);
 		d.set_title ("DVD-o-matic");
 		d.run ();
+	}
+}
+
+void
+FilmEditor::dcp_frames_changed ()
+{
+	if (!_film) {
+		return;
+	}
+
+	if (_dcp_for.get_active ()) {
+		_film->set_dcp_frames (_dcp_for_frames.get_value ());
+	} else {
+		_film->set_dcp_frames (0);
+	}
+}
+
+void
+FilmEditor::dcp_ab_toggled ()
+{
+	if (_film) {
+		_film->set_dcp_ab (_dcp_ab.get_active ());
 	}
 }
 
@@ -286,6 +312,17 @@ FilmEditor::film_changed (Film::Property p)
 		break;
 	case Film::Thumbs:
 		break;
+	case Film::DCPFrames:
+		if (_film->dcp_frames() == 0) {
+			_dcp_whole.set_active (true);
+		} else {
+			_dcp_for.set_active (true);
+			_dcp_for_frames.set_value (_film->dcp_frames ());
+		}
+		break;
+	case Film::DCPAB:
+		_dcp_ab.set_active (_film->dcp_ab ());
+		break;
 	}
 }
 
@@ -304,20 +341,13 @@ FilmEditor::make_dcp_clicked ()
 		return;
 	}
 
-	int N = 0;
-	if (_make_dcp_for.get_active ()) {
-		N = _make_dcp_for_frames.get_value ();
+	try {
+		_film->make_dcp ();
+	} catch (runtime_error& e) {
+		stringstream s;
+		s << "Could not make DCP: " << e.what () << ".";
+		error_dialog (s.str ());
 	}
-
-	if (_make_dcp_ab.get_active ()) {
-		JobManager::instance()->add (new ABTranscodeJob (_film, N));
-	} else {
-		JobManager::instance()->add (new TranscodeJob (_film, N));
-	}
-	
-	JobManager::instance()->add (new MakeMXFJob (_film, MakeMXFJob::VIDEO));
-	JobManager::instance()->add (new MakeMXFJob (_film, MakeMXFJob::AUDIO));
-	JobManager::instance()->add (new MakeDCPJob (_film));
 }
 
 void
@@ -374,6 +404,8 @@ FilmEditor::set_film (Film* f)
 	film_changed (Film::DCPLongName);
 	film_changed (Film::DCPPrettyName);
 	film_changed (Film::ContentTypeChange);
+	film_changed (Film::DCPFrames);
+	film_changed (Film::DCPAB);
 }
 
 void
@@ -390,6 +422,9 @@ FilmEditor::set_things_sensitive (bool s)
 	_dcp_pretty_name.set_sensitive (s);
 	_dcp_content_type.set_sensitive (s);
 	_make_dcp_button.set_sensitive (s);
+	_dcp_whole.set_sensitive (s);
+	_dcp_for.set_sensitive (s);
+	_dcp_ab.set_sensitive (s);
 }
 
 void

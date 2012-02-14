@@ -71,6 +71,14 @@ public:
 		return _filters;
 	}
 
+	int dcp_frames () const {
+		return _dcp_frames;
+	}
+
+	bool dcp_ab () const {
+		return _dcp_ab;
+	}
+
 	void set_filters (std::vector<Filter const *> const &);
 
 	std::string dcp_long_name () const {
@@ -84,6 +92,9 @@ public:
 	ContentType * dcp_content_type () {
 		return _dcp_content_type;
 	}
+
+	void set_dcp_frames (int);
+	void set_dcp_ab (bool);
 	
 	void set_name (std::string const &);
 	void set_content (std::string const &);
@@ -110,7 +121,6 @@ public:
 		return _frames_per_second;
 	}
 
-	void set_extra_j2k_dir (std::string const &);
 	std::string j2k_dir () const;
 	std::string j2k_path (int, bool) const;
 
@@ -123,6 +133,8 @@ public:
 	bool dirty () const {
 		return _dirty;
 	}
+
+	void make_dcp ();
 
 	enum Property {
 		Name,
@@ -138,7 +150,9 @@ public:
 		DCPLongName,
 		DCPPrettyName,
 		ContentTypeChange,
-		Thumbs
+		Thumbs,
+		DCPFrames,
+		DCPAB
 	};
 
 	sigc::signal1<void, Property> Changed;
@@ -176,6 +190,13 @@ private:
 	/** Number of pixels to crop from the bottom of the original picture */
 	int _bottom_crop;
 	std::vector<Filter const *> _filters;
+	/** Number of frames to put in the DCP, or 0 for all */
+	int _dcp_frames;
+	/** true to create an A/B comparison DCP, where the left half of the image
+	    is the video without any filters or post-processing, and the right half
+	    has the specified filters and post-processing.
+	*/
+	bool _dcp_ab;
 
 	/* Data which is cached to speed things up */
 
@@ -187,9 +208,6 @@ private:
 	int _height;
 	/* Frames per second of the source */
 	float _frames_per_second;
-
-	/* Data which is just for the session */
-	std::string _extra_j2k_dir;
 
 	mutable bool _dirty;
 };

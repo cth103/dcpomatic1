@@ -33,14 +33,12 @@ using namespace std;
 
 int main (int argc, char* argv[])
 {
-	bool ab;
 	string film_dir;
 	
 	boost::program_options::options_description desc ("Allowed options");
 	desc.add_options ()
 		("help", "give help")
 		("film", boost::program_options::value<string> (&film_dir), "film")
-		("ab", boost::program_options::value<bool> (&ab)->zero_tokens (), "make an AB comparison with and without filtering")
 		;
 	boost::program_options::positional_options_description pos;
 	pos.add ("film", 1);
@@ -67,7 +65,7 @@ int main (int argc, char* argv[])
 	}
 
 	cout << "\nMaking ";
-	if (ab) {
+	if (film->dcp_ab ()) {
 		cout << "A/B ";
 	}
 	cout << "DCP for " << film->name() << "\n";
@@ -75,14 +73,7 @@ int main (int argc, char* argv[])
 	pair<string, string> const f = Filter::ffmpeg_strings (film->get_filters ());
 	cout << "Filters: " << f.first << " " << f.second << "\n";
 
-	if (ab) {
-		JobManager::instance()->add (new ABTranscodeJob (film));
-	} else {
-		JobManager::instance()->add (new TranscodeJob (film));
-	}
-	JobManager::instance()->add (new MakeMXFJob (film, MakeMXFJob::VIDEO));
-	JobManager::instance()->add (new MakeMXFJob (film, MakeMXFJob::AUDIO));
-	JobManager::instance()->add (new MakeDCPJob (film));
+	film->make_dcp ();
 
 	list<Job*> jobs = JobManager::instance()->get ();
 

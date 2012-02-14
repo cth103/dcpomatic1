@@ -32,6 +32,11 @@
 #include "filter.h"
 #include "transcoder.h"
 #include "util.h"
+#include "job_manager.h"
+#include "ab_transcode_job.h"
+#include "transcode_job.h"
+#include "make_mxf_job.h"
+#include "make_dcp_job.h"
 
 using namespace std;
 
@@ -48,6 +53,8 @@ Film::Film (string const & d, bool must_exist)
 	, _right_crop (0)
 	, _top_crop (0)
 	, _bottom_crop (0)
+	, _dcp_frames (0)
+	, _dcp_ab (false)
 	, _width (0)
 	, _height (0)
 	, _frames_per_second (0)
@@ -111,6 +118,10 @@ Film::read_metadata ()
 			_dcp_content_type = ContentType::get_from_pretty_name (v);
 		} else if (k == "filter") {
 			_filters.push_back (Filter::get_from_id (v));
+		} else if (k == "dcp_frames") {
+			_dcp_frames = atoi (v.c_str ());
+		} else if (k == "dcp_ab") {
+			_dcp_ab = (v == "1");
 		}
 
 		/* Cached stuff */
@@ -155,6 +166,8 @@ Film::write_metadata () const
 	for (vector<Filter const *>::const_iterator i = _filters.begin(); i != _filters.end(); ++i) {
 		f << "filter " << (*i)->id () << "\n";
 	}
+	f << "dcp_frames " << _dcp_frames << "\n";
+	f << "dcp_ab " << (_dcp_ab ? "1" : "0") << "\n";
 
 	/* Cached stuff */
 	for (vector<int>::const_iterator i = _thumbs.begin(); i != _thumbs.end(); ++i) {
@@ -227,6 +240,20 @@ Film::set_format (Format* f)
 {
 	_format = f;
 	signal_changed (FilmFormat);
+}
+
+void
+Film::set_dcp_frames (int n)
+{
+	_dcp_frames = n;
+	signal_changed (DCPFrames);
+}
+
+void
+Film::set_dcp_ab (bool a)
+{
+	_dcp_ab = a;
+	signal_changed (DCPAB);
 }
 
 void
@@ -412,8 +439,8 @@ Film::j2k_sub_directory () const
 	  << "_" << _left_crop << "_" << _right_crop << "_" << _top_crop << "_" << _bottom_crop
 	  << "_" << f.first << "_" << f.second;
 
-	if (!_extra_j2k_dir.empty ()) {
-		s << "/" << _extra_j2k_dir;
+	if (_dcp_ab) {
+		s << "/ab";
 	}
 	
 	return s.str ();
@@ -451,14 +478,26 @@ Film::set_filters (vector<Filter const *> const & f)
 }
 
 void
-Film::set_extra_j2k_dir (string const & d)
-{
-	_extra_j2k_dir = d;
-}
-
-void
 Film::signal_changed (Property p)
 {
 	_dirty = true;
 	Changed (p);
+}
+
+void
+Film::make_dcp ()
+{
+	if (_format == 0) {
+		throw runtime_error ("format must be specified to make a DCP");
+	}
+	
+	if (_dcp_ab) {
+		JobManager::instance()->add (new ABTranscodeJob (this, _dcp_frames));
+	} else {
+		JobManager::instance()->add (new TranscodeJob (this, _dcp_frames));
+	}
+	
+	JobManager::instance()->add (new MakeMXFJob (this, MakeMXFJob::VIDEO));
+	JobManager::instance()->add (new MakeMXFJob (this, MakeMXFJob::AUDIO));
+	JobManager::instance()->add (new MakeDCPJob (this));
 }

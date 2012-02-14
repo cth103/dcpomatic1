@@ -33,5 +33,6 @@ def build(bld):
 		 encoder.cc
 		 ab_transcoder.cc
 		 ab_transcode_job.cc
+		 error_dialog.cc
 		 """
     obj.target = 'dvdomatic'

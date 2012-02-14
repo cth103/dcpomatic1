@@ -41,6 +41,8 @@ private:
 	void dcp_long_name_changed ();
 	void dcp_pretty_name_changed ();
 	void dcp_content_type_changed ();
+	void dcp_frames_changed ();
+	void dcp_ab_toggled ();
 
 	/* Handle changes to the model */
 	void film_changed (Film::Property);
@@ -70,8 +72,8 @@ private:
 	Gtk::Label _frames_per_second;
 
 	Gtk::Button _make_dcp_button;
-	Gtk::RadioButton _make_dcp_whole;
-	Gtk::RadioButton _make_dcp_for;
-	Gtk::SpinButton _make_dcp_for_frames;
-	Gtk::CheckButton _make_dcp_ab;
+	Gtk::RadioButton _dcp_whole;
+	Gtk::RadioButton _dcp_for;
+	Gtk::SpinButton _dcp_for_frames;
+	Gtk::CheckButton _dcp_ab;
 };

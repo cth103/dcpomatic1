@@ -17,44 +17,14 @@
 
 */
 
-#include <stdexcept>
-#include "ab_transcode_job.h"
-#include "j2k_wav_encoder.h"
-#include "film.h"
-#include "format.h"
-#include "ab_transcoder.h"
+#include <string>
+#include <gtkmm.h>
 
 using namespace std;
 
-ABTranscodeJob::ABTranscodeJob (Film* f, int N)
-	: Job (f)
-	, _num_frames (N)
-{
-
-}
-
-string
-ABTranscodeJob::name () const
-{
-	stringstream s;
-	s << "A/B transcode " << _film->name();
-	return s.str ();
-}
-
 void
-ABTranscodeJob::run ()
+error_dialog (string const & m)
 {
-	try {
-
-		J2KWAVEncoder e;
-		ABTranscoder w (_film, this, &e, _film->format()->dci_width(), _film->format()->dci_height(), _num_frames);
-		w.go ();
-		set_progress (1);
-		set_state (FINISHED_OK);
-
-	} catch (runtime_error& e) {
-
-		set_state (FINISHED_ERROR);
-
-	}
+	Gtk::MessageDialog d (m, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+	d.run ();
 }
