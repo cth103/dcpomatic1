@@ -318,7 +318,6 @@ FilmEditor::make_dcp_clicked ()
 	JobManager::instance()->add (new MakeMXFJob (_film, MakeMXFJob::VIDEO));
 	JobManager::instance()->add (new MakeMXFJob (_film, MakeMXFJob::AUDIO));
 	JobManager::instance()->add (new MakeDCPJob (_film));
-	JobManager::instance()->add (new MakeDCPJob (_film));
 }
 
 void
