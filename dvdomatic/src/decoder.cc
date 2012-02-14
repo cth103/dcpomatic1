@@ -456,7 +456,7 @@ Decoder::go ()
 {
 	while (pass () != PASS_DONE && (_num_frames == 0 || _video_frame < _num_frames)) {
 		if (_job) {
-			_job->set_progress (float (_video_frame) / length_in_frames ());
+			_job->set_progress (float (_video_frame) / decoding_frames ());
 		}
 	}
 }
@@ -477,4 +477,14 @@ Decoder::setup_post_process_filters ()
 		_pp_buffer[i] = new uint8_t[_post_filter_width * _post_filter_height];
 		_pp_stride[i] = _post_filter_width;
 	}
+}
+
+int
+Decoder::decoding_frames () const
+{
+	if (_num_frames > 0) {
+		return _num_frames;
+	}
+	
+	return length_in_frames ();
 }

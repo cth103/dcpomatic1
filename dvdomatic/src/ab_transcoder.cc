@@ -87,7 +87,7 @@ ABTranscoder::go ()
 		Decoder::PassResult b = _db->pass ();
 
 		if (_job) {
-			_job->set_progress (float (_last_frame) / _da->length_in_frames ());
+			_job->set_progress (float (_last_frame) / _da->decoding_frames ());
 		}
 		
 		if (a == Decoder::PASS_DONE && b == Decoder::PASS_DONE) {
