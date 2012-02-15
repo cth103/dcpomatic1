@@ -62,6 +62,7 @@ Film::Film (string d, bool must_exist)
 	, _dcp_ab (false)
 	, _width (0)
 	, _height (0)
+	, _length (0)
 	, _frames_per_second (0)
 	, _audio_channels (0)
 	, _audio_sample_rate (0)
@@ -287,20 +288,16 @@ Film::set_content (string c)
 		return;
 	}
 	
-	_content = f;
-	
-	Changed (Content);
-
 	/* Create a temporary decoder so that we can get information
 	   about the content.
 	*/
 	Parameters p ("", "", "");
 	p.out_width = 1024;
 	p.out_height = 1024;
-	p.content = content ();
-	
-	Decoder d (0, &p);
+	p.content = file (f);
 
+	Decoder d (0, &p);
+	
 	_width = d.native_width ();
 	_height = d.native_height ();
 	_length = d.length_in_frames ();
@@ -314,6 +311,9 @@ Film::set_content (string c)
 	signal_changed (FramesPerSecond);
 	signal_changed (AudioChannels);
 	signal_changed (AudioSampleRate);
+
+	_content = f;
+	signal_changed (Content);
 }
 
 /** Set the format that this Film should be shown in */

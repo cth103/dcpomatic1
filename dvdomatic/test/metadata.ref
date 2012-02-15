@@ -1,0 +1,20 @@
+name fred
+content 
+dcp_long_name sheila
+dcp_content_type Short
+format 185
+left_crop 1
+right_crop 2
+top_crop 3
+bottom_crop 4
+filter pphb
+filter unsharp
+dcp_frames 42
+dcp_ab 1
+width 0
+height 0
+length 0
+frames_per_second 0
+audio_channels 0
+audio_sample_rate 0
+audio_sample_format Unknown
