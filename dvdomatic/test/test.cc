@@ -17,6 +17,7 @@
 
 */
 
+#include <boost/filesystem.hpp>
 #include "format.h"
 #include "film.h"
 #define BOOST_TEST_DYN_LINK
@@ -27,8 +28,18 @@ using namespace std;
 
 BOOST_AUTO_TEST_CASE (film_metadata_test)
 {
-	Film f ("build/test/film", false);
-	BOOST_CHECK(f.format() == 0);
+	string const test_film = "build/test/film";
+	
+	if (boost::filesystem::exists (test_film)) {
+		boost::filesystem::remove_all (test_film);
+	}
+
+	BOOST_CHECK_THROW (new Film ("build/test/film", true), runtime_error);
+	
+	Film f (test_film, false);
+	BOOST_CHECK (f.format() == 0);
+	BOOST_CHECK (f.dcp_content_type() == 0);
+	BOOST_CHECK (f.filters ().empty());
 }
 
 BOOST_AUTO_TEST_CASE (format_test)
