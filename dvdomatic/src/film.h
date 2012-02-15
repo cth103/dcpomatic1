@@ -156,21 +156,23 @@ public:
 
 	enum Property {
 		Name,
+		Content,
+		DCPLongName,
+		DCPPrettyName,
+		DCPContentType,
+		FilmFormat,
 		LeftCrop,
 		RightCrop,
 		TopCrop,
 		BottomCrop,
 		Filters,
-		Size,
-		Content,
-		FilmFormat,
-		FramesPerSecond,
-		DCPLongName,
-		DCPPrettyName,
-		ContentTypeChange,
-		Thumbs,
 		DCPFrames,
-		DCPAB
+		DCPAB,
+		Thumbs,
+		Size,
+		FramesPerSecond,
+		AudioChannels,
+		AudioSampleRate
 	};
 
 	/** Emitted when some metadata property has changed */

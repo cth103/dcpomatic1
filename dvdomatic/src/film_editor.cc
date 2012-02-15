@@ -72,6 +72,8 @@ FilmEditor::FilmEditor (Film* f)
 
 	_original_size.set_alignment (0, 0.5);
 	_frames_per_second.set_alignment (0, 0.5);
+	_audio_channels.set_alignment (0, 0.5);
+	_audio_sample_rate.set_alignment (0, 0.5);
 
 	Gtk::RadioButtonGroup g = _dcp_whole.get_group ();
 	_dcp_for.set_group (g);
@@ -145,14 +147,23 @@ FilmEditor::FilmEditor (Film* f)
 	t->attach (_bottom_crop, 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Filters"), 0, 1, n, n + 1);
-	t->attach (_filters, 1, 2, n, n + 1);
-	t->attach (_filters_button, 2, 3, n, n + 1);
+	HBox* fb = manage (new HBox);
+	fb->set_spacing (4);
+	fb->pack_start (_filters, true, true);
+	fb->pack_start (_filters_button, false, false);
+	t->attach (*fb, 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Original Size"), 0, 1, n, n + 1);
 	t->attach (_original_size, 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Frames Per Second"), 0, 1, n, n + 1);
 	t->attach (_frames_per_second, 1, 2, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("Audio Channels"), 0, 1, n, n + 1);
+	t->attach (_audio_channels, 1, 2, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("Audio Sample Rate"), 0, 1, n, n + 1);
+	t->attach (_audio_sample_rate, 1, 2, n, n + 1);
 	++n;
 
 	t->show_all ();
@@ -297,6 +308,14 @@ FilmEditor::film_changed (Film::Property p)
 		s << _film->frames_per_second ();
 		_frames_per_second.set_text (s.str ());
 		break;
+	case Film::AudioChannels:
+		s << _film->audio_channels ();
+		_audio_channels.set_text (s.str ());
+		break;
+	case Film::AudioSampleRate:
+		s << _film->audio_sample_rate ();
+		_audio_sample_rate.set_text (s.str ());
+		break;
 	case Film::Size:
 		s << _film->width() << " x " << _film->height();
 		_original_size.set_text (s.str ());
@@ -307,7 +326,7 @@ FilmEditor::film_changed (Film::Property p)
 	case Film::DCPPrettyName:
 		_dcp_pretty_name.set_text (_film->dcp_pretty_name ());
 		break;
-	case Film::ContentTypeChange:
+	case Film::DCPContentType:
 		_dcp_content_type.set_active (ContentType::get_as_index (_film->dcp_content_type ()));
 		break;
 	case Film::Thumbs:
@@ -403,7 +422,7 @@ FilmEditor::set_film (Film* f)
 	film_changed (Film::FramesPerSecond);
 	film_changed (Film::DCPLongName);
 	film_changed (Film::DCPPrettyName);
-	film_changed (Film::ContentTypeChange);
+	film_changed (Film::DCPContentType);
 	film_changed (Film::DCPFrames);
 	film_changed (Film::DCPAB);
 }

@@ -70,6 +70,8 @@ private:
 	Gtk::ComboBoxText _dcp_content_type;
 	Gtk::Label _original_size;
 	Gtk::Label _frames_per_second;
+	Gtk::Label _audio_channels;
+	Gtk::Label _audio_sample_rate;
 
 	Gtk::Button _make_dcp_button;
 	Gtk::RadioButton _dcp_whole;

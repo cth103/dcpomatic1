@@ -146,7 +146,7 @@ Film::read_metadata ()
 		} else if (k == "audio_sample_rate") {
 			_audio_sample_rate = atoi (v.c_str ());
 		} else if (k == "audio_sample_format") {
-			_audio_sample_format = audio_sample_format_from_string (v);
+			_audio_sample_format = audio_sample_format_from_string (v) << "\n";
 		}
 	}
 
@@ -251,6 +251,8 @@ Film::set_content (string const & c)
 
 	signal_changed (Size);
 	signal_changed (FramesPerSecond);
+	signal_changed (AudioChannels);
+	signal_changed (AudioSampleRate);
 }
 
 /** Set the format that this Film should be shown in */
@@ -288,7 +290,7 @@ void
 Film::set_dcp_content_type (ContentType* t)
 {
 	_dcp_content_type = t;
-	signal_changed (ContentTypeChange);
+	signal_changed (DCPContentType);
 }
 
 /** Set the number of pixels by which to crop the left of the source video */
