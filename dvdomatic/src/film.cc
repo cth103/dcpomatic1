@@ -187,6 +187,8 @@ Film::read_metadata ()
 			_width = atoi (v.c_str ());
 		} else if (k == "height") {
 			_height = atoi (v.c_str ());
+		} else if (k == "length") {
+			_length = atof (v.c_str ());
 		} else if (k == "frames_per_second") {
 			_frames_per_second = atof (v.c_str ());
 		} else if (k == "audio_channels") {
@@ -241,6 +243,7 @@ Film::write_metadata () const
 	}
 	f << "width " << _width << "\n";
 	f << "height " << _height << "\n";
+	f << "length " << _length << "\n";
 	f << "frames_per_second " << _frames_per_second << "\n";
 	f << "audio_channels " << _audio_channels << "\n";
 	f << "audio_sample_rate " << _audio_sample_rate << "\n";
@@ -295,12 +298,14 @@ Film::set_content (string const & c)
 
 	_width = d.native_width ();
 	_height = d.native_height ();
+	_length = d.length_in_frames ();
 	_frames_per_second = d.frames_per_second ();
 	_audio_channels = d.audio_channels ();
 	_audio_sample_rate = d.audio_sample_rate ();
 	_audio_sample_format = d.audio_sample_format ();
 	
 	signal_changed (Size);
+	signal_changed (Length);
 	signal_changed (FramesPerSecond);
 	signal_changed (AudioChannels);
 	signal_changed (AudioSampleRate);

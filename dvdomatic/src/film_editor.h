@@ -69,6 +69,7 @@ private:
 	Gtk::Entry _dcp_pretty_name;
 	Gtk::ComboBoxText _dcp_content_type;
 	Gtk::Label _original_size;
+	Gtk::Label _length;
 	Gtk::Label _frames_per_second;
 	Gtk::Label _audio_channels;
 	Gtk::Label _audio_sample_rate;

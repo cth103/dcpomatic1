@@ -125,6 +125,10 @@ public:
 		return _height;
 	}
 
+	int length () const {
+		return _length;
+	}
+
 	float frames_per_second () const {
 		return _frames_per_second;
 	}
@@ -171,6 +175,7 @@ public:
 		DCPAB,
 		Thumbs,
 		Size,
+		Length,
 		FramesPerSecond,
 		AudioChannels,
 		AudioSampleRate
@@ -227,6 +232,8 @@ private:
 	int _width;
 	/** Height, in pixels, of the source (ignoring cropping) */
 	int _height;
+	/** Length in frames */
+	int _length;
 	/** Frames per second of the source */
 	float _frames_per_second;
 	/** Number of audio channels */

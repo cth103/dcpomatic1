@@ -71,6 +71,7 @@ FilmEditor::FilmEditor (Film* f)
 	}
 
 	_original_size.set_alignment (0, 0.5);
+	_length.set_alignment (0, 0.5);
 	_frames_per_second.set_alignment (0, 0.5);
 	_audio_channels.set_alignment (0, 0.5);
 	_audio_sample_rate.set_alignment (0, 0.5);
@@ -155,6 +156,9 @@ FilmEditor::FilmEditor (Film* f)
 	++n;
 	t->attach (left_aligned_label ("Original Size"), 0, 1, n, n + 1);
 	t->attach (_original_size, 1, 2, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("Length"), 0, 1, n, n + 1);
+	t->attach (_length, 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Frames Per Second"), 0, 1, n, n + 1);
 	t->attach (_frames_per_second, 1, 2, n, n + 1);
@@ -319,6 +323,10 @@ FilmEditor::film_changed (Film::Property p)
 	case Film::Size:
 		s << _film->width() << " x " << _film->height();
 		_original_size.set_text (s.str ());
+		break;
+	case Film::Length:
+		s << _film->length() << " frames; " << seconds_to_hms (_film->length() / _film->frames_per_second());
+		_length.set_text (s.str ());
 		break;
 	case Film::DCPLongName:
 		_dcp_long_name.set_text (_film->dcp_long_name ());
