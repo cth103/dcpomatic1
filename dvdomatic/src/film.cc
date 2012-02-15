@@ -66,8 +66,25 @@ Film::Film (string const & d, bool must_exist)
 	, _audio_sample_format (AV_SAMPLE_FMT_NONE)
 	, _dirty (false)
 {
-	/* Make _directory a complete path, as this is assumed elsewhere */
-	_directory = boost::filesystem::system_complete (d).string ();
+	/* Make _directory a complete path without ..s (where possible)
+	   (Code swiped from Adam Bowen on stackoverflow)
+	*/
+	
+	boost::filesystem::path p (boost::filesystem::system_complete (d));
+	boost::filesystem::path result;
+	for(boost::filesystem::path::iterator i = p.begin(); i != p.end(); ++i) {
+		if (*i == "..") {
+			if (boost::filesystem::is_symlink (result) || result.filename() == "..") {
+				result /= *i;
+			} else {
+				result = result.parent_path ();
+			}
+		} else if (*i != ".") {
+			result /= *i;
+		}
+	}
+
+	_directory = result.string ();
 	
 	if (must_exist && !boost::filesystem::exists (_directory)) {
 		throw runtime_error ("film not found");
@@ -272,6 +289,7 @@ Film::set_content (string const & c)
 	Parameters p ("", "", "");
 	p.out_width = 1024;
 	p.out_height = 1024;
+	p.content = content ();
 	
 	Decoder d (0, &p);
 
@@ -570,6 +588,10 @@ Film::make_dcp ()
 {
 	if (_format == 0) {
 		throw runtime_error ("format must be specified to make a DCP");
+	}
+
+	if (_content.empty ()) {
+		throw runtime_error ("content must be specified to make a DCP");
 	}
 	
 	if (_dcp_ab) {

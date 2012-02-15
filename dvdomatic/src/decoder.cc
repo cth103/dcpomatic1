@@ -115,7 +115,7 @@ Decoder::setup_general ()
 
 	if ((r = avformat_open_input (&_format_context, _par->content.c_str(), 0, 0)) != 0) {
 		stringstream s;
-		s << "Could not open content file " << _par->content << " (" << r << ")";
+		s << "could not open content file " << _par->content << " (" << r << ")";
 		throw runtime_error (s.str ());
 	}
 

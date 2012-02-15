@@ -4,10 +4,6 @@ Restartable jobs somehow
 trim decoder public / protected API
 use something other than TIFF
 
-relative path for film then add content ... error
-
-Make DCP without adding content -> crash.
-
 Length of film in film editor.
 
 Logging
