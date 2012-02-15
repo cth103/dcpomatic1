@@ -99,7 +99,6 @@ Film::Film (Film const & other)
 	, _name (other._name)
 	, _content (other._content)
 	, _dcp_long_name (other._dcp_long_name)
-	, _dcp_pretty_name (other._dcp_pretty_name)
 	, _dcp_content_type (other._dcp_content_type)
 	, _format (other._format)
 	, _left_crop (other._left_crop)
@@ -154,8 +153,6 @@ Film::read_metadata ()
 			_content = v;
 		} else if (k == "dcp_long_name") {
 			_dcp_long_name = v;
-		} else if (k == "dcp_pretty_name") {
-			_dcp_pretty_name = v;
 		} else if (k == "dcp_content_type") {
 			_dcp_content_type = ContentType::get_from_pretty_name (v);
 		} else if (k == "format") {
@@ -218,7 +215,6 @@ Film::write_metadata () const
 	f << "name " << _name << "\n";
 	f << "content " << _content << "\n";
 	f << "dcp_long_name " << _dcp_long_name << "\n";
-	f << "dcp_pretty_name " << _dcp_pretty_name << "\n";
 	if (_dcp_content_type) {
 		f << "dcp_content_type " << _dcp_content_type->pretty_name () << "\n";
 	}
@@ -327,16 +323,6 @@ Film::set_dcp_long_name (string const & n)
 {
 	_dcp_long_name = n;
 	signal_changed (DCPLongName);
-}
-
-/** Set the `pretty name' to use when generating the DCP.
- *  This will be displayed on most content servers.
- */
-void
-Film::set_dcp_pretty_name (string const & n)
-{
-	_dcp_pretty_name = n;
-	signal_changed (DCPPrettyName);
 }
 
 /** Set the type to specify the DCP as having

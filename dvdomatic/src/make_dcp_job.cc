@@ -49,7 +49,7 @@ MakeDCPJob::run ()
 	
 	c << "cd " << d << " &&"
 	  << " opendcp_xml -d -a " << n
-	  << " -t \"" << _film->dcp_pretty_name () << "\""
+	  << " -t \"" << _film->name () << "\""
 	  << " -k " << _film->dcp_content_type()->opendcp_name ()
 	  << " --reel " << _film->file ("video.mxf") << " " << _film->file ("audio.mxf");
 

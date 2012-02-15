@@ -93,10 +93,6 @@ public:
 		return _dcp_long_name;
 	}
 
-	std::string dcp_pretty_name () const {
-		return _dcp_pretty_name;
-	}
-
 	ContentType const * dcp_content_type () {
 		return _dcp_content_type;
 	}
@@ -114,7 +110,6 @@ public:
 	void set_right_crop (int);
 	void set_format (Format *);
 	void set_dcp_long_name (std::string const &);
-	void set_dcp_pretty_name (std::string const &);
 	void set_dcp_content_type (ContentType const *);
 
 	int width () const {
@@ -163,7 +158,6 @@ public:
 		Name,
 		Content,
 		DCPLongName,
-		DCPPrettyName,
 		DCPContentType,
 		FilmFormat,
 		LeftCrop,
@@ -201,8 +195,6 @@ private:
 	std::string _content;
 	/** DCP long name (e.g. BLUES-BROTHERS_FTR_F_EN-XX ...) */
 	std::string _dcp_long_name;
-	/** DCP pretty name (e.g. The Blues Brothers) */
-	std::string _dcp_pretty_name;
 	/** The type of content that this Film represents (feature, trailer etc.) */
 	ContentType const * _dcp_content_type;
 	/** The format to present this Film in (flat, scope, etc.) */

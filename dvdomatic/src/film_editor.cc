@@ -94,7 +94,6 @@ FilmEditor::FilmEditor (Film* f)
 	_bottom_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::bottom_crop_changed));
 	_filters_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::edit_filters_clicked));
 	_dcp_long_name.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_long_name_changed));
-	_dcp_pretty_name.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_pretty_name_changed));
 	_dcp_content_type.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_content_type_changed));
 	_dcp_for.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::dcp_frames_changed));
 	_dcp_for_frames.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_frames_changed));
@@ -123,9 +122,6 @@ FilmEditor::FilmEditor (Film* f)
 	t->attach (*hint, 0, 2, n, n + 1);
 	++n;
 	
-	t->attach (left_aligned_label ("DCP Pretty Name"), 0, 1, n, n + 1);
-	t->attach (_dcp_pretty_name, 1, 2, n, n + 1);
-	++n;
 	t->attach (left_aligned_label ("Format"), 0, 1, n, n + 1);
 	t->attach (_format, 1, 2, n, n + 1);
 	++n;
@@ -325,14 +321,15 @@ FilmEditor::film_changed (Film::Property p)
 		_original_size.set_text (s.str ());
 		break;
 	case Film::Length:
-		s << _film->length() << " frames; " << seconds_to_hms (_film->length() / _film->frames_per_second());
+		if (_film->frames_per_second() > 0) {
+			s << _film->length() << " frames; " << seconds_to_hms (_film->length() / _film->frames_per_second());
+		} else {
+			s << _film->length() << " frames";
+		}
 		_length.set_text (s.str ());
 		break;
 	case Film::DCPLongName:
 		_dcp_long_name.set_text (_film->dcp_long_name ());
-		break;
-	case Film::DCPPrettyName:
-		_dcp_pretty_name.set_text (_film->dcp_pretty_name ());
 		break;
 	case Film::DCPContentType:
 		_dcp_content_type.set_active (ContentType::get_as_index (_film->dcp_content_type ()));
@@ -394,14 +391,6 @@ FilmEditor::dcp_long_name_changed ()
 }
 
 void
-FilmEditor::dcp_pretty_name_changed ()
-{
-	if (_film) {
-		_film->set_dcp_pretty_name (_dcp_pretty_name.get_text ());
-	}
-}
-
-void
 FilmEditor::set_film (Film* f)
 {
 	_film = f;
@@ -419,20 +408,22 @@ FilmEditor::set_film (Film* f)
 	}
 	
 	film_changed (Film::Name);
-	film_changed (Film::LeftCrop);
+	film_changed (Film::Content);
+	film_changed (Film::DCPLongName);
+	film_changed (Film::DCPContentType);
 	film_changed (Film::FilmFormat);
+	film_changed (Film::LeftCrop);
 	film_changed (Film::RightCrop);
 	film_changed (Film::TopCrop);
 	film_changed (Film::BottomCrop);
 	film_changed (Film::Filters);
-	film_changed (Film::Size);
-	film_changed (Film::Content);
-	film_changed (Film::FramesPerSecond);
-	film_changed (Film::DCPLongName);
-	film_changed (Film::DCPPrettyName);
-	film_changed (Film::DCPContentType);
 	film_changed (Film::DCPFrames);
 	film_changed (Film::DCPAB);
+	film_changed (Film::Size);
+	film_changed (Film::Length);
+	film_changed (Film::FramesPerSecond);
+	film_changed (Film::AudioChannels);
+	film_changed (Film::AudioSampleRate);
 }
 
 void
@@ -447,7 +438,6 @@ FilmEditor::set_things_sensitive (bool s)
 	_bottom_crop.set_sensitive (s);
 	_filters_button.set_sensitive (s);
 	_dcp_long_name.set_sensitive (s);
-	_dcp_pretty_name.set_sensitive (s);
 	_dcp_content_type.set_sensitive (s);
 	_make_dcp_button.set_sensitive (s);
 	_dcp_whole.set_sensitive (s);
