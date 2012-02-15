@@ -146,7 +146,7 @@ Film::read_metadata ()
 		} else if (k == "audio_sample_rate") {
 			_audio_sample_rate = atoi (v.c_str ());
 		} else if (k == "audio_sample_format") {
-			_audio_sample_format = audio_sample_format_from_string (v) << "\n";
+			_audio_sample_format = audio_sample_format_from_string (v);
 		}
 	}
 
@@ -196,7 +196,7 @@ Film::write_metadata () const
 	f << "frames_per_second " << _frames_per_second << "\n";
 	f << "audio_channels " << _audio_channels << "\n";
 	f << "audio_sample_rate " << _audio_sample_rate << "\n";
-	f << "audio_sample_format " << audio_sample_format_to_string (_audio_sample_format);
+	f << "audio_sample_format " << audio_sample_format_to_string (_audio_sample_format) << "\n";
 
 	_dirty = false;
 }
