@@ -61,6 +61,9 @@ Film::Film (string const & d, bool must_exist)
 	, _width (0)
 	, _height (0)
 	, _frames_per_second (0)
+	, _audio_channels (0)
+	, _audio_sample_rate (0)
+	, _audio_sample_format (AV_SAMPLE_FMT_NONE)
 	, _dirty (false)
 {
 	/* Make _directory a complete path, as this is assumed elsewhere */
