@@ -28,20 +28,17 @@
 
 using namespace std;
 
-ABTranscoder::ABTranscoder (Film* f, Job* j, Encoder* e, Parameters const * p)
+ABTranscoder::ABTranscoder (Film* f, Parameters const * p, Job* j, Encoder* e)
 	: _film (f)
+	, _par (p)
 	, _job (j)
 	, _encoder (e)
-	, _par (p)
 	, _last_frame (0)
 {
 	Film* original = new Film (*f);
 	original->set_filters (vector<Filter const *> ());
 	_da = new Decoder (original, j, p);
 	_db = new Decoder (f, j, p);
-
-	/* Use the B decoder so that the encoder writes stuff to the write j2c directory */
-	_encoder->set_decoder (_db);
 
 	_da->Video.connect (sigc::bind (sigc::mem_fun (*this, &ABTranscoder::process_video), 0));
 	_db->Video.connect (sigc::bind (sigc::mem_fun (*this, &ABTranscoder::process_video), 1));

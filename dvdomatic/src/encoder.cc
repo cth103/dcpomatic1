@@ -1,14 +1,8 @@
 #include "encoder.h"
 
-Encoder::Encoder (Parameters const * p)
-	: _par (p)
-	, _decoder (0)
+Encoder::Encoder (Film const * f, Parameters const * p)
+	: _film (f)
+	, _par (p)
 {
 
-}
-
-void
-Encoder::set_decoder (Decoder* d)
-{
-	_decoder = d;
 }

@@ -1,8 +1,5 @@
 Thumbnails are poorly named
 x-thread signaller
 Restartable jobs somehow
-restore Tifftranscoder not bothering with audio
 trim decoder public / protected API
-maybe TranscodingParameters or something to stop the crap with encoder knowing the decoder;
-  maybe instead / as well films should store A/B to remove the j2k-extra-dir hack
 use something other than TIFF

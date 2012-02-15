@@ -31,8 +31,8 @@
 
 using namespace std;
 
-TIFFEncoder::TIFFEncoder (Parameters const * p, string const & tiffs)
-	: Encoder (p)
+TIFFEncoder::TIFFEncoder (Film const * f, Parameters const * p, string const & tiffs)
+	: Encoder (f, p)
 	, _tiffs (tiffs)
 {
 	

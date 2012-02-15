@@ -33,27 +33,19 @@
 
 using namespace std;
 
-J2KWAVEncoder::J2KWAVEncoder (Parameters const * p)
-	: Encoder (p)
+J2KWAVEncoder::J2KWAVEncoder (Film const * f, Parameters const * p)
+	: Encoder (f, p)
 	, _deinterleave_buffer_size (8192)
 	, _deinterleave_buffer (0)
 	, _process_end (false)
 	, _num_worker_threads (Config::instance()->num_encoding_threads ())
 {
-
-}
-
-void
-J2KWAVEncoder::set_decoder (Decoder* d)
-{
-	Encoder::set_decoder (d);
-	
 	/* Create sound output files with .tmp suffixes; we will rename
 	   them if and when we complete.
 	*/
-	for (int i = 0; i < _decoder->audio_channels(); ++i) {
+	for (int i = 0; i < _film->audio_channels(); ++i) {
 		SF_INFO sf_info;
-		sf_info.samplerate = _decoder->audio_sample_rate();
+		sf_info.samplerate = _film->audio_sample_rate();
 		/* We write mono files */
 		sf_info.channels = 1;
 		sf_info.format = SF_FORMAT_WAV | SF_FORMAT_PCM_24;
@@ -92,8 +84,8 @@ J2KWAVEncoder::process_video (uint8_t* rgb, int line_size, int frame)
 	}
 
 	/* Only do the processing if we don't already have a file for this frame */
-	if (!boost::filesystem::exists (_decoder->film()->j2k_path (frame, false))) {
-		_queue.push_back (boost::shared_ptr<Image> (new Image (_decoder->film(), rgb, _par->out_width, _par->out_height, frame)));
+	if (!boost::filesystem::exists (_film->j2k_path (frame, false))) {
+		_queue.push_back (boost::shared_ptr<Image> (new Image (_film, rgb, _par->out_width, _par->out_height, frame)));
 		_worker_condition.notify_all ();
 	}
 }
@@ -145,7 +137,7 @@ J2KWAVEncoder::process_end ()
 	}
 
 	/* Rename .wav.tmp files to .wav */
-	for (int i = 0; i < _decoder->audio_channels(); ++i) {
+	for (int i = 0; i < _film->audio_channels(); ++i) {
 		boost::filesystem::rename (wav_path (i, true), wav_path (i, false));
 	}
 }
@@ -155,7 +147,7 @@ string
 J2KWAVEncoder::wav_path (int i, bool tmp) const
 {
 	stringstream s;
-	s << _decoder->film()->dir ("wavs") << "/" << (i + 1) << ".wav";
+	s << _film->dir ("wavs") << "/" << (i + 1) << ".wav";
 	if (tmp) {
 		s << ".tmp";
 	}
@@ -191,7 +183,7 @@ J2KWAVEncoder::process_audio (uint8_t* data, int channels, int data_size)
 				}
 			}
 			
-			switch (_decoder->audio_sample_format ()) {
+			switch (_film->audio_sample_format ()) {
 			case AV_SAMPLE_FMT_S16:
 				sf_write_short (_sound_files[i], (const short *) _deinterleave_buffer, this_time / sample_size);
 				break;

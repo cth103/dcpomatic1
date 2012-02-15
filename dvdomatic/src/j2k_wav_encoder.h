@@ -30,10 +30,8 @@ class Job;
 class J2KWAVEncoder : public Encoder
 {
 public:
-	J2KWAVEncoder (Parameters const *);
+	J2KWAVEncoder (Film const *, Parameters const *);
 	~J2KWAVEncoder ();
-
-	void set_decoder (Decoder *);
 
 	void process_begin ();
 	void process_video (uint8_t *, int, int);

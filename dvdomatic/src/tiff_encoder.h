@@ -29,7 +29,7 @@ class Parameters;
 class TIFFEncoder : public Encoder
 {
 public:
-	TIFFEncoder (Parameters const *, std::string const &);
+	TIFFEncoder (Film const *, Parameters const *, std::string const &);
 	~TIFFEncoder ();
 
 	void process_begin () {}

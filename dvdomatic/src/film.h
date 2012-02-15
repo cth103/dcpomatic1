@@ -24,6 +24,9 @@
 #include <vector>
 #include <inttypes.h>
 #include <sigc++/signal.h>
+extern "C" {
+#include <libavcodec/avcodec.h>
+}
 #include "content_type.h"
 
 class Format;
@@ -121,6 +124,18 @@ public:
 		return _frames_per_second;
 	}
 
+	int audio_channels () const {
+		return _audio_channels;
+	}
+
+	int audio_sample_rate () const {
+		return _audio_sample_rate;
+	}
+
+	AVSampleFormat audio_sample_format () const {
+		return _audio_sample_format;
+	}
+	
 	std::string j2k_dir () const;
 	std::string j2k_path (int, bool) const;
 
@@ -208,6 +223,9 @@ private:
 	int _height;
 	/* Frames per second of the source */
 	float _frames_per_second;
+	int _audio_channels;
+	int _audio_sample_rate;
+	AVSampleFormat _audio_sample_format;
 
 	mutable bool _dirty;
 };

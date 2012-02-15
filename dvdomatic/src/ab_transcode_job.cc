@@ -52,8 +52,8 @@ ABTranscodeJob::run ()
 		p.out_height = _film->format()->dci_height ();
 		p.num_frames = _num_frames;
 		
-		J2KWAVEncoder e (&p);
-		ABTranscoder w (_film, this, &e, &p);
+		J2KWAVEncoder e (_film, &p);
+		ABTranscoder w (_film, &p, this, &e);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

@@ -327,6 +327,9 @@ Film::set_content (string const & c)
 	_width = d.native_width ();
 	_height = d.native_height ();
 	_frames_per_second = d.frames_per_second ();
+	_audio_channels = d.audio_channels ();
+	_audio_sample_rate = d.audio_sample_rate ();
+	_audio_sample_format = d.audio_sample_format ();
 
 	signal_changed (Size);
 	signal_changed (FramesPerSecond);
@@ -375,10 +378,11 @@ Film::update_thumbs_non_gui (Job* job)
 	p.out_width = _width;
 	p.out_height = _height;
 	p.apply_crop = false;
+	p.decode_audio = false;
 	p.decode_video_frequency = number;
 	
-	TIFFEncoder e (&p, tdir);
-	Transcoder w (this, job, &e, &p);
+	TIFFEncoder e (this, &p, tdir);
+	Transcoder w (this, &p, job, &e);
 	w.go ();
 	
 	job->ascend ();
