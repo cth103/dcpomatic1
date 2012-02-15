@@ -21,7 +21,8 @@
 #include "film.h"
 
 FilterDialog::FilterDialog (Film* f)
-	: _filters (f->get_filters ())
+	: Gtk::Dialog ("Filters")
+	, _filters (f->get_filters ())
 	, _film (f)
 {
 	get_vbox()->pack_start (_filters.get_widget ());
