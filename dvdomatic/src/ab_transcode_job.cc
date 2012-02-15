@@ -46,7 +46,7 @@ ABTranscodeJob::ABTranscodeJob (Film* f, int N)
 	_pa->bottom_crop = _film->bottom_crop ();
 	
 	_pb = new Parameters (*_pa);
-	_pb->filters = _film->get_filters ();
+	_pb->filters = _film->filters ();
 }
 
 ABTranscodeJob::~ABTranscodeJob ()

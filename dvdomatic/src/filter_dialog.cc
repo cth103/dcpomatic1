@@ -22,7 +22,7 @@
 
 FilterDialog::FilterDialog (Film* f)
 	: Gtk::Dialog ("Filters")
-	, _filters (f->get_filters ())
+	, _filters (f->filters ())
 	, _film (f)
 {
 	get_vbox()->pack_start (_filters.get_widget ());

@@ -77,7 +77,7 @@ public:
 		return _format;
 	}
 
-	std::vector<Filter const *> get_filters () const {
+	std::vector<Filter const *> filters () const {
 		return _filters;
 	}
 

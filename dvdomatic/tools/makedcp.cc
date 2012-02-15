@@ -70,7 +70,7 @@ int main (int argc, char* argv[])
 	}
 	cout << "DCP for " << film->name() << "\n";
 	cout << "Content: " << film->content() << "\n";
-	pair<string, string> const f = Filter::ffmpeg_strings (film->get_filters ());
+	pair<string, string> const f = Filter::ffmpeg_strings (film->filters ());
 	cout << "Filters: " << f.first << " " << f.second << "\n";
 
 	film->make_dcp ();

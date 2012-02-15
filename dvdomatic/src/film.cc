@@ -555,7 +555,7 @@ Film::j2k_dir () const
 	/* Start with j2c */
 	s << "j2c/";
 
-	pair<string, string> f = Filter::ffmpeg_strings (get_filters ());
+	pair<string, string> f = Filter::ffmpeg_strings (filters ());
 
 	/* Write stuff to specify the filter / post-processing settings that are in use,
 	   so that we don't get confused about J2K files generated using different

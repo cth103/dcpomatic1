@@ -45,7 +45,7 @@ TranscodeJob::TranscodeJob (Film* f, int N)
 	_par->right_crop = _film->right_crop ();
 	_par->top_crop = _film->top_crop ();
 	_par->bottom_crop = _film->bottom_crop ();
-	_par->filters = _film->get_filters ();
+	_par->filters = _film->filters ();
 }
 
 TranscodeJob::~TranscodeJob ()

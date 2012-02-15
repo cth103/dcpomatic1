@@ -297,7 +297,7 @@ FilmEditor::film_changed (Film::Property p)
 		break;
 	case Film::Filters:
 	{
-		pair<string, string> p = Filter::ffmpeg_strings (_film->get_filters ());
+		pair<string, string> p = Filter::ffmpeg_strings (_film->filters ());
 		_filters.set_text (p.first + " " + p.second);
 		break;
 	}
