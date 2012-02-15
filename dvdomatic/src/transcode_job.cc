@@ -28,36 +28,16 @@
 
 using namespace std;
 
-TranscodeJob::TranscodeJob (Film* f, int N)
-	: Job (f)
-	, _num_frames (N)
+TranscodeJob::TranscodeJob (Parameters const * p, Log * l)
+	: Job (p, l)
 {
-	_par = new Parameters (f->j2k_dir(), ".j2c", f->dir ("wavs"));
-	_par->out_width = f->format()->dci_width ();
-	_par->out_height = f->format()->dci_height ();
-	_par->num_frames = _num_frames;
-	_par->audio_channels = f->audio_channels ();
-	_par->audio_sample_rate = f->audio_sample_rate ();
-	_par->audio_sample_format = f->audio_sample_format ();
-	_par->frames_per_second = f->frames_per_second ();
-	_par->content = f->content ();
-	_par->left_crop = f->left_crop ();
-	_par->right_crop = f->right_crop ();
-	_par->top_crop = f->top_crop ();
-	_par->bottom_crop = f->bottom_crop ();
-	_par->filters = f->filters ();
-}
-
-TranscodeJob::~TranscodeJob ()
-{
-	delete _par;
 }
 
 string
 TranscodeJob::name () const
 {
 	stringstream s;
-	s << "Transcode " << _film_name;
+	s << "Transcode " << _par->film_name;
 	return s.str ();
 }
 

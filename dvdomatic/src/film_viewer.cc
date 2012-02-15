@@ -25,6 +25,7 @@
 #include "util.h"
 #include "thumbs_job.h"
 #include "job_manager.h"
+#include "parameters.h"
 
 using namespace std;
 
@@ -172,7 +173,18 @@ FilmViewer::update_button_clicked ()
 	}
 
 	_film->update_thumbs_pre_gui ();
-	ThumbsJob* j = new ThumbsJob (_film);
+
+	Parameters* p = new Parameters (_film->dir ("thumbs"), ".tiff", "");
+	p->film_name = _film->name ();
+	p->out_width = _film->width ();
+	p->out_height = _film->height ();
+	p->apply_crop = false;
+	p->decode_audio = false;
+	p->decode_video_frequency = 128;
+	p->frames_per_second = _film->frames_per_second ();
+	p->content = _film->content ();
+	
+	ThumbsJob* j = new ThumbsJob (p, _film->log ());
 	j->Finished.connect (sigc::mem_fun (_film, &Film::update_thumbs_post_gui));
 	JobManager::instance()->add (j);
 }

@@ -6,3 +6,6 @@ More logging
 
 MakeDCPJob (and maybe others) should not be reading stuff in ::run()
 Maybe job shouldn't hold film ptr at all.
+shared_ptr for Parameters
+
+maybe a static method in Job to fill in required parameters ...

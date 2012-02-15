@@ -604,14 +604,35 @@ Film::make_dcp ()
 	if (_dcp_content_type == 0) {
 		throw runtime_error ("content type must be specified to make a DCP");
 	}
+
+	Parameters* p = new Parameters (j2k_dir(), ".j2c", dir ("wavs"));
+	p->film_name = name ();
+	p->dcp_long_name = dcp_long_name ();
+	p->dcp_content_type_name = dcp_content_type()->opendcp_name ();
+	p->video_mxf_path = file ("video.mxf");
+	p->audio_mxf_path = file ("audio.mxf");
+	p->dcp_path = dir (dcp_long_name ());
+	p->out_width = format()->dci_width ();
+	p->out_height = format()->dci_height ();
+	p->num_frames = dcp_frames ();
+	p->audio_channels = audio_channels ();
+	p->audio_sample_rate = audio_sample_rate ();
+	p->audio_sample_format = audio_sample_format ();
+	p->frames_per_second = frames_per_second ();
+	p->content = content ();
+	p->left_crop = left_crop ();
+	p->right_crop = right_crop ();
+	p->top_crop = top_crop ();
+	p->bottom_crop = bottom_crop ();
+	p->filters = filters ();
 	
 	if (_dcp_ab) {
-		JobManager::instance()->add (new ABTranscodeJob (this, dcp_frames ()));
+		JobManager::instance()->add (new ABTranscodeJob (p, log ()));
 	} else {
-		JobManager::instance()->add (new TranscodeJob (this, dcp_frames ()));
+		JobManager::instance()->add (new TranscodeJob (p, log ()));
 	}
 	
-	JobManager::instance()->add (new MakeMXFJob (this, MakeMXFJob::VIDEO));
-	JobManager::instance()->add (new MakeMXFJob (this, MakeMXFJob::AUDIO));
-	JobManager::instance()->add (new MakeDCPJob (this));
+	JobManager::instance()->add (new MakeMXFJob (p, log (), MakeMXFJob::VIDEO));
+	JobManager::instance()->add (new MakeMXFJob (p, log (), MakeMXFJob::AUDIO));
+	JobManager::instance()->add (new MakeDCPJob (p, log ()));
 }

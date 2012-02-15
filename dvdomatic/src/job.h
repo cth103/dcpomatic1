@@ -24,13 +24,13 @@
 #include <boost/thread/mutex.hpp>
 #include <sigc++/sigc++.h>
 
-class Film;
 class Log;
+class Parameters;
 
 class Job
 {
 public:
-	Job (Film *);
+	Job (Parameters const *, Log *);
 
 	virtual std::string name () const = 0;
 	virtual void run () = 0;
@@ -65,8 +65,8 @@ protected:
 	
 	void set_state (State);
 
+	Parameters const * _par;
 	Log* _log;
-	std::string _film_name;
 
 private:
 	

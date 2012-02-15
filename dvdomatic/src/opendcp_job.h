@@ -22,10 +22,13 @@
 
 #include "job.h"
 
+class Parameters;
+class Log;
+
 class OpenDCPJob : public Job
 {
 public:
-	OpenDCPJob (Film *);
+	OpenDCPJob (Parameters const *, Log *);
 
 protected:
 	void command (std::string);

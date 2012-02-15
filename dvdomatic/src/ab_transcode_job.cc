@@ -27,39 +27,23 @@
 
 using namespace std;
 
-ABTranscodeJob::ABTranscodeJob (Film* f, int N)
-	: Job (f)
-	, _num_frames (N)
+ABTranscodeJob::ABTranscodeJob (Parameters const * p, Log* l)
+	: Job (p, l)
 {
-	_pa = new Parameters (f->j2k_dir (), ".j2c", f->dir ("wavs"));
-	_pa->out_width = f->format()->dci_width ();
-	_pa->out_height = f->format()->dci_height ();
-	_pa->num_frames = _num_frames;
-	_pa->audio_channels = f->audio_channels ();
-	_pa->audio_sample_rate = f->audio_sample_rate ();
-	_pa->audio_sample_format = f->audio_sample_format ();
-	_pa->frames_per_second = f->frames_per_second ();
-	_pa->content = f->content ();
-	_pa->left_crop = f->left_crop ();
-	_pa->right_crop = f->right_crop ();
-	_pa->top_crop = f->top_crop ();
-	_pa->bottom_crop = f->bottom_crop ();
-	
-	_pb = new Parameters (*_pa);
-	_pb->filters = f->filters ();
+	_par_b = new Parameters (*_par);
+	_par_b->filters.clear ();
 }
 
 ABTranscodeJob::~ABTranscodeJob ()
 {
-	delete _pa;
-	delete _pb;
+	delete _par_b;
 }
 
 string
 ABTranscodeJob::name () const
 {
 	stringstream s;
-	s << "A/B transcode " << _film_name;
+	s << "A/B transcode " << _par->film_name;
 	return s.str ();
 }
 
@@ -68,8 +52,9 @@ ABTranscodeJob::run ()
 {
 	try {
 
-		J2KWAVEncoder e (_pa);
-		ABTranscoder w (_pa, _pb, this, &e);
+		J2KWAVEncoder e (_par);
+		/* _par_b is the one with no filters */
+		ABTranscoder w (_par_b, _par, this, &e);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

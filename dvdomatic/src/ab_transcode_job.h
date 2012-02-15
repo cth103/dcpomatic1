@@ -20,18 +20,17 @@
 #include "job.h"
 
 class Parameters;
+class Log;
 
 class ABTranscodeJob : public Job
 {
 public:
-	ABTranscodeJob (Film *, int N = 0);
+	ABTranscodeJob (Parameters const *, Log *);
 	~ABTranscodeJob ();
 
 	std::string name () const;
 	void run ();
 
 private:
-	int _num_frames;
-	Parameters* _pa;
-	Parameters* _pb;
+	Parameters* _par_b;
 };

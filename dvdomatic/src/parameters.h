@@ -131,6 +131,8 @@ public:
 	int audio_sample_rate;
 	AVSampleFormat audio_sample_format;
 	float frames_per_second;
+
+	std::string film_name;
 	std::string content;
 	std::string dcp_long_name;
 	std::string dcp_content_type_name;

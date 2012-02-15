@@ -29,14 +29,12 @@ public:
 		VIDEO
 	};
 	
-	MakeMXFJob (Film *, Type);
-	~MakeMXFJob ();
+	MakeMXFJob (Parameters const *, Log *, Type);
 
 	std::string name () const;
 	void run ();
 
 private:
-	Parameters* _par;
 	Type _type;
 };
 

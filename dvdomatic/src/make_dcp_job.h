@@ -18,18 +18,13 @@
 */
 
 #include "opendcp_job.h"
-#include "parameters.h"
 
 class MakeDCPJob : public OpenDCPJob
 {
 public:
-	MakeDCPJob (Film *);
-	~MakeDCPJob ();
+	MakeDCPJob (Parameters const *, Log *);
 
 	std::string name () const;
 	void run ();
-
-private:
-	Parameters* _par;
 };
 

@@ -22,8 +22,8 @@
 
 using namespace std;
 
-OpenDCPJob::OpenDCPJob (Film* f)
-	: Job (f)
+OpenDCPJob::OpenDCPJob (Parameters const * p, Log* l)
+	: Job (p, l)
 {
 
 }

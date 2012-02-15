@@ -24,19 +24,11 @@
 
 using namespace std;
 
-MakeMXFJob::MakeMXFJob (Film* f, Type t)
-	: OpenDCPJob (f)
+MakeMXFJob::MakeMXFJob (Parameters const * p, Log* l, Type t)
+	: OpenDCPJob (p, l)
 	, _type (t)
 {
-	_par = new Parameters (f->j2k_dir(), ".j2c", f->dir ("wavs"));
-	_par->frames_per_second = f->frames_per_second ();
-	_par->video_mxf_path = f->file ("video.mxf");
-	_par->audio_mxf_path = f->file ("audio.mxf");
-}
 
-MakeMXFJob::~MakeMXFJob ()
-{
-	delete _par;
 }
 
 string
@@ -45,10 +37,10 @@ MakeMXFJob::name () const
 	stringstream s;
 	switch (_type) {
 	case VIDEO:
-		s << "Make video MXF for " << _film_name;
+		s << "Make video MXF for " << _par->film_name;
 		break;
 	case AUDIO:
-		s << "Make audio MXF for " << _film_name;
+		s << "Make audio MXF for " << _par->film_name;
 		break;
 	}
 	

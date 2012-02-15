@@ -19,31 +19,21 @@
 
 #include <boost/filesystem.hpp>
 #include "make_dcp_job.h"
-#include "film.h"
+#include "parameters.h"
 
 using namespace std;
 
-MakeDCPJob::MakeDCPJob (Film* f)
-	: OpenDCPJob (f)
+MakeDCPJob::MakeDCPJob (Parameters const * p, Log* l)
+	: OpenDCPJob (p, l)
 {
-	_par = new Parameters (f->j2k_dir(), ".j2c", f->dir ("wavs"));
-	_par->dcp_long_name = f->dcp_long_name ();
-	_par->dcp_content_type_name = f->dcp_content_type()->opendcp_name ();
-	_par->video_mxf_path = f->file ("video.mxf");
-	_par->audio_mxf_path = f->file ("audio.mxf");
-	_par->dcp_path = f->dir (f->dcp_long_name ());
-}
-
-MakeDCPJob::~MakeDCPJob ()
-{
-	delete _par;
+	
 }
 
 string
 MakeDCPJob::name () const
 {
 	stringstream s;
-	s << "Make DCP for " << _film_name;
+	s << "Make DCP for " << _par->film_name;
 	return s.str ();
 }
 
@@ -55,7 +45,7 @@ MakeDCPJob::run ()
 	stringstream c;
 	c << "cd " << _par->dcp_path << " &&"
 	  << " opendcp_xml -d -a " << _par->dcp_long_name
-	  << " -t \"" << _film_name << "\""
+	  << " -t \"" << _par->film_name << "\""
 	  << " -k " << _par->dcp_content_type_name
 	  << " --reel " << _par->video_mxf_path << " " << _par->audio_mxf_path;
 
