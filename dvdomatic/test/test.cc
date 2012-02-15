@@ -8,7 +8,7 @@ using namespace std;
 
 BOOST_AUTO_TEST_CASE (film_metadata_test)
 {
-	Film f ("build/test/film");
+	Film f ("build/test/film", false);
 	BOOST_CHECK(f.format() == 0);
 }
 
