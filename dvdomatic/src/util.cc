@@ -114,3 +114,28 @@ stacktrace (ostream& out, int levels)
 		free (strings);
 	}
 }
+
+string
+audio_sample_format_to_string (AVSampleFormat s)
+{
+	/** Our sample format handling is not exactly complete */
+	
+	switch (s) {
+	case AV_SAMPLE_FMT_S16:
+		return "S16";
+	default:
+		break;
+	}
+
+	return "Unknown";
+}
+
+AVSampleFormat
+audio_sample_format_from_string (string const & s)
+{
+	if (s == "S16") {
+		return AV_SAMPLE_FMT_S16;
+	}
+
+	return AV_SAMPLE_FMT_NONE;
+}

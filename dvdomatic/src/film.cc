@@ -42,9 +42,11 @@
 using namespace std;
 
 /** Construct a Film object in a given directory, reading any metadata
- *  file that exists in that directory.
+ *  file that exists in that directory.  An exception will be thrown if
+ *  must_exist is true, and the specified directory does not exist.
  *
  *  @param d Film directory.
+ *  @param must_exist true to throw an exception if does not exist.
  */
 
 Film::Film (string const & d, bool must_exist)
@@ -61,6 +63,7 @@ Film::Film (string const & d, bool must_exist)
 	, _frames_per_second (0)
 	, _dirty (false)
 {
+	/* Make _directory a complete path, as this is assumed elsewhere */
 	_directory = boost::filesystem::system_complete (d).string ();
 	
 	if (must_exist && !boost::filesystem::exists (_directory)) {
@@ -101,22 +104,22 @@ Film::read_metadata ()
 			_name = v;
 		} else if (k == "content") {
 			_content = v;
-		} else if (k == "format") {
-			_format = Format::get_from_metadata (v);
-		} else if (k == "top_crop") {
-			_top_crop = atoi (v.c_str ());
-		} else if (k == "bottom_crop") {
-			_bottom_crop = atoi (v.c_str ());
-		} else if (k == "left_crop") {
-			_left_crop = atoi (v.c_str ());
-		} else if (k == "right_crop") {
-			_right_crop = atoi (v.c_str ());
 		} else if (k == "dcp_long_name") {
 			_dcp_long_name = v;
 		} else if (k == "dcp_pretty_name") {
 			_dcp_pretty_name = v;
 		} else if (k == "dcp_content_type") {
 			_dcp_content_type = ContentType::get_from_pretty_name (v);
+		} else if (k == "format") {
+			_format = Format::get_from_metadata (v);
+		} else if (k == "left_crop") {
+			_left_crop = atoi (v.c_str ());
+		} else if (k == "right_crop") {
+			_right_crop = atoi (v.c_str ());
+		} else if (k == "top_crop") {
+			_top_crop = atoi (v.c_str ());
+		} else if (k == "bottom_crop") {
+			_bottom_crop = atoi (v.c_str ());
 		} else if (k == "filter") {
 			_filters.push_back (Filter::get_from_id (v));
 		} else if (k == "dcp_frames") {
@@ -138,12 +141,19 @@ Film::read_metadata ()
 			_height = atoi (v.c_str ());
 		} else if (k == "frames_per_second") {
 			_frames_per_second = atof (v.c_str ());
+		} else if (k == "audio_channels") {
+			_audio_channels = atoi (v.c_str ());
+		} else if (k == "audio_sample_rate") {
+			_audio_sample_rate = atoi (v.c_str ());
+		} else if (k == "audio_sample_format") {
+			_audio_sample_format = audio_sample_format_from_string (v);
 		}
 	}
 
 	_dirty = false;
 }
 
+/** Write our state to a file `metadata' inside the Film's directory */
 void
 Film::write_metadata () const
 {
@@ -157,133 +167,41 @@ Film::write_metadata () const
 	/* User stuff */
 	f << "name " << _name << "\n";
 	f << "content " << _content << "\n";
+	f << "dcp_long_name " << _dcp_long_name << "\n";
+	f << "dcp_pretty_name " << _dcp_pretty_name << "\n";
+	if (_dcp_content_type) {
+		f << "dcp_content_type " << _dcp_content_type->pretty_name () << "\n";
+	}
 	if (_format) {
 		f << "format " << _format->get_as_metadata () << "\n";
 	}
-	f << "top_crop " << _top_crop << "\n";
-	f << "bottom_crop " << _bottom_crop << "\n";
 	f << "left_crop " << _left_crop << "\n";
 	f << "right_crop " << _right_crop << "\n";
+	f << "top_crop " << _top_crop << "\n";
+	f << "bottom_crop " << _bottom_crop << "\n";
 	for (vector<Filter const *>::const_iterator i = _filters.begin(); i != _filters.end(); ++i) {
 		f << "filter " << (*i)->id () << "\n";
 	}
 	f << "dcp_frames " << _dcp_frames << "\n";
 	f << "dcp_ab " << (_dcp_ab ? "1" : "0") << "\n";
 
-	/* Cached stuff */
+	/* Cached stuff; this is information about our content; we could
+	   look it up each time, but that's slow.
+	*/
 	for (vector<int>::const_iterator i = _thumbs.begin(); i != _thumbs.end(); ++i) {
 		f << "thumb " << *i << "\n";
 	}
 	f << "width " << _width << "\n";
 	f << "height " << _height << "\n";
 	f << "frames_per_second " << _frames_per_second << "\n";
-	f << "dcp_long_name " << _dcp_long_name << "\n";
-	f << "dcp_pretty_name " << _dcp_pretty_name << "\n";
-	if (_dcp_content_type) {
-		f << "dcp_content_type " << _dcp_content_type->pretty_name () << "\n";
-	}
+	f << "audio_channels " << _audio_channels << "\n";
+	f << "audio_sample_rate " << _audio_sample_rate << "\n";
+	f << "audio_sample_format " << audio_sample_format_to_string (_audio_sample_format);
 
 	_dirty = false;
 }
 
-string
-Film::metadata_file () const
-{
-	return file ("metadata");
-}
-
-void
-Film::set_top_crop (int c)
-{
-	if (c == _top_crop) {
-		return;
-	}
-	
-	_top_crop = c;
-	signal_changed (TopCrop);
-}
-
-void
-Film::set_bottom_crop (int c)
-{
-	if (c == _bottom_crop) {
-		return;
-	}
-	
-	_bottom_crop = c;
-	signal_changed (BottomCrop);
-}
-
-void
-Film::set_left_crop (int c)
-{
-	if (c == _left_crop) {
-		return;
-	}
-	
-	_left_crop = c;
-	signal_changed (LeftCrop);
-}
-
-void
-Film::set_right_crop (int c)
-{
-	if (c == _right_crop) {
-		return;
-	}
-	
-	_right_crop = c;
-	signal_changed (RightCrop);
-}
-
-void
-Film::set_format (Format* f)
-{
-	_format = f;
-	signal_changed (FilmFormat);
-}
-
-void
-Film::set_dcp_frames (int n)
-{
-	_dcp_frames = n;
-	signal_changed (DCPFrames);
-}
-
-void
-Film::set_dcp_ab (bool a)
-{
-	_dcp_ab = a;
-	signal_changed (DCPAB);
-}
-
-void
-Film::set_dcp_long_name (string const & n)
-{
-	_dcp_long_name = n;
-	signal_changed (DCPLongName);
-}
-
-void
-Film::set_dcp_pretty_name (string const & n)
-{
-	_dcp_pretty_name = n;
-	signal_changed (DCPPrettyName);
-}
-
-void
-Film::set_dcp_content_type (ContentType* t)
-{
-	_dcp_content_type = t;
-	signal_changed (ContentTypeChange);
-}
-
-string
-Film::content () const
-{
-	return file (_content);
-}
-
+/** Set the name by which DVD-o-matic refers to this Film */
 void
 Film::set_name (string const & n)
 {
@@ -335,6 +253,137 @@ Film::set_content (string const & c)
 	signal_changed (FramesPerSecond);
 }
 
+/** Set the format that this Film should be shown in */
+void
+Film::set_format (Format* f)
+{
+	_format = f;
+	signal_changed (FilmFormat);
+}
+
+/** Set the `long name' to use when generating the DCP
+ *  (the one like THE-BLUES-BROS_FTR_F_EN-XX ...)
+ */
+void
+Film::set_dcp_long_name (string const & n)
+{
+	_dcp_long_name = n;
+	signal_changed (DCPLongName);
+}
+
+/** Set the `pretty name' to use when generating the DCP.
+ *  This will be displayed on most content servers.
+ */
+void
+Film::set_dcp_pretty_name (string const & n)
+{
+	_dcp_pretty_name = n;
+	signal_changed (DCPPrettyName);
+}
+
+/** Set the type to specify the DCP as having
+ *  (feature, trailer etc.)
+ */
+void
+Film::set_dcp_content_type (ContentType* t)
+{
+	_dcp_content_type = t;
+	signal_changed (ContentTypeChange);
+}
+
+/** Set the number of pixels by which to crop the left of the source video */
+void
+Film::set_left_crop (int c)
+{
+	if (c == _left_crop) {
+		return;
+	}
+	
+	_left_crop = c;
+	signal_changed (LeftCrop);
+}
+
+/** Set the number of pixels by which to crop the right of the source video */
+void
+Film::set_right_crop (int c)
+{
+	if (c == _right_crop) {
+		return;
+	}
+	
+	_right_crop = c;
+	signal_changed (RightCrop);
+}
+
+/** Set the number of pixels by which to crop the top of the source video */
+void
+Film::set_top_crop (int c)
+{
+	if (c == _top_crop) {
+		return;
+	}
+	
+	_top_crop = c;
+	signal_changed (TopCrop);
+}
+
+/** Set the number of pixels by which to crop the bottom of the source video */
+void
+Film::set_bottom_crop (int c)
+{
+	if (c == _bottom_crop) {
+		return;
+	}
+	
+	_bottom_crop = c;
+	signal_changed (BottomCrop);
+}
+
+/** Set the filters to apply to the image when generating thumbnails
+ *  or a DCP.
+ */
+void
+Film::set_filters (vector<Filter const *> const & f)
+{
+	_filters = f;
+	signal_changed (Filters);
+}
+
+/** Set the number of frames to put in any generated DCP (from
+ *  the start of the film).  0 indicates that all frames should
+ *  be used.
+ */
+void
+Film::set_dcp_frames (int n)
+{
+	_dcp_frames = n;
+	signal_changed (DCPFrames);
+}
+
+/** Set whether or not to generate a A/B comparison DCP.
+ *  Such a DCP has the left half of its frame as the Film
+ *  content without any filtering or post-processing; the
+ *  right half is rendered with filters and post-processing.
+ */
+void
+Film::set_dcp_ab (bool a)
+{
+	_dcp_ab = a;
+	signal_changed (DCPAB);
+}
+
+/** Given a file name, return its full path within the Film's directory */
+string
+Film::file (string const & f) const
+{
+	stringstream s;
+	s << _directory << "/" << f;
+	return s.str ();
+}
+
+/** Given a directory name, return its full path within the Film's directory.
+ *  The directory (and its parents) will be created if they do not exist.
+ */
 string
 Film::dir (string const & d) const
 {
@@ -344,14 +393,28 @@ Film::dir (string const & d) const
 	return s.str ();
 }
 
+/** @return path of metadata file */
 string
-Film::file (string const & f) const
+Film::metadata_file () const
 {
-	stringstream s;
-	s << _directory << "/" << f;
-	return s.str ();
+	return file ("metadata");
 }
 
+/** @return full path of the content (actual video) file
+ *  of this Film.
+ */
+string
+Film::content () const
+{
+	return file (_content);
+}
+
+/** The non-GUI-thread part of a thumbnail update.
+ *  This decodes the content video and writes TIFF
+ *  files to the thumbs subdirectory of the Film.
+ *
+ *  @param job Parent job; used for informing of progress.
+ */
 void
 Film::update_thumbs_non_gui (Job* job)
 {
@@ -406,18 +469,25 @@ Film::update_thumbs_non_gui (Job* job)
 	write_metadata ();
 }
 
+/** The GUI part of a thumbs update.
+ *  Must be called from the GUI thread.
+ */
 void
 Film::update_thumbs_gui ()
 {
 	signal_changed (Thumbs);
 }
 
+/** @return the number of thumbnail images that we have */
 int
 Film::num_thumbs () const
 {
 	return _thumbs.size ();
 }
 
+/** @param n A thumb index.
+ *  @return The frame within the Film that it is for.
+ */
 int
 Film::thumb_frame (int n) const
 {
@@ -425,12 +495,19 @@ Film::thumb_frame (int n) const
 	return _thumbs[n];
 }
 
+/** @param n A thumb index.
+ *  @return The path to the thumb's image file.
+ */
 string
 Film::thumb_file (int n) const
 {
 	return thumb_file_for_frame (thumb_frame (n));
 }
 
+/** @param n A frame index within the Film.
+ *  @return The path to the thumb's image file for this frame;
+ *  we assume that it exists.
+ */
 string
 Film::thumb_file_for_frame (int n) const
 {
@@ -441,35 +518,39 @@ Film::thumb_file_for_frame (int n) const
 	return s.str ();
 }
 
+/** @return The path to the directory to write JPEG2000 files to */
 string
-Film::j2k_sub_directory () const
+Film::j2k_dir () const
 {
 	assert (_format);
 
-	pair<string, string> f = Filter::ffmpeg_strings (get_filters ());
-	
 	stringstream s;
+
+	/* Start with j2c */
+	s << "j2c/";
+
+	pair<string, string> f = Filter::ffmpeg_strings (get_filters ());
+
+	/* Write stuff to specify the filter / post-processing settings that are in use,
+	   so that we don't get confused about J2K files generated using different
+	   settings.
+	*/
 	s << _format->nickname()
 	  << "_" << _content
 	  << "_" << _left_crop << "_" << _right_crop << "_" << _top_crop << "_" << _bottom_crop
 	  << "_" << f.first << "_" << f.second;
 
+	/* Similarly for the A/B case */
 	if (_dcp_ab) {
 		s << "/ab";
 	}
 	
-	return s.str ();
-}
-
-
-string
-Film::j2k_dir () const
-{
-	stringstream s;
-	s << "j2c/" << j2k_sub_directory();
 	return dir (s.str ());
 }
 
+/** @param f A frame index.
+ *  @return Full path to the J2K file that corresponds to this frame, given the current settings.
+ */
 string
 Film::j2k_path (int f, bool tmp) const
 {
@@ -485,13 +566,7 @@ Film::j2k_path (int f, bool tmp) const
 	return s.str ();
 }
 
-void
-Film::set_filters (vector<Filter const *> const & f)
-{
-	_filters = f;
-	signal_changed (Filters);
-}
-
+/** Handle a change to the Film's metadata */
 void
 Film::signal_changed (Property p)
 {
@@ -499,6 +574,7 @@ Film::signal_changed (Property p)
 	Changed (p);
 }
 
+/** Add suitable Jobs to the JobManager to create a DCP for this Film */
 void
 Film::make_dcp ()
 {

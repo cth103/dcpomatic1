@@ -33,6 +33,9 @@ class Format;
 class Job;
 class Filter;
 
+/** A representation of a piece of video (with sound), including naming,
+ *  the source content file, and how it should be presented in a DCP.
+ */
 class Film
 {
 public:
@@ -170,6 +173,7 @@ public:
 		DCPAB
 	};
 
+	/** Emitted when some metadata property has changed */
 	sigc::signal1<void, Property> Changed;
 	
 private:
@@ -177,7 +181,6 @@ private:
 	std::string metadata_file () const;
 	void update_dimensions ();
 	std::string thumb_file_for_frame (int) const;
-	std::string j2k_sub_directory () const;
 	void signal_changed (Property);
 
 	/** Complete path to directory containing the film metadata;
@@ -215,18 +218,22 @@ private:
 
 	/* Data which is cached to speed things up */
 
-	/* Vector of frame indices for each of our `thumbnails */
+	/** Vector of frame indices for each of our `thumbnails */
 	std::vector<int> _thumbs;
-	/* Width, in pixels, of the source */
+	/** Width, in pixels, of the source (ignoring cropping) */
 	int _width;
-	/* Height, in pixels, of the source */
+	/** Height, in pixels, of the source (ignoring cropping) */
 	int _height;
-	/* Frames per second of the source */
+	/** Frames per second of the source */
 	float _frames_per_second;
+	/** Number of audio channels */
 	int _audio_channels;
+	/** Sample rate of the audio, in Hz */
 	int _audio_sample_rate;
+	/** Format of the audio samples */
 	AVSampleFormat _audio_sample_format;
 
+	/** true if our metadata has changed since it was last written to disk */
 	mutable bool _dirty;
 };
 
