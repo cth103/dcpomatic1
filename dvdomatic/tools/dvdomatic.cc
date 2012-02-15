@@ -27,6 +27,8 @@
 #include "config_dialog.h"
 #include "config.h"
 #include "filter.h"
+#include "version.h"
+#include "gpl.h"
 
 using namespace std;
 
@@ -136,6 +138,25 @@ edit_preferences ()
 }
 
 void
+help_about ()
+{
+	Gtk::AboutDialog d;
+	d.set_name ("DVD-o-matic");
+	d.set_version (VERSION);
+	d.set_comments ("DCP generation from arbitrary formats");
+
+	vector<string> authors;
+	authors.push_back ("Carl Hetherington");
+	authors.push_back ("Terrence Meiczinger");
+	d.set_authors (authors);
+
+	d.set_website ("http://carlh.net/dvdomatic");
+	d.set_license (gpl);
+	
+	d.run ();
+}
+
+void
 setup_menu (Gtk::MenuBar& m)
 {
 	using namespace Gtk::Menu_Helpers;
@@ -152,10 +173,15 @@ setup_menu (Gtk::MenuBar& m)
 	Gtk::Menu* edit = manage (new Gtk::Menu);
 	MenuList& edit_items (edit->items ());
 	edit_items.push_back (MenuElem ("_Preferences...", sigc::ptr_fun (edit_preferences)));
+
+	Gtk::Menu* help = manage (new Gtk::Menu);
+	MenuList& help_items (help->items ());
+	help_items.push_back (MenuElem ("_About", sigc::ptr_fun (help_about)));
 	
 	MenuList& items (m.items ());
 	items.push_back (MenuElem ("_File", *file));
 	items.push_back (MenuElem ("_Edit", *edit));
+	items.push_back (MenuElem ("_Help", *help));
 }
 
 bool
