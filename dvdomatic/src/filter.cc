@@ -23,7 +23,7 @@ using namespace std;
 
 vector<Filter const *> Filter::_filters;
 
-Filter::Filter (string const & i, string const & n, string const & v, string const & p)
+Filter::Filter (string i, string n, string v, string p)
 	: _id (i)
 	, _name (n)
 	, _vf (v)
@@ -92,7 +92,7 @@ Filter::ffmpeg_strings (vector<Filter const *> const & filters)
 }
 
 Filter const *
-Filter::get_from_id (string const & d)
+Filter::get_from_id (string d)
 {
 	vector<Filter const *>::iterator i = _filters.begin ();
 	while (i != _filters.end() && (*i)->id() != d) {

@@ -49,7 +49,7 @@ using namespace std;
  *  @param must_exist true to throw an exception if does not exist.
  */
 
-Film::Film (string const & d, bool must_exist)
+Film::Film (string d, bool must_exist)
 	: _dcp_content_type (0)
 	, _format (0)
 	, _left_crop (0)
@@ -250,7 +250,7 @@ Film::write_metadata () const
 
 /** Set the name by which DVD-o-matic refers to this Film */
 void
-Film::set_name (string const & n)
+Film::set_name (string n)
 {
 	_name = n;
 	signal_changed (Name);
@@ -262,7 +262,7 @@ Film::set_name (string const & n)
  *  will be assumed to be within the film's _directory.
  */
 void
-Film::set_content (string const & c)
+Film::set_content (string c)
 {
 	bool const absolute = boost::filesystem::path(c).has_root_directory ();
 	if (absolute && !boost::starts_with (c, _directory)) {
@@ -319,7 +319,7 @@ Film::set_format (Format* f)
  *  (the one like THE-BLUES-BROS_FTR_F_EN-XX ...)
  */
 void
-Film::set_dcp_long_name (string const & n)
+Film::set_dcp_long_name (string n)
 {
 	_dcp_long_name = n;
 	signal_changed (DCPLongName);
@@ -418,7 +418,7 @@ Film::set_dcp_ab (bool a)
 
 /** Given a file name, return its full path within the Film's directory */
 string
-Film::file (string const & f) const
+Film::file (string f) const
 {
 	stringstream s;
 	s << _directory << "/" << f;
@@ -429,7 +429,7 @@ Film::file (string const & f) const
  *  The directory (and its parents) will be created if they do not exist.
  */
 string
-Film::dir (string const & d) const
+Film::dir (string d) const
 {
 	stringstream s;
 	s << _directory << "/" << d;

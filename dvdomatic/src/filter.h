@@ -23,7 +23,7 @@
 class Filter
 {
 public:
-	Filter (std::string const &, std::string const &, std::string const &, std::string const &);
+	Filter (std::string, std::string, std::string, std::string);
 
 	std::string id () const {
 		return _id;
@@ -42,7 +42,7 @@ public:
 	}
 	
 	static std::vector<Filter const *> get_all ();
-	static Filter const * get_from_id (std::string const &);
+	static Filter const * get_from_id (std::string);
 	static void setup_filters ();
 	static std::pair<std::string, std::string> ffmpeg_strings (std::vector<Filter const *> const &);
 

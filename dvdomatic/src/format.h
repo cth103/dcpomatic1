@@ -23,7 +23,7 @@
 class Format
 {
 public:
-	Format (int, int, int, std::string const &);
+	Format (int, int, int, std::string);
 
 	int ratio_as_integer () const {
 		return _ratio;
@@ -50,8 +50,8 @@ public:
 	std::string get_as_metadata () const;
 
 	static Format * get_from_ratio (int);
-	static Format * get_from_nickname (std::string const &);
-	static Format * get_from_metadata (std::string const &);
+	static Format * get_from_nickname (std::string);
+	static Format * get_from_metadata (std::string);
 	static Format * get_from_index (int);
 	static int get_as_index (Format const *);
 	static std::vector<Format*> get_all ();

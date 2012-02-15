@@ -29,7 +29,7 @@ OpenDCPJob::OpenDCPJob (Film* f)
 }
 
 void
-OpenDCPJob::command (string const & c)
+OpenDCPJob::command (string c)
 {
 	FILE* f = popen (c.c_str(), "r");
 	if (f == 0) {

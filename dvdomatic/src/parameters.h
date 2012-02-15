@@ -29,7 +29,7 @@ class Filter;
 class Parameters
 {
 public:
-	Parameters (std::string const & v, std::string const & e, std::string const & a)
+	Parameters (std::string v, std::string e, std::string a)
 		: out_width (0)
 		, out_height (0)
 		, apply_crop (true)

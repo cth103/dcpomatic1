@@ -24,7 +24,7 @@ using namespace std;
 
 vector<ContentType const *> ContentType::_content_types;
 
-ContentType::ContentType (string const & p, string const & o)
+ContentType::ContentType (string p, string o)
 	: _pretty_name (p)
 	, _opendcp_name (o)
 {
@@ -47,7 +47,7 @@ ContentType::setup_content_types ()
 }
 
 ContentType const *
-ContentType::get_from_pretty_name (string const & n)
+ContentType::get_from_pretty_name (string n)
 {
 	for (vector<ContentType const *>::const_iterator i = _content_types.begin(); i != _content_types.end(); ++i) {
 		if ((*i)->pretty_name() == n) {

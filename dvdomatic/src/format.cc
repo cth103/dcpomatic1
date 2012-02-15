@@ -28,7 +28,7 @@ using namespace std;
 
 vector<Format *> Format::_formats;
 
-Format::Format (int r, int dw, int dh, string const & n)
+Format::Format (int r, int dw, int dh, string n)
 	: _ratio (r)
 	, _dci_width (dw)
 	, _dci_height (dh)
@@ -87,7 +87,7 @@ Format::get_from_ratio (int r)
 }
 
 Format *
-Format::get_from_nickname (string const & n)
+Format::get_from_nickname (string n)
 {
 	vector<Format*>::iterator i = _formats.begin ();
 	while (i != _formats.end() && (*i)->nickname() != n) {
@@ -102,7 +102,7 @@ Format::get_from_nickname (string const & n)
 }
 
 Format *
-Format::get_from_metadata (string const & m)
+Format::get_from_metadata (string m)
 {
 	return get_from_ratio (atoi (m.c_str ()));
 }

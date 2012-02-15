@@ -28,7 +28,7 @@ public:
 	OpenDCPJob (Film *);
 
 protected:
-	void command (std::string const &);
+	void command (std::string);
 };
 
 #endif

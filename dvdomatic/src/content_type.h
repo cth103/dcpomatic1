@@ -23,7 +23,7 @@
 class ContentType
 {
 public:
-	ContentType (std::string const &, std::string const &);
+	ContentType (std::string, std::string);
 
 	std::string pretty_name () const {
 		return _pretty_name;
@@ -33,7 +33,7 @@ public:
 		return _opendcp_name;
 	}
 
-	static ContentType const * get_from_pretty_name (std::string const &);
+	static ContentType const * get_from_pretty_name (std::string);
 	static ContentType const * get_from_index (int);
 	static int get_as_index (ContentType const *);
 	static std::vector<ContentType const *> get_all ();

@@ -54,7 +54,7 @@ seconds_to_hms (int s)
 }
 
 Gtk::Label &
-left_aligned_label (string const & t)
+left_aligned_label (string t)
 {
 	Gtk::Label* l = Gtk::manage (new Gtk::Label (t));
 	l->set_alignment (0, 0.5);
@@ -62,7 +62,7 @@ left_aligned_label (string const & t)
 }
 
 static string
-demangle (string const & l)
+demangle (string l)
 {
 	string::size_type const b = l.find_first_of ("(");
 	if (b == string::npos) {
@@ -131,7 +131,7 @@ audio_sample_format_to_string (AVSampleFormat s)
 }
 
 AVSampleFormat
-audio_sample_format_from_string (string const & s)
+audio_sample_format_from_string (string s)
 {
 	if (s == "S16") {
 		return AV_SAMPLE_FMT_S16;

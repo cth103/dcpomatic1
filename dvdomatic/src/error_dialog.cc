@@ -23,7 +23,7 @@
 using namespace std;
 
 void
-error_dialog (string const & m)
+error_dialog (string m)
 {
 	Gtk::MessageDialog d (m, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
 	d.run ();

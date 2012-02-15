@@ -18,4 +18,4 @@
 */
 
 extern void
-error_dialog (std::string const &);
+error_dialog (std::string);

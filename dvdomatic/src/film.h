@@ -40,7 +40,7 @@ class Filter;
 class Film
 {
 public:
-	Film (std::string const &, bool must_exist = true);
+	Film (std::string, bool must_exist = true);
 	Film (Film const &);
 
 	void write_metadata () const;
@@ -100,16 +100,16 @@ public:
 	void set_dcp_frames (int);
 	void set_dcp_ab (bool);
 	
-	void set_name (std::string const &);
-	void set_content (std::string const &);
-	std::string dir (std::string const &) const;
-	std::string file (std::string const &) const;
+	void set_name (std::string);
+	void set_content (std::string);
+	std::string dir (std::string) const;
+	std::string file (std::string) const;
 	void set_top_crop (int);
 	void set_bottom_crop (int);
 	void set_left_crop (int);
 	void set_right_crop (int);
 	void set_format (Format *);
-	void set_dcp_long_name (std::string const &);
+	void set_dcp_long_name (std::string);
 	void set_dcp_content_type (ContentType const *);
 
 	int width () const {
