@@ -42,35 +42,35 @@ Job::start ()
 bool
 Job::running () const
 {
-	boost::mutex::scoped_lock (_state_mutex);
+	boost::mutex::scoped_lock lm (_state_mutex);
 	return _state == RUNNING;
 }
 
 bool
 Job::finished () const
 {
-	boost::mutex::scoped_lock (_state_mutex);
+	boost::mutex::scoped_lock lm (_state_mutex);
 	return _state == FINISHED_OK || _state == FINISHED_ERROR;
 }
 
 bool
 Job::finished_ok () const
 {
-	boost::mutex::scoped_lock (_state_mutex);
+	boost::mutex::scoped_lock lm (_state_mutex);
 	return _state == FINISHED_OK;
 }
 
 bool
 Job::finished_in_error () const
 {
-	boost::mutex::scoped_lock (_state_mutex);
+	boost::mutex::scoped_lock lm (_state_mutex);
 	return _state == FINISHED_ERROR;
 }
 
 void
 Job::set_state (State s)
 {
-	boost::mutex::scoped_lock (_state_mutex);
+	boost::mutex::scoped_lock lm (_state_mutex);
 	_state = s;
 }
 
@@ -98,7 +98,7 @@ Job::elapsed_time () const
 void
 Job::set_progress (float p)
 {
-	boost::mutex::scoped_lock (_progress_mutex);
+	boost::mutex::scoped_lock lm (_progress_mutex);
 	_stack.back().normalised = p;
 }
 
@@ -106,7 +106,7 @@ Job::set_progress (float p)
 float
 Job::get_overall_progress () const
 {
-	boost::mutex::scoped_lock (_progress_mutex);
+	boost::mutex::scoped_lock lm (_progress_mutex);
 
 	float overall = 0;
 	float factor = 1;
@@ -125,7 +125,7 @@ Job::get_overall_progress () const
 void
 Job::ascend ()
 {
-	boost::mutex::scoped_lock (_progress_mutex);
+	boost::mutex::scoped_lock lm (_progress_mutex);
 	
 	assert (!_stack.empty ());
 	float const a = _stack.back().allocation;
@@ -144,6 +144,6 @@ Job::ascend ()
 void
 Job::descend (float a)
 {
-	boost::mutex::scoped_lock (_progress_mutex);
+	boost::mutex::scoped_lock lm (_progress_mutex);
 	_stack.push_back (Level (a));
 }

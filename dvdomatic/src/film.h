@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <inttypes.h>
+#include <boost/thread/mutex.hpp>
 #include <sigc++/signal.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -40,6 +41,7 @@ class Film
 {
 public:
 	Film (std::string const &, bool must_exist = true);
+	Film (Film const &);
 
 	void write_metadata () const;
 
@@ -54,48 +56,59 @@ public:
 	}
 
 	int top_crop () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _top_crop;
 	}
 
 	int bottom_crop () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _bottom_crop;
 	}
 
 	int left_crop () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _left_crop;
 	}
 
 	int right_crop () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _right_crop;
 	}
 
-	Format* format () const {
+	Format const * format () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _format;
 	}
 
 	std::vector<Filter const *> get_filters () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _filters;
 	}
 
 	int dcp_frames () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _dcp_frames;
 	}
 
 	bool dcp_ab () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _dcp_ab;
 	}
 
 	void set_filters (std::vector<Filter const *> const &);
 
 	std::string dcp_long_name () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _dcp_long_name;
 	}
 
 	std::string dcp_pretty_name () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _dcp_pretty_name;
 	}
 
-	ContentType * dcp_content_type () {
+	ContentType const * dcp_content_type () {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _dcp_content_type;
 	}
 
@@ -113,29 +126,35 @@ public:
 	void set_format (Format *);
 	void set_dcp_long_name (std::string const &);
 	void set_dcp_pretty_name (std::string const &);
-	void set_dcp_content_type (ContentType *);
+	void set_dcp_content_type (ContentType const *);
 
 	int width () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _width;
 	}
 	
 	int height () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _height;
 	}
 
 	float frames_per_second () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _frames_per_second;
 	}
 
 	int audio_channels () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _audio_channels;
 	}
 
 	int audio_sample_rate () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _audio_sample_rate;
 	}
 
 	AVSampleFormat audio_sample_format () const {
+		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _audio_sample_format;
 	}
 	
@@ -185,6 +204,8 @@ private:
 	std::string thumb_file_for_frame (int) const;
 	void signal_changed (Property);
 
+	mutable boost::mutex _metadata_mutex;
+
 	/** Complete path to directory containing the film metadata;
 	    must not be relative.
 	*/
@@ -198,9 +219,9 @@ private:
 	/** DCP pretty name (e.g. The Blues Brothers) */
 	std::string _dcp_pretty_name;
 	/** The type of content that this Film represents (feature, trailer etc.) */
-	ContentType* _dcp_content_type;
+	ContentType const * _dcp_content_type;
 	/** The format to present this Film in (flat, scope, etc.) */
-	Format* _format;
+	Format const * _format;
 	/** Number of pixels to crop from the left-hand side of the original picture */
 	int _left_crop;
 	/** Number of pixels to crop from the right-hand side of the original picture */

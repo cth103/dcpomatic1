@@ -76,6 +76,34 @@ Film::Film (string const & d, bool must_exist)
 	read_metadata ();
 }
 
+/** Copy constructor */
+Film::Film (Film const & other)
+	: _directory (other._directory)
+	, _name (other._name)
+	, _content (other._content)
+	, _dcp_long_name (other._dcp_long_name)
+	, _dcp_pretty_name (other._dcp_pretty_name)
+	, _dcp_content_type (other._dcp_content_type)
+	, _format (other._format)
+	, _left_crop (other._left_crop)
+	, _right_crop (other._right_crop)
+	, _top_crop (other._top_crop)
+	, _bottom_crop (other._bottom_crop)
+	, _filters (other._filters)
+	, _dcp_frames (other._dcp_frames)
+	, _dcp_ab (other._dcp_ab)
+	, _thumbs (other._thumbs)
+	, _width (other._width)
+	, _height (other._height)
+	, _frames_per_second (other._frames_per_second)
+	, _audio_channels (other._audio_channels)
+	, _audio_sample_rate (other._audio_sample_rate)
+	, _audio_sample_format (other._audio_sample_format)
+	, _dirty (other._dirty)
+{
+
+}
+	  
 /** Read the `metadata' file inside this Film's directory, and fill the
  *  object's data with its content.
  */
@@ -83,6 +111,8 @@ Film::Film (string const & d, bool must_exist)
 void
 Film::read_metadata ()
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
+	
 	ifstream f (metadata_file().c_str ());
 	string line;
 	while (getline (f, line)) {
@@ -160,6 +190,8 @@ Film::read_metadata ()
 void
 Film::write_metadata () const
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
+	
 	boost::filesystem::create_directories (_directory);
 	
 	ofstream f (metadata_file().c_str ());
@@ -208,7 +240,10 @@ Film::write_metadata () const
 void
 Film::set_name (string const & n)
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_name = n;
+
+	lm.unlock ();
 	signal_changed (Name);
 }
 
@@ -229,12 +264,16 @@ Film::set_content (string const & c)
 	if (absolute) {
 		f = f.substr (_directory.length());
 	}
-	
-	if (f == _content) {
-		return;
+
+	{
+		boost::mutex::scoped_lock lm (_metadata_mutex);
+		if (f == _content) {
+			return;
+		}
+		
+		_content = f;
 	}
 	
-	_content = f;
 	Changed (Content);
 
 	/* Create a temporary decoder so that we can get information
@@ -245,13 +284,16 @@ Film::set_content (string const & c)
 	p.out_height = 1024;
 	
 	Decoder d (this, 0, &p);
+
+	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_width = d.native_width ();
 	_height = d.native_height ();
 	_frames_per_second = d.frames_per_second ();
 	_audio_channels = d.audio_channels ();
 	_audio_sample_rate = d.audio_sample_rate ();
 	_audio_sample_format = d.audio_sample_format ();
-
+	lm.unlock ();
+	
 	signal_changed (Size);
 	signal_changed (FramesPerSecond);
 	signal_changed (AudioChannels);
@@ -262,7 +304,10 @@ Film::set_content (string const & c)
 void
 Film::set_format (Format* f)
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_format = f;
+
+	lm.unlock ();
 	signal_changed (FilmFormat);
 }
 
@@ -272,7 +317,10 @@ Film::set_format (Format* f)
 void
 Film::set_dcp_long_name (string const & n)
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_dcp_long_name = n;
+
+	lm.unlock ();
 	signal_changed (DCPLongName);
 }
 
@@ -282,7 +330,10 @@ Film::set_dcp_long_name (string const & n)
 void
 Film::set_dcp_pretty_name (string const & n)
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_dcp_pretty_name = n;
+
+	lm.unlock ();
 	signal_changed (DCPPrettyName);
 }
 
@@ -290,9 +341,12 @@ Film::set_dcp_pretty_name (string const & n)
  *  (feature, trailer etc.)
  */
 void
-Film::set_dcp_content_type (ContentType* t)
+Film::set_dcp_content_type (ContentType const * t)
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_dcp_content_type = t;
+
+	lm.unlock ();
 	signal_changed (DCPContentType);
 }
 
@@ -300,11 +354,15 @@ Film::set_dcp_content_type (ContentType* t)
 void
 Film::set_left_crop (int c)
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
+	
 	if (c == _left_crop) {
 		return;
 	}
 	
 	_left_crop = c;
+
+	lm.unlock ();
 	signal_changed (LeftCrop);
 }
 
@@ -312,11 +370,15 @@ Film::set_left_crop (int c)
 void
 Film::set_right_crop (int c)
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
+	
 	if (c == _right_crop) {
 		return;
 	}
-	
+
 	_right_crop = c;
+	
+	lm.unlock ();
 	signal_changed (RightCrop);
 }
 
@@ -336,11 +398,15 @@ Film::set_top_crop (int c)
 void
 Film::set_bottom_crop (int c)
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
+
 	if (c == _bottom_crop) {
 		return;
 	}
 	
 	_bottom_crop = c;
+
+	lm.unlock ();
 	signal_changed (BottomCrop);
 }
 
@@ -350,7 +416,10 @@ Film::set_bottom_crop (int c)
 void
 Film::set_filters (vector<Filter const *> const & f)
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_filters = f;
+
+	lm.unlock ();
 	signal_changed (Filters);
 }
 
@@ -361,7 +430,10 @@ Film::set_filters (vector<Filter const *> const & f)
 void
 Film::set_dcp_frames (int n)
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_dcp_frames = n;
+
+	lm.unlock ();
 	signal_changed (DCPFrames);
 }
 
@@ -373,7 +445,10 @@ Film::set_dcp_frames (int n)
 void
 Film::set_dcp_ab (bool a)
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_dcp_ab = a;
+
+	lm.unlock ();
 	signal_changed (DCPAB);
 }
 
@@ -411,6 +486,7 @@ Film::metadata_file () const
 string
 Film::content () const
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
 	return file (_content);
 }
 
@@ -423,14 +499,17 @@ Film::content () const
 void
 Film::update_thumbs_non_gui (Job* job)
 {
-	if (_content.empty ()) {
+	if (content().empty ()) {
 		if (job) {
 			job->set_progress (1);
 		}
 		return;
 	}
-	
-	_thumbs.clear ();
+
+	{
+		boost::mutex::scoped_lock lm (_metadata_mutex);
+		_thumbs.clear ();
+	}
 	
 	using namespace boost::filesystem;
 	remove_all (dir ("thumbs"));
@@ -466,11 +545,16 @@ Film::update_thumbs_non_gui (Job* job)
 		
 		size_t const d = l.find (".tiff");
 		if (d != string::npos) {
+			boost::mutex::scoped_lock lm (_metadata_mutex);
 			_thumbs.push_back (atoi (l.substr (0, d).c_str()));
 		}
 	}
 
-	sort (_thumbs.begin(), _thumbs.end());
+	{
+		boost::mutex::scoped_lock lm (_metadata_mutex);
+		sort (_thumbs.begin(), _thumbs.end());
+	}
+	
 	write_metadata ();
 }
 
@@ -487,6 +571,7 @@ Film::update_thumbs_gui ()
 int
 Film::num_thumbs () const
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
 	return _thumbs.size ();
 }
 
@@ -496,6 +581,7 @@ Film::num_thumbs () const
 int
 Film::thumb_frame (int n) const
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
 	assert (n < int (_thumbs.size ()));
 	return _thumbs[n];
 }
@@ -506,12 +592,15 @@ Film::thumb_frame (int n) const
 string
 Film::thumb_file (int n) const
 {
+	boost::mutex::scoped_lock lm (_metadata_mutex);
 	return thumb_file_for_frame (thumb_frame (n));
 }
 
 /** @param n A frame index within the Film.
  *  @return The path to the thumb's image file for this frame;
  *  we assume that it exists.
+ *
+ *  Must be called with the metadata mutex locked.
  */
 string
 Film::thumb_file_for_frame (int n) const
@@ -536,6 +625,8 @@ Film::j2k_dir () const
 
 	pair<string, string> f = Filter::ffmpeg_strings (get_filters ());
 
+	boost::mutex::scoped_lock lm (_metadata_mutex);
+	
 	/* Write stuff to specify the filter / post-processing settings that are in use,
 	   so that we don't get confused about J2K files generated using different
 	   settings.
@@ -588,9 +679,9 @@ Film::make_dcp ()
 	}
 	
 	if (_dcp_ab) {
-		JobManager::instance()->add (new ABTranscodeJob (this, _dcp_frames));
+		JobManager::instance()->add (new ABTranscodeJob (this, dcp_frames ()));
 	} else {
-		JobManager::instance()->add (new TranscodeJob (this, _dcp_frames));
+		JobManager::instance()->add (new TranscodeJob (this, dcp_frames ()));
 	}
 	
 	JobManager::instance()->add (new MakeMXFJob (this, MakeMXFJob::VIDEO));

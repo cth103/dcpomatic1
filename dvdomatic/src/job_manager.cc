@@ -34,7 +34,7 @@ JobManager::JobManager ()
 void
 JobManager::add (Job* j)
 {
-	boost::mutex::scoped_lock (_mutex);
+	boost::mutex::scoped_lock lm (_mutex);
 	
 	_jobs.push_back (j);
 }
@@ -42,7 +42,7 @@ JobManager::add (Job* j)
 list<Job*>
 JobManager::get () const
 {
-	boost::mutex::scoped_lock (_mutex);
+	boost::mutex::scoped_lock lm (_mutex);
 	
 	return _jobs;
 }
@@ -52,7 +52,7 @@ JobManager::scheduler ()
 {
 	while (1) {
 		{
-			boost::mutex::scoped_lock (_mutex);
+			boost::mutex::scoped_lock lm (_mutex);
 			int running = 0;
 			Job* first_new = 0;
 			for (list<Job*>::iterator i = _jobs.begin(); i != _jobs.end(); ++i) {

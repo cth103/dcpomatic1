@@ -53,7 +53,7 @@ public:
 	static Format * get_from_nickname (std::string const &);
 	static Format * get_from_metadata (std::string const &);
 	static Format * get_from_index (int);
-	static int get_as_index (Format *);
+	static int get_as_index (Format const *);
 	static std::vector<Format*> get_all ();
 	static void setup_formats ();
 	

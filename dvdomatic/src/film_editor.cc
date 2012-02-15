@@ -65,8 +65,8 @@ FilmEditor::FilmEditor (Film* f)
 		_format.append_text ((*i)->name ());
 	}
 
-	vector<ContentType*> const ct = ContentType::get_all ();
-	for (vector<ContentType*>::const_iterator i = ct.begin(); i != ct.end(); ++i) {
+	vector<ContentType const *> const ct = ContentType::get_all ();
+	for (vector<ContentType const *>::const_iterator i = ct.begin(); i != ct.end(); ++i) {
 		_dcp_content_type.append_text ((*i)->pretty_name ());
 	}
 

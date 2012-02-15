@@ -22,7 +22,7 @@
 
 using namespace std;
 
-vector<ContentType *> ContentType::_content_types;
+vector<ContentType const *> ContentType::_content_types;
 
 ContentType::ContentType (string const & p, string const & o)
 	: _pretty_name (p)
@@ -46,10 +46,10 @@ ContentType::setup_content_types ()
 	_content_types.push_back (new ContentType ("Advertisement", "advertisement"));
 }
 
-ContentType *
+ContentType const *
 ContentType::get_from_pretty_name (string const & n)
 {
-	for (vector<ContentType*>::const_iterator i = _content_types.begin(); i != _content_types.end(); ++i) {
+	for (vector<ContentType const *>::const_iterator i = _content_types.begin(); i != _content_types.end(); ++i) {
 		if ((*i)->pretty_name() == n) {
 			return *i;
 		}
@@ -58,7 +58,7 @@ ContentType::get_from_pretty_name (string const & n)
 	return 0;
 }
 
-ContentType *
+ContentType const *
 ContentType::get_from_index (int n)
 {
 	assert (n < int (_content_types.size ()));
@@ -66,7 +66,7 @@ ContentType::get_from_index (int n)
 }
 
 int
-ContentType::get_as_index (ContentType* c)
+ContentType::get_as_index (ContentType const * c)
 {
 	vector<ContentType*>::size_type i = 0;
 	while (i < _content_types.size() && _content_types[i] != c) {
@@ -80,7 +80,7 @@ ContentType::get_as_index (ContentType* c)
 	return i;
 }
 
-vector<ContentType*>
+vector<ContentType const *>
 ContentType::get_all ()
 {
 	return _content_types;

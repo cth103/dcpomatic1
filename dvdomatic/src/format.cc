@@ -108,7 +108,7 @@ Format::get_from_metadata (string const & m)
 }
 
 int
-Format::get_as_index (Format* f)
+Format::get_as_index (Format const * f)
 {
 	vector<Format*>::size_type i = 0;
 	while (i < _formats.size() && _formats[i] != f) {
