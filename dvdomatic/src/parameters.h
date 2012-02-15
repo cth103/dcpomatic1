@@ -19,6 +19,11 @@
 
 #include <sstream>
 #include <iomanip>
+extern "C" {
+#include <libavcodec/avcodec.h>
+}
+
+class Filter;
 
 /** Parameters for a transcoding operation */
 class Parameters

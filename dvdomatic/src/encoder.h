@@ -1,7 +1,5 @@
 #include <stdint.h>
 
-class Decoder;
-class Film;
 class Parameters;
 
 class Encoder

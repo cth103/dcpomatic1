@@ -19,7 +19,6 @@
 
 #include <stdint.h>
 
-class Film;
 class Job;
 class Encoder;
 class Decoder;

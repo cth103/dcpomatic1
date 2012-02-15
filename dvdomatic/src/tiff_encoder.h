@@ -21,9 +21,6 @@
 #include <sndfile.h>
 #include "encoder.h"
 
-class Film;
-class Job;
-class Decoder;
 class Parameters;
 
 class TIFFEncoder : public Encoder

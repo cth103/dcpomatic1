@@ -32,7 +32,6 @@ struct AVFormatContext;
 struct AVFrame;
 struct AVBufferContext;
 struct AVCodec;
-class Film;
 class Job;
 class Parameters;
 
@@ -41,10 +40,6 @@ class Decoder
 public:
 	Decoder (Job *, Parameters const *);
 	~Decoder ();
-
-	Parameters const * parameters () const {
-		return _par;
-	}
 
 	/* Methods to query our input video */
 	int length_in_frames () const;
@@ -71,12 +66,6 @@ public:
 	sigc::signal<void, uint8_t *, int, int> Video;
 	sigc::signal<void, uint8_t *, int, int> Audio;
 	
-protected:
-
-	bool have_video_stream () const {
-		return _video_stream != -1;
-	}
-
 private:
 
 	void setup_general ();

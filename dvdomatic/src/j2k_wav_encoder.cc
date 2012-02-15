@@ -26,10 +26,9 @@
 #include <sndfile.h>
 #include <openjpeg.h>
 #include "j2k_wav_encoder.h"
-#include "film.h"
 #include "config.h"
-#include "decoder.h"
 #include "parameters.h"
+#include "image.h"
 
 using namespace std;
 

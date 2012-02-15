@@ -23,9 +23,8 @@
 #include <boost/thread/mutex.hpp>
 #include <sndfile.h>
 #include "encoder.h"
-#include "image.h"
 
-class Job;
+class Image;
 
 class J2KWAVEncoder : public Encoder
 {
