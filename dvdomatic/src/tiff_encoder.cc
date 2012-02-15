@@ -27,11 +27,13 @@
 #include "film.h"
 #include "format.h"
 #include "decoder.h"
+#include "parameters.h"
 
 using namespace std;
 
-TIFFEncoder::TIFFEncoder (string const & tiffs)
-	: _tiffs (tiffs)
+TIFFEncoder::TIFFEncoder (Parameters const * p, string const & tiffs)
+	: Encoder (p)
+	, _tiffs (tiffs)
 {
 	
 }
@@ -55,15 +57,15 @@ TIFFEncoder::process_video (uint8_t* data, int line_size, int frame)
 		throw runtime_error (e.str().c_str());
 	}
 						
-	TIFFSetField (output, TIFFTAG_IMAGEWIDTH, _decoder->out_width ());
-	TIFFSetField (output, TIFFTAG_IMAGELENGTH, _decoder->out_height ());
+	TIFFSetField (output, TIFFTAG_IMAGEWIDTH, _par->out_width);
+	TIFFSetField (output, TIFFTAG_IMAGELENGTH, _par->out_height);
 	TIFFSetField (output, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
 	TIFFSetField (output, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
 	TIFFSetField (output, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
 	TIFFSetField (output, TIFFTAG_BITSPERSAMPLE, 8);
 	TIFFSetField (output, TIFFTAG_SAMPLESPERPIXEL, 3);
 	
-	if (TIFFWriteEncodedStrip (output, 0, data, _decoder->out_width() * _decoder->out_height() * 3) == 0) {
+	if (TIFFWriteEncodedStrip (output, 0, data, _par->out_width * _par->out_height * 3) == 0) {
 		throw runtime_error ("Failed to write to output TIFF file");
 	}
 

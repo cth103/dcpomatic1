@@ -29,11 +29,13 @@
 #include "film.h"
 #include "config.h"
 #include "decoder.h"
+#include "parameters.h"
 
 using namespace std;
 
-J2KWAVEncoder::J2KWAVEncoder ()
-	: _deinterleave_buffer_size (8192)
+J2KWAVEncoder::J2KWAVEncoder (Parameters const * p)
+	: Encoder (p)
+	, _deinterleave_buffer_size (8192)
 	, _deinterleave_buffer (0)
 	, _process_end (false)
 	, _num_worker_threads (Config::instance()->num_encoding_threads ())
@@ -51,7 +53,7 @@ J2KWAVEncoder::set_decoder (Decoder* d)
 	*/
 	for (int i = 0; i < _decoder->audio_channels(); ++i) {
 		SF_INFO sf_info;
-		sf_info.samplerate = d->audio_sample_rate();
+		sf_info.samplerate = _decoder->audio_sample_rate();
 		/* We write mono files */
 		sf_info.channels = 1;
 		sf_info.format = SF_FORMAT_WAV | SF_FORMAT_PCM_24;
@@ -91,7 +93,7 @@ J2KWAVEncoder::process_video (uint8_t* rgb, int line_size, int frame)
 
 	/* Only do the processing if we don't already have a file for this frame */
 	if (!boost::filesystem::exists (_decoder->film()->j2k_path (frame, false))) {
-		_queue.push_back (boost::shared_ptr<Image> (new Image (_decoder->film(), rgb, _decoder->out_width(), _decoder->out_height(), frame)));
+		_queue.push_back (boost::shared_ptr<Image> (new Image (_decoder->film(), rgb, _par->out_width, _par->out_height, frame)));
 		_worker_condition.notify_all ();
 	}
 }

@@ -21,11 +21,11 @@
 #include "transcoder.h"
 #include "encoder.h"
 
-Transcoder::Transcoder (Film* f, Job* j, Encoder* e, int w, int h, int N)
+Transcoder::Transcoder (Film* f, Job* j, Encoder* e, Parameters const * p)
 	: _film (f)
 	, _job (j)
 	, _encoder (e)
-	, _decoder (f, j, w, h, N)
+	, _decoder (f, j, p)
 {
 	e->set_decoder (&_decoder);
 	

@@ -24,20 +24,21 @@
 #include "decoder.h"
 #include "encoder.h"
 #include "job.h"
+#include "parameters.h"
 
 using namespace std;
 
-ABTranscoder::ABTranscoder (Film* f, Job* j, Encoder* e, int w, int h, int N)
+ABTranscoder::ABTranscoder (Film* f, Job* j, Encoder* e, Parameters const * p)
 	: _film (f)
 	, _job (j)
 	, _encoder (e)
-	, _num_frames (N)
+	, _par (p)
 	, _last_frame (0)
 {
 	Film* original = new Film (*f);
 	original->set_filters (vector<Filter const *> ());
-	_da = new Decoder (original, j, w, h, N);
-	_db = new Decoder (f, j, w, h, N);
+	_da = new Decoder (original, j, p);
+	_db = new Decoder (f, j, p);
 
 	/* Use the B decoder so that the encoder writes stuff to the write j2c directory */
 	_encoder->set_decoder (_db);
@@ -46,7 +47,7 @@ ABTranscoder::ABTranscoder (Film* f, Job* j, Encoder* e, int w, int h, int N)
 	_db->Video.connect (sigc::bind (sigc::mem_fun (*this, &ABTranscoder::process_video), 1));
 	_da->Audio.connect (sigc::mem_fun (*e, &Encoder::process_audio));
 
-	_rgb = new uint8_t[w * h * 3];
+	_rgb = new uint8_t[p->out_width * p->out_height * 3];
 }
 
 ABTranscoder::~ABTranscoder ()
@@ -60,7 +61,7 @@ ABTranscoder::process_video (uint8_t* rgb, int line_size, int frame, int index)
 	int const half_line_size = line_size / 2;
 
 	uint8_t* p = _rgb;
-	for (int y = 0; y < _da->out_height(); ++y) {
+	for (int y = 0; y < _par->out_height; ++y) {
 		if (index == 0) {
 			memcpy (p, rgb, half_line_size);
 		} else {
@@ -97,7 +98,7 @@ ABTranscoder::go ()
 			break;
 		}
 
-		if (_num_frames != 0 && _last_frame >= _num_frames) {
+		if (_par->num_frames != 0 && _last_frame >= _par->num_frames) {
 			break;
 		}
 	}

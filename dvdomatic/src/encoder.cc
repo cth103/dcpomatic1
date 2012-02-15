@@ -1,7 +1,8 @@
 #include "encoder.h"
 
-Encoder::Encoder ()
-	: _decoder (0)
+Encoder::Encoder (Parameters const * p)
+	: _par (p)
+	, _decoder (0)
 {
 
 }

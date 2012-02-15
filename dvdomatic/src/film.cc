@@ -37,6 +37,7 @@
 #include "transcode_job.h"
 #include "make_mxf_job.h"
 #include "make_dcp_job.h"
+#include "parameters.h"
 
 using namespace std;
 
@@ -318,7 +319,11 @@ Film::set_content (string const & c)
 	/* Create a temporary decoder so that we can get information
 	   about the content.
 	*/
-	Decoder d (this, 0, 1024, 1024);
+	Parameters p;
+	p.out_width = 1024;
+	p.out_height = 1024;
+	
+	Decoder d (this, 0, &p);
 	_width = d.native_width ();
 	_height = d.native_height ();
 	_frames_per_second = d.frames_per_second ();
@@ -365,11 +370,17 @@ Film::update_thumbs_non_gui (Job* job)
 	string const tdir = dir ("thumbs");
 
 	job->descend (1);
-	TIFFEncoder e (tdir);
-	Transcoder w (this, job, &e, _width, _height);
-	w.decoder()->apply_crop (false);
-	w.decoder()->set_decode_video_period (w.decoder()->length_in_frames() / number);
+
+	Parameters p;
+	p.out_width = _width;
+	p.out_height = _height;
+	p.apply_crop = false;
+	p.decode_video_frequency = number;
+	
+	TIFFEncoder e (&p, tdir);
+	Transcoder w (this, job, &e, &p);
 	w.go ();
+	
 	job->ascend ();
 
 	for (directory_iterator i = directory_iterator (tdir); i != directory_iterator(); ++i) {

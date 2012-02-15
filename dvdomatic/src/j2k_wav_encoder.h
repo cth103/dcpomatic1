@@ -30,7 +30,7 @@ class Job;
 class J2KWAVEncoder : public Encoder
 {
 public:
-	J2KWAVEncoder ();
+	J2KWAVEncoder (Parameters const *);
 	~J2KWAVEncoder ();
 
 	void set_decoder (Decoder *);

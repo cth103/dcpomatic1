@@ -34,36 +34,29 @@ struct AVBufferContext;
 struct AVCodec;
 class Film;
 class Job;
+class Parameters;
 
 class Decoder
 {
 public:
-	Decoder (Film const *, Job *, int, int, int N = 0);
+	Decoder (Film const *, Job *, Parameters const *);
 	~Decoder ();
 
-	void decode_video (bool);
-	void set_decode_video_period (int);
-	void decode_audio (bool);
-	void apply_crop (bool);
-	
+	Parameters const * parameters () const {
+		return _par;
+	}
+
+	/* Methods to query our input video */
 	int length_in_frames () const;
 	int decoding_frames () const;
 	float frames_per_second () const;
 	int native_width () const;
 	int native_height () const;
-
-	int out_width () const {
-		return _out_width;
-	}
-
-	int out_height () const {
-		return _out_height;
-	}
-
 	int audio_channels () const;
 	int audio_sample_rate () const;
 	AVSampleFormat audio_sample_format () const;
 
+	/** @return Film that we are decoding */
 	Film const * film () const {
 		return _film;
 	}
@@ -71,11 +64,11 @@ public:
 	void go ();
 
 	enum PassResult {
-		PASS_DONE,
-		PASS_NOTHING,
+		PASS_DONE,    ///< we have decoded all the input
+		PASS_NOTHING, ///< nothing new is ready after this pass
 		PASS_ERROR,   ///< error; probably temporary
-		PASS_VIDEO,
-		PASS_AUDIO
+		PASS_VIDEO,   ///< a video frame is available
+		PASS_AUDIO    ///< some audio is available
 	};
 
 	PassResult pass ();
@@ -100,10 +93,7 @@ private:
 	void setup_post_process_filters ();
 
 	Job* _job;
-	int _num_frames;
-	
-	int _out_width;
-	int _out_height;
+	Parameters const * _par;
 	
 	AVFormatContext* _format_context;
 	int _video_stream;
@@ -123,12 +113,7 @@ private:
 
 	AVPacket _packet;
 
-	bool _decode_video;
-	int _decode_video_period;
 	int _video_frame;
-	bool _decode_audio;
-
-	bool _apply_crop;
 
 	int _post_filter_width;
 	int _post_filter_height;

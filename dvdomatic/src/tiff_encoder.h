@@ -24,11 +24,12 @@
 class Film;
 class Job;
 class Decoder;
+class Parameters;
 
 class TIFFEncoder : public Encoder
 {
 public:
-	TIFFEncoder (std::string const &);
+	TIFFEncoder (Parameters const *, std::string const &);
 	~TIFFEncoder ();
 
 	void process_begin () {}

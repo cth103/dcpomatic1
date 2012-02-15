@@ -23,6 +23,7 @@
 #include "film.h"
 #include "format.h"
 #include "transcoder.h"
+#include "parameters.h"
 
 using namespace std;
 
@@ -46,8 +47,13 @@ TranscodeJob::run ()
 {
 	try {
 
-		J2KWAVEncoder e;
-		Transcoder w (_film, this, &e, _film->format()->dci_width(), _film->format()->dci_height(), _num_frames);
+		Parameters p;
+		p.out_width = _film->format()->dci_width ();
+		p.out_height = _film->format()->dci_height ();
+		p.num_frames = _num_frames;
+		
+		J2KWAVEncoder e (&p);
+		Transcoder w (_film, this, &e, &p);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

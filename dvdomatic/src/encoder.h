@@ -2,11 +2,12 @@
 
 class Decoder;
 class Film;
+class Parameters;
 
 class Encoder
 {
 public:
-	Encoder ();
+	Encoder (Parameters const *);
 
 	virtual void set_decoder (Decoder *);
 	
@@ -16,5 +17,6 @@ public:
 	virtual void process_end () = 0;
 
 protected:
+	Parameters const * _par;
 	Decoder* _decoder;
 };

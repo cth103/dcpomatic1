@@ -22,11 +22,12 @@
 class Film;
 class Job;
 class Encoder;
+class Parameters;
 
 class Transcoder
 {
 public:
-	Transcoder (Film *, Job *, Encoder *, int, int, int N = 0);
+	Transcoder (Film *, Job *, Encoder *, Parameters const *);
 
 	void go ();
 

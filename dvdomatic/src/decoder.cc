@@ -39,15 +39,14 @@ extern "C" {
 #include "transcoder.h"
 #include "job.h"
 #include "filter.h"
+#include "parameters.h"
 
 using namespace std;
 
-Decoder::Decoder (Film const * f, Job* j, int w, int h, int N)
+Decoder::Decoder (Film const * f, Job* j, Parameters const * p)
 	: _film (f)
 	, _job (j)
-	, _num_frames (N)
-	, _out_width (w)
-	, _out_height (h)
+	, _par (p)
 	, _format_context (0)
 	, _video_stream (-1)
 	, _audio_stream (-1)
@@ -61,11 +60,7 @@ Decoder::Decoder (Film const * f, Job* j, int w, int h, int N)
 	, _conversion_context (0)
 	, _audio_codec_context (0)
 	, _audio_codec (0)
-	, _decode_video (true)
-	, _decode_video_period (1)
 	, _video_frame (0)
-	, _decode_audio (true)
-	, _apply_crop (true)
 	, _post_filter_width (0)
 	, _post_filter_height (0)
 	, _pp_mode (0)
@@ -169,15 +164,15 @@ Decoder::setup_video ()
 		throw runtime_error ("Could not open video decoder");
 	}
 
-	int num_bytes = avpicture_get_size (PIX_FMT_RGB24, _out_width, _out_height);
+	int num_bytes = avpicture_get_size (PIX_FMT_RGB24, _par->out_width, _par->out_height);
 	_frame_out_buffer = (uint8_t *) av_malloc (num_bytes);
 
-	avpicture_fill ((AVPicture *) _frame_out, _frame_out_buffer, PIX_FMT_RGB24, _out_width, _out_height);
+	avpicture_fill ((AVPicture *) _frame_out, _frame_out_buffer, PIX_FMT_RGB24, _par->out_width, _par->out_height);
 
 	_post_filter_width = _video_codec_context->width;
 	_post_filter_height = _video_codec_context->height;
 	
-	if (_apply_crop) {
+	if (_par->apply_crop) {
 		_post_filter_width -= _film->left_crop() + _film->right_crop();
 		_post_filter_height -= _film->top_crop() + _film->bottom_crop();		
 	}
@@ -186,7 +181,7 @@ Decoder::setup_video ()
 
 	_conversion_context = sws_getContext (
 		_post_filter_width, _post_filter_height, _video_codec_context->pix_fmt,
-		_out_width, _out_height, PIX_FMT_RGB24,
+		_par->out_width, _par->out_height, PIX_FMT_RGB24,
 		SWS_BICUBIC, 0, 0, 0
 		);
 
@@ -220,7 +215,7 @@ Decoder::pass ()
 		return PASS_DONE;
 	}
 
-	if (_packet.stream_index == _video_stream && _decode_video) {
+	if (_packet.stream_index == _video_stream && _par->decode_video) {
 		
 		int frame_finished;
 		if (avcodec_decode_video2 (_video_codec_context, _frame_in, &frame_finished, &_packet) < 0) {
@@ -231,7 +226,7 @@ Decoder::pass ()
 
 			++_video_frame;
 			
-			if (_decode_video_period != 1 && (_video_frame % _decode_video_period) != 0) {
+			if (_par->decode_video_frequency != 0 && (_video_frame % (length_in_frames() / _par->decode_video_frequency)) != 0) {
 				return PASS_NOTHING;
 			}
 
@@ -277,7 +272,7 @@ Decoder::pass ()
 			}
 		}
 		
-	} else if (_packet.stream_index == _audio_stream && _decode_audio) {
+	} else if (_packet.stream_index == _audio_stream && _par->decode_audio) {
 		
 		avcodec_get_frame_defaults (_frame_in);
 		
@@ -309,14 +304,18 @@ Decoder::setup_video_filters ()
 	
 	string filters = Filter::ffmpeg_strings (_film->get_filters ()).first;
 
-	if (_apply_crop) {
-		stringstream fs;
+	stringstream fs;
+	if (_par->apply_crop) {
 		fs << "crop=" << _post_filter_width << ":" << _post_filter_height << ":" << _film->left_crop() << ":" << _film->top_crop() << " ";
-		if (!filters.empty ()) {
-			filters += ",";
-		}
-		filters += fs.str ();
+	} else {
+		fs << "crop=" << _post_filter_width << ":" << _post_filter_height << ":0:0";
 	}
+	
+	if (!filters.empty ()) {
+		filters += ",";
+	}
+
+	filters += fs.str ();
 
 	avfilter_register_all ();
 	
@@ -414,31 +413,6 @@ Decoder::audio_sample_format () const
 	return _audio_codec_context->sample_fmt;
 }
 
-
-void
-Decoder::decode_video (bool w)
-{
-	_decode_video = w;
-}
-
-void
-Decoder::decode_audio (bool w)
-{
-	_decode_audio = w;
-}
-
-void
-Decoder::set_decode_video_period (int p)
-{
-	_decode_video_period = p;
-}
-
-void
-Decoder::apply_crop (bool c)
-{
-	_apply_crop = c;
-}
-
 int
 Decoder::native_width () const
 {
@@ -454,7 +428,7 @@ Decoder::native_height () const
 void
 Decoder::go ()
 {
-	while (pass () != PASS_DONE && (_num_frames == 0 || _video_frame < _num_frames)) {
+	while (pass () != PASS_DONE && (_par->num_frames == 0 || _video_frame < _par->num_frames)) {
 		if (_job) {
 			_job->set_progress (float (_video_frame) / decoding_frames ());
 		}
@@ -479,11 +453,12 @@ Decoder::setup_post_process_filters ()
 	}
 }
 
+/** @return Number of frames that we will be decoding */
 int
 Decoder::decoding_frames () const
 {
-	if (_num_frames > 0) {
-		return _num_frames;
+	if (_par->num_frames > 0) {
+		return _par->num_frames;
 	}
 	
 	return length_in_frames ();
