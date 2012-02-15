@@ -148,6 +148,7 @@ help_about ()
 	vector<string> authors;
 	authors.push_back ("Carl Hetherington");
 	authors.push_back ("Terrence Meiczinger");
+	authors.push_back ("Paul Davis");
 	d.set_authors (authors);
 
 	d.set_website ("http://carlh.net/dvdomatic");
