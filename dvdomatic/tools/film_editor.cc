@@ -44,9 +44,9 @@ public:
 		stringstream s;
 		s << "Save changes to film \"" << film->name() << "\" before closing?";
 		set_message (s.str ());
-		add_button ("Close without saving", Gtk::RESPONSE_NO);
-		add_button ("Cancel", Gtk::RESPONSE_CANCEL);
-		add_button ("Save", Gtk::RESPONSE_YES);
+		add_button ("Close _without saving", Gtk::RESPONSE_NO);
+		add_button ("_Cancel", Gtk::RESPONSE_CANCEL);
+		add_button ("_Save", Gtk::RESPONSE_YES);
 	}
 };
 
@@ -79,8 +79,8 @@ void
 file_new ()
 {
 	Gtk::FileChooserDialog c (*window, "New Film", Gtk::FILE_CHOOSER_ACTION_CREATE_FOLDER);
-	c.add_button ("Cancel", Gtk::RESPONSE_CANCEL);
-	c.add_button ("Create", Gtk::RESPONSE_ACCEPT);
+	c.add_button ("_Cancel", Gtk::RESPONSE_CANCEL);
+	c.add_button ("C_reate", Gtk::RESPONSE_ACCEPT);
 
 	int const r = c.run ();
 	if (r == Gtk::RESPONSE_ACCEPT) {
@@ -97,8 +97,8 @@ void
 file_open ()
 {
 	Gtk::FileChooserDialog c (*window, "Open Film", Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
-	c.add_button ("Cancel", Gtk::RESPONSE_CANCEL);
-	c.add_button ("Open", Gtk::RESPONSE_ACCEPT);
+	c.add_button ("_Cancel", Gtk::RESPONSE_CANCEL);
+	c.add_button ("_Open", Gtk::RESPONSE_ACCEPT);
 
 	int const r = c.run ();
 	if (r == Gtk::RESPONSE_ACCEPT) {
@@ -142,20 +142,20 @@ setup_menu (Gtk::MenuBar& m)
 
 	Gtk::Menu* file = manage (new Gtk::Menu);
 	MenuList& file_items (file->items ());
-	file_items.push_back (MenuElem ("New...", sigc::ptr_fun (file_new)));
-	file_items.push_back (MenuElem ("Open...", sigc::ptr_fun (file_open)));
+	file_items.push_back (MenuElem ("_New...", sigc::ptr_fun (file_new)));
+	file_items.push_back (MenuElem ("_Open...", sigc::ptr_fun (file_open)));
 	file_items.push_back (SeparatorElem ());
-	file_items.push_back (MenuElem ("Save", sigc::ptr_fun (file_save)));
+	file_items.push_back (MenuElem ("_Save", sigc::ptr_fun (file_save)));
 	file_items.push_back (SeparatorElem ());
-	file_items.push_back (MenuElem ("Quit", sigc::ptr_fun (file_quit)));
+	file_items.push_back (MenuElem ("_Quit", sigc::ptr_fun (file_quit)));
 
 	Gtk::Menu* edit = manage (new Gtk::Menu);
 	MenuList& edit_items (edit->items ());
-	edit_items.push_back (MenuElem ("Preferences...", sigc::ptr_fun (edit_preferences)));
+	edit_items.push_back (MenuElem ("_Preferences...", sigc::ptr_fun (edit_preferences)));
 	
 	MenuList& items (m.items ());
-	items.push_back (MenuElem ("File", *file));
-	items.push_back (MenuElem ("Edit", *edit));
+	items.push_back (MenuElem ("_File", *file));
+	items.push_back (MenuElem ("_Edit", *edit));
 }
 
 bool
