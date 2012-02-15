@@ -5,35 +5,35 @@ def build(bld):
     obj.uselib = 'GLIB AVFORMAT AVFILTER SWSCALE SWRESAMPLE SNDFILE BOOST_FILESYSTEM BOOST_THREAD GTKMM OPENJPEG POSTPROC'
     obj.lib    = 'tiff'
     obj.source = """
-    	         film.cc
-	         tiff_encoder.cc
-		 format.cc
+		 ab_transcode_job.cc
+		 ab_transcoder.cc
+		 config.cc
+		 config_dialog.cc
+		 content_type.cc
 		 decoder.cc
-		 film_viewer.cc
+		 encoder.cc
+		 error_dialog.cc
+    	         film.cc
 		 film_editor.cc
-		 util.cc
+		 film_viewer.cc
+		 filter.cc
+		 filter_dialog.cc
+		 filter_view.cc
+		 format.cc
+		 gpl.cc
+		 image.cc
+		 j2k_wav_encoder.cc
 		 job.cc
-		 transcode_job.cc
 		 job_manager.cc
 		 job_manager_view.cc
-		 thumbs_job.cc
-		 opendcp_job.cc
-		 make_mxf_job.cc
-		 make_dcp_job.cc
-		 content_type.cc
-		 j2k_wav_encoder.cc
-		 image.cc
-		 config.cc
 		 lut.cc
-		 config_dialog.cc
-		 filter_view.cc
-		 filter_dialog.cc
-		 filter.cc
+		 make_dcp_job.cc
+		 make_mxf_job.cc
+		 opendcp_job.cc
+		 thumbs_job.cc
+	         tiff_encoder.cc
+		 transcode_job.cc
 		 transcoder.cc
-		 encoder.cc
-		 ab_transcoder.cc
-		 ab_transcode_job.cc
-		 error_dialog.cc
-		 gpl.cc
+		 util.cc
 		 """
     obj.target = 'dvdomatic'
