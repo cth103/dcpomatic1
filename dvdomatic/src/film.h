@@ -33,6 +33,7 @@ extern "C" {
 class Format;
 class Job;
 class Filter;
+class Log;
 
 /** A representation of a piece of video (with sound), including naming,
  *  the source content file, and how it should be presented in a DCP.
@@ -42,6 +43,7 @@ class Film
 public:
 	Film (std::string, bool must_exist = true);
 	Film (Film const &);
+	~Film ();
 
 	void write_metadata () const;
 
@@ -175,6 +177,13 @@ public:
 		AudioSampleRate
 	};
 
+	/** @return Logger.
+	 *  It is safe to call this from any thread.
+	 */
+	Log* log () const {
+		return _log;
+	}
+
 	/** Emitted when some metadata property has changed */
 	sigc::signal1<void, Property> Changed;
 	
@@ -237,6 +246,8 @@ private:
 
 	/** true if our metadata has changed since it was last written to disk */
 	mutable bool _dirty;
+
+	Log* _log;
 };
 
 #endif

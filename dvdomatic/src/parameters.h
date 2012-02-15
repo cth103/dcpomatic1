@@ -22,6 +22,8 @@
 extern "C" {
 #include <libavcodec/avcodec.h>
 }
+#include "util.h"
+#include "filter.h"
 
 class Filter;
 
@@ -72,6 +74,39 @@ public:
 
 		return s.str ();
 	}
+
+	std::string summary () const {
+		std::stringstream s;
+		s << "Output " << out_width << "x" << out_height << "; ";
+		if (apply_crop) {
+			s << "cropping by (" << left_crop << ", " << right_crop << ", " << top_crop << ", " << bottom_crop << "); ";
+		} else {
+			s << "not cropping; ";
+		}
+		if (num_frames) {
+			s << "only making " << num_frames << " frames; ";
+		} else {
+			s << "making whole film; ";
+		}
+		if (!decode_video) {
+			s << "not ";
+		}
+		s << "decoding video; ";
+		s << "video decode frequency " << decode_video_frequency << "; ";
+		if (!decode_audio) {
+			s << "not ";
+		}
+		s << "decoding audio; ";
+		s << audio_channels << " audio channels at " << audio_sample_rate << "Hz, format " << audio_sample_format_to_string (audio_sample_format) << "; ";
+		s << frames_per_second << " frames per second; ";
+		s << "content file " << content << "; ";
+		std::pair<std::string, std::string> f = Filter::ffmpeg_strings (filters);
+		s << "filters " << f.first << " " << f.second << "; ";
+		s << "video to " << _video_out_path << " extension " << _video_out_extension << "; ";
+		s << "audio to " << _audio_out_path;
+
+		return s.str ();
+	}
 	
 	int out_width;              ///< width of output images
 	int out_height;             ///< height of output images
@@ -83,8 +118,8 @@ public:
 	bool decode_audio;          ///< true to decode audio, otherwise false
 	int audio_channels;
 	int audio_sample_rate;
-	int audio_sample_format;
-	int frames_per_second;
+	AVSampleFormat audio_sample_format;
+	float frames_per_second;
 	std::string content;
 	int left_crop;
 	int right_crop;

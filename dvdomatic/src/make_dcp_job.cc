@@ -45,6 +45,7 @@ MakeDCPJob::run ()
 	stringstream c;
 
 	string const n = _film->dcp_long_name ();
+	remove_all (_film->dir (n));
 	string const d = _film->dir (n);
 	
 	c << "cd " << d << " &&"

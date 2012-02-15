@@ -137,6 +137,9 @@ J2KWAVEncoder::process_end ()
 
 	/* Rename .wav.tmp files to .wav */
 	for (int i = 0; i < _par->audio_channels; ++i) {
+		if (boost::filesystem::exists (_par->audio_out_path (i, false))) {
+			boost::filesystem::remove (_par->audio_out_path (i, false));
+		}
 		boost::filesystem::rename (_par->audio_out_path (i, true), _par->audio_out_path (i, false));
 	}
 }

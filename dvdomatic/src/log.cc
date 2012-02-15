@@ -17,46 +17,27 @@
 
 */
 
-#ifndef DVDOMATIC_FILTER_H
-#define DVDOMATIC_FILTER_H
+#include <fstream>
+#include <time.h>
+#include "log.h"
 
-#include <string>
-#include <vector>
+using namespace std;
 
-class Filter
+Log::Log (string f)
+	: _file (f)
 {
-public:
-	Filter (std::string, std::string, std::string, std::string);
 
-	std::string id () const {
-		return _id;
-	}
+}
 
-	std::string name () const {
-		return _name;
-	}
+void
+Log::log (string m)
+{
+	boost::mutex::scoped_lock lm (_mutex);
+	ofstream f (_file.c_str(), fstream::app);
+
+	time_t t;
+	time (&t);
+	string a = ctime (&t);
 	
-	std::string pp () const {
-		return _pp;
-	}
-	
-	std::string vf () const {
-		return _vf;
-	}
-	
-	static std::vector<Filter const *> get_all ();
-	static Filter const * get_from_id (std::string);
-	static void setup_filters ();
-	static std::pair<std::string, std::string> ffmpeg_strings (std::vector<Filter const *> const &);
-
-private:
-
-	std::string _id;
-	std::string _name;
-	std::string _vf;
-	std::string _pp;
-
-	static std::vector<Filter const *> _filters;
-};
-
-#endif
+	f << a.substr (0, a.length() - 1) << ": " << m << "\n";
+}

@@ -26,6 +26,7 @@ def build(bld):
 		 job.cc
 		 job_manager.cc
 		 job_manager_view.cc
+		 log.cc
 		 lut.cc
 		 make_dcp_job.cc
 		 make_mxf_job.cc

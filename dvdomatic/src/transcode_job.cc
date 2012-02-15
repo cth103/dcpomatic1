@@ -24,6 +24,7 @@
 #include "format.h"
 #include "transcoder.h"
 #include "parameters.h"
+#include "log.h"
 
 using namespace std;
 
@@ -65,6 +66,8 @@ TranscodeJob::run ()
 {
 	try {
 
+		_film->log()->log ("Transcode job starting");
+		_film->log()->log (_par->summary ());
 
 		J2KWAVEncoder e (_par);
 		Transcoder w (_par, this, &e);
@@ -72,8 +75,13 @@ TranscodeJob::run ()
 		set_progress (1);
 		set_state (FINISHED_OK);
 
+		_film->log()->log ("Transcode job completed successfully");
+
 	} catch (runtime_error& e) {
 
+		stringstream s;
+		s << "Transcode job failed (" << e.what() << ")";
+		_film->log()->log (s.str ());
 		set_state (FINISHED_ERROR);
 
 	}

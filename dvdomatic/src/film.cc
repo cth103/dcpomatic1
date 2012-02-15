@@ -23,6 +23,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <iomanip>
+#include <unistd.h>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include "film.h"
@@ -38,6 +39,7 @@
 #include "make_mxf_job.h"
 #include "make_dcp_job.h"
 #include "parameters.h"
+#include "log.h"
 
 using namespace std;
 
@@ -91,6 +93,8 @@ Film::Film (string d, bool must_exist)
 	}
 
 	read_metadata ();
+
+	_log = new Log (file ("log"));
 }
 
 /** Copy constructor */
@@ -118,6 +122,11 @@ Film::Film (Film const & other)
 	, _dirty (other._dirty)
 {
 
+}
+
+Film::~Film ()
+{
+	delete _log;
 }
 	  
 /** Read the `metadata' file inside this Film's directory, and fill the
@@ -577,6 +586,13 @@ Film::signal_changed (Property p)
 void
 Film::make_dcp ()
 {
+	char buffer[128];
+	gethostname (buffer, sizeof (buffer));
+	stringstream s;
+	s << "Starting to make a DCP on " << buffer;
+	
+	log()->log (s.str ());
+		
 	if (_format == 0) {
 		throw runtime_error ("format must be specified to make a DCP");
 	}

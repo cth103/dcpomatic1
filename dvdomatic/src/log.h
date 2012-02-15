@@ -17,46 +17,17 @@
 
 */
 
-#ifndef DVDOMATIC_FILTER_H
-#define DVDOMATIC_FILTER_H
-
 #include <string>
-#include <vector>
+#include <boost/thread/mutex.hpp>
 
-class Filter
+class Log
 {
 public:
-	Filter (std::string, std::string, std::string, std::string);
+	Log (std::string);
 
-	std::string id () const {
-		return _id;
-	}
-
-	std::string name () const {
-		return _name;
-	}
-	
-	std::string pp () const {
-		return _pp;
-	}
-	
-	std::string vf () const {
-		return _vf;
-	}
-	
-	static std::vector<Filter const *> get_all ();
-	static Filter const * get_from_id (std::string);
-	static void setup_filters ();
-	static std::pair<std::string, std::string> ffmpeg_strings (std::vector<Filter const *> const &);
+	void log (std::string);
 
 private:
-
-	std::string _id;
-	std::string _name;
-	std::string _vf;
-	std::string _pp;
-
-	static std::vector<Filter const *> _filters;
+	boost::mutex _mutex;
+	std::string _file;
 };
-
-#endif
