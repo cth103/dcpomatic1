@@ -34,7 +34,7 @@ public:
 	int out_width;              ///< width of output images
 	int out_height;             ///< height of output images
 	bool apply_crop;            ///< true to apply cropping
-	int num_frames;             ///< number of video frames to decode (when calling ::go), or 0 for all
+	int num_frames;             ///< number of video frames to decode, or 0 for all
 	bool decode_video;          ///< true to decode video, otherwise false
 	int decode_video_frequency; ///< skip frames so that this many are decoded in all (or 0)
 	                            ///< (useful for generating `thumbnails' of a video)

@@ -97,10 +97,6 @@ ABTranscoder::go ()
 		if (a == Decoder::PASS_DONE && b == Decoder::PASS_DONE) {
 			break;
 		}
-
-		if (_par->num_frames != 0 && _last_frame >= _par->num_frames) {
-			break;
-		}
 	}
 
 	_encoder->process_end ();

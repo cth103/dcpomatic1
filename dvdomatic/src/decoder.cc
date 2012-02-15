@@ -215,6 +215,10 @@ Decoder::pass ()
 		return PASS_DONE;
 	}
 
+	if (_par->num_frames != 0 && _video_frame >= _par->num_frames) {
+		return PASS_DONE;
+	}
+
 	if (_packet.stream_index == _video_stream && _par->decode_video) {
 		
 		int frame_finished;
@@ -428,7 +432,7 @@ Decoder::native_height () const
 void
 Decoder::go ()
 {
-	while (pass () != PASS_DONE && (_par->num_frames == 0 || _video_frame < _par->num_frames)) {
+	while (pass () != PASS_DONE) {
 		if (_job) {
 			_job->set_progress (float (_video_frame) / decoding_frames ());
 		}

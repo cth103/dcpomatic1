@@ -6,5 +6,3 @@ trim decoder public / protected API
 maybe TranscodingParameters or something to stop the crap with encoder knowing the decoder;
   maybe instead / as well films should store A/B to remove the j2k-extra-dir hack
 use something other than TIFF
-
-make Decoder::num_frames work with pass() rather than go() and amend comment accordingly
