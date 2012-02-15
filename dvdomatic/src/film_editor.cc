@@ -437,12 +437,14 @@ FilmEditor::set_things_sensitive (bool s)
 	_right_crop.set_sensitive (s);
 	_top_crop.set_sensitive (s);
 	_bottom_crop.set_sensitive (s);
+	_filters_button.set_sensitive (s);
 	_dcp_long_name.set_sensitive (s);
 	_dcp_pretty_name.set_sensitive (s);
 	_dcp_content_type.set_sensitive (s);
 	_make_dcp_button.set_sensitive (s);
 	_dcp_whole.set_sensitive (s);
 	_dcp_for.set_sensitive (s);
+	_dcp_for_frames.set_sensitive (s);
 	_dcp_ab.set_sensitive (s);
 }
 
