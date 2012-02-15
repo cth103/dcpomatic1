@@ -17,8 +17,10 @@
 
 */
 
+#include <iostream>
 #include "make_mxf_job.h"
 #include "film.h"
+#include "parameters.h"
 
 using namespace std;
 
@@ -26,7 +28,15 @@ MakeMXFJob::MakeMXFJob (Film* f, Type t)
 	: OpenDCPJob (f)
 	, _type (t)
 {
+	_par = new Parameters (f->j2k_dir(), ".j2c", f->dir ("wavs"));
+	_par->frames_per_second = f->frames_per_second ();
+	_par->video_mxf_path = f->file ("video.mxf");
+	_par->audio_mxf_path = f->file ("audio.mxf");
+}
 
+MakeMXFJob::~MakeMXFJob ()
+{
+	delete _par;
 }
 
 string
@@ -35,10 +45,10 @@ MakeMXFJob::name () const
 	stringstream s;
 	switch (_type) {
 	case VIDEO:
-		s << "Make video MXF for " << _film->name();
+		s << "Make video MXF for " << _film_name;
 		break;
 	case AUDIO:
-		s << "Make audio MXF for " << _film->name();
+		s << "Make audio MXF for " << _film_name;
 		break;
 	}
 	
@@ -48,24 +58,26 @@ MakeMXFJob::name () const
 void
 MakeMXFJob::run ()
 {
-	float fps = _film->frames_per_second ();
+	float fps = _par->frames_per_second;
 	
 	/* XXX: experimental hack; round FPS for audio MXFs */
 	if (_type == AUDIO) {
 		fps = rintf (fps);
 	}
-	
+
 	stringstream c;
 	c << "opendcp_mxf -r " << fps << " -i ";
 	switch (_type) {
 	case VIDEO:
-		c << _film->j2k_dir () << " -o " << _film->file ("video.mxf");
+		c << _par->video_out_path () << " -o " << _par->video_mxf_path;
 		break;
 	case AUDIO:
-		c << _film->dir ("wavs") << " -o " << _film->file ("audio.mxf");
+		c << _par->audio_out_path () << " -o " << _par->audio_mxf_path;
 		break;
 	}
 
+	cout << c.str() << "\n";
+	
 	command (c.str ());
 	set_progress (1);
 }

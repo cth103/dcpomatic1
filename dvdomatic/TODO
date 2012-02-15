@@ -3,3 +3,6 @@ x-thread signaller
 Restartable jobs somehow
 use something other than TIFF
 More logging
+
+MakeDCPJob (and maybe others) should not be reading stuff in ::run()
+Maybe job shouldn't hold film ptr at all.

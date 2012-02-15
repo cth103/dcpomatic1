@@ -25,6 +25,7 @@
 #include <sigc++/sigc++.h>
 
 class Film;
+class Log;
 
 class Job
 {
@@ -63,9 +64,9 @@ protected:
 	};
 	
 	void set_state (State);
-	
-	Film* _film;
-	std::string _name;
+
+	Log* _log;
+	std::string _film_name;
 
 private:
 	

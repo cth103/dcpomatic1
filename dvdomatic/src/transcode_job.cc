@@ -32,20 +32,20 @@ TranscodeJob::TranscodeJob (Film* f, int N)
 	: Job (f)
 	, _num_frames (N)
 {
-	_par = new Parameters (_film->j2k_dir(), ".j2c", _film->dir ("wavs"));
-	_par->out_width = _film->format()->dci_width ();
-	_par->out_height = _film->format()->dci_height ();
+	_par = new Parameters (f->j2k_dir(), ".j2c", f->dir ("wavs"));
+	_par->out_width = f->format()->dci_width ();
+	_par->out_height = f->format()->dci_height ();
 	_par->num_frames = _num_frames;
-	_par->audio_channels = _film->audio_channels ();
-	_par->audio_sample_rate = _film->audio_sample_rate ();
-	_par->audio_sample_format = _film->audio_sample_format ();
-	_par->frames_per_second = _film->frames_per_second ();
-	_par->content = _film->content ();
-	_par->left_crop = _film->left_crop ();
-	_par->right_crop = _film->right_crop ();
-	_par->top_crop = _film->top_crop ();
-	_par->bottom_crop = _film->bottom_crop ();
-	_par->filters = _film->filters ();
+	_par->audio_channels = f->audio_channels ();
+	_par->audio_sample_rate = f->audio_sample_rate ();
+	_par->audio_sample_format = f->audio_sample_format ();
+	_par->frames_per_second = f->frames_per_second ();
+	_par->content = f->content ();
+	_par->left_crop = f->left_crop ();
+	_par->right_crop = f->right_crop ();
+	_par->top_crop = f->top_crop ();
+	_par->bottom_crop = f->bottom_crop ();
+	_par->filters = f->filters ();
 }
 
 TranscodeJob::~TranscodeJob ()
@@ -57,7 +57,7 @@ string
 TranscodeJob::name () const
 {
 	stringstream s;
-	s << "Transcode " << _film->name();
+	s << "Transcode " << _film_name;
 	return s.str ();
 }
 
@@ -66,8 +66,8 @@ TranscodeJob::run ()
 {
 	try {
 
-		_film->log()->log ("Transcode job starting");
-		_film->log()->log (_par->summary ());
+		_log->log ("Transcode job starting");
+		_log->log (_par->summary ());
 
 		J2KWAVEncoder e (_par);
 		Transcoder w (_par, this, &e);
@@ -75,13 +75,13 @@ TranscodeJob::run ()
 		set_progress (1);
 		set_state (FINISHED_OK);
 
-		_film->log()->log ("Transcode job completed successfully");
+		_log->log ("Transcode job completed successfully");
 
 	} catch (runtime_error& e) {
 
 		stringstream s;
 		s << "Transcode job failed (" << e.what() << ")";
-		_film->log()->log (s.str ());
+		_log->log (s.str ());
 		set_state (FINISHED_ERROR);
 
 	}

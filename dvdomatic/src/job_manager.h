@@ -28,6 +28,7 @@ public:
 
 	void add (Job *);
 	std::list<Job*> get () const;
+	bool work_to_do () const;
 
 	static JobManager* instance ();
 

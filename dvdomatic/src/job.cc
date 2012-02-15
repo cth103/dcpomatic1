@@ -19,11 +19,13 @@
 
 #include <boost/thread.hpp>
 #include "job.h"
+#include "film.h"
 
 using namespace std;
 
 Job::Job (Film* f)
-	: _film (f)
+	: _log (f->log ())
+	, _film_name (f->name ())
 	, _state (NEW)
 	, _start_time (0)
 {

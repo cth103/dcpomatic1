@@ -21,6 +21,8 @@
 #include "format.h"
 #include "film.h"
 #include "filter.h"
+#include "job_manager.h"
+#include "util.h"
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE dvdomatic_test
 #include <boost/test/unit_test.hpp>
@@ -99,4 +101,31 @@ BOOST_AUTO_TEST_CASE (format_test)
 	f = Format::get_from_nickname ("Scope");
 	BOOST_CHECK (f);
 	BOOST_CHECK_EQUAL (f->ratio_as_integer(), 239);
+}
+
+BOOST_AUTO_TEST_CASE (make_dcp_test)
+{
+	string const test_film = "build/test/film";
+	
+	if (boost::filesystem::exists (test_film)) {
+		boost::filesystem::remove_all (test_film);
+	}
+	
+	Film f (test_film, false);
+	f.write_metadata ();
+	boost::filesystem::copy_file ("test/zombie.mpeg", "build/test/film/zombie.mpeg");
+	f.set_content ("zombie.mpeg");
+	f.set_dcp_frames (40);
+	f.set_dcp_content_type (ContentType::get_from_pretty_name ("Test"));
+
+	BOOST_CHECK_EQUAL (f.audio_channels(), 2);
+	BOOST_CHECK_EQUAL (f.audio_sample_rate(), 48000);
+	BOOST_CHECK_EQUAL (audio_sample_format_to_string (f.audio_sample_format()), "S16");
+	
+	f.set_format (Format::get_from_nickname ("Flat"));
+	f.make_dcp ();
+
+	while (JobManager::instance()->work_to_do ()) {
+		sleep (1);
+	}
 }

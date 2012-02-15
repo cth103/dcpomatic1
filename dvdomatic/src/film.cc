@@ -600,6 +600,10 @@ Film::make_dcp ()
 	if (_content.empty ()) {
 		throw runtime_error ("content must be specified to make a DCP");
 	}
+
+	if (_dcp_content_type == 0) {
+		throw runtime_error ("content type must be specified to make a DCP");
+	}
 	
 	if (_dcp_ab) {
 		JobManager::instance()->add (new ABTranscodeJob (this, dcp_frames ()));

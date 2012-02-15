@@ -31,22 +31,22 @@ ABTranscodeJob::ABTranscodeJob (Film* f, int N)
 	: Job (f)
 	, _num_frames (N)
 {
-	_pa = new Parameters (_film->j2k_dir (), ".j2c", _film->dir ("wavs"));
-	_pa->out_width = _film->format()->dci_width ();
-	_pa->out_height = _film->format()->dci_height ();
+	_pa = new Parameters (f->j2k_dir (), ".j2c", f->dir ("wavs"));
+	_pa->out_width = f->format()->dci_width ();
+	_pa->out_height = f->format()->dci_height ();
 	_pa->num_frames = _num_frames;
-	_pa->audio_channels = _film->audio_channels ();
-	_pa->audio_sample_rate = _film->audio_sample_rate ();
-	_pa->audio_sample_format = _film->audio_sample_format ();
-	_pa->frames_per_second = _film->frames_per_second ();
-	_pa->content = _film->content ();
-	_pa->left_crop = _film->left_crop ();
-	_pa->right_crop = _film->right_crop ();
-	_pa->top_crop = _film->top_crop ();
-	_pa->bottom_crop = _film->bottom_crop ();
+	_pa->audio_channels = f->audio_channels ();
+	_pa->audio_sample_rate = f->audio_sample_rate ();
+	_pa->audio_sample_format = f->audio_sample_format ();
+	_pa->frames_per_second = f->frames_per_second ();
+	_pa->content = f->content ();
+	_pa->left_crop = f->left_crop ();
+	_pa->right_crop = f->right_crop ();
+	_pa->top_crop = f->top_crop ();
+	_pa->bottom_crop = f->bottom_crop ();
 	
 	_pb = new Parameters (*_pa);
-	_pb->filters = _film->filters ();
+	_pb->filters = f->filters ();
 }
 
 ABTranscodeJob::~ABTranscodeJob ()
@@ -59,7 +59,7 @@ string
 ABTranscodeJob::name () const
 {
 	stringstream s;
-	s << "A/B transcode " << _film->name();
+	s << "A/B transcode " << _film_name;
 	return s.str ();
 }
 

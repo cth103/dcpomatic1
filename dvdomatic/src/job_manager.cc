@@ -47,6 +47,18 @@ JobManager::get () const
 	return _jobs;
 }
 
+bool
+JobManager::work_to_do () const
+{
+	boost::mutex::scoped_lock lm (_mutex);
+	list<Job*>::const_iterator i = _jobs.begin();
+	while (i != _jobs.end() && (*i)->finished()) {
+		++i;
+	}
+
+	return i != _jobs.end ();
+}
+
 void
 JobManager::scheduler ()
 {

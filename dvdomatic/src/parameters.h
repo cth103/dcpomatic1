@@ -17,6 +17,9 @@
 
 */
 
+#ifndef DVDOMATIC_PARAMETERS_H
+#define DVDOMATIC_PARAMETERS_H
+
 #include <sstream>
 #include <iomanip>
 extern "C" {
@@ -52,6 +55,10 @@ public:
 		, _audio_out_path (a)
 	{}
 
+	std::string video_out_path () const {
+		return _video_out_path;
+	}
+
 	std::string video_out_path (int f, bool t) const {
 		std::stringstream s;
 		s << _video_out_path << "/";
@@ -63,6 +70,10 @@ public:
 		}
 
 		return s.str ();
+	}
+
+	std::string audio_out_path () const {
+		return _audio_out_path;
 	}
 
 	std::string audio_out_path (int c, bool t) const {
@@ -121,14 +132,22 @@ public:
 	AVSampleFormat audio_sample_format;
 	float frames_per_second;
 	std::string content;
+	std::string dcp_long_name;
+	std::string dcp_content_type_name;
 	int left_crop;
 	int right_crop;
 	int top_crop;
 	int bottom_crop;
 	std::vector<Filter const *> filters;
 
+	std::string video_mxf_path;
+	std::string audio_mxf_path;
+	std::string dcp_path;
+
 private:
 	std::string _video_out_path;
 	std::string _video_out_extension;
 	std::string _audio_out_path;
 };
+
+#endif

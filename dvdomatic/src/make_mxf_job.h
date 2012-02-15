@@ -19,6 +19,8 @@
 
 #include "opendcp_job.h"
 
+class Parameters;
+
 class MakeMXFJob : public OpenDCPJob
 {
 public:
@@ -28,11 +30,13 @@ public:
 	};
 	
 	MakeMXFJob (Film *, Type);
+	~MakeMXFJob ();
 
 	std::string name () const;
 	void run ();
 
 private:
+	Parameters* _par;
 	Type _type;
 };
 

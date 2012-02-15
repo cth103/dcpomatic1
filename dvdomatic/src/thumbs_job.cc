@@ -28,14 +28,14 @@ using namespace std;
 ThumbsJob::ThumbsJob (Film* f)
 	: Job (f)
 {
-	_par = new Parameters (_film->dir ("thumbs"), ".tiff", "");
+	_par = new Parameters (f->dir ("thumbs"), ".tiff", "");
 
-	_par->out_width = _film->width ();
-	_par->out_height = _film->height ();
+	_par->out_width = f->width ();
+	_par->out_height = f->height ();
 	_par->apply_crop = false;
 	_par->decode_audio = false;
 	_par->decode_video_frequency = 128;
-	_par->frames_per_second = _film->frames_per_second ();
+	_par->frames_per_second = f->frames_per_second ();
 }
 
 ThumbsJob::~ThumbsJob ()
@@ -47,7 +47,7 @@ string
 ThumbsJob::name () const
 {
 	stringstream s;
-	s << "Update thumbs for " << _film->name();
+	s << "Update thumbs for " << _film_name;
 	return s.str ();
 }
 
