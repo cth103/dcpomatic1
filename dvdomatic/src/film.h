@@ -56,59 +56,48 @@ public:
 	}
 
 	int top_crop () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _top_crop;
 	}
 
 	int bottom_crop () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _bottom_crop;
 	}
 
 	int left_crop () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _left_crop;
 	}
 
 	int right_crop () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _right_crop;
 	}
 
 	Format const * format () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _format;
 	}
 
 	std::vector<Filter const *> get_filters () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _filters;
 	}
 
 	int dcp_frames () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _dcp_frames;
 	}
 
 	bool dcp_ab () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _dcp_ab;
 	}
 
 	void set_filters (std::vector<Filter const *> const &);
 
 	std::string dcp_long_name () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _dcp_long_name;
 	}
 
 	std::string dcp_pretty_name () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _dcp_pretty_name;
 	}
 
 	ContentType const * dcp_content_type () {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _dcp_content_type;
 	}
 
@@ -129,40 +118,33 @@ public:
 	void set_dcp_content_type (ContentType const *);
 
 	int width () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _width;
 	}
 	
 	int height () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _height;
 	}
 
 	float frames_per_second () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _frames_per_second;
 	}
 
 	int audio_channels () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _audio_channels;
 	}
 
 	int audio_sample_rate () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _audio_sample_rate;
 	}
 
 	AVSampleFormat audio_sample_format () const {
-		boost::mutex::scoped_lock lm (_metadata_mutex);
 		return _audio_sample_format;
 	}
 	
 	std::string j2k_dir () const;
-	std::string j2k_path (int, bool) const;
 
-	void update_thumbs_non_gui (Job *);
-	void update_thumbs_gui ();
+	void update_thumbs_pre_gui ();
+	void update_thumbs_post_gui ();
 	int num_thumbs () const;
 	int thumb_frame (int) const;
 	std::string thumb_file (int) const;
@@ -203,8 +185,6 @@ private:
 	void update_dimensions ();
 	std::string thumb_file_for_frame (int) const;
 	void signal_changed (Property);
-
-	mutable boost::mutex _metadata_mutex;
 
 	/** Complete path to directory containing the film metadata;
 	    must not be relative.

@@ -31,20 +31,21 @@
 #include "image.h"
 #include "lut.h"
 #include "config.h"
+#include "parameters.h"
 
 using namespace std;
 
-Image::Image (Film const * f, uint8_t* rgb, int w, int h, int fr)
-	: _film (f)
-	, _frame (fr)
+Image::Image (Parameters const * par, uint8_t* rgb, int f)
+	: _par (par)
+	, _frame (f)
 {
 	/* Create libopenjpeg image container */
 	
 	for (int i = 0; i < 3; ++i) {
 		_cmptparm[i].dx = 1;
 		_cmptparm[i].dy = 1;
-		_cmptparm[i].w = w;
-		_cmptparm[i].h = h;
+		_cmptparm[i].w = _par->out_width;
+		_cmptparm[i].h = _par->out_height;
 		_cmptparm[i].x0 = 0;
 		_cmptparm[i].y0 = 0;
 		_cmptparm[i].prec = 12;
@@ -59,10 +60,10 @@ Image::Image (Film const * f, uint8_t* rgb, int w, int h, int fr)
 
 	_image->x0 = 0;
 	_image->y0 = 0;
-	_image->x1 = w;
-	_image->y1 = h;
+	_image->x1 = _par->out_width;
+	_image->y1 = _par->out_height;
 
-	int const size = w * h;
+	int const size = _par->out_width * _par->out_height;
 
 	struct {
 		float r, g, b;
@@ -111,7 +112,7 @@ Image::encode ()
 	int const bw = Config::instance()->j2k_bandwidth ();
 
 	/* Set the max image and component sizes based on frame_rate */
-	int const max_cs_len = ((float) bw) / 8 / _film->frames_per_second ();
+	int const max_cs_len = ((float) bw) / 8 / _par->frames_per_second;
 	int const max_comp_size = max_cs_len / 1.25;
 
 	/* Set encoding parameters to default values */
@@ -184,7 +185,7 @@ Image::encode ()
 
 	int const codestream_length = cio_tell (cio);
 
-	string const tmp_j2k = _film->j2k_path (_frame, true);
+	string const tmp_j2k = _par->video_out_path (_frame, true);
 
 	FILE* f = fopen (tmp_j2k.c_str (), "wb");
 	
@@ -200,7 +201,7 @@ Image::encode ()
 	fclose (f);
 
 	/* Rename the file from foo.j2c.tmp to foo.j2c now that it is complete */
-	boost::filesystem::rename (tmp_j2k, _film->j2k_path (_frame, false));
+	boost::filesystem::rename (tmp_j2k, _par->video_out_path (_frame, false));
 
 	/* Free openjpeg structure */
 	opj_cio_close (cio);

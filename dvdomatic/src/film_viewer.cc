@@ -170,9 +170,10 @@ FilmViewer::update_button_clicked ()
 	if (!_film) {
 		return;
 	}
-			
+
+	_film->update_thumbs_pre_gui ();
 	ThumbsJob* j = new ThumbsJob (_film);
-	j->Finished.connect (sigc::mem_fun (_film, &Film::update_thumbs_gui));
+	j->Finished.connect (sigc::mem_fun (_film, &Film::update_thumbs_post_gui));
 	JobManager::instance()->add (j);
 }
 

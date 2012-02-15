@@ -30,7 +30,7 @@ class Job;
 class J2KWAVEncoder : public Encoder
 {
 public:
-	J2KWAVEncoder (Film const *, Parameters const *);
+	J2KWAVEncoder (Parameters const *);
 	~J2KWAVEncoder ();
 
 	void process_begin ();
@@ -41,8 +41,6 @@ public:
 private:	
 
 	void encoder_thread ();
-
-	std::string wav_path (int, bool) const;
 
 	std::vector<SNDFILE*> _sound_files;
 	int _deinterleave_buffer_size;

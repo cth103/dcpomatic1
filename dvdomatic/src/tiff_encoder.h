@@ -29,14 +29,11 @@ class Parameters;
 class TIFFEncoder : public Encoder
 {
 public:
-	TIFFEncoder (Film const *, Parameters const *, std::string const &);
+	TIFFEncoder (Parameters const *);
 	~TIFFEncoder ();
 
 	void process_begin () {}
 	void process_video (uint8_t *, int, int);
 	void process_audio (uint8_t *, int, int) {}
 	void process_end () {}
-
-private:	
-	std::string _tiffs;
 };

@@ -111,8 +111,6 @@ Film::Film (Film const & other)
 void
 Film::read_metadata ()
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
-	
 	ifstream f (metadata_file().c_str ());
 	string line;
 	while (getline (f, line)) {
@@ -190,8 +188,6 @@ Film::read_metadata ()
 void
 Film::write_metadata () const
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
-	
 	boost::filesystem::create_directories (_directory);
 	
 	ofstream f (metadata_file().c_str ());
@@ -240,10 +236,7 @@ Film::write_metadata () const
 void
 Film::set_name (string const & n)
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_name = n;
-
-	lm.unlock ();
 	signal_changed (Name);
 }
 
@@ -265,34 +258,29 @@ Film::set_content (string const & c)
 		f = f.substr (_directory.length());
 	}
 
-	{
-		boost::mutex::scoped_lock lm (_metadata_mutex);
-		if (f == _content) {
-			return;
-		}
-		
-		_content = f;
+	if (f == _content) {
+		return;
 	}
+	
+	_content = f;
 	
 	Changed (Content);
 
 	/* Create a temporary decoder so that we can get information
 	   about the content.
 	*/
-	Parameters p;
+	Parameters p ("", "", "");
 	p.out_width = 1024;
 	p.out_height = 1024;
 	
-	Decoder d (this, 0, &p);
+	Decoder d (0, &p);
 
-	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_width = d.native_width ();
 	_height = d.native_height ();
 	_frames_per_second = d.frames_per_second ();
 	_audio_channels = d.audio_channels ();
 	_audio_sample_rate = d.audio_sample_rate ();
 	_audio_sample_format = d.audio_sample_format ();
-	lm.unlock ();
 	
 	signal_changed (Size);
 	signal_changed (FramesPerSecond);
@@ -304,10 +292,7 @@ Film::set_content (string const & c)
 void
 Film::set_format (Format* f)
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_format = f;
-
-	lm.unlock ();
 	signal_changed (FilmFormat);
 }
 
@@ -317,10 +302,7 @@ Film::set_format (Format* f)
 void
 Film::set_dcp_long_name (string const & n)
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_dcp_long_name = n;
-
-	lm.unlock ();
 	signal_changed (DCPLongName);
 }
 
@@ -330,10 +312,7 @@ Film::set_dcp_long_name (string const & n)
 void
 Film::set_dcp_pretty_name (string const & n)
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_dcp_pretty_name = n;
-
-	lm.unlock ();
 	signal_changed (DCPPrettyName);
 }
 
@@ -343,10 +322,7 @@ Film::set_dcp_pretty_name (string const & n)
 void
 Film::set_dcp_content_type (ContentType const * t)
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_dcp_content_type = t;
-
-	lm.unlock ();
 	signal_changed (DCPContentType);
 }
 
@@ -354,15 +330,11 @@ Film::set_dcp_content_type (ContentType const * t)
 void
 Film::set_left_crop (int c)
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
-	
 	if (c == _left_crop) {
 		return;
 	}
 	
 	_left_crop = c;
-
-	lm.unlock ();
 	signal_changed (LeftCrop);
 }
 
@@ -370,15 +342,11 @@ Film::set_left_crop (int c)
 void
 Film::set_right_crop (int c)
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
-	
 	if (c == _right_crop) {
 		return;
 	}
 
 	_right_crop = c;
-	
-	lm.unlock ();
 	signal_changed (RightCrop);
 }
 
@@ -398,15 +366,11 @@ Film::set_top_crop (int c)
 void
 Film::set_bottom_crop (int c)
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
-
 	if (c == _bottom_crop) {
 		return;
 	}
 	
 	_bottom_crop = c;
-
-	lm.unlock ();
 	signal_changed (BottomCrop);
 }
 
@@ -416,10 +380,7 @@ Film::set_bottom_crop (int c)
 void
 Film::set_filters (vector<Filter const *> const & f)
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_filters = f;
-
-	lm.unlock ();
 	signal_changed (Filters);
 }
 
@@ -430,10 +391,7 @@ Film::set_filters (vector<Filter const *> const & f)
 void
 Film::set_dcp_frames (int n)
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_dcp_frames = n;
-
-	lm.unlock ();
 	signal_changed (DCPFrames);
 }
 
@@ -445,10 +403,7 @@ Film::set_dcp_frames (int n)
 void
 Film::set_dcp_ab (bool a)
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
 	_dcp_ab = a;
-
-	lm.unlock ();
 	signal_changed (DCPAB);
 }
 
@@ -486,84 +441,48 @@ Film::metadata_file () const
 string
 Film::content () const
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
 	return file (_content);
 }
 
-/** The non-GUI-thread part of a thumbnail update.
- *  This decodes the content video and writes TIFF
- *  files to the thumbs subdirectory of the Film.
- *
- *  @param job Parent job; used for informing of progress.
+/** The pre-processing GUI part of a thumbs update.
+ *  Must be called from the GUI thread.
  */
 void
-Film::update_thumbs_non_gui (Job* job)
+Film::update_thumbs_pre_gui ()
 {
-	if (content().empty ()) {
-		if (job) {
-			job->set_progress (1);
-		}
-		return;
-	}
-
-	{
-		boost::mutex::scoped_lock lm (_metadata_mutex);
-		_thumbs.clear ();
-	}
-	
-	using namespace boost::filesystem;
-	remove_all (dir ("thumbs"));
-
-	int const number = 128;
+	_thumbs.clear ();
+	boost::filesystem::remove_all (dir ("thumbs"));
 
 	/* This call will recreate the directory */
+	dir ("thumbs");
+}
+
+/** The post-processing GUI part of a thumbs update.
+ *  Must be called from the GUI thread.
+ */
+void
+Film::update_thumbs_post_gui ()
+{
 	string const tdir = dir ("thumbs");
-
-	job->descend (1);
-
-	Parameters p;
-	p.out_width = _width;
-	p.out_height = _height;
-	p.apply_crop = false;
-	p.decode_audio = false;
-	p.decode_video_frequency = number;
 	
-	TIFFEncoder e (this, &p, tdir);
-	Transcoder w (this, &p, job, &e);
-	w.go ();
-	
-	job->ascend ();
-
-	for (directory_iterator i = directory_iterator (tdir); i != directory_iterator(); ++i) {
+	for (boost::filesystem::directory_iterator i = boost::filesystem::directory_iterator (tdir); i != boost::filesystem::directory_iterator(); ++i) {
 
 		/* Aah, the sweet smell of progress */
 #if BOOST_FILESYSTEM_VERSION == 3		
-		string const l = path(*i).leaf().generic_string();
+		string const l = boost::filesystem::path(*i).leaf().generic_string();
 #else
 		string const l = i->leaf ();
 #endif
 		
 		size_t const d = l.find (".tiff");
 		if (d != string::npos) {
-			boost::mutex::scoped_lock lm (_metadata_mutex);
 			_thumbs.push_back (atoi (l.substr (0, d).c_str()));
 		}
 	}
 
-	{
-		boost::mutex::scoped_lock lm (_metadata_mutex);
-		sort (_thumbs.begin(), _thumbs.end());
-	}
+	sort (_thumbs.begin(), _thumbs.end());
 	
 	write_metadata ();
-}
-
-/** The GUI part of a thumbs update.
- *  Must be called from the GUI thread.
- */
-void
-Film::update_thumbs_gui ()
-{
 	signal_changed (Thumbs);
 }
 
@@ -571,7 +490,6 @@ Film::update_thumbs_gui ()
 int
 Film::num_thumbs () const
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
 	return _thumbs.size ();
 }
 
@@ -581,7 +499,6 @@ Film::num_thumbs () const
 int
 Film::thumb_frame (int n) const
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
 	assert (n < int (_thumbs.size ()));
 	return _thumbs[n];
 }
@@ -592,15 +509,12 @@ Film::thumb_frame (int n) const
 string
 Film::thumb_file (int n) const
 {
-	boost::mutex::scoped_lock lm (_metadata_mutex);
 	return thumb_file_for_frame (thumb_frame (n));
 }
 
 /** @param n A frame index within the Film.
  *  @return The path to the thumb's image file for this frame;
  *  we assume that it exists.
- *
- *  Must be called with the metadata mutex locked.
  */
 string
 Film::thumb_file_for_frame (int n) const
@@ -625,8 +539,6 @@ Film::j2k_dir () const
 
 	pair<string, string> f = Filter::ffmpeg_strings (get_filters ());
 
-	boost::mutex::scoped_lock lm (_metadata_mutex);
-	
 	/* Write stuff to specify the filter / post-processing settings that are in use,
 	   so that we don't get confused about J2K files generated using different
 	   settings.
@@ -642,24 +554,6 @@ Film::j2k_dir () const
 	}
 	
 	return dir (s.str ());
-}
-
-/** @param f A frame index.
- *  @return Full path to the J2K file that corresponds to this frame, given the current settings.
- */
-string
-Film::j2k_path (int f, bool tmp) const
-{
-	stringstream s;
-	s << j2k_dir() << "/";
-	s.width (8);
-	s << setfill('0') << f << ".j2c";
-
-	if (tmp) {
-		s << ".tmp";
-	}
-
-	return s.str ();
 }
 
 /** Handle a change to the Film's metadata */

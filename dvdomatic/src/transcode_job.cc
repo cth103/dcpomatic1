@@ -31,7 +31,25 @@ TranscodeJob::TranscodeJob (Film* f, int N)
 	: Job (f)
 	, _num_frames (N)
 {
+	_par = new Parameters (_film->j2k_dir(), ".j2c", _film->dir ("wavs"));
+	_par->out_width = _film->format()->dci_width ();
+	_par->out_height = _film->format()->dci_height ();
+	_par->num_frames = _num_frames;
+	_par->audio_channels = _film->audio_channels ();
+	_par->audio_sample_rate = _film->audio_sample_rate ();
+	_par->audio_sample_format = _film->audio_sample_format ();
+	_par->frames_per_second = _film->frames_per_second ();
+	_par->content = _film->content ();
+	_par->left_crop = _film->left_crop ();
+	_par->right_crop = _film->right_crop ();
+	_par->top_crop = _film->top_crop ();
+	_par->bottom_crop = _film->bottom_crop ();
+	_par->filters = _film->get_filters ();
+}
 
+TranscodeJob::~TranscodeJob ()
+{
+	delete _par;
 }
 
 string
@@ -47,13 +65,9 @@ TranscodeJob::run ()
 {
 	try {
 
-		Parameters p;
-		p.out_width = _film->format()->dci_width ();
-		p.out_height = _film->format()->dci_height ();
-		p.num_frames = _num_frames;
-		
-		J2KWAVEncoder e (_film, &p);
-		Transcoder w (_film, &p, this, &e);
+
+		J2KWAVEncoder e (_par);
+		Transcoder w (_par, this, &e);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

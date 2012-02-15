@@ -21,11 +21,10 @@
 #include "transcoder.h"
 #include "encoder.h"
 
-Transcoder::Transcoder (Film* f, Parameters const * p, Job* j, Encoder* e)
-	: _film (f)
-	, _job (j)
+Transcoder::Transcoder (Parameters const * p, Job* j, Encoder* e)
+	: _job (j)
 	, _encoder (e)
-	, _decoder (f, j, p)
+	, _decoder (j, p)
 {
 	_decoder.Video.connect (sigc::mem_fun (*e, &Encoder::process_video));
 	_decoder.Audio.connect (sigc::mem_fun (*e, &Encoder::process_audio));

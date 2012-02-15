@@ -22,6 +22,7 @@
 #include <sstream>
 #include <iomanip>
 #include <iostream>
+#include <boost/filesystem.hpp>
 #include <tiffio.h>
 #include "tiff_encoder.h"
 #include "film.h"
@@ -31,9 +32,8 @@
 
 using namespace std;
 
-TIFFEncoder::TIFFEncoder (Film const * f, Parameters const * p, string const & tiffs)
-	: Encoder (f, p)
-	, _tiffs (tiffs)
+TIFFEncoder::TIFFEncoder (Parameters const * p)
+	: Encoder (p)
 {
 	
 }
@@ -46,14 +46,11 @@ TIFFEncoder::~TIFFEncoder ()
 void
 TIFFEncoder::process_video (uint8_t* data, int line_size, int frame)
 {
-	stringstream s;
-	s << _tiffs << "/";
-	s.width (8);
-	s << setfill('0') << frame << ".tiff";
-	TIFF* output = TIFFOpen (s.str().c_str(), "w");
+	string tmp_file = _par->video_out_path (frame, true);
+	TIFF* output = TIFFOpen (tmp_file.c_str (), "w");
 	if (output == 0) {
 		stringstream e;
-		e << "Could not create output TIFF file " << s.str();
+		e << "Could not create output TIFF file " << tmp_file;
 		throw runtime_error (e.str().c_str());
 	}
 						
@@ -70,4 +67,6 @@ TIFFEncoder::process_video (uint8_t* data, int line_size, int frame)
 	}
 
 	TIFFClose (output);
+
+	boost::filesystem::rename (tmp_file, _par->video_out_path (frame, false));
 }

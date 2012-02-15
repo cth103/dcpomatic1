@@ -19,13 +19,28 @@
 
 #include "thumbs_job.h"
 #include "film.h"
+#include "parameters.h"
+#include "tiff_encoder.h"
+#include "transcoder.h"
 
 using namespace std;
 
 ThumbsJob::ThumbsJob (Film* f)
 	: Job (f)
 {
-	
+	_par = new Parameters (_film->dir ("thumbs"), ".tiff", "");
+
+	_par->out_width = _film->width ();
+	_par->out_height = _film->height ();
+	_par->apply_crop = false;
+	_par->decode_audio = false;
+	_par->decode_video_frequency = 128;
+	_par->frames_per_second = _film->frames_per_second ();
+}
+
+ThumbsJob::~ThumbsJob ()
+{
+	delete _par;
 }
 
 string
@@ -39,6 +54,9 @@ ThumbsJob::name () const
 void
 ThumbsJob::run ()
 {
-	_film->update_thumbs_non_gui (this);
+	TIFFEncoder e (_par);
+	Transcoder w (_par, this, &e);
+	w.go ();
+	set_progress (1);
 	set_state (FINISHED_OK);
 }

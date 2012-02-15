@@ -28,7 +28,7 @@ class Parameters;
 class ABTranscoder
 {
 public:
-	ABTranscoder (Film *, Parameters const *, Job *, Encoder *);
+	ABTranscoder (Parameters const *, Parameters const *, Job *, Encoder *);
 	~ABTranscoder ();
 
 	void go ();
@@ -36,8 +36,8 @@ public:
 private:
 	void process_video (uint8_t *, int, int, int);
 	
-	Film* _film;
-	Parameters const * _par;
+	Parameters const * _par_a;
+	Parameters const * _par_b;
 	Job* _job;
 	Encoder* _encoder;
 	Decoder* _da;

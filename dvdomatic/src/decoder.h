@@ -39,7 +39,7 @@ class Parameters;
 class Decoder
 {
 public:
-	Decoder (Film const *, Job *, Parameters const *);
+	Decoder (Job *, Parameters const *);
 	~Decoder ();
 
 	Parameters const * parameters () const {
@@ -55,11 +55,6 @@ public:
 	int audio_channels () const;
 	int audio_sample_rate () const;
 	AVSampleFormat audio_sample_format () const;
-
-	/** @return Film that we are decoding */
-	Film const * film () const {
-		return _film;
-	}
 
 	void go ();
 
@@ -82,8 +77,6 @@ protected:
 		return _video_stream != -1;
 	}
 
-	Film const * _film;
-	
 private:
 
 	void setup_general ();

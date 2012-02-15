@@ -19,14 +19,18 @@
 
 #include "job.h"
 
+class Parameters;
+
 class TranscodeJob : public Job
 {
 public:
 	TranscodeJob (Film *, int N = 0);
-
+	~TranscodeJob ();
+	
 	std::string name () const;
 	void run ();
 
 private:
 	int _num_frames;
+	Parameters* _par;
 };

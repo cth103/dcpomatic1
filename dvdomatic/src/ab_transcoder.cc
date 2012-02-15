@@ -28,23 +28,21 @@
 
 using namespace std;
 
-ABTranscoder::ABTranscoder (Film* f, Parameters const * p, Job* j, Encoder* e)
-	: _film (f)
-	, _par (p)
+ABTranscoder::ABTranscoder (Parameters const * a, Parameters const * b, Job* j, Encoder* e)
+	: _par_a (a)
+	, _par_b (b)
 	, _job (j)
 	, _encoder (e)
 	, _last_frame (0)
 {
-	Film* original = new Film (*f);
-	original->set_filters (vector<Filter const *> ());
-	_da = new Decoder (original, j, p);
-	_db = new Decoder (f, j, p);
+	_da = new Decoder (j, _par_a);
+	_db = new Decoder (j, _par_b);
 
 	_da->Video.connect (sigc::bind (sigc::mem_fun (*this, &ABTranscoder::process_video), 0));
 	_db->Video.connect (sigc::bind (sigc::mem_fun (*this, &ABTranscoder::process_video), 1));
 	_da->Audio.connect (sigc::mem_fun (*e, &Encoder::process_audio));
 
-	_rgb = new uint8_t[p->out_width * p->out_height * 3];
+	_rgb = new uint8_t[a->out_width * a->out_height * 3];
 }
 
 ABTranscoder::~ABTranscoder ()
@@ -58,7 +56,7 @@ ABTranscoder::process_video (uint8_t* rgb, int line_size, int frame, int index)
 	int const half_line_size = line_size / 2;
 
 	uint8_t* p = _rgb;
-	for (int y = 0; y < _par->out_height; ++y) {
+	for (int y = 0; y < _par_a->out_height; ++y) {
 		if (index == 0) {
 			memcpy (p, rgb, half_line_size);
 		} else {

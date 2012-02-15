@@ -31,7 +31,28 @@ ABTranscodeJob::ABTranscodeJob (Film* f, int N)
 	: Job (f)
 	, _num_frames (N)
 {
+	_pa = new Parameters (_film->j2k_dir (), ".j2c", _film->dir ("wavs"));
+	_pa->out_width = _film->format()->dci_width ();
+	_pa->out_height = _film->format()->dci_height ();
+	_pa->num_frames = _num_frames;
+	_pa->audio_channels = _film->audio_channels ();
+	_pa->audio_sample_rate = _film->audio_sample_rate ();
+	_pa->audio_sample_format = _film->audio_sample_format ();
+	_pa->frames_per_second = _film->frames_per_second ();
+	_pa->content = _film->content ();
+	_pa->left_crop = _film->left_crop ();
+	_pa->right_crop = _film->right_crop ();
+	_pa->top_crop = _film->top_crop ();
+	_pa->bottom_crop = _film->bottom_crop ();
+	
+	_pb = new Parameters (*_pa);
+	_pb->filters = _film->get_filters ();
+}
 
+ABTranscodeJob::~ABTranscodeJob ()
+{
+	delete _pa;
+	delete _pb;
 }
 
 string
@@ -47,13 +68,8 @@ ABTranscodeJob::run ()
 {
 	try {
 
-		Parameters p;
-		p.out_width = _film->format()->dci_width ();
-		p.out_height = _film->format()->dci_height ();
-		p.num_frames = _num_frames;
-		
-		J2KWAVEncoder e (_film, &p);
-		ABTranscoder w (_film, &p, this, &e);
+		J2KWAVEncoder e (_pa);
+		ABTranscoder w (_pa, _pb, this, &e);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

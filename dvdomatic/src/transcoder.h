@@ -27,7 +27,7 @@ class Parameters;
 class Transcoder
 {
 public:
-	Transcoder (Film *, Parameters const *, Job *, Encoder *);
+	Transcoder (Parameters const *, Job *, Encoder *);
 
 	void go ();
 
@@ -36,7 +36,6 @@ public:
 	}
 
 protected:
-	Film* _film;
 	Job* _job;
 	Encoder* _encoder;
 	Decoder _decoder;

@@ -20,19 +20,18 @@
 
 #include <openjpeg.h>
 
-class Film;
+class Parameters;
 
 class Image
 {
 public:
-	Image (Film const *, uint8_t *, int, int, int);
+	Image (Parameters const *, uint8_t *, int);
 	~Image ();
 	
 	void encode ();
 	
 private:
-	
-	Film const * _film;
+	Parameters const * _par;
 	int _frame;
 	opj_image_cmptparm_t _cmptparm[3];
 	opj_image* _image;

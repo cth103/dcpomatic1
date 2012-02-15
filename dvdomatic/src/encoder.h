@@ -7,7 +7,7 @@ class Parameters;
 class Encoder
 {
 public:
-	Encoder (Film const *, Parameters const *);
+	Encoder (Parameters const *);
 
 	virtual void process_begin () = 0;
 	virtual void process_video (uint8_t*, int, int) = 0;
@@ -15,6 +15,5 @@ public:
 	virtual void process_end () = 0;
 
 protected:
-	Film const * _film;
 	Parameters const * _par;
 };

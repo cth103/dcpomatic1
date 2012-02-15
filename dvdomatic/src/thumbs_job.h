@@ -19,10 +19,16 @@
 
 #include "job.h"
 
+class Parameters;
+
 class ThumbsJob : public Job
 {
 public:
 	ThumbsJob (Film *);
+	~ThumbsJob ();
 	std::string name () const;
 	void run ();
+
+private:
+	Parameters* _par;
 };

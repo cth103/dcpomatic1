@@ -43,9 +43,8 @@ extern "C" {
 
 using namespace std;
 
-Decoder::Decoder (Film const * f, Job* j, Parameters const * p)
-	: _film (f)
-	, _job (j)
+Decoder::Decoder (Job* j, Parameters const * p)
+	: _job (j)
 	, _par (p)
 	, _format_context (0)
 	, _video_stream (-1)
@@ -114,9 +113,9 @@ Decoder::setup_general ()
 	
 	av_register_all ();
 
-	if ((r = avformat_open_input (&_format_context, _film->content().c_str(), 0, 0)) != 0) {
+	if ((r = avformat_open_input (&_format_context, _par->content.c_str(), 0, 0)) != 0) {
 		stringstream s;
-		s << "Could not open content file " << _film->content() << " (" << r << ")";
+		s << "Could not open content file " << _par->content << " (" << r << ")";
 		throw runtime_error (s.str ());
 	}
 
@@ -173,8 +172,8 @@ Decoder::setup_video ()
 	_post_filter_height = _video_codec_context->height;
 	
 	if (_par->apply_crop) {
-		_post_filter_width -= _film->left_crop() + _film->right_crop();
-		_post_filter_height -= _film->top_crop() + _film->bottom_crop();		
+		_post_filter_width -= _par->left_crop + _par->right_crop;
+		_post_filter_height -= _par->top_crop + _par->bottom_crop;		
 	}
 
 	setup_post_process_filters ();
@@ -306,11 +305,11 @@ Decoder::setup_video_filters ()
 {
 	int r;
 	
-	string filters = Filter::ffmpeg_strings (_film->get_filters ()).first;
+	string filters = Filter::ffmpeg_strings (_par->filters).first;
 
 	stringstream fs;
 	if (_par->apply_crop) {
-		fs << "crop=" << _post_filter_width << ":" << _post_filter_height << ":" << _film->left_crop() << ":" << _film->top_crop() << " ";
+		fs << "crop=" << _post_filter_width << ":" << _post_filter_height << ":" << _par->left_crop << ":" << _par->top_crop << " ";
 	} else {
 		fs << "crop=" << _post_filter_width << ":" << _post_filter_height << ":0:0";
 	}
@@ -442,7 +441,7 @@ Decoder::go ()
 void
 Decoder::setup_post_process_filters ()
 {
-	pair<string, string> s = Filter::ffmpeg_strings (_film->get_filters ());
+	pair<string, string> s = Filter::ffmpeg_strings (_par->filters);
 	if (s.second.empty ()) {
 		return;
 	}
