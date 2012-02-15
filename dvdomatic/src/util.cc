@@ -118,7 +118,7 @@ stacktrace (ostream& out, int levels)
 string
 audio_sample_format_to_string (AVSampleFormat s)
 {
-	/** Our sample format handling is not exactly complete */
+	/* Our sample format handling is not exactly complete */
 	
 	switch (s) {
 	case AV_SAMPLE_FMT_S16:
