@@ -6,6 +6,18 @@ use something other than TIFF
 
 relative path for film then add content ... error
 
+Use shared_ptr for Film so that they can hang around for jobs.
+
+Make DCP without adding content -> crash.
+
+Version in UI somewhere
+
+film_editor -> dvdomatic
+
+Edit filters buttons should be desensitized, and for frames count button.
+
+Length of film in film editor.
+
 Crash: race?
 
 Thread 1 (Thread 0x7fd226644700 (LWP 8470)):
