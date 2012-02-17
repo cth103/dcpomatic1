@@ -40,12 +40,14 @@ extern "C" {
 #include "job.h"
 #include "filter.h"
 #include "parameters.h"
+#include "options.h"
 
 using namespace std;
 
-Decoder::Decoder (Job* j, Parameters const * p)
-	: _job (j)
-	, _par (p)
+Decoder::Decoder (Parameters const * p, Options const * o, Job* j)
+	: _par (p)
+	, _opt (o)
+	, _job (j)
 	, _format_context (0)
 	, _video_stream (-1)
 	, _audio_stream (-1)
@@ -163,10 +165,10 @@ Decoder::setup_video ()
 		throw runtime_error ("Could not open video decoder");
 	}
 
-	int num_bytes = avpicture_get_size (PIX_FMT_RGB24, _par->out_width, _par->out_height);
+	int num_bytes = avpicture_get_size (PIX_FMT_RGB24, _opt->out_width, _opt->out_height);
 	_frame_out_buffer = (uint8_t *) av_malloc (num_bytes);
 
-	avpicture_fill ((AVPicture *) _frame_out, _frame_out_buffer, PIX_FMT_RGB24, _par->out_width, _par->out_height);
+	avpicture_fill ((AVPicture *) _frame_out, _frame_out_buffer, PIX_FMT_RGB24, _opt->out_width, _opt->out_height);
 
 	_post_filter_width = _video_codec_context->width;
 	_post_filter_height = _video_codec_context->height;
@@ -180,7 +182,7 @@ Decoder::setup_video ()
 
 	_conversion_context = sws_getContext (
 		_post_filter_width, _post_filter_height, _video_codec_context->pix_fmt,
-		_par->out_width, _par->out_height, PIX_FMT_RGB24,
+		_opt->out_width, _opt->out_height, PIX_FMT_RGB24,
 		SWS_BICUBIC, 0, 0, 0
 		);
 

@@ -52,24 +52,9 @@ using namespace std;
  */
 
 Film::Film (string d, bool must_exist)
-	: _dcp_content_type (0)
-	, _format (0)
-	, _left_crop (0)
-	, _right_crop (0)
-	, _top_crop (0)
-	, _bottom_crop (0)
-	, _dcp_frames (0)
-	, _dcp_ab (false)
-	, _width (0)
-	, _height (0)
-	, _length (0)
-	, _frames_per_second (0)
-	, _audio_channels (0)
-	, _audio_sample_rate (0)
-	, _audio_sample_format (AV_SAMPLE_FMT_NONE)
-	, _dirty (false)
+	: _dirty (false)
 {
-	/* Make _directory a complete path without ..s (where possible)
+	/* Make _state.directory a complete path without ..s (where possible)
 	   (Code swiped from Adam Bowen on stackoverflow)
 	*/
 	
@@ -87,9 +72,9 @@ Film::Film (string d, bool must_exist)
 		}
 	}
 
-	_directory = result.string ();
+	_state.directory = result.string ();
 	
-	if (must_exist && !boost::filesystem::exists (_directory)) {
+	if (must_exist && !boost::filesystem::exists (_state.directory)) {
 		throw runtime_error ("film not found");
 	}
 
@@ -100,26 +85,7 @@ Film::Film (string d, bool must_exist)
 
 /** Copy constructor */
 Film::Film (Film const & other)
-	: _directory (other._directory)
-	, _name (other._name)
-	, _content (other._content)
-	, _dcp_long_name (other._dcp_long_name)
-	, _dcp_content_type (other._dcp_content_type)
-	, _format (other._format)
-	, _left_crop (other._left_crop)
-	, _right_crop (other._right_crop)
-	, _top_crop (other._top_crop)
-	, _bottom_crop (other._bottom_crop)
-	, _filters (other._filters)
-	, _dcp_frames (other._dcp_frames)
-	, _dcp_ab (other._dcp_ab)
-	, _thumbs (other._thumbs)
-	, _width (other._width)
-	, _height (other._height)
-	, _frames_per_second (other._frames_per_second)
-	, _audio_channels (other._audio_channels)
-	, _audio_sample_rate (other._audio_sample_rate)
-	, _audio_sample_format (other._audio_sample_format)
+	: _state (other._state)
 	, _dirty (other._dirty)
 {
 
@@ -222,38 +188,38 @@ Film::write_metadata () const
 	}
 
 	/* User stuff */
-	f << "name " << _name << "\n";
-	f << "content " << _content << "\n";
-	f << "dcp_long_name " << _dcp_long_name << "\n";
+	f << "name " << _state.name << "\n";
+	f << "content " << _state.content << "\n";
+	f << "dcp_long_name " << _state.dcp_long_name << "\n";
 	if (_dcp_content_type) {
-		f << "dcp_content_type " << _dcp_content_type->pretty_name () << "\n";
+		f << "dcp_content_type " << _state.dcp_content_type->pretty_name () << "\n";
 	}
 	if (_format) {
-		f << "format " << _format->get_as_metadata () << "\n";
+		f << "format " << _state.format->get_as_metadata () << "\n";
 	}
-	f << "left_crop " << _left_crop << "\n";
-	f << "right_crop " << _right_crop << "\n";
-	f << "top_crop " << _top_crop << "\n";
-	f << "bottom_crop " << _bottom_crop << "\n";
-	for (vector<Filter const *>::const_iterator i = _filters.begin(); i != _filters.end(); ++i) {
+	f << "left_crop " << _state.left_crop << "\n";
+	f << "right_crop " << _state.right_crop << "\n";
+	f << "top_crop " << _state.top_crop << "\n";
+	f << "bottom_crop " << _state.bottom_crop << "\n";
+	for (vector<Filter const *>::const_iterator i = _state.filters.begin(); i != _state.filters.end(); ++i) {
 		f << "filter " << (*i)->id () << "\n";
 	}
-	f << "dcp_frames " << _dcp_frames << "\n";
+	f << "dcp_frames " << _state.dcp_frames << "\n";
 	f << "dcp_ab " << (_dcp_ab ? "1" : "0") << "\n";
 
 	/* Cached stuff; this is information about our content; we could
 	   look it up each time, but that's slow.
 	*/
-	for (vector<int>::const_iterator i = _thumbs.begin(); i != _thumbs.end(); ++i) {
+	for (vector<int>::const_iterator i = _state.thumbs.begin(); i != _state.thumbs.end(); ++i) {
 		f << "thumb " << *i << "\n";
 	}
-	f << "width " << _width << "\n";
-	f << "height " << _height << "\n";
-	f << "length " << _length << "\n";
-	f << "frames_per_second " << _frames_per_second << "\n";
-	f << "audio_channels " << _audio_channels << "\n";
-	f << "audio_sample_rate " << _audio_sample_rate << "\n";
-	f << "audio_sample_format " << audio_sample_format_to_string (_audio_sample_format) << "\n";
+	f << "width " << _state.width << "\n";
+	f << "height " << _state.height << "\n";
+	f << "length " << _state.length << "\n";
+	f << "frames_per_second " << _state.frames_per_second << "\n";
+	f << "audio_channels " << _state.audio_channels << "\n";
+	f << "audio_sample_rate " << _state.audio_sample_rate << "\n";
+	f << "audio_sample_format " << audio_sample_format_to_string (_state.audio_sample_format) << "\n";
 
 	_dirty = false;
 }
@@ -262,49 +228,50 @@ Film::write_metadata () const
 void
 Film::set_name (string n)
 {
-	_name = n;
+	_state.name = n;
 	signal_changed (Name);
 }
 
 /** Set the content file for this film.
  *  @param c New content file; if specified as an absolute path, the content should
- *  be within the film's _directory; if specified as a relative path, the content
- *  will be assumed to be within the film's _directory.
+ *  be within the film's _state.directory; if specified as a relative path, the content
+ *  will be assumed to be within the film's _state.directory.
  */
 void
 Film::set_content (string c)
 {
 	bool const absolute = boost::filesystem::path(c).has_root_directory ();
-	if (absolute && !boost::starts_with (c, _directory)) {
+	if (absolute && !boost::starts_with (c, _state.directory)) {
 		throw runtime_error ("content is outside the film's directory");
 	}
 
 	string f = c;
 	if (absolute) {
-		f = f.substr (_directory.length());
+		f = f.substr (_state.directory.length());
 	}
 
-	if (f == _content) {
+	if (f == _state.content) {
 		return;
 	}
 	
 	/* Create a temporary decoder so that we can get information
 	   about the content.
 	*/
-	Parameters p ("", "", "");
-	p.out_width = 1024;
-	p.out_height = 1024;
-	p.content = file (f);
+	Options o ("", "", "");
+	o.out_width = 1024;
+	o.out_height = 1024;
 
-	Decoder d (0, &p);
+	Parameters p (this);
+
+	Decoder d (&p, &o, 0);
 	
-	_width = d.native_width ();
-	_height = d.native_height ();
-	_length = d.length_in_frames ();
-	_frames_per_second = d.frames_per_second ();
-	_audio_channels = d.audio_channels ();
-	_audio_sample_rate = d.audio_sample_rate ();
-	_audio_sample_format = d.audio_sample_format ();
+	_state.width = d.native_width ();
+	_state.height = d.native_height ();
+	_state.length = d.length_in_frames ();
+	_state.frames_per_second = d.frames_per_second ();
+	_state.audio_channels = d.audio_channels ();
+	_state.audio_sample_rate = d.audio_sample_rate ();
+	_state.audio_sample_format = d.audio_sample_format ();
 	
 	signal_changed (Size);
 	signal_changed (Length);
@@ -312,7 +279,7 @@ Film::set_content (string c)
 	signal_changed (AudioChannels);
 	signal_changed (AudioSampleRate);
 
-	_content = f;
+	_state.content = f;
 	signal_changed (Content);
 }
 
@@ -320,7 +287,7 @@ Film::set_content (string c)
 void
 Film::set_format (Format* f)
 {
-	_format = f;
+	_state.format = f;
 	signal_changed (FilmFormat);
 }
 
@@ -330,7 +297,7 @@ Film::set_format (Format* f)
 void
 Film::set_dcp_long_name (string n)
 {
-	_dcp_long_name = n;
+	_state.dcp_long_name = n;
 	signal_changed (DCPLongName);
 }
 
@@ -340,7 +307,7 @@ Film::set_dcp_long_name (string n)
 void
 Film::set_dcp_content_type (ContentType const * t)
 {
-	_dcp_content_type = t;
+	_state.dcp_content_type = t;
 	signal_changed (DCPContentType);
 }
 
@@ -348,11 +315,11 @@ Film::set_dcp_content_type (ContentType const * t)
 void
 Film::set_left_crop (int c)
 {
-	if (c == _left_crop) {
+	if (c == _state.left_crop) {
 		return;
 	}
 	
-	_left_crop = c;
+	_state.left_crop = c;
 	signal_changed (LeftCrop);
 }
 
@@ -360,11 +327,11 @@ Film::set_left_crop (int c)
 void
 Film::set_right_crop (int c)
 {
-	if (c == _right_crop) {
+	if (c == _state.right_crop) {
 		return;
 	}
 
-	_right_crop = c;
+	_state.right_crop = c;
 	signal_changed (RightCrop);
 }
 
@@ -372,11 +339,11 @@ Film::set_right_crop (int c)
 void
 Film::set_top_crop (int c)
 {
-	if (c == _top_crop) {
+	if (c == _state.top_crop) {
 		return;
 	}
 	
-	_top_crop = c;
+	_state.top_crop = c;
 	signal_changed (TopCrop);
 }
 
@@ -384,11 +351,11 @@ Film::set_top_crop (int c)
 void
 Film::set_bottom_crop (int c)
 {
-	if (c == _bottom_crop) {
+	if (c == _state.bottom_crop) {
 		return;
 	}
 	
-	_bottom_crop = c;
+	_state.bottom_crop = c;
 	signal_changed (BottomCrop);
 }
 
@@ -398,7 +365,7 @@ Film::set_bottom_crop (int c)
 void
 Film::set_filters (vector<Filter const *> const & f)
 {
-	_filters = f;
+	_state.filters = f;
 	signal_changed (Filters);
 }
 
@@ -409,7 +376,7 @@ Film::set_filters (vector<Filter const *> const & f)
 void
 Film::set_dcp_frames (int n)
 {
-	_dcp_frames = n;
+	_state.dcp_frames = n;
 	signal_changed (DCPFrames);
 }
 
@@ -421,7 +388,7 @@ Film::set_dcp_frames (int n)
 void
 Film::set_dcp_ab (bool a)
 {
-	_dcp_ab = a;
+	_state.dcp_ab = a;
 	signal_changed (DCPAB);
 }
 
@@ -430,7 +397,7 @@ string
 Film::file (string f) const
 {
 	stringstream s;
-	s << _directory << "/" << f;
+	s << _state.directory << "/" << f;
 	return s.str ();
 }
 
@@ -441,7 +408,7 @@ string
 Film::dir (string d) const
 {
 	stringstream s;
-	s << _directory << "/" << d;
+	s << _state.directory << "/" << d;
 	boost::filesystem::create_directories (s.str ());
 	return s.str ();
 }
@@ -459,7 +426,7 @@ Film::metadata_file () const
 string
 Film::content () const
 {
-	return file (_content);
+	return file (_state.content);
 }
 
 /** The pre-processing GUI part of a thumbs update.
@@ -468,7 +435,7 @@ Film::content () const
 void
 Film::update_thumbs_pre_gui ()
 {
-	_thumbs.clear ();
+	_state.thumbs.clear ();
 	boost::filesystem::remove_all (dir ("thumbs"));
 
 	/* This call will recreate the directory */
@@ -494,11 +461,11 @@ Film::update_thumbs_post_gui ()
 		
 		size_t const d = l.find (".tiff");
 		if (d != string::npos) {
-			_thumbs.push_back (atoi (l.substr (0, d).c_str()));
+			_state.thumbs.push_back (atoi (l.substr (0, d).c_str()));
 		}
 	}
 
-	sort (_thumbs.begin(), _thumbs.end());
+	sort (_state.thumbs.begin(), _state.thumbs.end());
 	
 	write_metadata ();
 	signal_changed (Thumbs);
@@ -508,7 +475,7 @@ Film::update_thumbs_post_gui ()
 int
 Film::num_thumbs () const
 {
-	return _thumbs.size ();
+	return _state.thumbs.size ();
 }
 
 /** @param n A thumb index.
@@ -517,8 +484,8 @@ Film::num_thumbs () const
 int
 Film::thumb_frame (int n) const
 {
-	assert (n < int (_thumbs.size ()));
-	return _thumbs[n];
+	assert (n < int (num_thumbs ()));
+	return _state.thumbs[n];
 }
 
 /** @param n A thumb index.
@@ -548,7 +515,7 @@ Film::thumb_file_for_frame (int n) const
 string
 Film::j2k_dir () const
 {
-	assert (_format);
+	assert (format());
 
 	stringstream s;
 
@@ -561,13 +528,13 @@ Film::j2k_dir () const
 	   so that we don't get confused about J2K files generated using different
 	   settings.
 	*/
-	s << _format->nickname()
-	  << "_" << _content
-	  << "_" << _left_crop << "_" << _right_crop << "_" << _top_crop << "_" << _bottom_crop
+	s << _state.format->nickname()
+	  << "_" << content()
+	  << "_" << left_crop() << "_" << right_crop() << "_" << top_crop() << "_" << bottom_crop()
 	  << "_" << f.first << "_" << f.second;
 
 	/* Similarly for the A/B case */
-	if (_dcp_ab) {
+	if (dcp_ab()) {
 		s << "/ab";
 	}
 	
@@ -593,46 +560,31 @@ Film::make_dcp ()
 	
 	log()->log (s.str ());
 		
-	if (_format == 0) {
+	if (format() == 0) {
 		throw runtime_error ("format must be specified to make a DCP");
 	}
 
-	if (_content.empty ()) {
+	if (content().empty ()) {
 		throw runtime_error ("content must be specified to make a DCP");
 	}
 
-	if (_dcp_content_type == 0) {
+	if (dcp_content_type() == 0) {
 		throw runtime_error ("content type must be specified to make a DCP");
 	}
 
-	Parameters* p = new Parameters (j2k_dir(), ".j2c", dir ("wavs"));
-	p->film_name = name ();
-	p->dcp_long_name = dcp_long_name ();
-	p->dcp_content_type_name = dcp_content_type()->opendcp_name ();
-	p->video_mxf_path = file ("video.mxf");
-	p->audio_mxf_path = file ("audio.mxf");
-	p->dcp_path = dir (dcp_long_name ());
-	p->out_width = format()->dci_width ();
-	p->out_height = format()->dci_height ();
-	p->num_frames = dcp_frames ();
-	p->audio_channels = audio_channels ();
-	p->audio_sample_rate = audio_sample_rate ();
-	p->audio_sample_format = audio_sample_format ();
-	p->frames_per_second = frames_per_second ();
-	p->content = content ();
-	p->left_crop = left_crop ();
-	p->right_crop = right_crop ();
-	p->top_crop = top_crop ();
-	p->bottom_crop = bottom_crop ();
-	p->filters = filters ();
+	Parameters* p = new Parameters (this);
+	Options* o = new Options (j2k_dir(), ".j2c", dir ("wavs"));
+	o->out_width = format()->dci_width ();
+	o->out_height = format()->dci_height ();
+	o->num_frames = dcp_frames ();
 	
-	if (_dcp_ab) {
-		JobManager::instance()->add (new ABTranscodeJob (p, log ()));
+	if (_state.dcp_ab) {
+		JobManager::instance()->add (new ABTranscodeJob (p, o, log ()));
 	} else {
-		JobManager::instance()->add (new TranscodeJob (p, log ()));
+		JobManager::instance()->add (new TranscodeJob (p, o, log ()));
 	}
 	
-	JobManager::instance()->add (new MakeMXFJob (p, log (), MakeMXFJob::VIDEO));
-	JobManager::instance()->add (new MakeMXFJob (p, log (), MakeMXFJob::AUDIO));
-	JobManager::instance()->add (new MakeDCPJob (p, log ()));
+	JobManager::instance()->add (new MakeMXFJob (p, o, log (), MakeMXFJob::VIDEO));
+	JobManager::instance()->add (new MakeMXFJob (p, o, log (), MakeMXFJob::AUDIO));
+	JobManager::instance()->add (new MakeDCPJob (p, o, log ()));
 }

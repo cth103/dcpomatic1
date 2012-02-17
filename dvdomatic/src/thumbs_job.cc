@@ -22,11 +22,12 @@
 #include "parameters.h"
 #include "tiff_encoder.h"
 #include "transcoder.h"
+#include "options.h"
 
 using namespace std;
 
-ThumbsJob::ThumbsJob (Parameters const * p, Log* l)
-	: Job (p, l)
+ThumbsJob::ThumbsJob (Parameters const * p, Options const * o, Log* l)
+	: Job (p, o, l)
 {
 	
 }

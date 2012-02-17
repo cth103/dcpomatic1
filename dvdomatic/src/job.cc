@@ -22,8 +22,9 @@
 
 using namespace std;
 
-Job::Job (Parameters const * p, Log* l)
+Job::Job (Parameters const * p, Options const * o, Log* l)
 	: _par (p)
+	, _opt (o)
 	, _log (l)
 	, _state (NEW)
 	, _start_time (0)

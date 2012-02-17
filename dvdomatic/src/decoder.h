@@ -34,11 +34,12 @@ struct AVBufferContext;
 struct AVCodec;
 class Job;
 class Parameters;
+class Options;
 
 class Decoder
 {
 public:
-	Decoder (Job *, Parameters const *);
+	Decoder (Parameters const *, Options const *, Job *);
 	~Decoder ();
 
 	/* Methods to query our input video */
@@ -74,8 +75,9 @@ private:
 	void setup_audio ();
 	void setup_post_process_filters ();
 
-	Job* _job;
 	Parameters const * _par;
+	Options const * _opt;
+	Job* _job;
 	
 	AVFormatContext* _format_context;
 	int _video_stream;

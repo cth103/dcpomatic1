@@ -23,11 +23,12 @@ class Job;
 class Encoder;
 class Decoder;
 class Parameters;
+class Options;
 
 class ABTranscoder
 {
 public:
-	ABTranscoder (Parameters const *, Parameters const *, Job *, Encoder *);
+	ABTranscoder (Parameters const *, Parameters const *, Options const *, Job *, Encoder *);
 	~ABTranscoder ();
 
 	void go ();

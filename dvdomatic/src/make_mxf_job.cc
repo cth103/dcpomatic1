@@ -24,8 +24,8 @@
 
 using namespace std;
 
-MakeMXFJob::MakeMXFJob (Parameters const * p, Log* l, Type t)
-	: OpenDCPJob (p, l)
+MakeMXFJob::MakeMXFJob (Parameters const * p, Options const * o, Log* l, Type t)
+	: OpenDCPJob (p, o, l)
 	, _type (t)
 {
 
@@ -61,10 +61,10 @@ MakeMXFJob::run ()
 	c << "opendcp_mxf -r " << fps << " -i ";
 	switch (_type) {
 	case VIDEO:
-		c << _par->video_out_path () << " -o " << _par->video_mxf_path;
+		c << _opt->video_out_path () << " -o " << _par->video_mxf_path;
 		break;
 	case AUDIO:
-		c << _par->audio_out_path () << " -o " << _par->audio_mxf_path;
+		c << _opt->audio_out_path () << " -o " << _par->audio_mxf_path;
 		break;
 	}
 

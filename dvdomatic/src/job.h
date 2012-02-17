@@ -26,11 +26,12 @@
 
 class Log;
 class Parameters;
+class Options;
 
 class Job
 {
 public:
-	Job (Parameters const *, Log *);
+	Job (Parameters const *, Options const *, Log *);
 
 	virtual std::string name () const = 0;
 	virtual void run () = 0;
@@ -66,6 +67,7 @@ protected:
 	void set_state (State);
 
 	Parameters const * _par;
+	Options const * _opt;
 	Log* _log;
 
 private:

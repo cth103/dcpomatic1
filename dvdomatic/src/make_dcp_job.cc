@@ -23,8 +23,8 @@
 
 using namespace std;
 
-MakeDCPJob::MakeDCPJob (Parameters const * p, Log* l)
-	: OpenDCPJob (p, l)
+MakeDCPJob::MakeDCPJob (Parameters const * p, Options const * o, Log* l)
+	: OpenDCPJob (p, o, l)
 {
 	
 }

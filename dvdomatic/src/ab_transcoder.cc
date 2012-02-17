@@ -28,15 +28,15 @@
 
 using namespace std;
 
-ABTranscoder::ABTranscoder (Parameters const * a, Parameters const * b, Job* j, Encoder* e)
+ABTranscoder::ABTranscoder (Parameters const * a, Parameters const * b, Options const * o, Job* j, Encoder* e)
 	: _par_a (a)
 	, _par_b (b)
 	, _job (j)
 	, _encoder (e)
 	, _last_frame (0)
 {
-	_da = new Decoder (j, _par_a);
-	_db = new Decoder (j, _par_b);
+	_da = new Decoder (j, o, _par_a);
+	_db = new Decoder (j, o, _par_b);
 
 	_da->Video.connect (sigc::bind (sigc::mem_fun (*this, &ABTranscoder::process_video), 0));
 	_db->Video.connect (sigc::bind (sigc::mem_fun (*this, &ABTranscoder::process_video), 1));

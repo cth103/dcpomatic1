@@ -19,13 +19,10 @@
 
 #include "job.h"
 
-class Parameters;
-class Log;
-
 class TranscodeJob : public Job
 {
 public:
-	TranscodeJob (Parameters const *, Log *);
+	TranscodeJob (Parameters const *, Options const *, Log *);
 	~TranscodeJob ();
 	
 	std::string name () const;

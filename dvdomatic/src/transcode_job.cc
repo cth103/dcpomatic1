@@ -28,8 +28,8 @@
 
 using namespace std;
 
-TranscodeJob::TranscodeJob (Parameters const * p, Log * l)
-	: Job (p, l)
+TranscodeJob::TranscodeJob (Parameters const * p, Options const * o, Log * l)
+	: Job (p, o, l)
 {
 }
 
@@ -50,7 +50,7 @@ TranscodeJob::run ()
 		_log->log (_par->summary ());
 
 		J2KWAVEncoder e (_par);
-		Transcoder w (_par, this, &e);
+		Transcoder w (_par, _opt, this, &e);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

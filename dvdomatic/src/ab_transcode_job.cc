@@ -27,8 +27,8 @@
 
 using namespace std;
 
-ABTranscodeJob::ABTranscodeJob (Parameters const * p, Log* l)
-	: Job (p, l)
+ABTranscodeJob::ABTranscodeJob (Parameters const * p, Options const *o, Log* l)
+	: Job (p, o, l)
 {
 	_par_b = new Parameters (*_par);
 	_par_b->filters.clear ();
@@ -54,7 +54,7 @@ ABTranscodeJob::run ()
 
 		J2KWAVEncoder e (_par);
 		/* _par_b is the one with no filters */
-		ABTranscoder w (_par_b, _par, this, &e);
+		ABTranscoder w (_par_b, _par, _opt, this, &e);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

@@ -22,7 +22,7 @@
 class MakeDCPJob : public OpenDCPJob
 {
 public:
-	MakeDCPJob (Parameters const *, Log *);
+	MakeDCPJob (Parameters const *, Options const *, Log *);
 
 	std::string name () const;
 	void run ();

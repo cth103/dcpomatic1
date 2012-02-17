@@ -20,6 +20,7 @@
 #include "opendcp_job.h"
 
 class Parameters;
+class Options;
 
 class MakeMXFJob : public OpenDCPJob
 {
@@ -29,7 +30,7 @@ public:
 		VIDEO
 	};
 	
-	MakeMXFJob (Parameters const *, Log *, Type);
+	MakeMXFJob (Parameters const *, Options const *, Log *, Type);
 
 	std::string name () const;
 	void run ();

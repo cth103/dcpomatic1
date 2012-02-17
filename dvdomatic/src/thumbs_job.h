@@ -24,7 +24,7 @@ class Parameters;
 class ThumbsJob : public Job
 {
 public:
-	ThumbsJob (Parameters const *, Log *);
+	ThumbsJob (Parameters const *, Options const *, Log *);
 	std::string name () const;
 	void run ();
 };
