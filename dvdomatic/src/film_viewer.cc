@@ -118,6 +118,8 @@ FilmViewer::film_changed (Film::Property p)
 		
 		_position_slider.set_value (0);
 		reload_current_thumbnail ();
+	} else if (p == Film::FilmFormat) {
+		update_scaled_pixbuf ();
 	}
 }
 
