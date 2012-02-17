@@ -7,5 +7,10 @@ More logging
 options summary
 
 films-0.6: Dolby Countdown looks as though it's 3D.  THX Terminator 2 fucked
+(these on default settings)
 fq/gradfun --- no obvious effect
 hqdn3d --- pretty good denoising
+ow --- no obvious effect
+tn --- interesting; much noise reduction, bad artefacts on movement, colour tint even in black
+unsharp --- worse
+
