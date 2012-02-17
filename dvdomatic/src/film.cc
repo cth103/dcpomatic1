@@ -257,8 +257,6 @@ Film::set_content (string c)
 	if (f == _state.content) {
 		return;
 	}
-
-	_state.content = f;
 	
 	/* Create a temporary decoder so that we can get information
 	   about the content.
