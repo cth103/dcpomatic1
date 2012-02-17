@@ -242,8 +242,6 @@ Film::set_name (string n)
 void
 Film::set_content (string c)
 {
-	cout << "SC " << c << "\n";
-	
 	bool const absolute = filesystem::path(c).has_root_directory ();
 	if (absolute && !starts_with (c, _state.directory)) {
 		throw runtime_error ("content is outside the film's directory");
@@ -512,7 +510,7 @@ Film::j2k_dir () const
 	   settings.
 	*/
 	s << _state.format->nickname()
-	  << "_" << content()
+	  << "_" << _state.content
 	  << "_" << left_crop() << "_" << right_crop() << "_" << top_crop() << "_" << bottom_crop()
 	  << "_" << f.first << "_" << f.second;
 

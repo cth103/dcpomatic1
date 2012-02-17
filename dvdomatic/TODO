@@ -8,3 +8,7 @@ shared_ptr for Parameters, Options
 use a FilmState inside Film and use that for parameters
 
 options summary
+
+films-0.6: Dolby Countdown looks as though it's 3D.  THX Terminator 2 fucked
+fq/gradfun --- no obvious effect
+hqdn3d --- pretty good denoising

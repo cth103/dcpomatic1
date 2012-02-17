@@ -70,8 +70,6 @@ MakeMXFJob::run ()
 		break;
 	}
 
-	cout << c.str() << "\n";
-	
 	command (c.str ());
 	set_progress (1);
 }

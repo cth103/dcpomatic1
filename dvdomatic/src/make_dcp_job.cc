@@ -42,11 +42,16 @@ MakeDCPJob::name () const
 void
 MakeDCPJob::run ()
 {
+	assert (!_fs->dcp_long_name.empty());
+		
 	string const dcp_path = _fs->dir (_fs->dcp_long_name);
 	boost::filesystem::remove_all (dcp_path);
+
+	/* Re-make the DCP directory */
+	_fs->dir (_fs->dcp_long_name);
 	
 	stringstream c;
-	c << "cd " << dcp_path
+	c << "cd " << dcp_path << " && "
 	  << " opendcp_xml -d -a " << _fs->dcp_long_name
 	  << " -t \"" << _fs->name << "\""
 	  << " -k " << _fs->dcp_content_type->opendcp_name()
