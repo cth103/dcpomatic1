@@ -126,11 +126,13 @@ FilmViewer::set_film (Film* f)
 {
 	_film = f;
 
+	_update_button.set_sensitive (_film != 0);
+	
 	if (!_film) {
 		_image.clear ();
 		return;
 	}
-	
+
 	_film->Changed.connect (sigc::mem_fun (*this, &FilmViewer::film_changed));
 
 	film_changed (Film::Thumbs);

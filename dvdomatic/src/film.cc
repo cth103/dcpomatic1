@@ -25,7 +25,7 @@
 #include <iomanip>
 #include <unistd.h>
 #include <boost/filesystem.hpp>
-#include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string.hpp>
 #include "film.h"
 #include "format.h"
 #include "tiff_encoder.h"
@@ -132,6 +132,8 @@ Film::read_metadata ()
 			_state.content = v;
 		} else if (k == "dcp_long_name") {
 			_state.dcp_long_name = v;
+		} else if (k == "guess_dcp_long_name") {
+			_state.guess_dcp_long_name = (v == "1");
 		} else if (k == "dcp_content_type") {
 			_state.dcp_content_type = ContentType::get_from_pretty_name (v);
 		} else if (k == "format") {
@@ -194,6 +196,7 @@ Film::write_metadata () const
 	f << "name " << _state.name << "\n";
 	f << "content " << _state.content << "\n";
 	f << "dcp_long_name " << _state.dcp_long_name << "\n";
+	f << "guess_dcp_long_name " << (_state.guess_dcp_long_name ? "1" : "0") << "\n";
 	if (_state.dcp_content_type) {
 		f << "dcp_content_type " << _state.dcp_content_type->pretty_name () << "\n";
 	}
@@ -528,6 +531,11 @@ void
 Film::signal_changed (Property p)
 {
 	_dirty = true;
+
+	if (p == Name || p == DCPContentType || p == FilmFormat || p == AudioChannels) {
+		maybe_guess_dcp_long_name ();
+	}
+	
 	Changed (p);
 }
 
@@ -575,4 +583,62 @@ shared_ptr<FilmState>
 Film::state_copy () const
 {
 	return shared_ptr<FilmState> (new FilmState (_state));
+}
+
+void
+Film::set_guess_dcp_long_name (bool g)
+{
+	_state.guess_dcp_long_name = g;
+	maybe_guess_dcp_long_name ();
+	signal_changed (GuessDCPLongName);
+}
+
+void
+Film::maybe_guess_dcp_long_name ()
+{
+	if (!_state.guess_dcp_long_name) {
+		return;
+	}
+
+	stringstream s;
+
+	string short_name = _state.name.substr (0, 14);
+	to_upper (short_name);
+	replace_all (short_name, " ", "-");
+	s << short_name;
+
+	if (_state.dcp_content_type) {
+		s << "_" << _state.dcp_content_type->dcp_name ();
+	}
+
+	if (_state.format) {
+		s << "_" << _state.format->dcp_name ();
+	}
+
+	s << "_EN-XX_GB";
+
+	switch (_state.audio_channels) {
+	case 1:
+		s << "_10-EN";
+		break;
+	case 2:
+		s << "_20-EN";
+		break;
+	case 5:
+		s << "_51-EN";
+		break;
+	}
+
+	s << "_2K_ST";
+
+	time_t t;
+	time (&t);
+	struct tm * ts = localtime (&t);
+	s << "_" << (ts->tm_year + 1900);
+	s.width (2);
+	s << setfill('0') << (ts->tm_mon + 1) << ts->tm_mday;
+
+	s << "_FAC_2D_OV";
+	
+	set_dcp_long_name (s.str ());
 }

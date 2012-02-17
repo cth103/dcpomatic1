@@ -39,6 +39,7 @@ private:
 	void content_changed ();
 	void format_changed ();
 	void dcp_long_name_changed ();
+	void guess_dcp_long_name_toggled ();
 	void dcp_content_type_changed ();
 	void dcp_frames_changed ();
 	void dcp_ab_toggled ();
@@ -65,6 +66,7 @@ private:
 	Gtk::Label _filters;
 	Gtk::Button _filters_button;
 	Gtk::Entry _dcp_long_name;
+	Gtk::CheckButton _guess_dcp_long_name;
 	Gtk::ComboBoxText _dcp_content_type;
 	Gtk::Label _original_size;
 	Gtk::Label _length;

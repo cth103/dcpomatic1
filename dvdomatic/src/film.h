@@ -96,6 +96,10 @@ public:
 		return _state.dcp_long_name;
 	}
 
+	bool guess_dcp_long_name () const {
+		return _state.guess_dcp_long_name;
+	}
+
 	ContentType const * dcp_content_type () {
 		return _state.dcp_content_type;
 	}
@@ -111,6 +115,7 @@ public:
 	void set_right_crop (int);
 	void set_format (Format *);
 	void set_dcp_long_name (std::string);
+	void set_guess_dcp_long_name (bool);
 	void set_dcp_content_type (ContentType const *);
 
 	int width () const {
@@ -159,6 +164,7 @@ public:
 		Name,
 		Content,
 		DCPLongName,
+		GuessDCPLongName,
 		DCPContentType,
 		FilmFormat,
 		LeftCrop,
@@ -194,6 +200,7 @@ private:
 	void update_dimensions ();
 	std::string thumb_file_for_frame (int) const;
 	void signal_changed (Property);
+	void maybe_guess_dcp_long_name ();
 
 	FilmState _state;
 

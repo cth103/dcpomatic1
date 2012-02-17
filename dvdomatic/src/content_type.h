@@ -23,7 +23,7 @@
 class ContentType
 {
 public:
-	ContentType (std::string, std::string);
+	ContentType (std::string, std::string, std::string);
 
 	std::string pretty_name () const {
 		return _pretty_name;
@@ -31,6 +31,10 @@ public:
 	
 	std::string opendcp_name () const {
 		return _opendcp_name;
+	}
+
+	std::string dcp_name () const {
+		return _dcp_name;
 	}
 
 	static ContentType const * get_from_pretty_name (std::string);
@@ -42,6 +46,7 @@ public:
 private:
 	std::string _pretty_name;
 	std::string _opendcp_name;
+	std::string _dcp_name;
 
 	static std::vector<ContentType const *> _content_types;
 };

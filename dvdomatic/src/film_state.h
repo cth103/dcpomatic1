@@ -33,7 +33,8 @@ class FilmState
 {
 public:
 	FilmState ()
-		: dcp_content_type (0)
+		: guess_dcp_long_name (false)
+		, dcp_content_type (0)
 		, format (0)
 		, left_crop (0)
 		, right_crop (0)
@@ -77,6 +78,7 @@ public:
 	std::string content;
 	/** DCP long name (e.g. BLUES-BROTHERS_FTR_F_EN-XX ...) */
 	std::string dcp_long_name;
+	bool guess_dcp_long_name;
 	/** The type of content that this Film represents (feature, trailer etc.) */
 	ContentType const * dcp_content_type;
 	/** The format to present this Film in (flat, scope, etc.) */

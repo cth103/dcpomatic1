@@ -23,7 +23,7 @@
 class Format
 {
 public:
-	Format (int, int, int, std::string);
+	Format (int, int, int, std::string, std::string);
 
 	int ratio_as_integer () const {
 		return _ratio;
@@ -47,6 +47,10 @@ public:
 		return _nickname;
 	}
 
+	std::string dcp_name () const {
+		return _dcp_name;
+	}
+
 	std::string get_as_metadata () const;
 
 	static Format * get_from_ratio (int);
@@ -64,6 +68,7 @@ private:
 	int _dci_width;
 	int _dci_height;
 	std::string _nickname;
+	std::string _dcp_name;
 
 	static std::vector<Format *> _formats;
 };

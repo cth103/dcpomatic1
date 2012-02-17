@@ -41,6 +41,7 @@ using namespace Gtk;
 FilmEditor::FilmEditor (Film* f)
 	: _film (f)
 	, _filters_button ("Edit...")
+	, _guess_dcp_long_name ("Guess")
 	, _make_dcp_button ("Make DCP")
 	, _dcp_whole ("Whole Film")
 	, _dcp_for ("For")
@@ -81,7 +82,7 @@ FilmEditor::FilmEditor (Film* f)
 	_dcp_for.set_group (g);
 	_dcp_for_frames.set_range (24, 65536);
 	_dcp_for_frames.set_increments (24, 60 * 24);
-	
+
 	/* And set their values from the Film */
 	set_film (f);
 	
@@ -95,6 +96,7 @@ FilmEditor::FilmEditor (Film* f)
 	_bottom_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::bottom_crop_changed));
 	_filters_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::edit_filters_clicked));
 	_dcp_long_name.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_long_name_changed));
+	_guess_dcp_long_name.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::guess_dcp_long_name_toggled));
 	_dcp_content_type.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_content_type_changed));
 	_dcp_for.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::dcp_frames_changed));
 	_dcp_for_frames.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_frames_changed));
@@ -116,13 +118,8 @@ FilmEditor::FilmEditor (Film* f)
 	++n;
 	t->attach (left_aligned_label ("DCP Long Name"), 0, 1, n, n + 1);
 	t->attach (_dcp_long_name, 1, 2, n, n + 1);
+	t->attach (_guess_dcp_long_name, 2, 3, n, n + 1);
 	++n;
-
-	Label* hint = manage (new Label ("<small>e.g. THE-BLUES-BROS_FTR_F_EN-XX_EN-GB_51-EN_2K_ST_20120101_FAC_2D_OV</small>"));
-	hint->set_use_markup ();
-	t->attach (*hint, 0, 2, n, n + 1);
-	++n;
-	
 	t->attach (left_aligned_label ("Format"), 0, 1, n, n + 1);
 	t->attach (_format, 1, 2, n, n + 1);
 	++n;
@@ -332,6 +329,9 @@ FilmEditor::film_changed (Film::Property p)
 	case Film::DCPLongName:
 		_dcp_long_name.set_text (_film->dcp_long_name ());
 		break;
+	case Film::GuessDCPLongName:
+		_guess_dcp_long_name.set_active (_film->guess_dcp_long_name ());
+		break;
 	case Film::DCPContentType:
 		_dcp_content_type.set_active (ContentType::get_as_index (_film->dcp_content_type ()));
 		break;
@@ -411,6 +411,7 @@ FilmEditor::set_film (Film* f)
 	film_changed (Film::Name);
 	film_changed (Film::Content);
 	film_changed (Film::DCPLongName);
+	film_changed (Film::GuessDCPLongName);
 	film_changed (Film::DCPContentType);
 	film_changed (Film::FilmFormat);
 	film_changed (Film::LeftCrop);
@@ -439,6 +440,7 @@ FilmEditor::set_things_sensitive (bool s)
 	_bottom_crop.set_sensitive (s);
 	_filters_button.set_sensitive (s);
 	_dcp_long_name.set_sensitive (s);
+	_guess_dcp_long_name.set_sensitive (s);
 	_dcp_content_type.set_sensitive (s);
 	_make_dcp_button.set_sensitive (s);
 	_dcp_whole.set_sensitive (s);
@@ -452,4 +454,14 @@ FilmEditor::edit_filters_clicked ()
 {
 	FilterDialog d (_film);
 	d.run ();
+}
+
+void
+FilmEditor::guess_dcp_long_name_toggled ()
+{
+	if (!_film) {
+		return;
+	}
+
+	_film->set_guess_dcp_long_name (_guess_dcp_long_name.get_active ());
 }

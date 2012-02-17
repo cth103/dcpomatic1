@@ -28,11 +28,12 @@ using namespace std;
 
 vector<Format *> Format::_formats;
 
-Format::Format (int r, int dw, int dh, string n)
+Format::Format (int r, int dw, int dh, string n, string d)
 	: _ratio (r)
 	, _dci_width (dw)
 	, _dci_height (dh)
 	, _nickname (n)
+	, _dcp_name (d)
 {
 
 }
@@ -65,10 +66,10 @@ Format::get_as_metadata () const
 void
 Format::setup_formats ()
 {
-	_formats.push_back (new Format (185, 1998, 1080, "Flat"));
-	_formats.push_back (new Format (239, 2048, 858, "Scope"));
-	_formats.push_back (new Format (137, 1480, 1080, "Academy"));
-	_formats.push_back (new Format (185, 200, 100, "Test"));
+	_formats.push_back (new Format (185, 1998, 1080, "Flat", "F"));
+	_formats.push_back (new Format (239, 2048, 858, "Scope", "S"));
+	_formats.push_back (new Format (137, 1480, 1080, "Academy", "133"));
+	_formats.push_back (new Format (185, 200, 100, "Test", "F"));
 }
 
 Format *

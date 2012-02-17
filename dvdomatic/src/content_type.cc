@@ -24,9 +24,10 @@ using namespace std;
 
 vector<ContentType const *> ContentType::_content_types;
 
-ContentType::ContentType (string p, string o)
+ContentType::ContentType (string p, string o, string d)
 	: _pretty_name (p)
 	, _opendcp_name (o)
+	, _dcp_name (d)
 {
 
 }
@@ -34,16 +35,16 @@ ContentType::ContentType (string p, string o)
 void
 ContentType::setup_content_types ()
 {
-	_content_types.push_back (new ContentType ("Feature", "feature"));
-	_content_types.push_back (new ContentType ("Short", "short"));
-	_content_types.push_back (new ContentType ("Trailer", "trailer"));
-	_content_types.push_back (new ContentType ("Test", "test"));
-	_content_types.push_back (new ContentType ("Transitional", "transitional"));
-	_content_types.push_back (new ContentType ("Rating", "rating"));
-	_content_types.push_back (new ContentType ("Teaser", "teaster"));
-	_content_types.push_back (new ContentType ("Policy", "policy"));
-	_content_types.push_back (new ContentType ("Public Service Announcement", "psa"));
-	_content_types.push_back (new ContentType ("Advertisement", "advertisement"));
+	_content_types.push_back (new ContentType ("Feature", "feature", "FTR"));
+	_content_types.push_back (new ContentType ("Short", "short", "SHR"));
+	_content_types.push_back (new ContentType ("Trailer", "trailer", "TLR"));
+	_content_types.push_back (new ContentType ("Test", "test", "TST"));
+	_content_types.push_back (new ContentType ("Transitional", "transitional", "XSN"));
+	_content_types.push_back (new ContentType ("Rating", "rating", "RTG"));
+	_content_types.push_back (new ContentType ("Teaser", "teaster", "TSR"));
+	_content_types.push_back (new ContentType ("Policy", "policy", "POL"));
+	_content_types.push_back (new ContentType ("Public Service Announcement", "psa", "PSA"));
+	_content_types.push_back (new ContentType ("Advertisement", "advertisement", "ADV"));
 }
 
 ContentType const *
