@@ -40,6 +40,7 @@ private:
 	void reload_current_thumbnail ();
 	void update_scaled_pixbuf ();
 	std::pair<int, int> scaled_pixbuf_size () const;
+	void scroller_size_allocate (Gtk::Allocation);
 
 	Film* _film;
 	Gtk::VBox _vbox;
@@ -50,4 +51,5 @@ private:
 	Glib::RefPtr<Gdk::Pixbuf> _scaled_pixbuf;
 	Gtk::HScale _position_slider;
 	Gtk::Button _update_button;
+	Gtk::Allocation _last_scroller_allocation;
 };

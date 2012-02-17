@@ -52,6 +52,8 @@ FilmViewer::FilmViewer (Film* f)
 	_position_slider.signal_format_value().connect (sigc::mem_fun (*this, &FilmViewer::format_position_slider_value));
 	_position_slider.signal_value_changed().connect (sigc::mem_fun (*this, &FilmViewer::position_slider_changed));
 
+	_scroller.signal_size_allocate().connect (sigc::mem_fun (*this, &FilmViewer::scroller_size_allocate));
+
 	set_film (_film);
 }
 
@@ -164,7 +166,7 @@ void
 FilmViewer::update_scaled_pixbuf ()
 {
 	pair<int, int> const s = scaled_pixbuf_size ();
-	
+
 	if (s.first > 0 && s.second > 0) {
 		_scaled_pixbuf = _cropped_pixbuf->scale_simple (s.first, s.second, Gdk::INTERP_HYPER);
 		_image.set (_scaled_pixbuf);
@@ -193,3 +195,12 @@ FilmViewer::update_button_clicked ()
 	JobManager::instance()->add (j);
 }
 
+void
+FilmViewer::scroller_size_allocate (Gtk::Allocation a)
+{
+	if (a.get_width() != _last_scroller_allocation.get_width() || a.get_height() != _last_scroller_allocation.get_height()) {
+		update_scaled_pixbuf ();
+	}
+	
+	_last_scroller_allocation = a;
+}
