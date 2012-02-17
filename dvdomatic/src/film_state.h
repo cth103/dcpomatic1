@@ -17,28 +17,55 @@
 
 */
 
-class Film;
+#ifndef DVDOMATIC_FILM_STATE_H
+#define DVDOMATIC_FILM_STATE_H
+
+#include <boost/filesystem.hpp>
+extern "C" {
+#include <libavcodec/avcodec.h>
+}
+
+class Format;
+class ContentType;
+class Filter;
 
 class FilmState
 {
 public:
 	FilmState ()
-		: _dcp_content_type (0)
-		, _format (0)
-		, _left_crop (0)
-		, _right_crop (0)
-		, _top_crop (0)
-		, _bottom_crop (0)
-		, _dcp_frames (0)
-		, _dcp_ab (false)
-		, _width (0)
-		, _height (0)
-		, _length (0)
-		, _frames_per_second (0)
-		, _audio_channels (0)
-		, _audio_sample_rate (0)
-		, _audio_sample_format (AV_SAMPLE_FMT_NONE)
+		: dcp_content_type (0)
+		, format (0)
+		, left_crop (0)
+		, right_crop (0)
+		, top_crop (0)
+		, bottom_crop (0)
+		, dcp_frames (0)
+		, dcp_ab (false)
+		, width (0)
+		, height (0)
+		, length (0)
+		, frames_per_second (0)
+		, audio_channels (0)
+		, audio_sample_rate (0)
+		, audio_sample_format (AV_SAMPLE_FMT_NONE)
 	{}
+
+	/** Given a file name, return its full path within the Film's directory */
+	std::string file (std::string f) const {
+		std::stringstream s;
+		s << directory << "/" << f;
+		return s.str ();
+	}
+
+	/** Given a directory name, return its full path within the Film's directory.
+	 *  The directory (and its parents) will be created if they do not exist.
+	 */
+	std::string dir (std::string d) const {
+		std::stringstream s;
+		s << directory << "/" << d;
+		boost::filesystem::create_directories (s.str ());
+		return s.str ();
+	}
 
 	/** Complete path to directory containing the film metadata;
 	    must not be relative.
@@ -90,3 +117,5 @@ public:
 	/** Format of the audio samples */
 	AVSampleFormat audio_sample_format;
 };
+
+#endif

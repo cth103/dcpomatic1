@@ -22,12 +22,12 @@
 class Film;
 class Job;
 class Encoder;
-class Parameters;
+class FilmState;
 
 class Transcoder
 {
 public:
-	Transcoder (Parameters const *, Options const *, Job *, Encoder *);
+	Transcoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *, Encoder *);
 
 	void go ();
 

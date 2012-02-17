@@ -28,12 +28,14 @@
 #include "film.h"
 #include "format.h"
 #include "decoder.h"
-#include "parameters.h"
+#include "film_state.h"
+#include "options.h"
 
 using namespace std;
+using namespace boost;
 
-TIFFEncoder::TIFFEncoder (Parameters const * p)
-	: Encoder (p)
+TIFFEncoder::TIFFEncoder (shared_ptr<const FilmState> s, shared_ptr<const Options> o)
+	: Encoder (s, o)
 {
 	
 }
@@ -46,7 +48,7 @@ TIFFEncoder::~TIFFEncoder ()
 void
 TIFFEncoder::process_video (uint8_t* data, int line_size, int frame)
 {
-	string tmp_file = _par->video_out_path (frame, true);
+	string tmp_file = _opt->frame_out_path (frame, true);
 	TIFF* output = TIFFOpen (tmp_file.c_str (), "w");
 	if (output == 0) {
 		stringstream e;
@@ -54,19 +56,19 @@ TIFFEncoder::process_video (uint8_t* data, int line_size, int frame)
 		throw runtime_error (e.str().c_str());
 	}
 						
-	TIFFSetField (output, TIFFTAG_IMAGEWIDTH, _par->out_width);
-	TIFFSetField (output, TIFFTAG_IMAGELENGTH, _par->out_height);
+	TIFFSetField (output, TIFFTAG_IMAGEWIDTH, _opt->out_width);
+	TIFFSetField (output, TIFFTAG_IMAGELENGTH, _opt->out_height);
 	TIFFSetField (output, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
 	TIFFSetField (output, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
 	TIFFSetField (output, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
 	TIFFSetField (output, TIFFTAG_BITSPERSAMPLE, 8);
 	TIFFSetField (output, TIFFTAG_SAMPLESPERPIXEL, 3);
 	
-	if (TIFFWriteEncodedStrip (output, 0, data, _par->out_width * _par->out_height * 3) == 0) {
+	if (TIFFWriteEncodedStrip (output, 0, data, _opt->out_width * _opt->out_height * 3) == 0) {
 		throw runtime_error ("Failed to write to output TIFF file");
 	}
 
 	TIFFClose (output);
 
-	boost::filesystem::rename (tmp_file, _par->video_out_path (frame, false));
+	boost::filesystem::rename (tmp_file, _opt->frame_out_path (frame, false));
 }

@@ -23,13 +23,14 @@
 #include "film.h"
 #include "format.h"
 #include "transcoder.h"
-#include "parameters.h"
+#include "film_state.h"
 #include "log.h"
 
 using namespace std;
+using namespace boost;
 
-TranscodeJob::TranscodeJob (Parameters const * p, Options const * o, Log * l)
-	: Job (p, o, l)
+TranscodeJob::TranscodeJob (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
+	: Job (s, o, l)
 {
 }
 
@@ -37,7 +38,7 @@ string
 TranscodeJob::name () const
 {
 	stringstream s;
-	s << "Transcode " << _par->film_name;
+	s << "Transcode " << _fs->name;
 	return s.str ();
 }
 
@@ -47,10 +48,9 @@ TranscodeJob::run ()
 	try {
 
 		_log->log ("Transcode job starting");
-		_log->log (_par->summary ());
 
-		J2KWAVEncoder e (_par);
-		Transcoder w (_par, _opt, this, &e);
+		J2KWAVEncoder e (_fs, _opt);
+		Transcoder w (_fs, _opt, this, &e);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

@@ -17,17 +17,18 @@
 
 */
 
+#include <boost/shared_ptr.hpp>
 #include "job.h"
 
 class ABTranscodeJob : public Job
 {
 public:
-	ABTranscodeJob (Parameters const *, Options const *, Log *);
+	ABTranscodeJob (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Log *);
 	~ABTranscodeJob ();
 
 	std::string name () const;
 	void run ();
 
 private:
-	Parameters* _par_b;
+	boost::shared_ptr<FilmState> _fs_b;
 };

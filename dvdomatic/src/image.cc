@@ -31,12 +31,15 @@
 #include "image.h"
 #include "lut.h"
 #include "config.h"
-#include "parameters.h"
+#include "film_state.h"
+#include "options.h"
 
 using namespace std;
+using namespace boost;
 
-Image::Image (Parameters const * par, uint8_t* rgb, int f)
-	: _par (par)
+Image::Image (shared_ptr<const FilmState> fs, shared_ptr<const Options> o, uint8_t* rgb, int f)
+	: _fs (fs)
+	, _opt (o)
 	, _frame (f)
 {
 	/* Create libopenjpeg image container */
@@ -44,8 +47,8 @@ Image::Image (Parameters const * par, uint8_t* rgb, int f)
 	for (int i = 0; i < 3; ++i) {
 		_cmptparm[i].dx = 1;
 		_cmptparm[i].dy = 1;
-		_cmptparm[i].w = _par->out_width;
-		_cmptparm[i].h = _par->out_height;
+		_cmptparm[i].w = _opt->out_width;
+		_cmptparm[i].h = _opt->out_height;
 		_cmptparm[i].x0 = 0;
 		_cmptparm[i].y0 = 0;
 		_cmptparm[i].prec = 12;
@@ -60,10 +63,10 @@ Image::Image (Parameters const * par, uint8_t* rgb, int f)
 
 	_image->x0 = 0;
 	_image->y0 = 0;
-	_image->x1 = _par->out_width;
-	_image->y1 = _par->out_height;
+	_image->x1 = _opt->out_width;
+	_image->y1 = _opt->out_height;
 
-	int const size = _par->out_width * _par->out_height;
+	int const size = _opt->out_width * _opt->out_height;
 
 	struct {
 		float r, g, b;
@@ -112,7 +115,7 @@ Image::encode ()
 	int const bw = Config::instance()->j2k_bandwidth ();
 
 	/* Set the max image and component sizes based on frame_rate */
-	int const max_cs_len = ((float) bw) / 8 / _par->frames_per_second;
+	int const max_cs_len = ((float) bw) / 8 / _fs->frames_per_second;
 	int const max_comp_size = max_cs_len / 1.25;
 
 	/* Set encoding parameters to default values */
@@ -185,7 +188,7 @@ Image::encode ()
 
 	int const codestream_length = cio_tell (cio);
 
-	string const tmp_j2k = _par->video_out_path (_frame, true);
+	string const tmp_j2k = _opt->frame_out_path (_frame, true);
 
 	FILE* f = fopen (tmp_j2k.c_str (), "wb");
 	
@@ -201,7 +204,7 @@ Image::encode ()
 	fclose (f);
 
 	/* Rename the file from foo.j2c.tmp to foo.j2c now that it is complete */
-	boost::filesystem::rename (tmp_j2k, _par->video_out_path (_frame, false));
+	filesystem::rename (tmp_j2k, _opt->frame_out_path (_frame, false));
 
 	/* Free openjpeg structure */
 	opj_cio_close (cio);

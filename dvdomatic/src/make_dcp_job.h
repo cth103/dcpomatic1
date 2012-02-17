@@ -22,7 +22,7 @@
 class MakeDCPJob : public OpenDCPJob
 {
 public:
-	MakeDCPJob (Parameters const *, Options const *, Log *);
+	MakeDCPJob (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Log *);
 
 	std::string name () const;
 	void run ();

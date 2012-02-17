@@ -35,6 +35,7 @@
 #include "filter.h"
 
 using namespace std;
+using namespace boost;
 using namespace Gtk;
 
 FilmEditor::FilmEditor (Film* f)

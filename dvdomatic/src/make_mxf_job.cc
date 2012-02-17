@@ -20,12 +20,14 @@
 #include <iostream>
 #include "make_mxf_job.h"
 #include "film.h"
-#include "parameters.h"
+#include "film_state.h"
+#include "options.h"
 
 using namespace std;
+using namespace boost;
 
-MakeMXFJob::MakeMXFJob (Parameters const * p, Options const * o, Log* l, Type t)
-	: OpenDCPJob (p, o, l)
+MakeMXFJob::MakeMXFJob (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l, Type t)
+	: OpenDCPJob (s, o, l)
 	, _type (t)
 {
 
@@ -37,10 +39,10 @@ MakeMXFJob::name () const
 	stringstream s;
 	switch (_type) {
 	case VIDEO:
-		s << "Make video MXF for " << _par->film_name;
+		s << "Make video MXF for " << _fs->name;
 		break;
 	case AUDIO:
-		s << "Make audio MXF for " << _par->film_name;
+		s << "Make audio MXF for " << _fs->name;
 		break;
 	}
 	
@@ -50,7 +52,7 @@ MakeMXFJob::name () const
 void
 MakeMXFJob::run ()
 {
-	float fps = _par->frames_per_second;
+	float fps = _fs->frames_per_second;
 	
 	/* XXX: experimental hack; round FPS for audio MXFs */
 	if (_type == AUDIO) {
@@ -61,10 +63,10 @@ MakeMXFJob::run ()
 	c << "opendcp_mxf -r " << fps << " -i ";
 	switch (_type) {
 	case VIDEO:
-		c << _opt->video_out_path () << " -o " << _par->video_mxf_path;
+		c << _opt->frame_out_path () << " -o " << _fs->file ("video.mxf");
 		break;
 	case AUDIO:
-		c << _opt->audio_out_path () << " -o " << _par->audio_mxf_path;
+		c << _opt->multichannel_audio_out_path () << " -o " << _fs->file ("audio.mxf");
 		break;
 	}
 

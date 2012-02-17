@@ -29,6 +29,7 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 }
 #include "content_type.h"
+#include "film_state.h"
 
 class Format;
 class Job;
@@ -104,8 +105,6 @@ public:
 	
 	void set_name (std::string);
 	void set_content (std::string);
-	std::string dir (std::string) const;
-	std::string file (std::string) const;
 	void set_top_crop (int);
 	void set_bottom_crop (int);
 	void set_left_crop (int);
@@ -176,6 +175,8 @@ public:
 		AudioChannels,
 		AudioSampleRate
 	};
+
+	boost::shared_ptr<FilmState> state_copy () const;
 
 	/** @return Logger.
 	 *  It is safe to call this from any thread.

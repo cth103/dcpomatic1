@@ -25,13 +25,13 @@
 #include <sigc++/sigc++.h>
 
 class Log;
-class Parameters;
+class FilmState;
 class Options;
 
 class Job
 {
 public:
-	Job (Parameters const *, Options const *, Log *);
+	Job (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Log *);
 
 	virtual std::string name () const = 0;
 	virtual void run () = 0;
@@ -66,8 +66,8 @@ protected:
 	
 	void set_state (State);
 
-	Parameters const * _par;
-	Options const * _opt;
+	boost::shared_ptr<const FilmState> _fs;
+	boost::shared_ptr<const Options> _opt;
 	Log* _log;
 
 private:

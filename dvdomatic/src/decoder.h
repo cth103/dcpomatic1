@@ -20,6 +20,7 @@
 #include <vector>
 #include <string>
 #include <stdint.h>
+#include <boost/shared_ptr.hpp>
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libpostproc/postprocess.h>
@@ -33,13 +34,13 @@ struct AVFrame;
 struct AVBufferContext;
 struct AVCodec;
 class Job;
-class Parameters;
+class FilmState;
 class Options;
 
 class Decoder
 {
 public:
-	Decoder (Parameters const *, Options const *, Job *);
+	Decoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *);
 	~Decoder ();
 
 	/* Methods to query our input video */
@@ -75,8 +76,8 @@ private:
 	void setup_audio ();
 	void setup_post_process_filters ();
 
-	Parameters const * _par;
-	Options const * _opt;
+	boost::shared_ptr<const FilmState> _fs;
+	boost::shared_ptr<const Options> _opt;
 	Job* _job;
 	
 	AVFormatContext* _format_context;

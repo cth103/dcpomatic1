@@ -21,10 +21,12 @@
 #include "transcoder.h"
 #include "encoder.h"
 
-Transcoder::Transcoder (Parameters const * p, Options const * o, Job* j, Encoder* e)
+using namespace boost;
+
+Transcoder::Transcoder (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Job* j, Encoder* e)
 	: _job (j)
 	, _encoder (e)
-	, _decoder (p, o, j)
+	, _decoder (s, o, j)
 {
 	_decoder.Video.connect (sigc::mem_fun (*e, &Encoder::process_video));
 	_decoder.Audio.connect (sigc::mem_fun (*e, &Encoder::process_audio));

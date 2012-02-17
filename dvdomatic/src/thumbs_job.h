@@ -19,12 +19,12 @@
 
 #include "job.h"
 
-class Parameters;
+class FilmState;
 
 class ThumbsJob : public Job
 {
 public:
-	ThumbsJob (Parameters const *, Options const *, Log *);
+	ThumbsJob (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Log *);
 	std::string name () const;
 	void run ();
 };

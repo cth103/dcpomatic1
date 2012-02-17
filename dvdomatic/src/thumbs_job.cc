@@ -19,15 +19,16 @@
 
 #include "thumbs_job.h"
 #include "film.h"
-#include "parameters.h"
+#include "film_state.h"
 #include "tiff_encoder.h"
 #include "transcoder.h"
 #include "options.h"
 
 using namespace std;
+using namespace boost;
 
-ThumbsJob::ThumbsJob (Parameters const * p, Options const * o, Log* l)
-	: Job (p, o, l)
+ThumbsJob::ThumbsJob (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
+	: Job (s, o, l)
 {
 	
 }
@@ -36,16 +37,23 @@ string
 ThumbsJob::name () const
 {
 	stringstream s;
-	s << "Update thumbs for " << _par->film_name;
+	s << "Update thumbs for " << _fs->name;
 	return s.str ();
 }
 
 void
 ThumbsJob::run ()
 {
-	TIFFEncoder e (_par);
-	Transcoder w (_par, this, &e);
-	w.go ();
-	set_progress (1);
-	set_state (FINISHED_OK);
+	try {
+		TIFFEncoder e (_fs, _opt);
+		Transcoder w (_fs, _opt, this, &e);
+		w.go ();
+		set_progress (1);
+		set_state (FINISHED_OK);
+
+	} catch (runtime_error& e) {
+
+		set_progress (1);
+		set_state (FINISHED_ERROR);
+	}
 }

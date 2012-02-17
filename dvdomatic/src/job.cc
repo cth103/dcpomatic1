@@ -21,9 +21,10 @@
 #include "job.h"
 
 using namespace std;
+using namespace boost;
 
-Job::Job (Parameters const * p, Options const * o, Log* l)
-	: _par (p)
+Job::Job (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
+	: _fs (s)
 	, _opt (o)
 	, _log (l)
 	, _state (NEW)

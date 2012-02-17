@@ -38,10 +38,12 @@
 #include "transcode_job.h"
 #include "make_mxf_job.h"
 #include "make_dcp_job.h"
-#include "parameters.h"
+#include "film_state.h"
 #include "log.h"
+#include "options.h"
 
 using namespace std;
+using namespace boost;
 
 /** Construct a Film object in a given directory, reading any metadata
  *  file that exists in that directory.  An exception will be thrown if
@@ -58,11 +60,11 @@ Film::Film (string d, bool must_exist)
 	   (Code swiped from Adam Bowen on stackoverflow)
 	*/
 	
-	boost::filesystem::path p (boost::filesystem::system_complete (d));
-	boost::filesystem::path result;
-	for(boost::filesystem::path::iterator i = p.begin(); i != p.end(); ++i) {
+	filesystem::path p (filesystem::system_complete (d));
+	filesystem::path result;
+	for(filesystem::path::iterator i = p.begin(); i != p.end(); ++i) {
 		if (*i == "..") {
-			if (boost::filesystem::is_symlink (result) || result.filename() == "..") {
+			if (filesystem::is_symlink (result) || result.filename() == "..") {
 				result /= *i;
 			} else {
 				result = result.parent_path ();
@@ -74,13 +76,13 @@ Film::Film (string d, bool must_exist)
 
 	_state.directory = result.string ();
 	
-	if (must_exist && !boost::filesystem::exists (_state.directory)) {
+	if (must_exist && !filesystem::exists (_state.directory)) {
 		throw runtime_error ("film not found");
 	}
 
 	read_metadata ();
 
-	_log = new Log (file ("log"));
+	_log = new Log (_state.file ("log"));
 }
 
 /** Copy constructor */
@@ -124,52 +126,52 @@ Film::read_metadata ()
 
 		/* User-specified stuff */
 		if (k == "name") {
-			_name = v;
+			_state.name = v;
 		} else if (k == "content") {
-			_content = v;
+			_state.content = v;
 		} else if (k == "dcp_long_name") {
-			_dcp_long_name = v;
+			_state.dcp_long_name = v;
 		} else if (k == "dcp_content_type") {
-			_dcp_content_type = ContentType::get_from_pretty_name (v);
+			_state.dcp_content_type = ContentType::get_from_pretty_name (v);
 		} else if (k == "format") {
-			_format = Format::get_from_metadata (v);
+			_state.format = Format::get_from_metadata (v);
 		} else if (k == "left_crop") {
-			_left_crop = atoi (v.c_str ());
+			_state.left_crop = atoi (v.c_str ());
 		} else if (k == "right_crop") {
-			_right_crop = atoi (v.c_str ());
+			_state.right_crop = atoi (v.c_str ());
 		} else if (k == "top_crop") {
-			_top_crop = atoi (v.c_str ());
+			_state.top_crop = atoi (v.c_str ());
 		} else if (k == "bottom_crop") {
-			_bottom_crop = atoi (v.c_str ());
+			_state.bottom_crop = atoi (v.c_str ());
 		} else if (k == "filter") {
-			_filters.push_back (Filter::get_from_id (v));
+			_state.filters.push_back (Filter::get_from_id (v));
 		} else if (k == "dcp_frames") {
-			_dcp_frames = atoi (v.c_str ());
+			_state.dcp_frames = atoi (v.c_str ());
 		} else if (k == "dcp_ab") {
-			_dcp_ab = (v == "1");
+			_state.dcp_ab = (v == "1");
 		}
 
 		/* Cached stuff */
 		if (k == "thumb") {
 			int const n = atoi (v.c_str ());
 			/* Only add it to the list if it still exists */
-			if (boost::filesystem::exists (thumb_file_for_frame (n))) {
-				_thumbs.push_back (n);
+			if (filesystem::exists (thumb_file_for_frame (n))) {
+				_state.thumbs.push_back (n);
 			}
 		} else if (k == "width") {
-			_width = atoi (v.c_str ());
+			_state.width = atoi (v.c_str ());
 		} else if (k == "height") {
-			_height = atoi (v.c_str ());
+			_state.height = atoi (v.c_str ());
 		} else if (k == "length") {
-			_length = atof (v.c_str ());
+			_state.length = atof (v.c_str ());
 		} else if (k == "frames_per_second") {
-			_frames_per_second = atof (v.c_str ());
+			_state.frames_per_second = atof (v.c_str ());
 		} else if (k == "audio_channels") {
-			_audio_channels = atoi (v.c_str ());
+			_state.audio_channels = atoi (v.c_str ());
 		} else if (k == "audio_sample_rate") {
-			_audio_sample_rate = atoi (v.c_str ());
+			_state.audio_sample_rate = atoi (v.c_str ());
 		} else if (k == "audio_sample_format") {
-			_audio_sample_format = audio_sample_format_from_string (v);
+			_state.audio_sample_format = audio_sample_format_from_string (v);
 		}
 	}
 
@@ -180,7 +182,7 @@ Film::read_metadata ()
 void
 Film::write_metadata () const
 {
-	boost::filesystem::create_directories (_directory);
+	filesystem::create_directories (_state.directory);
 	
 	ofstream f (metadata_file().c_str ());
 	if (!f.good ()) {
@@ -191,10 +193,10 @@ Film::write_metadata () const
 	f << "name " << _state.name << "\n";
 	f << "content " << _state.content << "\n";
 	f << "dcp_long_name " << _state.dcp_long_name << "\n";
-	if (_dcp_content_type) {
+	if (_state.dcp_content_type) {
 		f << "dcp_content_type " << _state.dcp_content_type->pretty_name () << "\n";
 	}
-	if (_format) {
+	if (_state.format) {
 		f << "format " << _state.format->get_as_metadata () << "\n";
 	}
 	f << "left_crop " << _state.left_crop << "\n";
@@ -205,7 +207,7 @@ Film::write_metadata () const
 		f << "filter " << (*i)->id () << "\n";
 	}
 	f << "dcp_frames " << _state.dcp_frames << "\n";
-	f << "dcp_ab " << (_dcp_ab ? "1" : "0") << "\n";
+	f << "dcp_ab " << (_state.dcp_ab ? "1" : "0") << "\n";
 
 	/* Cached stuff; this is information about our content; we could
 	   look it up each time, but that's slow.
@@ -240,8 +242,10 @@ Film::set_name (string n)
 void
 Film::set_content (string c)
 {
-	bool const absolute = boost::filesystem::path(c).has_root_directory ();
-	if (absolute && !boost::starts_with (c, _state.directory)) {
+	cout << "SC " << c << "\n";
+	
+	bool const absolute = filesystem::path(c).has_root_directory ();
+	if (absolute && !starts_with (c, _state.directory)) {
 		throw runtime_error ("content is outside the film's directory");
 	}
 
@@ -253,17 +257,19 @@ Film::set_content (string c)
 	if (f == _state.content) {
 		return;
 	}
+
+	_state.content = f;
 	
 	/* Create a temporary decoder so that we can get information
 	   about the content.
 	*/
-	Options o ("", "", "");
-	o.out_width = 1024;
-	o.out_height = 1024;
+	shared_ptr<FilmState> s = state_copy ();
+	s->content = f;
+	shared_ptr<Options> o (new Options ("", "", ""));
+	o->out_width = 1024;
+	o->out_height = 1024;
 
-	Parameters p (this);
-
-	Decoder d (&p, &o, 0);
+	Decoder d (s, o, 0);
 	
 	_state.width = d.native_width ();
 	_state.height = d.native_height ();
@@ -272,14 +278,14 @@ Film::set_content (string c)
 	_state.audio_channels = d.audio_channels ();
 	_state.audio_sample_rate = d.audio_sample_rate ();
 	_state.audio_sample_format = d.audio_sample_format ();
+
+	_state.content = f;
 	
 	signal_changed (Size);
 	signal_changed (Length);
 	signal_changed (FramesPerSecond);
 	signal_changed (AudioChannels);
 	signal_changed (AudioSampleRate);
-
-	_state.content = f;
 	signal_changed (Content);
 }
 
@@ -392,32 +398,11 @@ Film::set_dcp_ab (bool a)
 	signal_changed (DCPAB);
 }
 
-/** Given a file name, return its full path within the Film's directory */
-string
-Film::file (string f) const
-{
-	stringstream s;
-	s << _state.directory << "/" << f;
-	return s.str ();
-}
-
-/** Given a directory name, return its full path within the Film's directory.
- *  The directory (and its parents) will be created if they do not exist.
- */
-string
-Film::dir (string d) const
-{
-	stringstream s;
-	s << _state.directory << "/" << d;
-	boost::filesystem::create_directories (s.str ());
-	return s.str ();
-}
-
 /** @return path of metadata file */
 string
 Film::metadata_file () const
 {
-	return file ("metadata");
+	return _state.file ("metadata");
 }
 
 /** @return full path of the content (actual video) file
@@ -426,7 +411,7 @@ Film::metadata_file () const
 string
 Film::content () const
 {
-	return file (_state.content);
+	return _state.file (_state.content);
 }
 
 /** The pre-processing GUI part of a thumbs update.
@@ -436,10 +421,10 @@ void
 Film::update_thumbs_pre_gui ()
 {
 	_state.thumbs.clear ();
-	boost::filesystem::remove_all (dir ("thumbs"));
+	filesystem::remove_all (_state.dir ("thumbs"));
 
 	/* This call will recreate the directory */
-	dir ("thumbs");
+	_state.dir ("thumbs");
 }
 
 /** The post-processing GUI part of a thumbs update.
@@ -448,13 +433,13 @@ Film::update_thumbs_pre_gui ()
 void
 Film::update_thumbs_post_gui ()
 {
-	string const tdir = dir ("thumbs");
+	string const tdir = _state.dir ("thumbs");
 	
-	for (boost::filesystem::directory_iterator i = boost::filesystem::directory_iterator (tdir); i != boost::filesystem::directory_iterator(); ++i) {
+	for (filesystem::directory_iterator i = filesystem::directory_iterator (tdir); i != filesystem::directory_iterator(); ++i) {
 
 		/* Aah, the sweet smell of progress */
 #if BOOST_FILESYSTEM_VERSION == 3		
-		string const l = boost::filesystem::path(*i).leaf().generic_string();
+		string const l = filesystem::path(*i).leaf().generic_string();
 #else
 		string const l = i->leaf ();
 #endif
@@ -505,7 +490,7 @@ string
 Film::thumb_file_for_frame (int n) const
 {
 	stringstream s;
-	s << dir("thumbs") << "/";
+	s << _state.dir ("thumbs") << "/";
 	s.width (8);
 	s << setfill('0') << n << ".tiff";
 	return s.str ();
@@ -538,7 +523,7 @@ Film::j2k_dir () const
 		s << "/ab";
 	}
 	
-	return dir (s.str ());
+	return _state.dir (s.str ());
 }
 
 /** Handle a change to the Film's metadata */
@@ -572,19 +557,25 @@ Film::make_dcp ()
 		throw runtime_error ("content type must be specified to make a DCP");
 	}
 
-	Parameters* p = new Parameters (this);
-	Options* o = new Options (j2k_dir(), ".j2c", dir ("wavs"));
+	shared_ptr<const FilmState> fs = state_copy ();
+	shared_ptr<Options> o (new Options (j2k_dir(), ".j2c", _state.dir ("wavs")));
 	o->out_width = format()->dci_width ();
 	o->out_height = format()->dci_height ();
 	o->num_frames = dcp_frames ();
 	
 	if (_state.dcp_ab) {
-		JobManager::instance()->add (new ABTranscodeJob (p, o, log ()));
+		JobManager::instance()->add (new ABTranscodeJob (fs, o, log ()));
 	} else {
-		JobManager::instance()->add (new TranscodeJob (p, o, log ()));
+		JobManager::instance()->add (new TranscodeJob (fs, o, log ()));
 	}
 	
-	JobManager::instance()->add (new MakeMXFJob (p, o, log (), MakeMXFJob::VIDEO));
-	JobManager::instance()->add (new MakeMXFJob (p, o, log (), MakeMXFJob::AUDIO));
-	JobManager::instance()->add (new MakeDCPJob (p, o, log ()));
+	JobManager::instance()->add (new MakeMXFJob (fs, o, log (), MakeMXFJob::VIDEO));
+	JobManager::instance()->add (new MakeMXFJob (fs, o, log (), MakeMXFJob::AUDIO));
+	JobManager::instance()->add (new MakeDCPJob (fs, o, log ()));
+}
+
+shared_ptr<FilmState>
+Film::state_copy () const
+{
+	return shared_ptr<FilmState> (new FilmState (_state));
 }

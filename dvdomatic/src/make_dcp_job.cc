@@ -19,12 +19,14 @@
 
 #include <boost/filesystem.hpp>
 #include "make_dcp_job.h"
-#include "parameters.h"
+#include "film_state.h"
+#include "content_type.h"
 
 using namespace std;
+using namespace boost;
 
-MakeDCPJob::MakeDCPJob (Parameters const * p, Options const * o, Log* l)
-	: OpenDCPJob (p, o, l)
+MakeDCPJob::MakeDCPJob (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
+	: OpenDCPJob (s, o, l)
 {
 	
 }
@@ -33,26 +35,27 @@ string
 MakeDCPJob::name () const
 {
 	stringstream s;
-	s << "Make DCP for " << _par->film_name;
+	s << "Make DCP for " << _fs->name;
 	return s.str ();
 }
 
 void
 MakeDCPJob::run ()
 {
-	boost::filesystem::remove_all (_par->dcp_path);
+	string const dcp_path = _fs->dir (_fs->dcp_long_name);
+	boost::filesystem::remove_all (dcp_path);
 	
 	stringstream c;
-	c << "cd " << _par->dcp_path << " &&"
-	  << " opendcp_xml -d -a " << _par->dcp_long_name
-	  << " -t \"" << _par->film_name << "\""
-	  << " -k " << _par->dcp_content_type_name
-	  << " --reel " << _par->video_mxf_path << " " << _par->audio_mxf_path;
+	c << "cd " << dcp_path
+	  << " opendcp_xml -d -a " << _fs->dcp_long_name
+	  << " -t \"" << _fs->name << "\""
+	  << " -k " << _fs->dcp_content_type->opendcp_name()
+	  << " --reel " << _fs->file ("video.mxf") << " " << _fs->file ("audio.mxf");
 
 	command (c.str ());
 
-	boost::filesystem::rename (boost::filesystem::path (_par->video_mxf_path), boost::filesystem::path (_par->dcp_path + "/video.mxf"));
-	boost::filesystem::rename (boost::filesystem::path (_par->audio_mxf_path), boost::filesystem::path (_par->dcp_path + "/audio.mxf"));
+	boost::filesystem::rename (boost::filesystem::path (_fs->file ("video.mxf")), boost::filesystem::path (dcp_path + "/video.mxf"));
+	boost::filesystem::rename (boost::filesystem::path (_fs->file ("audio.mxf")), boost::filesystem::path (dcp_path + "/audio.mxf"));
 
 	set_progress (1);
 }

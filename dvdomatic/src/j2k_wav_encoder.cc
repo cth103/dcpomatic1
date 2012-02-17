@@ -27,13 +27,15 @@
 #include <openjpeg.h>
 #include "j2k_wav_encoder.h"
 #include "config.h"
-#include "parameters.h"
+#include "film_state.h"
+#include "options.h"
 #include "image.h"
 
 using namespace std;
+using namespace boost;
 
-J2KWAVEncoder::J2KWAVEncoder (Parameters const * p)
-	: Encoder (p)
+J2KWAVEncoder::J2KWAVEncoder (shared_ptr<const FilmState> s, shared_ptr<const Options> o)
+	: Encoder (s, o)
 	, _deinterleave_buffer_size (8192)
 	, _deinterleave_buffer (0)
 	, _process_end (false)
@@ -42,13 +44,13 @@ J2KWAVEncoder::J2KWAVEncoder (Parameters const * p)
 	/* Create sound output files with .tmp suffixes; we will rename
 	   them if and when we complete.
 	*/
-	for (int i = 0; i < _par->audio_channels; ++i) {
+	for (int i = 0; i < _fs->audio_channels; ++i) {
 		SF_INFO sf_info;
-		sf_info.samplerate = _par->audio_sample_rate;
+		sf_info.samplerate = _fs->audio_sample_rate;
 		/* We write mono files */
 		sf_info.channels = 1;
 		sf_info.format = SF_FORMAT_WAV | SF_FORMAT_PCM_24;
-		SNDFILE* f = sf_open (_par->audio_out_path (i, true).c_str (), SFM_WRITE, &sf_info);
+		SNDFILE* f = sf_open (_opt->multichannel_audio_out_path (i, true).c_str (), SFM_WRITE, &sf_info);
 		if (f == 0) {
 			throw runtime_error ("Could not create audio output file");
 		}
@@ -83,8 +85,8 @@ J2KWAVEncoder::process_video (uint8_t* rgb, int line_size, int frame)
 	}
 
 	/* Only do the processing if we don't already have a file for this frame */
-	if (!boost::filesystem::exists (_par->video_out_path (frame, false))) {
-		_queue.push_back (boost::shared_ptr<Image> (new Image (_par, rgb, frame)));
+	if (!boost::filesystem::exists (_opt->frame_out_path (frame, false))) {
+		_queue.push_back (boost::shared_ptr<Image> (new Image (_fs, _opt, rgb, frame)));
 		_worker_condition.notify_all ();
 	}
 }
@@ -136,11 +138,11 @@ J2KWAVEncoder::process_end ()
 	}
 
 	/* Rename .wav.tmp files to .wav */
-	for (int i = 0; i < _par->audio_channels; ++i) {
-		if (boost::filesystem::exists (_par->audio_out_path (i, false))) {
-			boost::filesystem::remove (_par->audio_out_path (i, false));
+	for (int i = 0; i < _fs->audio_channels; ++i) {
+		if (boost::filesystem::exists (_opt->multichannel_audio_out_path (i, false))) {
+			boost::filesystem::remove (_opt->multichannel_audio_out_path (i, false));
 		}
-		boost::filesystem::rename (_par->audio_out_path (i, true), _par->audio_out_path (i, false));
+		boost::filesystem::rename (_opt->multichannel_audio_out_path (i, true), _opt->multichannel_audio_out_path (i, false));
 	}
 }
 
@@ -172,7 +174,7 @@ J2KWAVEncoder::process_audio (uint8_t* data, int channels, int data_size)
 				}
 			}
 			
-			switch (_par->audio_sample_format) {
+			switch (_fs->audio_sample_format) {
 			case AV_SAMPLE_FMT_S16:
 				sf_write_short (_sound_files[i], (const short *) _deinterleave_buffer, this_time / sample_size);
 				break;

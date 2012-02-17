@@ -24,25 +24,27 @@
 #include "decoder.h"
 #include "encoder.h"
 #include "job.h"
-#include "parameters.h"
+#include "film_state.h"
+#include "options.h"
 
 using namespace std;
 
-ABTranscoder::ABTranscoder (Parameters const * a, Parameters const * b, Options const * o, Job* j, Encoder* e)
-	: _par_a (a)
-	, _par_b (b)
+ABTranscoder::ABTranscoder (boost::shared_ptr<const FilmState> a, boost::shared_ptr<const FilmState> b, boost::shared_ptr<const Options> o, Job* j, Encoder* e)
+	: _fs_a (a)
+	, _fs_b (b)
+	, _opt (o)
 	, _job (j)
 	, _encoder (e)
 	, _last_frame (0)
 {
-	_da = new Decoder (j, o, _par_a);
-	_db = new Decoder (j, o, _par_b);
+	_da = new Decoder (_fs_a, o, j);
+	_db = new Decoder (_fs_b, o, j);
 
 	_da->Video.connect (sigc::bind (sigc::mem_fun (*this, &ABTranscoder::process_video), 0));
 	_db->Video.connect (sigc::bind (sigc::mem_fun (*this, &ABTranscoder::process_video), 1));
 	_da->Audio.connect (sigc::mem_fun (*e, &Encoder::process_audio));
 
-	_rgb = new uint8_t[a->out_width * a->out_height * 3];
+	_rgb = new uint8_t[o->out_width * o->out_height * 3];
 }
 
 ABTranscoder::~ABTranscoder ()
@@ -56,7 +58,7 @@ ABTranscoder::process_video (uint8_t* rgb, int line_size, int frame, int index)
 	int const half_line_size = line_size / 2;
 
 	uint8_t* p = _rgb;
-	for (int y = 0; y < _par_a->out_height; ++y) {
+	for (int y = 0; y < _opt->out_height; ++y) {
 		if (index == 0) {
 			memcpy (p, rgb, half_line_size);
 		} else {

@@ -20,18 +20,20 @@
 
 #include <openjpeg.h>
 
-class Parameters;
+class FilmState;
+class Options;
 
 class Image
 {
 public:
-	Image (Parameters const *, uint8_t *, int);
+	Image (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, uint8_t *, int);
 	~Image ();
 	
 	void encode ();
 	
 private:
-	Parameters const * _par;
+	boost::shared_ptr<const FilmState> _fs;
+	boost::shared_ptr<const Options> _opt;
 	int _frame;
 	opj_image_cmptparm_t _cmptparm[3];
 	opj_image* _image;

@@ -19,7 +19,7 @@
 
 #include "opendcp_job.h"
 
-class Parameters;
+class FilmState;
 class Options;
 
 class MakeMXFJob : public OpenDCPJob
@@ -30,7 +30,7 @@ public:
 		VIDEO
 	};
 	
-	MakeMXFJob (Parameters const *, Options const *, Log *, Type);
+	MakeMXFJob (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Log *, Type);
 
 	std::string name () const;
 	void run ();

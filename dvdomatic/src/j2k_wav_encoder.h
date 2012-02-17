@@ -29,7 +29,7 @@ class Image;
 class J2KWAVEncoder : public Encoder
 {
 public:
-	J2KWAVEncoder (Parameters const *);
+	J2KWAVEncoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>);
 	~J2KWAVEncoder ();
 
 	void process_begin ();

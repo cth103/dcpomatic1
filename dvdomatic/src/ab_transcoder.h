@@ -17,18 +17,19 @@
 
 */
 
+#include <boost/shared_ptr.hpp>
 #include <stdint.h>
 
 class Job;
 class Encoder;
 class Decoder;
-class Parameters;
+class FilmState;
 class Options;
 
 class ABTranscoder
 {
 public:
-	ABTranscoder (Parameters const *, Parameters const *, Options const *, Job *, Encoder *);
+	ABTranscoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *, Encoder *);
 	~ABTranscoder ();
 
 	void go ();
@@ -36,8 +37,9 @@ public:
 private:
 	void process_video (uint8_t *, int, int, int);
 	
-	Parameters const * _par_a;
-	Parameters const * _par_b;
+	boost::shared_ptr<const FilmState> _fs_a;
+	boost::shared_ptr<const FilmState> _fs_b;
+	boost::shared_ptr<const Options> _opt;
 	Job* _job;
 	Encoder* _encoder;
 	Decoder* _da;

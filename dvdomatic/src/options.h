@@ -18,13 +18,14 @@
 */
 
 #include <string>
+#include <iomanip>
 
 /** Options for a transcoding operation */
 class Options
 {
 public:
 
-	Options (std::string v, std::string e, std::string a)
+	Options (std::string f, std::string e, std::string m)
 		: out_width (0)
 		, out_height (0)
 		, apply_crop (true)
@@ -32,20 +33,20 @@ public:
 		, decode_video (true)
 		, decode_video_frequency (0)
 		, decode_audio (true)
-		, _video_out_path (v)
-		, _video_out_extension (e)
-		, _audio_out_path (a)
+		, _frame_out_path (f)
+		, _frame_out_extension (e)
+		, _multichannel_audio_out_path (m)
 	{}
 
-	std::string video_out_path () const {
-		return _video_out_path;
+	std::string frame_out_path () const {
+		return _frame_out_path;
 	}
 
-	std::string video_out_path (int f, bool t) const {
+	std::string frame_out_path (int f, bool t) const {
 		std::stringstream s;
-		s << _video_out_path << "/";
+		s << _frame_out_path << "/";
 		s.width (8);
-		s << std::setfill('0') << f << _video_out_extension;
+		s << std::setfill('0') << f << _frame_out_extension;
 
 		if (t) {
 			s << ".tmp";
@@ -54,13 +55,13 @@ public:
 		return s.str ();
 	}
 
-	std::string audio_out_path () const {
-		return _audio_out_path;
+	std::string multichannel_audio_out_path () const {
+		return _multichannel_audio_out_path;
 	}
 
-	std::string audio_out_path (int c, bool t) const {
+	std::string multichannel_audio_out_path (int c, bool t) const {
 		std::stringstream s;
-		s << _audio_out_path << "/" << (c + 1) << ".wav";
+		s << _multichannel_audio_out_path << "/" << (c + 1) << ".wav";
 		if (t) {
 			s << ".tmp";
 		}
@@ -77,7 +78,7 @@ public:
 	bool decode_audio;          ///< true to decode audio, otherwise false
 
 private:
-	std::string _video_out_path;
-	std::string _video_out_extension;
-	std::string _audio_out_path;
+	std::string _frame_out_path;
+	std::string _frame_out_extension;
+	std::string _multichannel_audio_out_path;
 };

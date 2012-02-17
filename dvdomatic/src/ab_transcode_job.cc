@@ -23,27 +23,27 @@
 #include "film.h"
 #include "format.h"
 #include "ab_transcoder.h"
-#include "parameters.h"
+#include "film_state.h"
 
 using namespace std;
 
-ABTranscodeJob::ABTranscodeJob (Parameters const * p, Options const *o, Log* l)
-	: Job (p, o, l)
+ABTranscodeJob::ABTranscodeJob (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log* l)
+	: Job (s, o, l)
 {
-	_par_b = new Parameters (*_par);
-	_par_b->filters.clear ();
+	_fs_b.reset (new FilmState (*_fs));
+	_fs_b->filters.clear ();
 }
 
 ABTranscodeJob::~ABTranscodeJob ()
 {
-	delete _par_b;
+	
 }
 
 string
 ABTranscodeJob::name () const
 {
 	stringstream s;
-	s << "A/B transcode " << _par->film_name;
+	s << "A/B transcode " << _fs->name;
 	return s.str ();
 }
 
@@ -52,9 +52,9 @@ ABTranscodeJob::run ()
 {
 	try {
 
-		J2KWAVEncoder e (_par);
-		/* _par_b is the one with no filters */
-		ABTranscoder w (_par_b, _par, _opt, this, &e);
+		J2KWAVEncoder e (_fs, _opt);
+		/* _fs_b is the one with no filters */
+		ABTranscoder w (_fs_b, _fs, _opt, this, &e);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

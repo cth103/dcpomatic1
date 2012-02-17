@@ -21,12 +21,12 @@
 #include <sndfile.h>
 #include "encoder.h"
 
-class Parameters;
+class FilmState;
 
 class TIFFEncoder : public Encoder
 {
 public:
-	TIFFEncoder (Parameters const *);
+	TIFFEncoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>);
 	~TIFFEncoder ();
 
 	void process_begin () {}

@@ -22,13 +22,13 @@
 
 #include "job.h"
 
-class Parameters;
+class FilmState;
 class Log;
 
 class OpenDCPJob : public Job
 {
 public:
-	OpenDCPJob (Parameters const *, Log *);
+	OpenDCPJob (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Log *);
 
 protected:
 	void command (std::string);

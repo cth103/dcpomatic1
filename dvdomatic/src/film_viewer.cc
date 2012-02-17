@@ -25,9 +25,11 @@
 #include "util.h"
 #include "thumbs_job.h"
 #include "job_manager.h"
-#include "parameters.h"
+#include "film_state.h"
+#include "options.h"
 
 using namespace std;
+using namespace boost;
 
 FilmViewer::FilmViewer (Film* f)
 	: _film (f)
@@ -174,15 +176,15 @@ FilmViewer::update_button_clicked ()
 
 	_film->update_thumbs_pre_gui ();
 
-	Parameters* p = new Parameters (_film);
-	Options* o = new Options (_film->dir ("thumbs"), ".tiff", "");
+	shared_ptr<const FilmState> s = _film->state_copy ();
+	shared_ptr<Options> o (new Options (s->dir ("thumbs"), ".tiff", ""));
 	o->out_width = _film->width ();
 	o->out_height = _film->height ();
 	o->apply_crop = false;
 	o->decode_audio = false;
 	o->decode_video_frequency = 128;
 	
-	ThumbsJob* j = new ThumbsJob (p, o, _film->log ());
+	ThumbsJob* j = new ThumbsJob (s, o, _film->log ());
 	j->Finished.connect (sigc::mem_fun (_film, &Film::update_thumbs_post_gui));
 	JobManager::instance()->add (j);
 }
