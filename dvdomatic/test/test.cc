@@ -18,6 +18,7 @@
 */
 
 #include <fstream>
+#include <iostream>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include "format.h"
@@ -192,11 +193,15 @@ BOOST_AUTO_TEST_CASE (make_dcp_test)
 	string test_cpl;
 
 	for (filesystem::directory_iterator i = filesystem::directory_iterator (test_dcp); i != filesystem::directory_iterator(); ++i) {
+#if BOOST_FILESYSTEM_VERSION == 3		
 		string const t = filesystem::path(*i).generic_string ();
+#else
+		string const t = i->string ();
+#endif
 		if (algorithm::ends_with (t, "cpl.xml")) {
 			test_cpl = t;
 		} else if (algorithm::ends_with (t, "pkl.xml")) {
-			test_pkl = filesystem::path(*i).generic_string ();
+			test_pkl = t;
 		}
 	}
 
