@@ -59,7 +59,7 @@ int main (int argc, char* argv[])
 	Film* film = 0;
 	try {
 		film = new Film (film_dir, true);
-	} catch (runtime_error& e) {
+	} catch (exception& e) {
 		cerr << argv[0] << ": error reading film `" << film_dir << "' (" << e.what() << ")\n";
 		exit (EXIT_FAILURE);
 	}

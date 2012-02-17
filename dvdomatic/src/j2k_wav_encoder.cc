@@ -30,6 +30,7 @@
 #include "film_state.h"
 #include "options.h"
 #include "image.h"
+#include "exceptions.h"
 
 using namespace std;
 using namespace boost;
@@ -52,7 +53,7 @@ J2KWAVEncoder::J2KWAVEncoder (shared_ptr<const FilmState> s, shared_ptr<const Op
 		sf_info.format = SF_FORMAT_WAV | SF_FORMAT_PCM_24;
 		SNDFILE* f = sf_open (_opt->multichannel_audio_out_path (i, true).c_str (), SFM_WRITE, &sf_info);
 		if (f == 0) {
-			throw runtime_error ("Could not create audio output file");
+			throw CreateFileError (_opt->multichannel_audio_out_path (i, true));
 		}
 		_sound_files.push_back (f);
 	}
@@ -179,7 +180,7 @@ J2KWAVEncoder::process_audio (uint8_t* data, int channels, int data_size)
 				sf_write_short (_sound_files[i], (const short *) _deinterleave_buffer, this_time / sample_size);
 				break;
 			default:
-				throw runtime_error ("Unknown audio sample format");
+				throw DecodeError ("Unknown audio sample format");
 			}
 		}
 		

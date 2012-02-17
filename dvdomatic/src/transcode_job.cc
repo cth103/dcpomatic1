@@ -57,7 +57,7 @@ TranscodeJob::run ()
 
 		_log->log ("Transcode job completed successfully");
 
-	} catch (runtime_error& e) {
+	} catch (std::exception& e) {
 
 		stringstream s;
 		s << "Transcode job failed (" << e.what() << ")";

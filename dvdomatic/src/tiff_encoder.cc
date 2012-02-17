@@ -30,6 +30,7 @@
 #include "decoder.h"
 #include "film_state.h"
 #include "options.h"
+#include "exceptions.h"
 
 using namespace std;
 using namespace boost;
@@ -51,9 +52,7 @@ TIFFEncoder::process_video (uint8_t* data, int line_size, int frame)
 	string tmp_file = _opt->frame_out_path (frame, true);
 	TIFF* output = TIFFOpen (tmp_file.c_str (), "w");
 	if (output == 0) {
-		stringstream e;
-		e << "Could not create output TIFF file " << tmp_file;
-		throw runtime_error (e.str().c_str());
+		throw CreateFileError (tmp_file);
 	}
 						
 	TIFFSetField (output, TIFFTAG_IMAGEWIDTH, _opt->out_width);
@@ -65,7 +64,7 @@ TIFFEncoder::process_video (uint8_t* data, int line_size, int frame)
 	TIFFSetField (output, TIFFTAG_SAMPLESPERPIXEL, 3);
 	
 	if (TIFFWriteEncodedStrip (output, 0, data, _opt->out_width * _opt->out_height * 3) == 0) {
-		throw runtime_error ("Failed to write to output TIFF file");
+		throw WriteFileError (tmp_file);
 	}
 
 	TIFFClose (output);

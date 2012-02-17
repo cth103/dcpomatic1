@@ -17,12 +17,14 @@
 
 */
 
+#include <exception>
 #include "thumbs_job.h"
 #include "film.h"
 #include "film_state.h"
 #include "tiff_encoder.h"
 #include "transcoder.h"
 #include "options.h"
+#include "exceptions.h"
 
 using namespace std;
 using namespace boost;
@@ -51,7 +53,7 @@ ThumbsJob::run ()
 		set_progress (1);
 		set_state (FINISHED_OK);
 
-	} catch (runtime_error& e) {
+	} catch (std::exception& e) {
 
 		set_progress (1);
 		set_state (FINISHED_ERROR);

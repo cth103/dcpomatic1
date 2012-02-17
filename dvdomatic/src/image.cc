@@ -33,6 +33,7 @@
 #include "config.h"
 #include "film_state.h"
 #include "options.h"
+#include "exceptions.h"
 
 using namespace std;
 using namespace boost;
@@ -58,7 +59,7 @@ Image::Image (shared_ptr<const FilmState> fs, shared_ptr<const Options> o, uint8
 
 	_image = opj_image_create (3, &_cmptparm[0], CLRSPC_SRGB);
 	if (_image == 0) {
-		throw runtime_error ("Could not create libopenjpeg image");
+		throw EncodeError ("could not create libopenjpeg image");
 	}
 
 	_image->x0 = 0;
@@ -183,7 +184,7 @@ Image::encode ()
 	if (r == 0) {
 		opj_cio_close (cio);
 		opj_destroy_compress (cinfo);
-		throw runtime_error ("jpeg2000 encoding failed");
+		throw EncodeError ("jpeg2000 encoding failed");
 	}
 
 	int const codestream_length = cio_tell (cio);
@@ -193,11 +194,9 @@ Image::encode ()
 	FILE* f = fopen (tmp_j2k.c_str (), "wb");
 	
 	if (!f) {
-		stringstream s;
-		s << "Unable to create jpeg2000 file `" << tmp_j2k << "' for writing";
-		throw runtime_error (s.str ());
 		opj_cio_close(cio);
 		opj_destroy_compress(cinfo);
+		throw WriteFileError (tmp_j2k);
 	}
 
 	fwrite (cio->buffer, 1, codestream_length, f);

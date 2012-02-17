@@ -25,6 +25,7 @@
 #include "filter.h"
 #include "job_manager.h"
 #include "util.h"
+#include "exceptions.h"
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE dvdomatic_test
 #include <boost/test/unit_test.hpp>
@@ -44,7 +45,7 @@ BOOST_AUTO_TEST_CASE (film_metadata_test)
 		boost::filesystem::remove_all (test_film);
 	}
 
-	BOOST_CHECK_THROW (new Film ("build/test/film", true), runtime_error);
+	BOOST_CHECK_THROW (new Film ("build/test/film", true), OpenFileError);
 	
 	Film f (test_film, false);
 	BOOST_CHECK (f.format() == 0);
@@ -52,7 +53,7 @@ BOOST_AUTO_TEST_CASE (film_metadata_test)
 	BOOST_CHECK (f.filters ().empty());
 
 	f.set_name ("fred");
-	BOOST_CHECK_THROW (f.set_content ("jim"), runtime_error);
+	BOOST_CHECK_THROW (f.set_content ("jim"), BadContentLocationError);
 	f.set_dcp_long_name ("sheila");
 	f.set_dcp_content_type (ContentType::get_from_pretty_name ("Short"));
 	f.set_format (Format::get_from_nickname ("Flat"));

@@ -41,6 +41,7 @@ extern "C" {
 #include "filter.h"
 #include "film_state.h"
 #include "options.h"
+#include "exceptions.h"
 
 using namespace std;
 
@@ -116,13 +117,11 @@ Decoder::setup_general ()
 	av_register_all ();
 
 	if ((r = avformat_open_input (&_format_context, _fs->file (_fs->content).c_str(), 0, 0)) != 0) {
-		stringstream s;
-		s << "could not open content file " << _fs->file (_fs->content) << " (" << r << ")";
-		throw runtime_error (s.str ());
+		throw OpenFileError (_fs->file (_fs->content));
 	}
 
 	if (avformat_find_stream_info (_format_context, 0) < 0) {
-		throw runtime_error ("Could not find stream information");
+		throw DecodeError ("could not find stream information");
 	}
 
 	for (uint32_t i = 0; i < _format_context->nb_streams; ++i) {
@@ -134,20 +133,20 @@ Decoder::setup_general ()
 	}
 
 	if (_video_stream < 0) {
-		throw runtime_error ("Could not find video stream");
+		throw DecodeError ("could not find video stream");
 	}
 	if (_audio_stream < 0) {
-		throw runtime_error ("Could not find audio stream");
+		throw DecodeError ("could not find audio stream");
 	}
 
 	_frame_in = avcodec_alloc_frame ();
 	if (_frame_in == 0) {
-		throw runtime_error ("Could not allocate frame");
+		throw DecodeError ("could not allocate frame");
 	}
 
 	_frame_out = avcodec_alloc_frame ();
 	if (_frame_out == 0) {
-		throw runtime_error ("Could not allocate frame");
+		throw DecodeError ("could not allocate frame");
 	}
 }
 
@@ -158,11 +157,11 @@ Decoder::setup_video ()
 	_video_codec = avcodec_find_decoder (_video_codec_context->codec_id);
 
 	if (_video_codec == 0) {
-		throw runtime_error ("Could not find video decoder");
+		throw DecodeError ("could not find video decoder");
 	}
 	
 	if (avcodec_open2 (_video_codec_context, _video_codec, 0) < 0) {
-		throw runtime_error ("Could not open video decoder");
+		throw DecodeError ("could not open video decoder");
 	}
 
 	int num_bytes = avpicture_get_size (PIX_FMT_RGB24, _opt->out_width, _opt->out_height);
@@ -187,7 +186,7 @@ Decoder::setup_video ()
 		);
 
 	if (_conversion_context == 0) {
-		throw runtime_error ("Could not obtain YUV -> RGB conversion context");
+		throw DecodeError ("could not obtain YUV -> RGB conversion context");
 	}
 
 	setup_video_filters ();
@@ -200,11 +199,11 @@ Decoder::setup_audio ()
 	_audio_codec = avcodec_find_decoder (_audio_codec_context->codec_id);
 
 	if (_audio_codec == 0) {
-		throw runtime_error ("Could not find audio decoder");
+		throw DecodeError ("could not find audio decoder");
 	}
 	
 	if (avcodec_open2 (_audio_codec_context, _audio_codec, 0) < 0) {
-		throw runtime_error ("Could not open audio decoder");
+		throw DecodeError ("could not open audio decoder");
 	}
 }
 
@@ -236,7 +235,7 @@ Decoder::pass ()
 			}
 
 			if (av_vsrc_buffer_add_frame (_buffer_src_context, _frame_in, 0) < 0) {
-				throw runtime_error ("Could not push buffer into filter chain.");
+				throw DecodeError ("could not push buffer into filter chain.");
 			}
 			
 			while (avfilter_poll_frame (_buffer_sink_context->inputs[0])) {
@@ -326,17 +325,17 @@ Decoder::setup_video_filters ()
 	
 	AVFilterGraph* graph = avfilter_graph_alloc();
 	if (graph == 0) {
-		throw runtime_error ("Could not create filter graph.");
+		throw DecodeError ("Could not create filter graph.");
 	}
 	
 	AVFilter* buffer_src = avfilter_get_by_name("buffer");
 	if (buffer_src == 0) {
-		throw runtime_error ("Could not create buffer src filter");
+		throw DecodeError ("Could not create buffer src filter");
 	}
 	
 	AVFilter* buffer_sink = avfilter_get_by_name("buffersink");
 	if (buffer_sink == 0) {
-		throw runtime_error ("Could not create buffer sink filter");
+		throw DecodeError ("Could not create buffer sink filter");
 	}
 	
 	stringstream a;
@@ -349,14 +348,12 @@ Decoder::setup_video_filters ()
 	  << _video_codec_context->sample_aspect_ratio.den;
 
 	if ((r = avfilter_graph_create_filter (&_buffer_src_context, buffer_src, "in", a.str().c_str(), 0, graph)) < 0) {
-		stringstream s;
-		s << "Could not create buffer source (" << r << ")";
-		throw runtime_error (s.str().c_str ());
+		throw DecodeError ("could not create buffer source");
 	}
 
 	enum PixelFormat pixel_formats[] = { _video_codec_context->pix_fmt, PIX_FMT_NONE };
 	if (avfilter_graph_create_filter(&_buffer_sink_context, buffer_sink, "out", 0, pixel_formats, graph) < 0) {
-		throw runtime_error ("Could not create buffer sink.");
+		throw DecodeError ("could not create buffer sink.");
 	}
 
 	AVFilterInOut* outputs = avfilter_inout_alloc ();
@@ -372,11 +369,11 @@ Decoder::setup_video_filters ()
 	inputs->next = 0;
 
 	if (avfilter_graph_parse (graph, filters.c_str(), &inputs, &outputs, 0) < 0) {
-		throw runtime_error ("Could not set up filter graph.");
+		throw DecodeError ("could not set up filter graph.");
 	}
 
 	if (avfilter_graph_config (graph, 0) < 0) {
-		throw runtime_error ("Could not configure filter graph.");
+		throw DecodeError ("could not configure filter graph.");
 	}
 }
 

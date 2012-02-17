@@ -41,6 +41,7 @@
 #include "film_state.h"
 #include "log.h"
 #include "options.h"
+#include "exceptions.h"
 
 using namespace std;
 using namespace boost;
@@ -77,7 +78,7 @@ Film::Film (string d, bool must_exist)
 	_state.directory = result.string ();
 	
 	if (must_exist && !filesystem::exists (_state.directory)) {
-		throw runtime_error ("film not found");
+		throw OpenFileError (_state.directory);
 	}
 
 	read_metadata ();
@@ -186,7 +187,7 @@ Film::write_metadata () const
 	
 	ofstream f (metadata_file().c_str ());
 	if (!f.good ()) {
-		throw runtime_error ("Could not open metadata file for writing");
+		throw CreateFileError (metadata_file ());
 	}
 
 	/* User stuff */
@@ -244,7 +245,7 @@ Film::set_content (string c)
 {
 	bool const absolute = filesystem::path(c).has_root_directory ();
 	if (absolute && !starts_with (c, _state.directory)) {
-		throw runtime_error ("content is outside the film's directory");
+		throw BadContentLocationError ();
 	}
 
 	string f = c;
@@ -542,15 +543,15 @@ Film::make_dcp ()
 	log()->log (s.str ());
 		
 	if (format() == 0) {
-		throw runtime_error ("format must be specified to make a DCP");
+		throw MissingSettingError ("format");
 	}
 
 	if (content().empty ()) {
-		throw runtime_error ("content must be specified to make a DCP");
+		throw MissingSettingError ("content");
 	}
 
 	if (dcp_content_type() == 0) {
-		throw runtime_error ("content type must be specified to make a DCP");
+		throw MissingSettingError ("content type");
 	}
 
 	shared_ptr<const FilmState> fs = state_copy ();

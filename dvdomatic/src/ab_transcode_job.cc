@@ -59,7 +59,7 @@ ABTranscodeJob::run ()
 		set_progress (1);
 		set_state (FINISHED_OK);
 
-	} catch (runtime_error& e) {
+	} catch (exception& e) {
 
 		set_state (FINISHED_ERROR);
 

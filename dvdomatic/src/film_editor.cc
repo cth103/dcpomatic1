@@ -228,7 +228,7 @@ FilmEditor::content_changed ()
 		if (_film) {
 			_film->set_content (_content.get_filename ());
 		}
-	} catch (runtime_error& e) {
+	} catch (std::exception& e) {
 		_content.set_filename (_film->directory ());
 		stringstream m;
 		m << "Could not set content: " << e.what() << ".";
@@ -368,7 +368,7 @@ FilmEditor::make_dcp_clicked ()
 
 	try {
 		_film->make_dcp ();
-	} catch (runtime_error& e) {
+	} catch (std::exception& e) {
 		stringstream s;
 		s << "Could not make DCP: " << e.what () << ".";
 		error_dialog (s.str ());
