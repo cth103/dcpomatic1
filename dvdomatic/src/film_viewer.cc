@@ -121,7 +121,7 @@ FilmViewer::film_changed (Film::Property p)
 		_position_slider.set_value (0);
 		reload_current_thumbnail ();
 	} else if (p == Film::FilmFormat) {
-		update_scaled_pixbuf ();
+		reload_current_thumbnail ();
 	}
 }
 
@@ -167,7 +167,7 @@ FilmViewer::update_scaled_pixbuf ()
 {
 	pair<int, int> const s = scaled_pixbuf_size ();
 
-	if (s.first > 0 && s.second > 0) {
+	if (s.first > 0 && s.second > 0 && _cropped_pixbuf) {
 		_scaled_pixbuf = _cropped_pixbuf->scale_simple (s.first, s.second, Gdk::INTERP_HYPER);
 		_image.set (_scaled_pixbuf);
 	}
