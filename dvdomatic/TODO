@@ -14,3 +14,5 @@ ow --- no obvious effect
 tn --- interesting; much noise reduction, bad artefacts on movement, colour tint even in black
 unsharp --- worse
 
+Benchmark SWS options: lanczos ?
+hqdn3d=0:0:6 ? (turn off chroma/luma blurring)
