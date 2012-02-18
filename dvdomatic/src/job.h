@@ -43,6 +43,8 @@ public:
 	bool finished_ok () const;
 	bool finished_in_error () const;
 
+	std::string error () const;
+
 	int elapsed_time () const;
 
 	void set_progress (float);
@@ -65,6 +67,7 @@ protected:
 	};
 	
 	void set_state (State);
+	void set_error (std::string);
 
 	boost::shared_ptr<const FilmState> _fs;
 	boost::shared_ptr<const Options> _opt;
@@ -73,11 +76,14 @@ protected:
 private:
 
 	void run_wrapper ();
-	
+
+	/** mutex for _state and _error */
 	mutable boost::mutex _state_mutex;
 	State _state;
-	time_t _start_time;
+	std::string _error;
 
+	time_t _start_time;
+	
 	mutable boost::mutex _progress_mutex;
 
 	struct Level {

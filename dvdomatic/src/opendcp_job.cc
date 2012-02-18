@@ -57,6 +57,7 @@ OpenDCPJob::command (string c)
 
 	int const r = pclose (f);
 	if (WEXITSTATUS (r) != 0) {
+		set_error ("call to OpenDCP failed");
 		set_state (FINISHED_ERROR);
 	} else {
 		set_state (FINISHED_OK);

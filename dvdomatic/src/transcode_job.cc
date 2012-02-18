@@ -66,5 +66,7 @@ TranscodeJob::run ()
 		s << "Transcode job failed (" << e.what() << ")";
 		_log->log (s.str ());
 
+		throw;
+
 	}
 }

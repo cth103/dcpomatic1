@@ -53,6 +53,7 @@ Job::run_wrapper ()
 
 		set_progress (1);
 		set_state (FINISHED_ERROR);
+		set_error (e.what ());
 
 	}
 }
@@ -157,11 +158,25 @@ Job::ascend ()
  *  each subtask, and ascend() afterwards to ensure that overall progress
  *  is reported correctly.
  *
- *  @param p Percentage (from 0 to 1) of the current task to allocate to the subtask.
+ *  @param a Fraction (from 0 to 1) of the current task to allocate to the subtask.
  */
 void
 Job::descend (float a)
 {
 	boost::mutex::scoped_lock lm (_progress_mutex);
 	_stack.push_back (Level (a));
+}
+
+string
+Job::error () const
+{
+	boost::mutex::scoped_lock lm (_state_mutex);
+	return _error;
+}
+
+void
+Job::set_error (string e)
+{
+	boost::mutex::scoped_lock lm (_state_mutex);
+	_error = e;
 }

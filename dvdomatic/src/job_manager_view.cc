@@ -90,7 +90,7 @@ JobManagerView::update ()
 		} else if ((*i)->finished_in_error ()) {
 			string const c = r[_columns.resolution];
 			if (c.substr (0, 5) != "Error") {
-				r[_columns.resolution] = "Error";
+				r[_columns.resolution] = "Error (" + (*i)->error() + ")";
 				inform_of_finish = true;
 			}
 		}
