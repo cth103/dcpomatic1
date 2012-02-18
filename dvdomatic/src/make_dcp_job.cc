@@ -21,6 +21,7 @@
 #include "make_dcp_job.h"
 #include "film_state.h"
 #include "content_type.h"
+#include "exceptions.h"
 
 using namespace std;
 using namespace boost;
@@ -43,9 +44,21 @@ void
 MakeDCPJob::run ()
 {
 	assert (!_fs->dcp_long_name.empty());
-		
+
 	string const dcp_path = _fs->dir (_fs->dcp_long_name);
-	boost::filesystem::remove_all (dcp_path);
+	
+	/* Check that we have our prerequisites */
+
+	if (!filesystem::exists (filesystem::path (_fs->file ("video.mxf")))) {
+		throw EncodeError ("missing video.mxf");
+	}
+
+	if (!filesystem::exists (filesystem::path (_fs->file ("audio.mxf")))) {
+		throw EncodeError ("missing audio.mxf");
+	}
+
+	/* Remove any old DCP */
+	filesystem::remove_all (dcp_path);
 
 	/* Re-make the DCP directory */
 	_fs->dir (_fs->dcp_long_name);
@@ -59,8 +72,8 @@ MakeDCPJob::run ()
 
 	command (c.str ());
 
-	boost::filesystem::rename (boost::filesystem::path (_fs->file ("video.mxf")), boost::filesystem::path (dcp_path + "/video.mxf"));
-	boost::filesystem::rename (boost::filesystem::path (_fs->file ("audio.mxf")), boost::filesystem::path (dcp_path + "/audio.mxf"));
+	filesystem::rename (filesystem::path (_fs->file ("video.mxf")), filesystem::path (dcp_path + "/video.mxf"));
+	filesystem::rename (filesystem::path (_fs->file ("audio.mxf")), filesystem::path (dcp_path + "/audio.mxf"));
 
 	set_progress (1);
 }

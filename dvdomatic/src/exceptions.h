@@ -28,7 +28,7 @@ public:
 
 	virtual ~StringError () throw () {}
 
-	char const * what () {
+	char const * what () const throw () {
 		return _what.c_str ();
 	}
 
@@ -37,7 +37,7 @@ private:
 };
 
 /** A low-level problem with the decoder (possibly due to the nature
- *  of a source file.
+ *  of a source file).
  */
 class DecodeError : public StringError
 {

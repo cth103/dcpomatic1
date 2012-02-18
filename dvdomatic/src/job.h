@@ -71,6 +71,8 @@ protected:
 	Log* _log;
 
 private:
+
+	void run_wrapper ();
 	
 	mutable boost::mutex _state_mutex;
 	State _state;

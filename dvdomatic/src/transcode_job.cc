@@ -60,9 +60,11 @@ TranscodeJob::run ()
 	} catch (std::exception& e) {
 
 		stringstream s;
+		set_progress (1);
+		set_state (FINISHED_ERROR);
+
 		s << "Transcode job failed (" << e.what() << ")";
 		_log->log (s.str ());
-		set_state (FINISHED_ERROR);
 
 	}
 }

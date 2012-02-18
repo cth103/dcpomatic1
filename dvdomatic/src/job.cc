@@ -39,7 +39,22 @@ Job::start ()
 {
 	set_state (RUNNING);
 	_start_time = time (0);
-	boost::thread (boost::bind (&Job::run, this));
+	boost::thread (boost::bind (&Job::run_wrapper, this));
+}
+
+void
+Job::run_wrapper ()
+{
+	try {
+
+		run ();
+
+	} catch (std::exception& e) {
+
+		set_progress (1);
+		set_state (FINISHED_ERROR);
+
+	}
 }
 
 bool
