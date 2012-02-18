@@ -20,6 +20,7 @@
 #ifndef DVDOMATIC_FILM_STATE_H
 #define DVDOMATIC_FILM_STATE_H
 
+#include <sstream>
 #include <boost/filesystem.hpp>
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -77,6 +78,12 @@ public:
 		return s.str ();
 	}
 
+	std::string thumb_file (int) const;
+	int thumb_frame (int) const;
+	
+	void write_metadata (std::ofstream &) const;
+	void read_metadata (std::string, std::string);
+
 	/** Complete path to directory containing the film metadata;
 	    must not be relative.
 	*/
@@ -131,6 +138,9 @@ public:
 	int audio_sample_rate;
 	/** Format of the audio samples */
 	AVSampleFormat audio_sample_format;
+
+private:
+	std::string thumb_file_for_frame (int) const;
 };
 
 #endif

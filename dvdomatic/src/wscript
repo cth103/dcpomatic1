@@ -15,6 +15,7 @@ def build(bld):
 		 error_dialog.cc
     	         film.cc
 		 film_editor.cc
+		 film_state.cc
 		 film_viewer.cc
 		 filter.cc
 		 filter_dialog.cc

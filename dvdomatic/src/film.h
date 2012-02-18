@@ -210,7 +210,6 @@ private:
 	void read_metadata ();
 	std::string metadata_file () const;
 	void update_dimensions ();
-	std::string thumb_file_for_frame (int) const;
 	void signal_changed (Property);
 	void maybe_guess_dcp_long_name ();
 

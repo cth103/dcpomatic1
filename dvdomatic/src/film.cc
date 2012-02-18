@@ -125,62 +125,7 @@ Film::read_metadata ()
 			continue;
 		}
 
-		string const k = line.substr (0, s);
-		string const v = line.substr (s + 1);
-
-		/* User-specified stuff */
-		if (k == "name") {
-			_state.name = v;
-		} else if (k == "content") {
-			_state.content = v;
-		} else if (k == "dcp_long_name") {
-			_state.dcp_long_name = v;
-		} else if (k == "guess_dcp_long_name") {
-			_state.guess_dcp_long_name = (v == "1");
-		} else if (k == "dcp_content_type") {
-			_state.dcp_content_type = ContentType::get_from_pretty_name (v);
-		} else if (k == "format") {
-			_state.format = Format::get_from_metadata (v);
-		} else if (k == "left_crop") {
-			_state.left_crop = atoi (v.c_str ());
-		} else if (k == "right_crop") {
-			_state.right_crop = atoi (v.c_str ());
-		} else if (k == "top_crop") {
-			_state.top_crop = atoi (v.c_str ());
-		} else if (k == "bottom_crop") {
-			_state.bottom_crop = atoi (v.c_str ());
-		} else if (k == "filter") {
-			_state.filters.push_back (Filter::get_from_id (v));
-		} else if (k == "scaler") {
-			_state.scaler = Scaler::get_from_id (v);
-		} else if (k == "dcp_frames") {
-			_state.dcp_frames = atoi (v.c_str ());
-		} else if (k == "dcp_ab") {
-			_state.dcp_ab = (v == "1");
-		}
-
-		/* Cached stuff */
-		if (k == "thumb") {
-			int const n = atoi (v.c_str ());
-			/* Only add it to the list if it still exists */
-			if (filesystem::exists (thumb_file_for_frame (n))) {
-				_state.thumbs.push_back (n);
-			}
-		} else if (k == "width") {
-			_state.width = atoi (v.c_str ());
-		} else if (k == "height") {
-			_state.height = atoi (v.c_str ());
-		} else if (k == "length") {
-			_state.length = atof (v.c_str ());
-		} else if (k == "frames_per_second") {
-			_state.frames_per_second = atof (v.c_str ());
-		} else if (k == "audio_channels") {
-			_state.audio_channels = atoi (v.c_str ());
-		} else if (k == "audio_sample_rate") {
-			_state.audio_sample_rate = atoi (v.c_str ());
-		} else if (k == "audio_sample_format") {
-			_state.audio_sample_format = audio_sample_format_from_string (v);
-		}
+		_state.read_metadata (line.substr (0, s), line.substr (s + 1));
 	}
 
 	_dirty = false;
@@ -197,41 +142,7 @@ Film::write_metadata () const
 		throw CreateFileError (metadata_file ());
 	}
 
-	/* User stuff */
-	f << "name " << _state.name << "\n";
-	f << "content " << _state.content << "\n";
-	f << "dcp_long_name " << _state.dcp_long_name << "\n";
-	f << "guess_dcp_long_name " << (_state.guess_dcp_long_name ? "1" : "0") << "\n";
-	if (_state.dcp_content_type) {
-		f << "dcp_content_type " << _state.dcp_content_type->pretty_name () << "\n";
-	}
-	if (_state.format) {
-		f << "format " << _state.format->get_as_metadata () << "\n";
-	}
-	f << "left_crop " << _state.left_crop << "\n";
-	f << "right_crop " << _state.right_crop << "\n";
-	f << "top_crop " << _state.top_crop << "\n";
-	f << "bottom_crop " << _state.bottom_crop << "\n";
-	for (vector<Filter const *>::const_iterator i = _state.filters.begin(); i != _state.filters.end(); ++i) {
-		f << "filter " << (*i)->id () << "\n";
-	}
-	f << "scaler " << _state.scaler->id () << "\n";
-	f << "dcp_frames " << _state.dcp_frames << "\n";
-	f << "dcp_ab " << (_state.dcp_ab ? "1" : "0") << "\n";
-
-	/* Cached stuff; this is information about our content; we could
-	   look it up each time, but that's slow.
-	*/
-	for (vector<int>::const_iterator i = _state.thumbs.begin(); i != _state.thumbs.end(); ++i) {
-		f << "thumb " << *i << "\n";
-	}
-	f << "width " << _state.width << "\n";
-	f << "height " << _state.height << "\n";
-	f << "length " << _state.length << "\n";
-	f << "frames_per_second " << _state.frames_per_second << "\n";
-	f << "audio_channels " << _state.audio_channels << "\n";
-	f << "audio_sample_rate " << _state.audio_sample_rate << "\n";
-	f << "audio_sample_format " << audio_sample_format_to_string (_state.audio_sample_format) << "\n";
+	_state.write_metadata (f);
 
 	_dirty = false;
 }
@@ -475,8 +386,7 @@ Film::num_thumbs () const
 int
 Film::thumb_frame (int n) const
 {
-	assert (n < int (num_thumbs ()));
-	return _state.thumbs[n];
+	return _state.thumb_frame (n);
 }
 
 /** @param n A thumb index.
@@ -485,21 +395,7 @@ Film::thumb_frame (int n) const
 string
 Film::thumb_file (int n) const
 {
-	return thumb_file_for_frame (thumb_frame (n));
-}
-
-/** @param n A frame index within the Film.
- *  @return The path to the thumb's image file for this frame;
- *  we assume that it exists.
- */
-string
-Film::thumb_file_for_frame (int n) const
-{
-	stringstream s;
-	s << _state.dir ("thumbs") << "/";
-	s.width (8);
-	s << setfill('0') << n << ".tiff";
-	return s.str ();
+	return _state.thumb_file (n);
 }
 
 /** @return The path to the directory to write JPEG2000 files to */
