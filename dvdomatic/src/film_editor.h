@@ -43,6 +43,7 @@ private:
 	void dcp_content_type_changed ();
 	void dcp_frames_changed ();
 	void dcp_ab_toggled ();
+	void scaler_changed ();
 
 	/* Handle changes to the model */
 	void film_changed (Film::Property);
@@ -68,6 +69,7 @@ private:
 	Gtk::SpinButton _bottom_crop;
 	Gtk::Label _filters;
 	Gtk::Button _filters_button;
+	Gtk::ComboBoxText _scaler;
 	Gtk::Entry _dcp_long_name;
 	Gtk::CheckButton _guess_dcp_long_name;
 	Gtk::ComboBoxText _dcp_content_type;

@@ -29,6 +29,7 @@
 #include "job_manager.h"
 #include "ab_transcode_job.h"
 #include "util.h"
+#include "scaler.h"
 
 using namespace std;
 using namespace boost;
@@ -58,6 +59,7 @@ int main (int argc, char* argv[])
 	Format::setup_formats ();
 	Filter::setup_filters ();
 	ContentType::setup_content_types ();
+	Scaler::setup_scalers ();
 
 	if (vm.count ("deps")) {
 		cout << "makedcp using " << dependency_version_summary () << "\n";

@@ -44,6 +44,7 @@
 #include "exceptions.h"
 #include "version.h"
 #include "examine_content_job.h"
+#include "scaler.h"
 
 using namespace std;
 using namespace boost;
@@ -150,6 +151,8 @@ Film::read_metadata ()
 			_state.bottom_crop = atoi (v.c_str ());
 		} else if (k == "filter") {
 			_state.filters.push_back (Filter::get_from_id (v));
+		} else if (k == "scaler") {
+			_state.scaler = Scaler::get_from_id (v);
 		} else if (k == "dcp_frames") {
 			_state.dcp_frames = atoi (v.c_str ());
 		} else if (k == "dcp_ab") {
@@ -212,6 +215,7 @@ Film::write_metadata () const
 	for (vector<Filter const *>::const_iterator i = _state.filters.begin(); i != _state.filters.end(); ++i) {
 		f << "filter " << (*i)->id () << "\n";
 	}
+	f << "scaler " << _state.scaler->id () << "\n";
 	f << "dcp_frames " << _state.dcp_frames << "\n";
 	f << "dcp_ab " << (_state.dcp_ab ? "1" : "0") << "\n";
 
@@ -694,4 +698,11 @@ Film::examine_content_post_gui ()
 	signal_changed (Length);
 	
 	_examine_content_job.reset ();
+}
+
+void
+Film::set_scaler (Scaler const * s)
+{
+	_state.scaler = s;
+	signal_changed (FilmScaler);
 }

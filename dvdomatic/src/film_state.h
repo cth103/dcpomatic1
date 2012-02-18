@@ -23,11 +23,19 @@
 #include <boost/filesystem.hpp>
 extern "C" {
 #include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
 }
+#include "scaler.h"
 
 class Format;
 class ContentType;
 class Filter;
+
+/** The state of a Film.  This is separate from Film so that
+ *  state can easily be copied and kept around for reference
+ *  by long-running jobs.  This avoids the jobs getting confused
+ *  by the user changing Film settings during their run.
+ */
 
 class FilmState
 {
@@ -40,6 +48,7 @@ public:
 		, right_crop (0)
 		, top_crop (0)
 		, bottom_crop (0)
+		, scaler (Scaler::get_from_id ("bicubic"))
 		, dcp_frames (0)
 		, dcp_ab (false)
 		, width (0)
@@ -92,6 +101,10 @@ public:
 	/** Number of pixels to crop from the bottom of the original picture */
 	int bottom_crop;
 	std::vector<Filter const *> filters;
+	/** Scaler algorithm to use.
+	 *  (SWS_BICUBIC, SWS_X, SWS_AREA, SWS_GAUSS, SWS_LANCZOS, SWS_SINC, SWS_SPLINE, SWS_BILINEAR, SWS_FAST_BILINEAR)
+	 */
+	Scaler const * scaler;
 	/** Number of frames to put in the DCP, or 0 for all */
 	int dcp_frames;
 	/** true to create an A/B comparison DCP, where the left half of the image

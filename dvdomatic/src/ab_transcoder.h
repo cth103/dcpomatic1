@@ -26,6 +26,9 @@ class Decoder;
 class FilmState;
 class Options;
 
+/** A transcoder which uses one FilmState for the left half of the screen, and a different one
+ *  for the right half (to facilitate A/B comparisons of settings)
+ */
 class ABTranscoder
 {
 public:

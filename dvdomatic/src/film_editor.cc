@@ -75,6 +75,11 @@ FilmEditor::FilmEditor (Film* f)
 		_dcp_content_type.append_text ((*i)->pretty_name ());
 	}
 
+	vector<Scaler const *> const sc = Scaler::get_all ();
+	for (vector<Scaler const *>::const_iterator i = sc.begin(); i != sc.end(); ++i) {
+		_scaler.append_text ((*i)->name ());
+	}
+	
 	_original_size.set_alignment (0, 0.5);
 	_length.set_alignment (0, 0.5);
 	_frames_per_second.set_alignment (0, 0.5);
@@ -98,6 +103,7 @@ FilmEditor::FilmEditor (Film* f)
 	_top_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::top_crop_changed));
 	_bottom_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::bottom_crop_changed));
 	_filters_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::edit_filters_clicked));
+	_scaler.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::scaler_changed));
 	_dcp_long_name.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_long_name_changed));
 	_guess_dcp_long_name.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::guess_dcp_long_name_toggled));
 	_dcp_content_type.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_content_type_changed));
@@ -151,6 +157,9 @@ FilmEditor::FilmEditor (Film* f)
 	fb->pack_start (_filters, true, true);
 	fb->pack_start (_filters_button, false, false);
 	t->attach (*fb, 1, 2, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("Scaler"), 0, 1, n, n + 1);
+	t->attach (_scaler, 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Original Size"), 0, 1, n, n + 1);
 	t->attach (_original_size, 1, 2, n, n + 1);
@@ -361,6 +370,9 @@ FilmEditor::film_changed (Film::Property p)
 	case Film::DCPAB:
 		_dcp_ab.set_active (_film->dcp_ab ());
 		break;
+	case Film::FilmScaler:
+		_scaler.set_active (Scaler::get_as_index (_film->scaler ()));
+		break;
 	}
 }
 
@@ -439,6 +451,7 @@ FilmEditor::set_film (Film* f)
 	film_changed (Film::FramesPerSecond);
 	film_changed (Film::AudioChannels);
 	film_changed (Film::AudioSampleRate);
+	film_changed (Film::FilmScaler);
 }
 
 void
@@ -453,6 +466,7 @@ FilmEditor::set_things_sensitive (bool s)
 	_top_crop.set_sensitive (s);
 	_bottom_crop.set_sensitive (s);
 	_filters_button.set_sensitive (s);
+	_scaler.set_sensitive (s);
 	_dcp_long_name.set_sensitive (s);
 	_guess_dcp_long_name.set_sensitive (s);
 	_dcp_content_type.set_sensitive (s);
@@ -492,4 +506,10 @@ void
 FilmEditor::examine_content_clicked ()
 {
 	_film->examine_content ();
+}
+
+void
+FilmEditor::scaler_changed ()
+{
+	_film->set_scaler (Scaler::get_from_index (_scaler.get_active_row_number ()));
 }

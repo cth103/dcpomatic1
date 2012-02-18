@@ -38,5 +38,6 @@ def build(bld):
 		 util.cc
 		 copy_from_dvd_job.cc
 		 examine_content_job.cc
+		 scaler.cc
 		 """
     obj.target = 'dvdomatic'

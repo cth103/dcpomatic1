@@ -24,6 +24,10 @@ class Job;
 class Encoder;
 class FilmState;
 
+/** A class which takes a FilmState and some Options, then uses those to transcode a Film.
+ *  The same (FFmpeg) decoder is always used, and the encoder can be specified as a parameter
+ *  to the constructor.
+ */
 class Transcoder
 {
 public:

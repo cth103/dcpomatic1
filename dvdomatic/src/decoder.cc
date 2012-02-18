@@ -184,7 +184,7 @@ Decoder::setup_video ()
 	_conversion_context = sws_getContext (
 		_post_filter_width, _post_filter_height, _video_codec_context->pix_fmt,
 		_opt->out_width, _opt->out_height, PIX_FMT_RGB24,
-		SWS_BICUBIC, 0, 0, 0
+		_fs->scaler->ffmpeg_id (), 0, 0, 0
 		);
 
 	if (_conversion_context == 0) {

@@ -83,6 +83,10 @@ public:
 		return _state.filters;
 	}
 
+	Scaler const * scaler () const {
+		return _state.scaler;
+	}
+
 	int dcp_frames () const {
 		return _state.dcp_frames;
 	}
@@ -92,6 +96,8 @@ public:
 	}
 
 	void set_filters (std::vector<Filter const *> const &);
+
+	void set_scaler (Scaler const *);
 
 	std::string dcp_long_name () const {
 		return _state.dcp_long_name;
@@ -177,6 +183,7 @@ public:
 		TopCrop,
 		BottomCrop,
 		Filters,
+		FilmScaler,
 		DCPFrames,
 		DCPAB,
 		Thumbs,

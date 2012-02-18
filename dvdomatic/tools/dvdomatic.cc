@@ -30,6 +30,7 @@
 #include "version.h"
 #include "gpl.h"
 #include "util.h"
+#include "scaler.h"
 
 using namespace std;
 
@@ -206,6 +207,7 @@ main (int argc, char* argv[])
 	Format::setup_formats ();
 	Filter::setup_filters ();
 	ContentType::setup_content_types ();
+	Scaler::setup_scalers ();
 	
 	Gtk::Main kit (argc, argv);
 
