@@ -118,7 +118,8 @@ FilmEditor::FilmEditor (Film* f)
 	++n;
 	t->attach (left_aligned_label ("DCP Long Name"), 0, 1, n, n + 1);
 	t->attach (_dcp_long_name, 1, 2, n, n + 1);
-	t->attach (_guess_dcp_long_name, 2, 3, n, n + 1);
+	++n;
+	t->attach (_guess_dcp_long_name, 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Format"), 0, 1, n, n + 1);
 	t->attach (_format, 1, 2, n, n + 1);
