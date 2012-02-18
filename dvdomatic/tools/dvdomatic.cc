@@ -142,7 +142,7 @@ help_about ()
 {
 	Gtk::AboutDialog d;
 	d.set_name ("DVD-o-matic");
-	d.set_version (VERSION);
+	d.set_version (DVDOMATIC_VERSION);
 	d.set_comments ("DCP generation from arbitrary formats");
 
 	vector<string> authors;

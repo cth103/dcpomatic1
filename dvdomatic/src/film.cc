@@ -26,6 +26,7 @@
 #include <unistd.h>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
+#include <openjpeg.h>
 #include "film.h"
 #include "format.h"
 #include "tiff_encoder.h"
@@ -42,6 +43,7 @@
 #include "log.h"
 #include "options.h"
 #include "exceptions.h"
+#include "version.h"
 
 using namespace std;
 using namespace boost;
@@ -543,12 +545,44 @@ Film::signal_changed (Property p)
 void
 Film::make_dcp ()
 {
-	char buffer[128];
-	gethostname (buffer, sizeof (buffer));
-	stringstream s;
-	s << "Starting to make a DCP on " << buffer;
+	FILE* f = popen ("opendcp_xml", "r");
+	if (f == 0) {
+		throw EncodeError ("could not run opendcp_xml to check version");
+	}
+
+	string opendcp_version = "unknown";
 	
-	log()->log (s.str ());
+	while (!feof (f)) {
+		char* buf = 0;
+		size_t n = 0;
+		getline (&buf, &n, f);
+		if (n > 0) {
+			string s (buf);
+			vector<string> b;
+			split (b, s, is_any_of (" "));
+			if (b.size() >= 3 && b[0] == "OpenDCP" && b[1] == "version") {
+				opendcp_version = b[2];
+			}
+		}
+	}
+
+	pclose (f);
+
+	{
+		stringstream s;
+		s << "DVD-o-matic version " << DVDOMATIC_VERSION
+		  << " using libopenjpeg " << opj_version ()
+		  << ", opendcp " << opendcp_version;
+		log()->log (s.str ());
+	}
+
+	{
+		char buffer[128];
+		gethostname (buffer, sizeof (buffer));
+		stringstream s;
+		s << "Starting to make a DCP on " << buffer;
+		log()->log (s.str ());
+	}
 		
 	if (format() == 0) {
 		throw MissingSettingError ("format");
