@@ -231,10 +231,13 @@ main (int argc, char* argv[])
 	Gtk::HBox hbox;
 	hbox.set_spacing (12);
 	hbox.pack_start (film_editor->get_widget (), false, false);
-	hbox.pack_start (film_viewer->get_widget ());
-	vbox.pack_start (hbox, true, true);
 
-	vbox.pack_start (jobs_view.get_widget(), false, false);
+	Gtk::VBox right_vbox;
+	right_vbox.pack_start (film_viewer->get_widget (), true, true);
+	right_vbox.pack_start (jobs_view.get_widget(), false, false);
+	hbox.pack_start (right_vbox, true, true);
+	
+	vbox.pack_start (hbox, true, true);
 
 	window->add (vbox);
 	window->show_all ();

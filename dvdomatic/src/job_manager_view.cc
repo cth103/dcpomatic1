@@ -42,8 +42,6 @@ JobManagerView::JobManagerView ()
 	c->add_attribute (r->property_text(), _columns.resolution);
 
 	_scroller.add (_view);
-	_scroller.show_all ();
-
 	_scroller.set_size_request (-1, 150);
 	
 	update ();
@@ -80,9 +78,7 @@ JobManagerView::update ()
 		bool inform_of_finish = false;
 
 		float const p = (*i)->get_overall_progress ();
-		cout << "progress " << p << "\n";
 		if (p >= 0) {
-			cout << "update.\n";
 			r[_columns.progress] = p * 100;
 		} else {
 			if (!(*i)->finished ()) {
