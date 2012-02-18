@@ -35,6 +35,7 @@ class Format;
 class Job;
 class Filter;
 class Log;
+class ExamineContentJob;
 
 /** A representation of a piece of video (with sound), including naming,
  *  the source content file, and how it should be presented in a DCP.
@@ -155,6 +156,8 @@ public:
 	std::string thumb_file (int) const;
 
 	void copy_from_dvd_post_gui ();
+	void examine_content ();
+	void examine_content_post_gui ();
 
 	bool dirty () const {
 		return _dirty;
@@ -210,6 +213,8 @@ private:
 	mutable bool _dirty;
 
 	Log* _log;
+
+	boost::shared_ptr<ExamineContentJob> _examine_content_job;
 };
 
 #endif

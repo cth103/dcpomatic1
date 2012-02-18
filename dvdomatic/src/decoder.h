@@ -40,7 +40,7 @@ class Options;
 class Decoder
 {
 public:
-	Decoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *);
+	Decoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *, bool minimal = false, bool ignore_length = false);
 	~Decoder ();
 
 	/* Methods to query our input video */
@@ -54,6 +54,9 @@ public:
 	AVSampleFormat audio_sample_format () const;
 
 	void go ();
+	int last_video_frame () const {
+		return _video_frame;
+	}
 
 	enum PassResult {
 		PASS_DONE,    ///< we have decoded all the input
@@ -109,4 +112,7 @@ private:
 	pp_context* _pp_context;
 	uint8_t** _pp_buffer;
 	int _pp_stride[3];
+
+	bool _minimal;
+	bool _ignore_length;
 };

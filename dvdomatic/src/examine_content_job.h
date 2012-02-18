@@ -17,27 +17,22 @@
 
 */
 
-#include <list>
-#include <boost/thread/mutex.hpp>
+#include "job.h"
 
-class Job;
+class Decoder;
 
-class JobManager
+class ExamineContentJob : public Job
 {
 public:
+	ExamineContentJob (boost::shared_ptr<const FilmState>, Log *);
+	~ExamineContentJob ();
 
-	void add (boost::shared_ptr<Job>);
-	std::list<boost::shared_ptr<Job> > get () const;
-	bool work_to_do () const;
+	std::string name () const;
+	void run ();
 
-	static JobManager* instance ();
+	int last_video_frame () const;
 
 private:
-	JobManager ();
-	void scheduler ();
-	
-	mutable boost::mutex _mutex;
-	std::list<boost::shared_ptr<Job> > _jobs;
-
-	static JobManager* _instance;
+	Decoder* _decoder;
 };
+

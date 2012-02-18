@@ -43,6 +43,7 @@
 #include "options.h"
 #include "exceptions.h"
 #include "version.h"
+#include "examine_content_job.h"
 
 using namespace std;
 using namespace boost;
@@ -577,14 +578,14 @@ Film::make_dcp ()
 	o->num_frames = dcp_frames ();
 	
 	if (_state.dcp_ab) {
-		JobManager::instance()->add (new ABTranscodeJob (fs, o, log ()));
+		JobManager::instance()->add (shared_ptr<Job> (new ABTranscodeJob (fs, o, log ())));
 	} else {
-		JobManager::instance()->add (new TranscodeJob (fs, o, log ()));
+		JobManager::instance()->add (shared_ptr<Job> (new TranscodeJob (fs, o, log ())));
 	}
 	
-	JobManager::instance()->add (new MakeMXFJob (fs, o, log (), MakeMXFJob::VIDEO));
-	JobManager::instance()->add (new MakeMXFJob (fs, o, log (), MakeMXFJob::AUDIO));
-	JobManager::instance()->add (new MakeDCPJob (fs, o, log ()));
+	JobManager::instance()->add (shared_ptr<Job> (new MakeMXFJob (fs, o, log (), MakeMXFJob::VIDEO)));
+	JobManager::instance()->add (shared_ptr<Job> (new MakeMXFJob (fs, o, log (), MakeMXFJob::AUDIO)));
+	JobManager::instance()->add (shared_ptr<Job> (new MakeDCPJob (fs, o, log ())));
 }
 
 shared_ptr<FilmState>
@@ -672,4 +673,25 @@ Film::copy_from_dvd_post_gui ()
 	}
 
 	set_content (largest_file);
+}
+
+void
+Film::examine_content ()
+{
+	if (_examine_content_job) {
+		return;
+	}
+	
+	_examine_content_job.reset (new ExamineContentJob (state_copy (), log ()));
+	_examine_content_job->Finished.connect (sigc::mem_fun (*this, &Film::examine_content_post_gui));
+	JobManager::instance()->add (_examine_content_job);
+}
+
+void
+Film::examine_content_post_gui ()
+{
+	_state.length = _examine_content_job->last_video_frame ();
+	signal_changed (Length);
+	
+	_examine_content_job.reset ();
 }

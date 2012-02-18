@@ -29,6 +29,7 @@ Job::Job (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
 	, _log (l)
 	, _state (NEW)
 	, _start_time (0)
+	, _progress_unknown (false)
 {
 	descend (1);
 }
@@ -126,6 +127,9 @@ float
 Job::get_overall_progress () const
 {
 	boost::mutex::scoped_lock lm (_progress_mutex);
+	if (_progress_unknown) {
+		return -1;
+	}
 
 	float overall = 0;
 	float factor = 1;
@@ -179,4 +183,11 @@ Job::set_error (string e)
 {
 	boost::mutex::scoped_lock lm (_state_mutex);
 	_error = e;
+}
+
+void
+Job::set_progress_unknown ()
+{
+	boost::mutex::scoped_lock lm (_progress_mutex);
+	_progress_unknown = true;
 }

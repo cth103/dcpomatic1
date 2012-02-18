@@ -23,6 +23,7 @@
 #include "util.h"
 
 using namespace std;
+using namespace boost;
 
 /* Must be called in the GUI thread */
 JobManagerView::JobManagerView ()
@@ -37,6 +38,7 @@ JobManagerView::JobManagerView ()
 	int const n = _view.append_column ("Progress", *r);
 	Gtk::TreeViewColumn* c = _view.get_column (n - 1);
 	c->add_attribute (r->property_value(), _columns.progress);
+	c->add_attribute (r->property_pulse(), _columns.progress_unknown);
 	c->add_attribute (r->property_text(), _columns.resolution);
 
 	_scroller.add (_view);
@@ -51,13 +53,14 @@ JobManagerView::JobManagerView ()
 void
 JobManagerView::update ()
 {
-	list<Job*> jobs = JobManager::instance()->get ();
+	list<shared_ptr<Job> > jobs = JobManager::instance()->get ();
 
-	for (list<Job*>::iterator i = jobs.begin(); i != jobs.end(); ++i) {
+	for (list<shared_ptr<Job> >::iterator i = jobs.begin(); i != jobs.end(); ++i) {
 		Gtk::ListStore::iterator j = _store->children().begin();
 		while (j != _store->children().end()) {
 			Gtk::TreeRow r = *j;
-			if (r[_columns.job] == *i) {
+			shared_ptr<Job> job = r[_columns.job];
+			if (job == *i) {
 				break;
 			}
 			++j;
@@ -69,18 +72,29 @@ JobManagerView::update ()
 			r = *j;
 			r[_columns.name] = (*i)->name ();
 			r[_columns.job] = *i;
+			r[_columns.progress_unknown] = 0;
 		} else {
 			r = *j;
 		}
 
 		bool inform_of_finish = false;
 
+		float const p = (*i)->get_overall_progress ();
+		cout << "progress " << p << "\n";
+		if (p >= 0) {
+			cout << "update.\n";
+			r[_columns.progress] = p * 100;
+		} else {
+			if (!(*i)->finished ()) {
+				r[_columns.progress_unknown] = r[_columns.progress_unknown] + 1;
+			}
+		}
+		
 		/* Hack to work around our lack of cross-thread
 		   signalling; we tell the job to emit_finished()
 		   from here (the GUI thread).
 		*/
 		
-		r[_columns.progress] = (*i)->get_overall_progress() * 100;
 		if ((*i)->finished_ok ()) {
 			string const c = r[_columns.resolution];
 			if (c.substr (0, 2) != "OK") {

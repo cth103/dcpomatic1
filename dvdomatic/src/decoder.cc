@@ -45,7 +45,7 @@ extern "C" {
 
 using namespace std;
 
-Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Job* j)
+Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Job* j, bool minimal, bool ignore_length)
 	: _fs (s)
 	, _opt (o)
 	, _job (j)
@@ -68,6 +68,8 @@ Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const 
 	, _pp_mode (0)
 	, _pp_context (0)
 	, _pp_buffer (0)
+	, _minimal (minimal)
+	, _ignore_length (ignore_length)
 {
 	setup_general ();
 	setup_video ();
@@ -223,14 +225,22 @@ Decoder::pass ()
 		
 		int frame_finished;
 		if (avcodec_decode_video2 (_video_codec_context, _frame_in, &frame_finished, &_packet) < 0) {
+			av_free_packet (&_packet);
 			return PASS_ERROR;
 		}
 		
 		if (frame_finished) {
 
 			++_video_frame;
-			
-			if (_opt->decode_video_frequency != 0 && (_video_frame % (length_in_frames() / _opt->decode_video_frequency)) != 0) {
+
+			if (_minimal) {
+				av_free_packet (&_packet);
+				return PASS_VIDEO;
+			}
+
+			/* Use FilmState::length here as our one may be wrong */
+			if (_opt->decode_video_frequency != 0 && (_video_frame % (_fs->length / _opt->decode_video_frequency)) != 0) {
+				av_free_packet (&_packet);
 				return PASS_NOTHING;
 			}
 
@@ -271,6 +281,7 @@ Decoder::pass ()
 					Video (_frame_out->data[0], _frame_out->linesize[0], _video_frame);
 					
 					avfilter_unref_buffer (filter_buffer);
+					av_free_packet (&_packet);
 					return PASS_VIDEO;
 				}
 			}
@@ -282,6 +293,7 @@ Decoder::pass ()
 		
 		int frame_finished;
 		if (avcodec_decode_audio4 (_audio_codec_context, _frame_in, &frame_finished, &_packet) < 0) {
+			av_free_packet (&_packet);
 			return PASS_ERROR;
 		}
 		
@@ -291,13 +303,12 @@ Decoder::pass ()
 				);
 			
 			Audio (_frame_in->data[0], _audio_codec_context->channels, data_size);
-
+			av_free_packet (&_packet);
 			return PASS_AUDIO;
 		}
 	}
 	
 	av_free_packet (&_packet);
-
 	return PASS_NOTHING;
 }
 
@@ -430,8 +441,12 @@ Decoder::native_height () const
 void
 Decoder::go ()
 {
+	if (_job && _ignore_length) {
+		_job->set_progress_unknown ();
+	}
+	
 	while (pass () != PASS_DONE) {
-		if (_job) {
+		if (_job && !_ignore_length) {
 			_job->set_progress (float (_video_frame) / decoding_frames ());
 		}
 	}
@@ -463,5 +478,5 @@ Decoder::decoding_frames () const
 		return _opt->num_frames;
 	}
 	
-	return length_in_frames ();
+	return _fs->length;
 }

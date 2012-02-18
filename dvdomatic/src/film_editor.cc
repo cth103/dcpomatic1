@@ -44,6 +44,7 @@ FilmEditor::FilmEditor (Film* f)
 	, _copy_from_dvd_button ("Copy from DVD")
 	, _filters_button ("Edit...")
 	, _guess_dcp_long_name ("Guess")
+	, _examine_content_button ("Examine Content")
 	, _make_dcp_button ("Make DCP")
 	, _dcp_whole ("Whole Film")
 	, _dcp_for ("For")
@@ -173,8 +174,15 @@ FilmEditor::FilmEditor (Film* f)
 	_vbox.pack_start (*t, false, false);
 
 	_copy_from_dvd_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::copy_from_dvd_clicked));
+	_examine_content_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::examine_content_clicked));
 	_make_dcp_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked));
+
 	HBox* h = manage (new HBox);
+	h->set_spacing (12);
+	h->pack_start (_examine_content_button, false, false);
+	_vbox.pack_start (*h, false, false);
+	
+	h = manage (new HBox);
 	h->set_spacing (12);
 	h->pack_start (_make_dcp_button, false, false);
 	h->pack_start (_dcp_whole, false, false);
@@ -476,7 +484,13 @@ FilmEditor::guess_dcp_long_name_toggled ()
 void
 FilmEditor::copy_from_dvd_clicked ()
 {
-	Job* j = new CopyFromDVDJob (_film->state_copy (), _film->log ());
+	shared_ptr<Job> j (new CopyFromDVDJob (_film->state_copy (), _film->log ()));
 	j->Finished.connect (sigc::mem_fun (_film, &Film::copy_from_dvd_post_gui));
 	JobManager::instance()->add (j);
+}
+
+void
+FilmEditor::examine_content_clicked ()
+{
+	_film->examine_content ();
 }

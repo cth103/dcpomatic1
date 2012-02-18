@@ -18,6 +18,7 @@
 */
 
 #include <string>
+#include <boost/shared_ptr.hpp>
 #include <gtkmm.h>
 
 class Job;
@@ -46,12 +47,14 @@ private:
 			add (name);
 			add (job);
 			add (progress);
+			add (progress_unknown);
 			add (resolution);
 		}
 
 		Gtk::TreeModelColumn<std::string> name;
-		Gtk::TreeModelColumn<Job*> job;
+		Gtk::TreeModelColumn<boost::shared_ptr<Job> > job;
 		Gtk::TreeModelColumn<float> progress;
+		Gtk::TreeModelColumn<int> progress_unknown;
 		Gtk::TreeModelColumn<std::string> resolution;
 	};
 

@@ -47,6 +47,7 @@ public:
 
 	int elapsed_time () const;
 
+	void set_progress_unknown ();
 	void set_progress (float);
 	void ascend ();
 	void descend (float);
@@ -94,6 +95,8 @@ private:
 	};
 
 	std::list<Level> _stack;
+
+	bool _progress_unknown;
 };
 
 #endif

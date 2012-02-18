@@ -23,6 +23,7 @@
 #include "job.h"
 
 using namespace std;
+using namespace boost;
 
 JobManager* JobManager::_instance = 0;
 
@@ -32,14 +33,14 @@ JobManager::JobManager ()
 }
 
 void
-JobManager::add (Job* j)
+JobManager::add (shared_ptr<Job> j)
 {
 	boost::mutex::scoped_lock lm (_mutex);
 	
 	_jobs.push_back (j);
 }
 
-list<Job*>
+list<shared_ptr<Job> >
 JobManager::get () const
 {
 	boost::mutex::scoped_lock lm (_mutex);
@@ -51,7 +52,7 @@ bool
 JobManager::work_to_do () const
 {
 	boost::mutex::scoped_lock lm (_mutex);
-	list<Job*>::const_iterator i = _jobs.begin();
+	list<shared_ptr<Job> >::const_iterator i = _jobs.begin();
 	while (i != _jobs.end() && (*i)->finished()) {
 		++i;
 	}
@@ -66,8 +67,8 @@ JobManager::scheduler ()
 		{
 			boost::mutex::scoped_lock lm (_mutex);
 			int running = 0;
-			Job* first_new = 0;
-			for (list<Job*>::iterator i = _jobs.begin(); i != _jobs.end(); ++i) {
+			shared_ptr<Job> first_new;
+			for (list<shared_ptr<Job> >::iterator i = _jobs.begin(); i != _jobs.end(); ++i) {
 				if ((*i)->running ()) {
 					++running;
 				} else if (!(*i)->finished () && first_new == 0) {

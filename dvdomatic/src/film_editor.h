@@ -50,6 +50,7 @@ private:
 	/* Button clicks */
 	void edit_filters_clicked ();
 	void copy_from_dvd_clicked ();
+	void examine_content_clicked ();
 	void make_dcp_clicked ();
 
 	void set_things_sensitive (bool);
@@ -76,6 +77,8 @@ private:
 	Gtk::Label _audio_channels;
 	Gtk::Label _audio_sample_rate;
 
+	Gtk::Button _examine_content_button;
+	
 	Gtk::Button _make_dcp_button;
 	Gtk::RadioButton _dcp_whole;
 	Gtk::RadioButton _dcp_for;

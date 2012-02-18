@@ -31,6 +31,7 @@
 #include "util.h"
 
 using namespace std;
+using namespace boost;
 
 int main (int argc, char* argv[])
 {
@@ -65,7 +66,7 @@ int main (int argc, char* argv[])
 	Film* film = 0;
 	try {
 		film = new Film (film_dir, true);
-	} catch (exception& e) {
+	} catch (std::exception& e) {
 		cerr << argv[0] << ": error reading film `" << film_dir << "' (" << e.what() << ")\n";
 		exit (EXIT_FAILURE);
 	}
@@ -81,7 +82,7 @@ int main (int argc, char* argv[])
 
 	film->make_dcp ();
 
-	list<Job*> jobs = JobManager::instance()->get ();
+	list<shared_ptr<Job> > jobs = JobManager::instance()->get ();
 
 	bool all_done = false;
 	bool first = true;
@@ -97,7 +98,7 @@ int main (int argc, char* argv[])
 		first = false;
 		
 		all_done = true;
-		for (list<Job*>::iterator i = jobs.begin(); i != jobs.end(); ++i) {
+		for (list<shared_ptr<Job> >::iterator i = jobs.begin(); i != jobs.end(); ++i) {
 			cout << (*i)->name() << ": " << fixed << setprecision(1) << ((*i)->get_overall_progress() * 100) << "%             \n";
 			if (!(*i)->finished ()) {
 				all_done = false;

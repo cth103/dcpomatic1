@@ -190,7 +190,7 @@ FilmViewer::update_button_clicked ()
 	o->decode_audio = false;
 	o->decode_video_frequency = 128;
 	
-	ThumbsJob* j = new ThumbsJob (s, o, _film->log ());
+	shared_ptr<Job> j (new ThumbsJob (s, o, _film->log ()));
 	j->Finished.connect (sigc::mem_fun (_film, &Film::update_thumbs_post_gui));
 	JobManager::instance()->add (j);
 }
