@@ -90,7 +90,7 @@ file_new ()
 		if (maybe_save_then_delete_film ()) {
 			return;
 		}
-		Film* film = new Film (c.get_filename ());
+		film = new Film (c.get_filename ());
 		film_viewer->set_film (film);
 		film_editor->set_film (film);
 	}
