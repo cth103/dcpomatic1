@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE (film_metadata_test)
 	BOOST_CHECK (f.filters ().empty());
 
 	f.set_name ("fred");
-	BOOST_CHECK_THROW (f.set_content ("jim"), BadContentLocationError);
+	BOOST_CHECK_THROW (f.set_content ("jim"), OpenFileError);
 	f.set_dcp_long_name ("sheila");
 	f.set_dcp_content_type (ContentType::get_from_pretty_name ("Short"));
 	f.set_format (Format::get_from_nickname ("Flat"));
