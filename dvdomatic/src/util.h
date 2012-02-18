@@ -29,4 +29,4 @@ extern Gtk::Label & left_aligned_label (std::string);
 extern void stacktrace (std::ostream &, int);
 extern std::string audio_sample_format_to_string (AVSampleFormat);
 extern AVSampleFormat audio_sample_format_from_string (std::string);
-
+extern std::string dependency_version_summary ();

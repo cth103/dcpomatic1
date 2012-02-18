@@ -29,6 +29,7 @@
 #include "filter.h"
 #include "version.h"
 #include "gpl.h"
+#include "util.h"
 
 using namespace std;
 
@@ -143,7 +144,11 @@ help_about ()
 	Gtk::AboutDialog d;
 	d.set_name ("DVD-o-matic");
 	d.set_version (DVDOMATIC_VERSION);
-	d.set_comments ("DCP generation from arbitrary formats");
+
+	stringstream s;
+	s << "DCP generation from arbitrary formats\n\n"
+	  << "Using " << dependency_version_summary() << "\n";
+	d.set_comments (s.str ());
 
 	vector<string> authors;
 	authors.push_back ("Carl Hetherington");
