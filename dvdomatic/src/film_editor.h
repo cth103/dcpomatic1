@@ -49,6 +49,7 @@ private:
 
 	/* Button clicks */
 	void edit_filters_clicked ();
+	void copy_from_dvd_clicked ();
 	void make_dcp_clicked ();
 
 	void set_things_sensitive (bool);
@@ -59,6 +60,7 @@ private:
 	Gtk::Entry _name;
 	Gtk::ComboBoxText _format;
 	Gtk::FileChooserButton _content;
+	Gtk::Button _copy_from_dvd_button;
 	Gtk::SpinButton _left_crop;
 	Gtk::SpinButton _right_crop;
 	Gtk::SpinButton _top_crop;

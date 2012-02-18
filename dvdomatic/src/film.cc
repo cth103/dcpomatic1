@@ -650,3 +650,26 @@ Film::maybe_guess_dcp_long_name ()
 	
 	set_dcp_long_name (s.str ());
 }
+
+void
+Film::copy_from_dvd_post_gui ()
+{
+	const string dvd_dir = _state.dir ("dvd");
+
+	string largest_file;
+	uintmax_t largest_size = 0;
+	for (filesystem::directory_iterator i = filesystem::directory_iterator (dvd_dir); i != filesystem::directory_iterator(); ++i) {
+		uintmax_t const s = filesystem::file_size (*i);
+		if (s > largest_size) {
+
+#if BOOST_FILESYSTEM_VERSION == 3		
+			largest_file = filesystem::path(*i).generic_string();
+#else
+			largest_file = i->string ();
+#endif
+			largest_size = s;
+		}
+	}
+
+	set_content (largest_file);
+}

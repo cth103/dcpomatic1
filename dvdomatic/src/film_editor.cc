@@ -33,6 +33,7 @@
 #include "filter_dialog.h"
 #include "error_dialog.h"
 #include "filter.h"
+#include "copy_from_dvd_job.h"
 
 using namespace std;
 using namespace boost;
@@ -40,6 +41,7 @@ using namespace Gtk;
 
 FilmEditor::FilmEditor (Film* f)
 	: _film (f)
+	, _copy_from_dvd_button ("Copy from DVD")
 	, _filters_button ("Edit...")
 	, _guess_dcp_long_name ("Guess")
 	, _make_dcp_button ("Make DCP")
@@ -127,6 +129,8 @@ FilmEditor::FilmEditor (Film* f)
 	t->attach (left_aligned_label ("Content"), 0, 1, n, n + 1);
 	t->attach (_content, 1, 2, n, n + 1);
 	++n;
+	t->attach (_copy_from_dvd_button, 1, 2, n, n + 1);
+	++n;
 	t->attach (left_aligned_label ("Content Type"), 0, 1, n, n + 1);
 	t->attach (_dcp_content_type, 1, 2, n, n + 1);
 	++n;
@@ -168,6 +172,7 @@ FilmEditor::FilmEditor (Film* f)
 	t->show_all ();
 	_vbox.pack_start (*t, false, false);
 
+	_copy_from_dvd_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::copy_from_dvd_clicked));
 	_make_dcp_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked));
 	HBox* h = manage (new HBox);
 	h->set_spacing (12);
@@ -435,6 +440,7 @@ FilmEditor::set_things_sensitive (bool s)
 	_name.set_sensitive (s);
 	_format.set_sensitive (s);
 	_content.set_sensitive (s);
+	_copy_from_dvd_button.set_sensitive (s);
 	_left_crop.set_sensitive (s);
 	_right_crop.set_sensitive (s);
 	_top_crop.set_sensitive (s);
@@ -465,4 +471,12 @@ FilmEditor::guess_dcp_long_name_toggled ()
 	}
 
 	_film->set_guess_dcp_long_name (_guess_dcp_long_name.get_active ());
+}
+
+void
+FilmEditor::copy_from_dvd_clicked ()
+{
+	Job* j = new CopyFromDVDJob (_film->state_copy (), _film->log ());
+	j->Finished.connect (sigc::mem_fun (_film, &Film::copy_from_dvd_post_gui));
+	JobManager::instance()->add (j);
 }

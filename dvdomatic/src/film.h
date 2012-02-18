@@ -154,6 +154,8 @@ public:
 	int thumb_frame (int) const;
 	std::string thumb_file (int) const;
 
+	void copy_from_dvd_post_gui ();
+
 	bool dirty () const {
 		return _dirty;
 	}
