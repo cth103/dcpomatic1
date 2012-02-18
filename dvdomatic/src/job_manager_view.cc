@@ -70,7 +70,7 @@ JobManagerView::update ()
 			r = *j;
 			r[_columns.name] = (*i)->name ();
 			r[_columns.job] = *i;
-			r[_columns.progress_unknown] = 0;
+			r[_columns.progress_unknown] = -1;
 		} else {
 			r = *j;
 		}
