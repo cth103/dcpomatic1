@@ -28,6 +28,7 @@
 #include "make_dcp_job.h"
 #include "job_manager.h"
 #include "ab_transcode_job.h"
+#include "util.h"
 
 using namespace std;
 
@@ -38,6 +39,7 @@ int main (int argc, char* argv[])
 	boost::program_options::options_description desc ("Allowed options");
 	desc.add_options ()
 		("help", "give help")
+		("deps", "list versions of dependencies")
 		("film", boost::program_options::value<string> (&film_dir), "film")
 		;
 	boost::program_options::positional_options_description pos;
@@ -55,6 +57,10 @@ int main (int argc, char* argv[])
 	Format::setup_formats ();
 	Filter::setup_filters ();
 	ContentType::setup_content_types ();
+
+	if (vm.count ("deps")) {
+		cout << "makedcp using " << dependency_version_summary () << "\n";
+	}
 
 	Film* film = 0;
 	try {
