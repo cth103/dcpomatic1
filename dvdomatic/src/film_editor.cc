@@ -130,8 +130,6 @@ FilmEditor::FilmEditor (Film* f)
 	t->attach (left_aligned_label ("Content"), 0, 1, n, n + 1);
 	t->attach (_content, 1, 2, n, n + 1);
 	++n;
-	t->attach (_copy_from_dvd_button, 1, 2, n, n + 1);
-	++n;
 	t->attach (left_aligned_label ("Content Type"), 0, 1, n, n + 1);
 	t->attach (_dcp_content_type, 1, 2, n, n + 1);
 	++n;
@@ -180,6 +178,7 @@ FilmEditor::FilmEditor (Film* f)
 	HBox* h = manage (new HBox);
 	h->set_spacing (12);
 	h->pack_start (_examine_content_button, false, false);
+	h->pack_start (_copy_from_dvd_button, false, false);
 	_vbox.pack_start (*h, false, false);
 	
 	h = manage (new HBox);
