@@ -17,10 +17,12 @@
 
 */
 
+#include <iostream>
 #include <sigc++/signal.h>
 #include "transcoder.h"
 #include "encoder.h"
 
+using namespace std;
 using namespace boost;
 
 Transcoder::Transcoder (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Job* j, Encoder* e)
@@ -36,6 +38,15 @@ void
 Transcoder::go ()
 {
 	_encoder->process_begin ();
-	_decoder.go ();
+	try {
+		_decoder.go ();
+	} catch (...) {
+		/* process_end() is important as the decoder may have worker
+		   threads that need to be cleaned up.
+		*/
+		_encoder->process_end ();
+		throw;
+	}
+
 	_encoder->process_end ();
 }
