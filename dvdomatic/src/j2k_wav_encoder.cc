@@ -180,7 +180,7 @@ J2KWAVEncoder::process_audio (uint8_t* data, int channels, int data_size)
 				sf_write_short (_sound_files[i], (const short *) _deinterleave_buffer, this_time / sample_size);
 				break;
 			default:
-				throw DecodeError ("Unknown audio sample format");
+				throw DecodeError ("unknown audio sample format");
 			}
 		}
 		
