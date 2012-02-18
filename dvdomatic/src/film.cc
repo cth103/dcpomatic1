@@ -418,7 +418,8 @@ Film::j2k_dir () const
 	s << _state.format->nickname()
 	  << "_" << _state.content
 	  << "_" << left_crop() << "_" << right_crop() << "_" << top_crop() << "_" << bottom_crop()
-	  << "_" << f.first << "_" << f.second;
+	  << "_" << f.first << "_" << f.second
+	  << "_" << _state.scaler->id();
 
 	/* Similarly for the A/B case */
 	if (dcp_ab()) {

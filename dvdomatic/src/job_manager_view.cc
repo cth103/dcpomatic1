@@ -39,7 +39,7 @@ JobManagerView::JobManagerView ()
 	Gtk::TreeViewColumn* c = _view.get_column (n - 1);
 	c->add_attribute (r->property_value(), _columns.progress);
 	c->add_attribute (r->property_pulse(), _columns.progress_unknown);
-	c->add_attribute (r->property_text(), _columns.resolution);
+	c->add_attribute (r->property_text(), _columns.text);
 
 	_scroller.add (_view);
 	_scroller.set_size_request (-1, 150);
@@ -80,6 +80,11 @@ JobManagerView::update ()
 		float const p = (*i)->get_overall_progress ();
 		if (p >= 0) {
 			r[_columns.progress] = p * 100;
+			if ((*i)->elapsed_time() > 10) {
+				stringstream s;
+				s << "About " << seconds_to_hms ((*i)->elapsed_time() / p) << " remaining.";
+				r[_columns.text] = s.str ();
+			}
 		} else {
 			if (!(*i)->finished ()) {
 				r[_columns.progress_unknown] = r[_columns.progress_unknown] + 1;
@@ -92,15 +97,15 @@ JobManagerView::update ()
 		*/
 		
 		if ((*i)->finished_ok ()) {
-			string const c = r[_columns.resolution];
+			string const c = r[_columns.text];
 			if (c.substr (0, 2) != "OK") {
-				r[_columns.resolution] = "OK (running for " + seconds_to_hms ((*i)->elapsed_time ()) + ")";
+				r[_columns.text] = "OK (running for " + seconds_to_hms ((*i)->elapsed_time ()) + ")";
 				inform_of_finish = true;
 			}
 		} else if ((*i)->finished_in_error ()) {
-			string const c = r[_columns.resolution];
+			string const c = r[_columns.text];
 			if (c.substr (0, 5) != "Error") {
-				r[_columns.resolution] = "Error (" + (*i)->error() + ")";
+				r[_columns.text] = "Error (" + (*i)->error() + ")";
 				inform_of_finish = true;
 			}
 		}

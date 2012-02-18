@@ -48,14 +48,14 @@ private:
 			add (job);
 			add (progress);
 			add (progress_unknown);
-			add (resolution);
+			add (text);
 		}
 
 		Gtk::TreeModelColumn<std::string> name;
 		Gtk::TreeModelColumn<boost::shared_ptr<Job> > job;
 		Gtk::TreeModelColumn<float> progress;
 		Gtk::TreeModelColumn<int> progress_unknown;
-		Gtk::TreeModelColumn<std::string> resolution;
+		Gtk::TreeModelColumn<std::string> text;
 	};
 
 	StoreColumns _columns;
