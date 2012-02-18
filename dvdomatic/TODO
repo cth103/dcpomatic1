@@ -18,3 +18,5 @@ unsharp --- worse
 Benchmark SWS options: lanczos ?
 hqdn3d=0:0:6 ? (turn off chroma/luma blurring)
 
+Lanczos; no visible effect on Ghostbusters.
+

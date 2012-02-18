@@ -77,17 +77,20 @@ JobManagerView::update ()
 
 		bool inform_of_finish = false;
 
-		float const p = (*i)->get_overall_progress ();
-		if (p >= 0) {
-			r[_columns.progress] = p * 100;
-			if ((*i)->elapsed_time() > 10) {
-				stringstream s;
-				s << "About " << seconds_to_hms ((*i)->elapsed_time() / p) << " remaining.";
-				r[_columns.text] = s.str ();
-			}
-		} else {
-			if (!(*i)->finished ()) {
-				r[_columns.progress_unknown] = r[_columns.progress_unknown] + 1;
+		if (!(*i)->finished ()) {
+			float const p = (*i)->get_overall_progress ();
+			if (p >= 0) {
+				r[_columns.progress] = p * 100;
+				if ((*i)->elapsed_time() > 10) {
+					stringstream s;
+					int const t = (*i)->elapsed_time ();
+					s << rint (p * 100) << "%; about " << seconds_to_hms (t / p - t) << " remaining.";
+					r[_columns.text] = s.str ();
+				}
+			} else {
+				if (!(*i)->finished ()) {
+					r[_columns.progress_unknown] = r[_columns.progress_unknown] + 1;
+				}
 			}
 		}
 		
@@ -99,12 +102,14 @@ JobManagerView::update ()
 		if ((*i)->finished_ok ()) {
 			string const c = r[_columns.text];
 			if (c.substr (0, 2) != "OK") {
+				r[_columns.progress] = 100;
 				r[_columns.text] = "OK (running for " + seconds_to_hms ((*i)->elapsed_time ()) + ")";
 				inform_of_finish = true;
 			}
 		} else if ((*i)->finished_in_error ()) {
 			string const c = r[_columns.text];
 			if (c.substr (0, 5) != "Error") {
+				r[_columns.progress] = 100;
 				r[_columns.text] = "Error (" + (*i)->error() + ")";
 				inform_of_finish = true;
 			}
