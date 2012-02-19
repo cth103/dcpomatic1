@@ -95,6 +95,8 @@ J2KWAVEncoder::process_video (uint8_t* rgb, int line_size, int frame)
 void
 J2KWAVEncoder::encoder_thread (Server* server)
 {
+	int failures = 0;
+	
 	while (1) {
 		boost::mutex::scoped_lock lock (_worker_mutex);
 		while (_queue.empty () && !_process_end) {
@@ -111,14 +113,30 @@ J2KWAVEncoder::encoder_thread (Server* server)
 		lock.unlock ();
 
 		if (server) {
-			cout << "Send " << im->frame() << "\n";
-			im->encode_remotely (server);
+			try {
+				im->encode_remotely (server);
+			} catch (...) {
+				++failures;
+				cerr << "Remote encode failed; thread sleeping for " << failures << "s.\n";
+				sleep (failures);
+			}
+				
 		} else {
-			cout << "Local " << im->frame() << "\n";
 			im->encode_locally ();
 		}
-		
-		im->encoded()->write (_opt, im->frame ());
+
+		if (im->encoded ()) {
+			im->encoded()->write (_opt, im->frame ());
+		} else {
+			lock.lock ();
+			_queue.push_front (im);
+			lock.unlock ();
+		}
+
+		if (failures == 4) {
+			cerr << "Giving up on encode thread\n";
+			return;
+		}
 		
 		lock.lock ();
 

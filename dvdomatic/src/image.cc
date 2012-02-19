@@ -281,12 +281,14 @@ Image::encode_remotely (Server const * serv)
 
 	reader.read_indefinite ((uint8_t *) buffer, sizeof (buffer));
 	reader.consume (strlen (buffer) + 1);
-	_encoded = new RemotelyEncodedData (atoi (buffer));
+	EncodedData* e = new RemotelyEncodedData (atoi (buffer));
 
 	/* now read the rest */
 	reader.read_definite_and_consume (_encoded->data(), _encoded->size());
 
 	close (fd);
+
+	_encoded = e;
 }
 
 int *
