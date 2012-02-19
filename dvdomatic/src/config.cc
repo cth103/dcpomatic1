@@ -33,9 +33,6 @@ Config::Config ()
 	, _colour_lut_index (0)
 	, _j2k_bandwidth (250000000)
 {
-	/* XXX */
-	_servers.push_back (new Server ("localhost", 2));
-	
 	ifstream f (get_file().c_str ());
 	string line;
 	while (getline (f, line)) {
@@ -51,7 +48,7 @@ Config::Config ()
 		if (s == string::npos) {
 			continue;
 		}
-
+		
 		string const k = line.substr (0, s);
 		string const v = line.substr (s + 1);
 
@@ -64,6 +61,8 @@ Config::Config ()
 			_colour_lut_index = atoi (v.c_str ());
 		} else if (k == "j2k_bandwidth") {
 			_j2k_bandwidth = atoi (v.c_str ());
+		} else if (k == "server") {
+			_servers.push_back (Server::create_from_metadata (v));
 		}
 	}
 }
@@ -87,7 +86,7 @@ Config::instance ()
 }
 
 void
-Config::write ()
+Config::write () const
 {
 	ofstream f (get_file().c_str ());
 	/* XXX: backwards compat */
@@ -95,4 +94,8 @@ Config::write ()
 	  << "server_port " << _server_port << "\n"
 	  << "colour_lut_index " << _colour_lut_index << "\n"
 	  << "j2k_bandwidth " << _j2k_bandwidth << "\n";
+
+	for (list<Server*>::const_iterator i = _servers.begin(); i != _servers.end(); ++i) {
+		f << "server " << (*i)->get_as_metadata () << "\n";
+	}
 }

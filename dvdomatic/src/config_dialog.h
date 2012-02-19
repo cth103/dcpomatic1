@@ -25,13 +25,17 @@ public:
 	ConfigDialog ();
 
 private:
+	void on_response (int);
+	
 	void num_local_encoding_threads_changed ();
 	void colour_lut_changed ();
 	void j2k_bandwidth_changed ();
+	void add_server_clicked ();
 
 	Gtk::SpinButton _num_local_encoding_threads;
 	Gtk::ComboBoxText _colour_lut;
 	Gtk::SpinButton _j2k_bandwidth;
+	Gtk::ListViewText _servers;
+	Gtk::Button _add_server;
 };
 
-	

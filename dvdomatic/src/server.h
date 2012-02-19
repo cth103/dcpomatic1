@@ -35,6 +35,10 @@ public:
 		return _threads;
 	}
 
+	std::string get_as_metadata () const;
+	
+	static Server * create_from_metadata (std::string);
+
 private:
 	std::string _host_name;
 	int _threads;

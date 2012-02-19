@@ -41,6 +41,10 @@ public:
 		return _j2k_bandwidth;
 	}
 
+	std::list<Server*> servers () const {
+		return _servers;
+	}
+
 	void set_num_local_encoding_threads (int n) {
 		_num_local_encoding_threads = n;
 	}
@@ -57,11 +61,11 @@ public:
 		_j2k_bandwidth = b;
 	}
 
-	std::list<Server*> servers () const {
-		return _servers;
+	void set_servers (std::list<Server*> s) {
+		_servers = s;
 	}
 
-	void write ();
+	void write () const;
 	
 	static Config* instance ();
 
@@ -74,7 +78,7 @@ private:
 	int _colour_lut_index;
 	int _j2k_bandwidth;
 
-	std::list<Server*> _servers;
+	std::list<Server *> _servers;
 
 	static Config* _instance;
 
