@@ -284,7 +284,7 @@ Image::encode_remotely (Server const * serv)
 	EncodedData* e = new RemotelyEncodedData (atoi (buffer));
 
 	/* now read the rest */
-	reader.read_definite_and_consume (_encoded->data(), _encoded->size());
+	reader.read_definite_and_consume (e->data(), e->size());
 
 	close (fd);
 
