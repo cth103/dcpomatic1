@@ -41,6 +41,7 @@
 #include "options.h"
 #include "exceptions.h"
 #include "server.h"
+#include "util.h"
 
 using namespace std;
 using namespace boost;
@@ -48,6 +49,7 @@ using namespace boost;
 /** Construct an empty image */
 Image::Image (int f, int w, int h, int fps)
 	: _frame (f)
+	, _parameters (0)
 	, _cinfo (0)
 	, _cio (0)
 	, _width (w)
@@ -61,6 +63,7 @@ Image::Image (int f, int w, int h, int fps)
 /** Construct an Image from an RGB buffer */
 Image::Image (uint8_t* rgb, int f, int w, int h, int fps)
 	: _frame (f)
+	, _parameters (0)
 	, _cinfo (0)
 	, _cio (0)
 	, _width (w)
@@ -145,10 +148,13 @@ Image::~Image ()
 	if (_cinfo) {
 		opj_destroy_compress (_cinfo);
 	}
+
+	if (_parameters) {
+		free (_parameters->cp_comment);
+		free (_parameters->cp_matrice);
+	}
 	
-	/* Free user parameters structure */
-	free (_parameters.cp_comment);
-	free (_parameters.cp_matrice);
+	delete _parameters;
 
 	delete _encoded;
 }
@@ -163,53 +169,54 @@ Image::encode_locally ()
 	int const max_comp_size = max_cs_len / 1.25;
 
 	/* Set encoding parameters to default values */
-	opj_set_default_encoder_parameters (&_parameters);
+	_parameters = new opj_cparameters_t;
+	opj_set_default_encoder_parameters (_parameters);
 
 	/* Set default cinema parameters */
-	_parameters.tile_size_on = false;
-	_parameters.cp_tdx = 1;
-	_parameters.cp_tdy = 1;
+	_parameters->tile_size_on = false;
+	_parameters->cp_tdx = 1;
+	_parameters->cp_tdy = 1;
 	
 	/* Tile part */
-	_parameters.tp_flag = 'C';
-	_parameters.tp_on = 1;
+	_parameters->tp_flag = 'C';
+	_parameters->tp_on = 1;
 	
 	/* Tile and Image shall be at (0,0) */
-	_parameters.cp_tx0 = 0;
-	_parameters.cp_ty0 = 0;
-	_parameters.image_offset_x0 = 0;
-	_parameters.image_offset_y0 = 0;
+	_parameters->cp_tx0 = 0;
+	_parameters->cp_ty0 = 0;
+	_parameters->image_offset_x0 = 0;
+	_parameters->image_offset_y0 = 0;
 
 	/* Codeblock size = 32x32 */
-	_parameters.cblockw_init = 32;
-	_parameters.cblockh_init = 32;
-	_parameters.csty |= 0x01;
+	_parameters->cblockw_init = 32;
+	_parameters->cblockh_init = 32;
+	_parameters->csty |= 0x01;
 	
 	/* The progression order shall be CPRL */
-	_parameters.prog_order = CPRL;
+	_parameters->prog_order = CPRL;
 	
 	/* No ROI */
-	_parameters.roi_compno = -1;
+	_parameters->roi_compno = -1;
 	
-	_parameters.subsampling_dx = 1;
-	_parameters.subsampling_dy = 1;
+	_parameters->subsampling_dx = 1;
+	_parameters->subsampling_dy = 1;
 	
 	/* 9-7 transform */
-	_parameters.irreversible = 1;
+	_parameters->irreversible = 1;
 	
-	_parameters.tcp_rates[0] = 0;
-	_parameters.tcp_numlayers++;
-	_parameters.cp_disto_alloc = 1;
-	_parameters.cp_rsiz = CINEMA2K;
-	_parameters.cp_comment = strdup ("OpenDCP");
-	_parameters.cp_cinema = CINEMA2K_24;
+	_parameters->tcp_rates[0] = 0;
+	_parameters->tcp_numlayers++;
+	_parameters->cp_disto_alloc = 1;
+	_parameters->cp_rsiz = CINEMA2K;
+	_parameters->cp_comment = strdup ("OpenDCP");
+	_parameters->cp_cinema = CINEMA2K_24;
 
 	/* 3 components, so use MCT */
-	_parameters.tcp_mct = 1;
+	_parameters->tcp_mct = 1;
 	
 	/* set max image */
-	_parameters.max_comp_size = max_comp_size;
-	_parameters.tcp_rates[0] = ((float) (3 * _image->comps[0].w * _image->comps[0].h * _image->comps[0].prec)) / (max_cs_len * 8);
+	_parameters->max_comp_size = max_comp_size;
+	_parameters->tcp_rates[0] = ((float) (3 * _image->comps[0].w * _image->comps[0].h * _image->comps[0].prec)) / (max_cs_len * 8);
 
 	/* get a J2K compressor handle */
 	_cinfo = opj_create_compress (CODEC_J2K);
@@ -218,7 +225,7 @@ Image::encode_locally ()
 	_cinfo->event_mgr = 0;
 
 	/* Setup the encoder parameters using the current image and user parameters */
-	opj_setup_encoder (_cinfo, &_parameters, _image);
+	opj_setup_encoder (_cinfo, _parameters, _image);
 
 	_cio = opj_cio_open ((opj_common_ptr) _cinfo, 0, 0);
 
@@ -251,44 +258,28 @@ Image::encode_remotely (Server const * serv)
 
 	stringstream s;
 	s << "encode " << _frame << " " << _width << " " << _height << " " << _frames_per_second;
-	int n = ::write (fd, s.str().c_str(), s.str().length() + 1);
-	if (n < 0) {
-		throw NetworkError ("could not write");
-	}
+	fd_write (fd, (uint8_t *) s.str().c_str(), s.str().length() + 1);
 
 	for (int i = 0; i < 3; ++i) {
-		int n = ::write (fd, _image->comps[i].data, _width * _height * sizeof (int));
-		if (n < 0) {
-			throw NetworkError ("could not write");
-		}
+		fd_write (fd, (uint8_t *) _image->comps[i].data, _width * _height * sizeof (int));
 	}
 
-	char buffer[256];
-	n = read (fd, buffer, sizeof (buffer));
-	if (n < 0) {
-		throw NetworkError ("no reply from server");
-	}
+	SocketReader reader (fd);
+
+	char buffer[32];
+	reader.read_indefinite ((uint8_t *) buffer, sizeof (buffer));
+	reader.consume (strlen (buffer) + 1);
 
 	if (strcmp (buffer, "OK") != 0) {
 		throw NetworkError ("bad reply from server");
 	}
 
-	n = read (fd, buffer, sizeof (buffer));
-
+	reader.read_indefinite ((uint8_t *) buffer, sizeof (buffer));
+	reader.consume (strlen (buffer) + 1);
 	_encoded = new RemotelyEncodedData (atoi (buffer));
 
-	/* copy any image data in the buffer[] that we just read */
-	int const offset = strlen(buffer) + 1;
-	int const start = n - strlen(buffer) - 1;
-	if (start > 0) {
-		memcpy (_encoded->data(), buffer + offset, n);
-	}
-
 	/* now read the rest */
-	n = read (fd, _encoded->data() + offset, _encoded->size() - offset);
-	if (n != (_encoded->size() - offset)) {
-		throw runtime_error ("could not read image data");
-	}
+	reader.read_definite_and_consume (_encoded->data(), _encoded->size());
 
 	close (fd);
 }
@@ -324,15 +315,8 @@ EncodedData::send (int fd)
 {
 	stringstream s;
 	s << _size;
-	int n = ::write (fd, s.str().c_str(), s.str().length() + 1);
-	if (n < 0) {
-		throw NetworkError ("could not write");
-	}
-	
-	n = ::write (fd, _data, _size);
-	if (n < 0) {
-		throw NetworkError ("could not write");
-	}
+	fd_write (fd, (uint8_t *) s.str().c_str(), s.str().length() + 1);
+	fd_write (fd, _data, _size);
 }
 
 RemotelyEncodedData::RemotelyEncodedData (int s)

@@ -111,8 +111,10 @@ J2KWAVEncoder::encoder_thread (Server* server)
 		lock.unlock ();
 
 		if (server) {
+			cout << "Send " << im->frame() << "\n";
 			im->encode_remotely (server);
 		} else {
+			cout << "Local " << im->frame() << "\n";
 			im->encode_locally ();
 		}
 		

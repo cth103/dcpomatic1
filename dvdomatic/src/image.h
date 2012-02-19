@@ -91,7 +91,7 @@ private:
 	int _frame;
 	opj_image_cmptparm_t _cmptparm[3];
 	opj_image* _image;
-	opj_cparameters_t _parameters;
+	opj_cparameters_t* _parameters;
 	opj_cinfo_t* _cinfo;
 	opj_cio_t* _cio;
 	int _width;

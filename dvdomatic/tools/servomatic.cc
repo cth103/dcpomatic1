@@ -33,6 +33,8 @@
 #include <boost/thread/condition.hpp>
 #include "config.h"
 #include "image.h"
+#include "exceptions.h"
+#include "util.h"
 
 #define BACKLOG 8
 #define THREADS 2
@@ -86,8 +88,11 @@ int main ()
 	
 	int fd = socket (AF_INET, SOCK_STREAM, 0);
 	if (fd < 0) {
-		throw runtime_error ("could not open socket");
+		throw NetworkError ("could not open socket");
 	}
+
+	int const o = 1;
+	setsockopt (fd, SOL_SOCKET, SO_REUSEADDR, &o, sizeof (o));
 
 	struct sockaddr_in server_address;
 	memset (&server_address, 0, sizeof (server_address));
@@ -97,7 +102,7 @@ int main ()
 	if (::bind (fd, (struct sockaddr *) &server_address, sizeof (server_address)) < 0) {
 		stringstream s;
 		s << "could not bind (" << strerror (errno) << ")";
-		throw runtime_error (s.str());
+		throw NetworkError (s.str());
 	}
 
 	listen (fd, BACKLOG);
@@ -107,14 +112,14 @@ int main ()
 		socklen_t client_length = sizeof (client_address);
 		int new_fd = accept (fd, (struct sockaddr *) &client_address, &client_length);
 		if (new_fd < 0) {
-			throw runtime_error ("error on accept");
+			throw NetworkError ("error on accept");
 		}
+
+		SocketReader reader (new_fd);
 		
-		char buffer[256];
-		int n = read (new_fd, buffer, sizeof (buffer));
-		if (n < 0) {
-			throw runtime_error ("error reading from socket");
-		}
+		char buffer[128];
+		reader.read_indefinite ((uint8_t *) buffer, sizeof (buffer));
+		reader.consume (strlen (buffer) + 1);
 
 		string s (buffer);
 		vector<string> b;
@@ -125,10 +130,7 @@ int main ()
 			int const h = atoi (b[3].c_str ());
 			shared_ptr<Image> image (new Image (atoi (b[1].c_str ()), w, h, atoi (b[4].c_str ())));
 			for (int i = 0; i < 3; ++i) {
-				int n = read (new_fd, image->component_buffer (i), w * h * sizeof (int));
-				if (n < 0) {
-					throw runtime_error ("could not read");
-				}
+				reader.read_definite_and_consume ((uint8_t *) image->component_buffer (i), w * h * sizeof (int));
 			}
 			
 			{
@@ -138,15 +140,14 @@ int main ()
 				while (int (queue.size()) >= THREADS * 2) {
 					worker_condition.wait (lock);
 				}
-				
+
+				cout << "Queue " << image->frame() << "\n";
 				queue.push_back (Work (image, new_fd));
 				worker_condition.notify_all ();
 			}
+
+			fd_write (new_fd, (uint8_t *) "OK", 3);
 			
-			n = write (new_fd, "OK", 3);
-			if (n < 0) {
-				throw runtime_error ("could not write");
-			}
 		} else {
 			close (new_fd);
 		}

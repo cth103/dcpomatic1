@@ -57,7 +57,9 @@ public:
 		_j2k_bandwidth = b;
 	}
 
-	std::list<Server*> servers () const;
+	std::list<Server*> servers () const {
+		return _servers;
+	}
 
 	void write ();
 	

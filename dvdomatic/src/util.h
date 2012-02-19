@@ -30,3 +30,19 @@ extern void stacktrace (std::ostream &, int);
 extern std::string audio_sample_format_to_string (AVSampleFormat);
 extern AVSampleFormat audio_sample_format_from_string (std::string);
 extern std::string dependency_version_summary ();
+extern void fd_write (int, uint8_t const *, int);
+
+class SocketReader
+{
+public:
+	SocketReader (int);
+
+	void read_definite_and_consume (uint8_t *, int);
+	void read_indefinite (uint8_t *, int);
+	void consume (int);
+
+private:
+	int _fd;
+	uint8_t _buffer[256];
+	int _buffer_data;
+};

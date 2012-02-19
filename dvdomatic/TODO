@@ -4,6 +4,7 @@ Restartable jobs somehow
 use something other than TIFF
 More logging
 Nice error when trying to thumbnail with no content.
+Floating point fps hoo-ha
 
 options summary
 
