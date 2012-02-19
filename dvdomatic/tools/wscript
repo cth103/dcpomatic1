@@ -1,5 +1,5 @@
 def build(bld):
-    for t in ['dvdomatic', 'makedcp']:
+    for t in ['dvdomatic', 'makedcp', 'servomatic']:
         obj = bld(features = 'cxx cxxprogram')
     	obj.uselib = 'BOOST_THREAD GTKMM BOOST_PROGRAM_OPTIONS'
         obj.use    = 'libdvdomatic'

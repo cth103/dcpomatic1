@@ -18,28 +18,17 @@
 
 */
 
-#include <openjpeg.h>
+#include "image.h"
 
-class FilmState;
 class Options;
 
-class Image
+class FileImage : public Image
 {
 public:
-	Image (uint8_t *, int, int, int, int);
-	virtual ~Image ();
+	FileImage (boost::shared_ptr<const Options>, uint8_t *, int, int, int, int);
 
-	virtual void output (uint8_t *, int) = 0;
+	void output (uint8_t *, int);
 	
-	void encode ();
-	
-protected:
-	int _frame;
-
-private:	
-	opj_image_cmptparm_t _cmptparm[3];
-	opj_image* _image;
-	int _width;
-	int _height;
-	int _frames_per_second;
+private:
+	boost::shared_ptr<const Options> _opt;
 };

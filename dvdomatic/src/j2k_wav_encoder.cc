@@ -29,7 +29,7 @@
 #include "config.h"
 #include "film_state.h"
 #include "options.h"
-#include "image.h"
+#include "file_image.h"
 #include "exceptions.h"
 
 using namespace std;
@@ -87,7 +87,7 @@ J2KWAVEncoder::process_video (uint8_t* rgb, int line_size, int frame)
 
 	/* Only do the processing if we don't already have a file for this frame */
 	if (!boost::filesystem::exists (_opt->frame_out_path (frame, false))) {
-		_queue.push_back (boost::shared_ptr<Image> (new Image (_fs, _opt, rgb, frame)));
+		_queue.push_back (boost::shared_ptr<Image> (new FileImage (_opt, rgb, frame, _opt->out_width, _opt->out_height, _fs->frames_per_second)));
 		_worker_condition.notify_all ();
 	}
 }

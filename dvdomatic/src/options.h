@@ -19,6 +19,7 @@
 
 #include <string>
 #include <iomanip>
+#include <sstream>
 
 /** Options for a transcoding operation */
 class Options

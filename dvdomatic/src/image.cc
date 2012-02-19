@@ -38,18 +38,19 @@
 using namespace std;
 using namespace boost;
 
-Image::Image (shared_ptr<const FilmState> fs, shared_ptr<const Options> o, uint8_t* rgb, int f)
-	: _fs (fs)
-	, _opt (o)
-	, _frame (f)
+Image::Image (uint8_t* rgb, int f, int w, int h, int fps)
+	: _frame (f)
+	, _width (w)
+	, _height (h)
+	, _frames_per_second (fps)
 {
 	/* Create libopenjpeg image container */
 	
 	for (int i = 0; i < 3; ++i) {
 		_cmptparm[i].dx = 1;
 		_cmptparm[i].dy = 1;
-		_cmptparm[i].w = _opt->out_width;
-		_cmptparm[i].h = _opt->out_height;
+		_cmptparm[i].w = _width;
+		_cmptparm[i].h = _height;
 		_cmptparm[i].x0 = 0;
 		_cmptparm[i].y0 = 0;
 		_cmptparm[i].prec = 12;
@@ -64,10 +65,10 @@ Image::Image (shared_ptr<const FilmState> fs, shared_ptr<const Options> o, uint8
 
 	_image->x0 = 0;
 	_image->y0 = 0;
-	_image->x1 = _opt->out_width;
-	_image->y1 = _opt->out_height;
+	_image->x1 = _width;
+	_image->y1 = _height;
 
-	int const size = _opt->out_width * _opt->out_height;
+	int const size = _width * _height;
 
 	struct {
 		float r, g, b;
@@ -116,7 +117,7 @@ Image::encode ()
 	int const bw = Config::instance()->j2k_bandwidth ();
 
 	/* Set the max image and component sizes based on frame_rate */
-	int const max_cs_len = ((float) bw) / 8 / _fs->frames_per_second;
+	int const max_cs_len = ((float) bw) / 8 / _frames_per_second;
 	int const max_comp_size = max_cs_len / 1.25;
 
 	/* Set encoding parameters to default values */
@@ -187,24 +188,23 @@ Image::encode ()
 		throw EncodeError ("jpeg2000 encoding failed");
 	}
 
-	int const codestream_length = cio_tell (cio);
+	try {
 
-	string const tmp_j2k = _opt->frame_out_path (_frame, true);
+		output (cio->buffer, cio_tell (cio));
 
-	FILE* f = fopen (tmp_j2k.c_str (), "wb");
-	
-	if (!f) {
-		opj_cio_close(cio);
-		opj_destroy_compress(cinfo);
-		throw WriteFileError (tmp_j2k);
+	} catch (...) {
+
+		/* Free openjpeg structure */
+		opj_cio_close (cio);
+		opj_destroy_compress (cinfo);
+		
+		/* Free user parameters structure */
+		free (parameters.cp_comment);
+		free (parameters.cp_matrice);
+
+		throw;
 	}
-
-	fwrite (cio->buffer, 1, codestream_length, f);
-	fclose (f);
-
-	/* Rename the file from foo.j2c.tmp to foo.j2c now that it is complete */
-	filesystem::rename (tmp_j2k, _opt->frame_out_path (_frame, false));
-
+	
 	/* Free openjpeg structure */
 	opj_cio_close (cio);
 	opj_destroy_compress (cinfo);

@@ -18,28 +18,36 @@
 
 */
 
-#include <openjpeg.h>
+#include <cstdio>
+#include <boost/filesystem.hpp>
+#include "options.h"
+#include "exceptions.h"
+#include "file_image.h"
 
-class FilmState;
-class Options;
+using namespace std;
+using namespace boost;
 
-class Image
+FileImage::FileImage (shared_ptr<const Options> o, uint8_t* rgb, int f, int w, int h, int fps)
+	: Image (rgb, f, w, h, fps)
+	, _opt (o)
 {
-public:
-	Image (uint8_t *, int, int, int, int);
-	virtual ~Image ();
-
-	virtual void output (uint8_t *, int) = 0;
 	
-	void encode ();
-	
-protected:
-	int _frame;
+}
 
-private:	
-	opj_image_cmptparm_t _cmptparm[3];
-	opj_image* _image;
-	int _width;
-	int _height;
-	int _frames_per_second;
-};
+void
+FileImage::output (uint8_t* data, int length)
+{
+	string const tmp_j2k = _opt->frame_out_path (_frame, true);
+
+	FILE* f = fopen (tmp_j2k.c_str (), "wb");
+	
+	if (!f) {
+		throw WriteFileError (tmp_j2k);
+	}
+
+	fwrite (data, 1, length, f);
+	fclose (f);
+
+	/* Rename the file from foo.j2c.tmp to foo.j2c now that it is complete */
+	filesystem::rename (tmp_j2k, _opt->frame_out_path (_frame, false));
+}
