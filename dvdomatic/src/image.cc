@@ -246,14 +246,19 @@ Image::encode_remotely (Server const * serv)
 	}
 
 	struct hostent* server = gethostbyname (serv->host_name().c_str ());
+	if (server == 0) {
+		throw NetworkError ("gethostbyname failed");
+	}
 
 	struct sockaddr_in server_address;
 	memset (&server_address, 0, sizeof (server_address));
 	server_address.sin_family = AF_INET;
-	memcpy (server->h_addr, &server_address.sin_addr.s_addr, server->h_length);
+	memcpy (&server_address.sin_addr.s_addr, server->h_addr, server->h_length);
 	server_address.sin_port = htons (Config::instance()->server_port ());
 	if (connect (fd, (struct sockaddr *) &server_address, sizeof (server_address)) < 0) {
-		throw NetworkError ("could not connect");
+		stringstream s;
+		s << "could not connect (" << strerror (errno) << ")";
+		throw NetworkError (s.str());
 	}
 
 	stringstream s;

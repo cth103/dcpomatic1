@@ -80,7 +80,8 @@ worker_thread ()
 	}
 }
 
-int main ()
+int
+main ()
 {
 	for (int i = 0; i < THREADS; ++i) {
 		worker_threads.push_back (new thread (worker_thread));
