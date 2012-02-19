@@ -5,6 +5,8 @@ use something other than TIFF
 More logging
 Nice error when trying to thumbnail with no content.
 Floating point fps hoo-ha
+Don't think the queue is being cleared with multithread
+Stop server crashing / quitting
 
 options summary
 
@@ -23,11 +25,24 @@ Lanczos; no visible effect on Ghostbusters.
 
 
 THX_Monster with master Intel Core 2 Duo E4600 (2.4GHz), slave Intel Core i3 M350 (2.27GHz)
-1920 x 1080 original -> DCI Flat (same resolution)
+1920 x 1080 original -> DCI Flat
 240 frames
 
-1 local:       		 20m57		1257		0.19 fps	
-2 local:    		 11m24		
-2 local + 2 slave:
-2 local + 4 slave:
-2 local + 6 slave:
+				Time		Seconds		FPS		Speedup relative to 1 local
+1 local:       		 	20m57		1257		0.19		x 1	
+2 local:    		 	11m24		 684		0.35		x 1.84
+2 local + 1 slave:	 	6m34		 394		0.61		x 3.19
+2 local + 2 slave:	 	5m13		 313		0.77		x 4.02
+2 local + 4 slave:	 	5m05		 303		0.79		x 4.15
+2 local + 4 slave [Gbit]:	2m50		 170		1.41		x 7.39
+1 local + 8 slave [Gbit]:	2m28		 148		1.62		x 8.49
+2 local + 8 slave [Gbit]:	2m41		 161		1.49		x 7.81
+
+THX_Monster with master Intel Core i3 M350 (2.27GHz), slave Intel Core 2 Duo E4600 (2.4GHz)
+1920 x 1080 original -> DCI Flat
+240 frames
+
+
+4 local:			2m45
+4 local + 2 slave [Gbit]:	2m22
+4 local + 4 slave [Gbit]:	2m21

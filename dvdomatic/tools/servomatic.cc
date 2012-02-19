@@ -37,7 +37,7 @@
 #include "util.h"
 
 #define BACKLOG 8
-#define THREADS 2
+#define THREADS 4
 
 using namespace std;
 using namespace boost;
