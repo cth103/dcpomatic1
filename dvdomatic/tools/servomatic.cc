@@ -101,7 +101,7 @@ int main ()
 	server_address.sin_port = htons (Config::instance()->server_port ());
 	if (::bind (fd, (struct sockaddr *) &server_address, sizeof (server_address)) < 0) {
 		stringstream s;
-		s << "could not bind (" << strerror (errno) << ")";
+		s << "could not bind to port " << Config::instance()->server_port() << " (" << strerror (errno) << ")";
 		throw NetworkError (s.str());
 	}
 
