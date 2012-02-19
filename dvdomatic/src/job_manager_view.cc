@@ -84,7 +84,7 @@ JobManagerView::update ()
 				if ((*i)->elapsed_time() > 10) {
 					stringstream s;
 					int const t = (*i)->elapsed_time ();
-					s << rint (p * 100) << "%; about " << seconds_to_hms (t / p - t) << " remaining.";
+					s << rint (p * 100) << "%; about " << seconds_to_approximate_hms (t / p - t) << " remaining.";
 					r[_columns.text] = s.str ();
 				}
 			} else {
@@ -103,7 +103,7 @@ JobManagerView::update ()
 			string const c = r[_columns.text];
 			if (c.substr (0, 2) != "OK") {
 				r[_columns.progress] = 100;
-				r[_columns.text] = "OK (running for " + seconds_to_hms ((*i)->elapsed_time ()) + ")";
+				r[_columns.text] = "OK (ran for " + seconds_to_hms ((*i)->elapsed_time ()) + ")";
 				inform_of_finish = true;
 			}
 		} else if ((*i)->finished_in_error ()) {

@@ -67,6 +67,31 @@ seconds_to_hms (int s)
 	return hms.str ();
 }
 
+string
+seconds_to_approximate_hms (int s)
+{
+	int m = s / 60;
+	s -= (m * 60);
+	int h = m / 60;
+	m -= (h * 60);
+
+	stringstream ap;
+	
+	if (h > 0) {
+		if (m > 30) {
+			ap << (h + 1) << " hours";
+		} else {
+			ap << h << " hours";
+		}
+	} else if (m > 0) {
+		ap << m << " minutes";
+	} else {
+		ap << s << " seconds";
+	}
+
+	return ap.str ();
+}
+
 Gtk::Label &
 left_aligned_label (string t)
 {
