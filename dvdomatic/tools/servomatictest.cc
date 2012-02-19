@@ -29,6 +29,7 @@
 #include "image.h"
 #include "options.h"
 #include "decoder.h"
+#include "exceptions.h"
 
 using namespace std;
 using namespace boost;
@@ -45,7 +46,18 @@ process_video (uint8_t* rgb, int line_size, int frame)
 	cout.flush ();
 
 	local->encode_locally ();
-	remote->encode_remotely (server);
+
+	string remote_error;
+	try {
+		remote->encode_remotely (server);
+	} catch (NetworkError& e) {
+		remote_error = e.what ();
+	}
+
+	if (!remote_error.empty ()) {
+		cout << "\033[0;31mnetwork problem: " << remote_error << "\033[0m\n";
+		return;
+	}
 
 	if (local->encoded()->size() != remote->encoded()->size()) {
 		cout << "\033[0;31msizes differ\033[0m\n";
