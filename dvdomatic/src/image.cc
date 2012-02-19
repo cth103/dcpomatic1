@@ -26,6 +26,12 @@
 #include <iomanip>
 #include <sstream>
 #include <iostream>
+#include <unistd.h>
+#include <errno.h>
+#include <sys/types.h> 
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
 #include <boost/filesystem.hpp>
 #include "film.h"
 #include "image.h"
@@ -34,39 +40,35 @@
 #include "film_state.h"
 #include "options.h"
 #include "exceptions.h"
+#include "server.h"
 
 using namespace std;
 using namespace boost;
 
-Image::Image (uint8_t* rgb, int f, int w, int h, int fps)
+/** Construct an empty image */
+Image::Image (int f, int w, int h, int fps)
 	: _frame (f)
+	, _cinfo (0)
+	, _cio (0)
 	, _width (w)
 	, _height (h)
 	, _frames_per_second (fps)
+	, _encoded (0)
 {
-	/* Create libopenjpeg image container */
-	
-	for (int i = 0; i < 3; ++i) {
-		_cmptparm[i].dx = 1;
-		_cmptparm[i].dy = 1;
-		_cmptparm[i].w = _width;
-		_cmptparm[i].h = _height;
-		_cmptparm[i].x0 = 0;
-		_cmptparm[i].y0 = 0;
-		_cmptparm[i].prec = 12;
-		_cmptparm[i].bpp = 12;
-		_cmptparm[i].sgnd = 0;
-	}
+	create_openjpeg_container ();
+}
 
-	_image = opj_image_create (3, &_cmptparm[0], CLRSPC_SRGB);
-	if (_image == 0) {
-		throw EncodeError ("could not create libopenjpeg image");
-	}
-
-	_image->x0 = 0;
-	_image->y0 = 0;
-	_image->x1 = _width;
-	_image->y1 = _height;
+/** Construct an Image from an RGB buffer */
+Image::Image (uint8_t* rgb, int f, int w, int h, int fps)
+	: _frame (f)
+	, _cinfo (0)
+	, _cio (0)
+	, _width (w)
+	, _height (h)
+	, _frames_per_second (fps)
+	, _encoded (0)
+{
+	create_openjpeg_container ();
 
 	int const size = _width * _height;
 
@@ -106,13 +108,53 @@ Image::Image (uint8_t* rgb, int f, int w, int h, int fps)
 	}
 }
 
+void
+Image::create_openjpeg_container ()
+{
+	for (int i = 0; i < 3; ++i) {
+		_cmptparm[i].dx = 1;
+		_cmptparm[i].dy = 1;
+		_cmptparm[i].w = _width;
+		_cmptparm[i].h = _height;
+		_cmptparm[i].x0 = 0;
+		_cmptparm[i].y0 = 0;
+		_cmptparm[i].prec = 12;
+		_cmptparm[i].bpp = 12;
+		_cmptparm[i].sgnd = 0;
+	}
+
+	_image = opj_image_create (3, &_cmptparm[0], CLRSPC_SRGB);
+	if (_image == 0) {
+		throw EncodeError ("could not create libopenjpeg image");
+	}
+
+	_image->x0 = 0;
+	_image->y0 = 0;
+	_image->x1 = _width;
+	_image->y1 = _height;
+}
+
 Image::~Image ()
 {
 	opj_image_destroy (_image);
+
+	if (_cio) {
+		opj_cio_close (_cio);
+	}
+
+	if (_cinfo) {
+		opj_destroy_compress (_cinfo);
+	}
+	
+	/* Free user parameters structure */
+	free (_parameters.cp_comment);
+	free (_parameters.cp_matrice);
+
+	delete _encoded;
 }
 
 void
-Image::encode ()
+Image::encode_locally ()
 {
 	int const bw = Config::instance()->j2k_bandwidth ();
 
@@ -121,95 +163,185 @@ Image::encode ()
 	int const max_comp_size = max_cs_len / 1.25;
 
 	/* Set encoding parameters to default values */
-	opj_cparameters_t parameters;
-	opj_set_default_encoder_parameters (&parameters);
+	opj_set_default_encoder_parameters (&_parameters);
 
 	/* Set default cinema parameters */
-	parameters.tile_size_on = false;
-	parameters.cp_tdx = 1;
-	parameters.cp_tdy = 1;
+	_parameters.tile_size_on = false;
+	_parameters.cp_tdx = 1;
+	_parameters.cp_tdy = 1;
 	
 	/* Tile part */
-	parameters.tp_flag = 'C';
-	parameters.tp_on = 1;
+	_parameters.tp_flag = 'C';
+	_parameters.tp_on = 1;
 	
 	/* Tile and Image shall be at (0,0) */
-	parameters.cp_tx0 = 0;
-	parameters.cp_ty0 = 0;
-	parameters.image_offset_x0 = 0;
-	parameters.image_offset_y0 = 0;
+	_parameters.cp_tx0 = 0;
+	_parameters.cp_ty0 = 0;
+	_parameters.image_offset_x0 = 0;
+	_parameters.image_offset_y0 = 0;
 
 	/* Codeblock size = 32x32 */
-	parameters.cblockw_init = 32;
-	parameters.cblockh_init = 32;
-	parameters.csty |= 0x01;
+	_parameters.cblockw_init = 32;
+	_parameters.cblockh_init = 32;
+	_parameters.csty |= 0x01;
 	
 	/* The progression order shall be CPRL */
-	parameters.prog_order = CPRL;
+	_parameters.prog_order = CPRL;
 	
 	/* No ROI */
-	parameters.roi_compno = -1;
+	_parameters.roi_compno = -1;
 	
-	parameters.subsampling_dx = 1;
-	parameters.subsampling_dy = 1;
+	_parameters.subsampling_dx = 1;
+	_parameters.subsampling_dy = 1;
 	
 	/* 9-7 transform */
-	parameters.irreversible = 1;
+	_parameters.irreversible = 1;
 	
-	parameters.tcp_rates[0] = 0;
-	parameters.tcp_numlayers++;
-	parameters.cp_disto_alloc = 1;
-	parameters.cp_rsiz = CINEMA2K;
-	parameters.cp_comment = strdup ("OpenDCP");
-	parameters.cp_cinema = CINEMA2K_24;
+	_parameters.tcp_rates[0] = 0;
+	_parameters.tcp_numlayers++;
+	_parameters.cp_disto_alloc = 1;
+	_parameters.cp_rsiz = CINEMA2K;
+	_parameters.cp_comment = strdup ("OpenDCP");
+	_parameters.cp_cinema = CINEMA2K_24;
 
 	/* 3 components, so use MCT */
-	parameters.tcp_mct = 1;
+	_parameters.tcp_mct = 1;
 	
 	/* set max image */
-	parameters.max_comp_size = max_comp_size;
-	parameters.tcp_rates[0] = ((float) (3 * _image->comps[0].w * _image->comps[0].h * _image->comps[0].prec)) / (max_cs_len * 8);
+	_parameters.max_comp_size = max_comp_size;
+	_parameters.tcp_rates[0] = ((float) (3 * _image->comps[0].w * _image->comps[0].h * _image->comps[0].prec)) / (max_cs_len * 8);
 
 	/* get a J2K compressor handle */
-	opj_cinfo_t* cinfo = opj_create_compress (CODEC_J2K);
+	_cinfo = opj_create_compress (CODEC_J2K);
 
 	/* Set event manager to null (openjpeg 1.3 bug) */
-	cinfo->event_mgr = 0;
+	_cinfo->event_mgr = 0;
 
 	/* Setup the encoder parameters using the current image and user parameters */
-	opj_setup_encoder (cinfo, &parameters, _image);
+	opj_setup_encoder (_cinfo, &_parameters, _image);
 
-	opj_cio_t *cio = opj_cio_open ((opj_common_ptr) cinfo, 0, 0);
+	_cio = opj_cio_open ((opj_common_ptr) _cinfo, 0, 0);
 
-	int const r = opj_encode (cinfo, cio, _image, 0);
+	int const r = opj_encode (_cinfo, _cio, _image, 0);
 	if (r == 0) {
-		opj_cio_close (cio);
-		opj_destroy_compress (cinfo);
 		throw EncodeError ("jpeg2000 encoding failed");
 	}
 
-	try {
+	_encoded = new LocallyEncodedData (_cio->buffer, cio_tell (_cio));
+}
 
-		output (cio->buffer, cio_tell (cio));
+void
+Image::encode_remotely (Server const * serv)
+{
+	int const fd = socket (AF_INET, SOCK_STREAM, 0);
+	if (fd < 0) {
+		throw NetworkError ("could not create socket");
+	}
 
-	} catch (...) {
+	struct hostent* server = gethostbyname (serv->host_name().c_str ());
 
-		/* Free openjpeg structure */
-		opj_cio_close (cio);
-		opj_destroy_compress (cinfo);
-		
-		/* Free user parameters structure */
-		free (parameters.cp_comment);
-		free (parameters.cp_matrice);
+	struct sockaddr_in server_address;
+	memset (&server_address, 0, sizeof (server_address));
+	server_address.sin_family = AF_INET;
+	memcpy (server->h_addr, &server_address.sin_addr.s_addr, server->h_length);
+	server_address.sin_port = htons (Config::instance()->server_port ());
+	if (connect (fd, (struct sockaddr *) &server_address, sizeof (server_address)) < 0) {
+		throw NetworkError ("could not connect");
+	}
 
-		throw;
+	stringstream s;
+	s << "encode " << _frame << " " << _width << " " << _height << " " << _frames_per_second;
+	int n = ::write (fd, s.str().c_str(), s.str().length() + 1);
+	if (n < 0) {
+		throw NetworkError ("could not write");
+	}
+
+	for (int i = 0; i < 3; ++i) {
+		int n = ::write (fd, _image->comps[i].data, _width * _height * sizeof (int));
+		if (n < 0) {
+			throw NetworkError ("could not write");
+		}
+	}
+
+	char buffer[256];
+	n = read (fd, buffer, sizeof (buffer));
+	if (n < 0) {
+		throw NetworkError ("no reply from server");
+	}
+
+	if (strcmp (buffer, "OK") != 0) {
+		throw NetworkError ("bad reply from server");
+	}
+
+	n = read (fd, buffer, sizeof (buffer));
+
+	_encoded = new RemotelyEncodedData (atoi (buffer));
+
+	/* copy any image data in the buffer[] that we just read */
+	int const offset = strlen(buffer) + 1;
+	int const start = n - strlen(buffer) - 1;
+	if (start > 0) {
+		memcpy (_encoded->data(), buffer + offset, n);
+	}
+
+	/* now read the rest */
+	n = read (fd, _encoded->data() + offset, _encoded->size() - offset);
+	if (n != (_encoded->size() - offset)) {
+		throw runtime_error ("could not read image data");
+	}
+
+	close (fd);
+}
+
+int *
+Image::component_buffer (int n) const
+{
+	return _image->comps[n].data;
+}
+
+
+void
+EncodedData::write (shared_ptr<const Options> opt, int frame)
+{
+	string const tmp_j2k = opt->frame_out_path (frame, true);
+
+	FILE* f = fopen (tmp_j2k.c_str (), "wb");
+	
+	if (!f) {
+		throw WriteFileError (tmp_j2k);
+	}
+
+	fwrite (_data, 1, _size, f);
+	fclose (f);
+
+	/* Rename the file from foo.j2c.tmp to foo.j2c now that it is complete */
+	filesystem::rename (tmp_j2k, opt->frame_out_path (frame, false));
+}
+
+
+void
+EncodedData::send (int fd)
+{
+	stringstream s;
+	s << _size;
+	int n = ::write (fd, s.str().c_str(), s.str().length() + 1);
+	if (n < 0) {
+		throw NetworkError ("could not write");
 	}
 	
-	/* Free openjpeg structure */
-	opj_cio_close (cio);
-	opj_destroy_compress (cinfo);
-	
-	/* Free user parameters structure */
-	free (parameters.cp_comment);
-	free (parameters.cp_matrice);
+	n = ::write (fd, _data, _size);
+	if (n < 0) {
+		throw NetworkError ("could not write");
+	}
+}
+
+RemotelyEncodedData::RemotelyEncodedData (int s)
+	: EncodedData (new uint8_t[s], s)
+{
+
+}
+
+RemotelyEncodedData::~RemotelyEncodedData ()
+{
+	delete[] _data;
 }

@@ -13,7 +13,6 @@ def build(bld):
 		 decoder.cc
 		 encoder.cc
 		 error_dialog.cc
-		 file_image.cc
     	         film.cc
 		 film_editor.cc
 		 film_state.cc

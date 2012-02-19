@@ -21,16 +21,21 @@
 #include <cstdlib>
 #include <fstream>
 #include "config.h"
+#include "server.h"
 
 using namespace std;
 
 Config* Config::_instance = 0;
 
 Config::Config ()
-	: _num_encoding_threads (2)
+	: _num_local_encoding_threads (2)
+	, _server_port (6192)
 	, _colour_lut_index (0)
 	, _j2k_bandwidth (250000000)
 {
+	/* XXX */
+	_servers.push_back (new Server ("localhost", 2));
+	
 	ifstream f (get_file().c_str ());
 	string line;
 	while (getline (f, line)) {
@@ -50,8 +55,11 @@ Config::Config ()
 		string const k = line.substr (0, s);
 		string const v = line.substr (s + 1);
 
-		if (k == "num_encoding_threads") {
-			_num_encoding_threads = atoi (v.c_str ());
+		/* XXX: backwards compat */
+		if (k == "num_local_encoding_threads" || k == "num_encoding_threads") {
+			_num_local_encoding_threads = atoi (v.c_str ());
+		} else if (k == "server_port") {
+			_server_port = atoi (v.c_str ());
 		} else if (k == "colour_lut_index") {
 			_colour_lut_index = atoi (v.c_str ());
 		} else if (k == "j2k_bandwidth") {
@@ -82,7 +90,9 @@ void
 Config::write ()
 {
 	ofstream f (get_file().c_str ());
-	f << "num_encoding_threads " << _num_encoding_threads << "\n"
+	/* XXX: backwards compat */
+	f << "num_encoding_threads " << _num_local_encoding_threads << "\n"
+	  << "server_port " << _server_port << "\n"
 	  << "colour_lut_index " << _colour_lut_index << "\n"
 	  << "j2k_bandwidth " << _j2k_bandwidth << "\n";
 }

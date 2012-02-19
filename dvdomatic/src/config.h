@@ -17,14 +17,22 @@
 
 */
 
+#include <list>
+
+class Server;
+
 class Config
 {
 public:
 
-	int num_encoding_threads () const {
-		return _num_encoding_threads;
+	int num_local_encoding_threads () const {
+		return _num_local_encoding_threads;
 	}
 
+	int server_port () const {
+		return _server_port;
+	}
+	
 	int colour_lut_index () const {
 		return _colour_lut_index;
 	}
@@ -33,10 +41,14 @@ public:
 		return _j2k_bandwidth;
 	}
 
-	void set_num_encoding_threads (int n) {
-		_num_encoding_threads = n;
+	void set_num_local_encoding_threads (int n) {
+		_num_local_encoding_threads = n;
 	}
 
+	void set_sever_port (int p) {
+		_server_port = p;
+	}
+	
 	void set_colour_lut_index (int i) {
 		_colour_lut_index = i;
 	}
@@ -44,6 +56,8 @@ public:
 	void set_j2k_bandwidth (int b) {
 		_j2k_bandwidth = b;
 	}
+
+	std::list<Server*> servers () const;
 
 	void write ();
 	
@@ -53,9 +67,12 @@ private:
 	Config ();
 	std::string get_file () const;
 
-	int _num_encoding_threads;
+	int _num_local_encoding_threads;
+	int _server_port;
 	int _colour_lut_index;
 	int _j2k_bandwidth;
+
+	std::list<Server*> _servers;
 
 	static Config* _instance;
 

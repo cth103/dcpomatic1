@@ -29,8 +29,9 @@
 #include "config.h"
 #include "film_state.h"
 #include "options.h"
-#include "file_image.h"
 #include "exceptions.h"
+#include "image.h"
+#include "server.h"
 
 using namespace std;
 using namespace boost;
@@ -40,7 +41,6 @@ J2KWAVEncoder::J2KWAVEncoder (shared_ptr<const FilmState> s, shared_ptr<const Op
 	, _deinterleave_buffer_size (8192)
 	, _deinterleave_buffer (0)
 	, _process_end (false)
-	, _num_worker_threads (Config::instance()->num_encoding_threads ())
 {
 	/* Create sound output files with .tmp suffixes; we will rename
 	   them if and when we complete.
@@ -77,7 +77,7 @@ J2KWAVEncoder::process_video (uint8_t* rgb, int line_size, int frame)
 	boost::mutex::scoped_lock lock (_worker_mutex);
 
 	/* Wait until the queue has gone down a bit */
-	while (int (_queue.size()) >= _num_worker_threads * 2 && !_process_end) {
+	while (_queue.size() >= _worker_threads.size() * 2 && !_process_end) {
 		_worker_condition.wait (lock);
 	}
 
@@ -87,13 +87,13 @@ J2KWAVEncoder::process_video (uint8_t* rgb, int line_size, int frame)
 
 	/* Only do the processing if we don't already have a file for this frame */
 	if (!boost::filesystem::exists (_opt->frame_out_path (frame, false))) {
-		_queue.push_back (boost::shared_ptr<Image> (new FileImage (_opt, rgb, frame, _opt->out_width, _opt->out_height, _fs->frames_per_second)));
+		_queue.push_back (boost::shared_ptr<Image> (new Image (rgb, frame, _opt->out_width, _opt->out_height, _fs->frames_per_second)));
 		_worker_condition.notify_all ();
 	}
 }
 
 void
-J2KWAVEncoder::encoder_thread ()
+J2KWAVEncoder::encoder_thread (Server* server)
 {
 	while (1) {
 		boost::mutex::scoped_lock lock (_worker_mutex);
@@ -109,7 +109,15 @@ J2KWAVEncoder::encoder_thread ()
 		_queue.pop_front ();
 		
 		lock.unlock ();
-		im->encode ();
+
+		if (server) {
+			im->encode_remotely (server);
+		} else {
+			im->encode_locally ();
+		}
+		
+		im->encoded()->write (_opt, im->frame ());
+		
 		lock.lock ();
 
 		_worker_condition.notify_all ();
@@ -119,8 +127,16 @@ J2KWAVEncoder::encoder_thread ()
 void
 J2KWAVEncoder::process_begin ()
 {
-	for (int i = 0; i < _num_worker_threads; ++i) {
-		_worker_threads.push_back (new boost::thread (boost::bind (&J2KWAVEncoder::encoder_thread, this)));
+	for (int i = 0; i < Config::instance()->num_local_encoding_threads (); ++i) {
+		_worker_threads.push_back (new boost::thread (boost::bind (&J2KWAVEncoder::encoder_thread, this, (Server *) 0)));
+	}
+
+	list<Server*> servers = Config::instance()->servers ();
+
+	for (list<Server*>::iterator i = servers.begin(); i != servers.end(); ++i) {
+		for (int j = 0; j < (*i)->threads (); ++j) {
+			_worker_threads.push_back (new boost::thread (boost::bind (&J2KWAVEncoder::encoder_thread, this, *i)));
+		}
 	}
 }
 

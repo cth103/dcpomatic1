@@ -129,3 +129,11 @@ public:
 	}
 };
 
+/** Some problem with communication between an encode client and server */
+class NetworkError : public StringError
+{
+public:
+	NetworkError (std::string s)
+		: StringError (s)
+	{}
+};

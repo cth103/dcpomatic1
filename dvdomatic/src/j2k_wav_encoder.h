@@ -25,6 +25,7 @@
 #include "encoder.h"
 
 class Image;
+class Server;
 
 class J2KWAVEncoder : public Encoder
 {
@@ -39,7 +40,7 @@ public:
 
 private:	
 
-	void encoder_thread ();
+	void encoder_thread (Server *);
 
 	std::vector<SNDFILE*> _sound_files;
 	int _deinterleave_buffer_size;
@@ -48,7 +49,6 @@ private:
 	bool _process_end;
 	std::list<boost::shared_ptr<Image> > _queue;
 	std::list<boost::thread *> _worker_threads;
-	int _num_worker_threads;
 	boost::mutex _worker_mutex;
 	boost::condition _worker_condition;
 };

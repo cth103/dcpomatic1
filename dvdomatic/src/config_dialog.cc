@@ -32,10 +32,10 @@ ConfigDialog::ConfigDialog ()
 	t->set_col_spacings (6);
 	t->set_border_width (6);
 
-	_num_encoding_threads.set_range (1, 128);
-	_num_encoding_threads.set_increments (1, 4);
-	_num_encoding_threads.set_value (Config::instance()->num_encoding_threads ());
-	_num_encoding_threads.signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::num_encoding_threads_changed));
+	_num_local_encoding_threads.set_range (1, 128);
+	_num_local_encoding_threads.set_increments (1, 4);
+	_num_local_encoding_threads.set_value (Config::instance()->num_local_encoding_threads ());
+	_num_local_encoding_threads.signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::num_local_encoding_threads_changed));
 
 	_colour_lut.append_text ("sRGB");
 	_colour_lut.append_text ("Rec 709");
@@ -48,8 +48,8 @@ ConfigDialog::ConfigDialog ()
 	_j2k_bandwidth.signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::j2k_bandwidth_changed));
 
 	int n = 0;
-	t->attach (left_aligned_label ("Threads to use for encoding"), 0, 1, n, n + 1);
-	t->attach (_num_encoding_threads, 1, 2, n, n + 1);
+	t->attach (left_aligned_label ("Threads to use for encoding on this machine"), 0, 1, n, n + 1);
+	t->attach (_num_local_encoding_threads, 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Colour LUT"), 0, 1, n, n + 1);
 	t->attach (_colour_lut, 1, 2, n, n + 1);
@@ -67,9 +67,9 @@ ConfigDialog::ConfigDialog ()
 }
 
 void
-ConfigDialog::num_encoding_threads_changed ()
+ConfigDialog::num_local_encoding_threads_changed ()
 {
-	Config::instance()->set_num_encoding_threads (_num_encoding_threads.get_value ());
+	Config::instance()->set_num_local_encoding_threads (_num_local_encoding_threads.get_value ());
 }
 
 void

@@ -1,6 +1,5 @@
 /*
     Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
-    Taken from code Copyright (C) 2010-2011 Terrence Meiczinger
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,36 +17,25 @@
 
 */
 
-#include <cstdio>
-#include <boost/filesystem.hpp>
-#include "options.h"
-#include "exceptions.h"
-#include "file_image.h"
+#include <string>
 
-using namespace std;
-using namespace boost;
-
-FileImage::FileImage (shared_ptr<const Options> o, uint8_t* rgb, int f, int w, int h, int fps)
-	: Image (rgb, f, w, h, fps)
-	, _opt (o)
+class Server
 {
-	
-}
+public:
+	Server (std::string h, int t)
+		: _host_name (h)
+		, _threads (t)
+	{}
 
-void
-FileImage::output (uint8_t* data, int length)
-{
-	string const tmp_j2k = _opt->frame_out_path (_frame, true);
-
-	FILE* f = fopen (tmp_j2k.c_str (), "wb");
-	
-	if (!f) {
-		throw WriteFileError (tmp_j2k);
+	std::string host_name () const {
+		return _host_name;
 	}
 
-	fwrite (data, 1, length, f);
-	fclose (f);
+	int threads () const {
+		return _threads;
+	}
 
-	/* Rename the file from foo.j2c.tmp to foo.j2c now that it is complete */
-	filesystem::rename (tmp_j2k, _opt->frame_out_path (_frame, false));
-}
+private:
+	std::string _host_name;
+	int _threads;
+};

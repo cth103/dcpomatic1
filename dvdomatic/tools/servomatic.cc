@@ -21,19 +21,69 @@
 #include <stdexcept>
 #include <sstream>
 #include <cstring>
+#include <vector>
 #include <unistd.h>
 #include <errno.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <boost/algorithm/string.hpp>
+#include <boost/thread.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/condition.hpp>
+#include "config.h"
+#include "image.h"
 
-#define SERVOMATIC_PORT 6142
 #define BACKLOG 8
+#define THREADS 2
 
 using namespace std;
+using namespace boost;
+
+static vector<thread *> worker_threads;
+
+struct Work {
+	Work (shared_ptr<Image> i, int f)
+		: image (i)
+		, fd (f)
+	{}
+	
+	shared_ptr<Image> image;
+	int fd;
+};
+
+static std::list<Work> queue;
+static mutex worker_mutex;
+static condition worker_condition;
+
+void
+worker_thread ()
+{
+	while (1) {
+		mutex::scoped_lock lock (worker_mutex);
+		while (queue.empty ()) {
+			worker_condition.wait (worker_mutex);
+		}
+
+		Work work = queue.front ();
+		queue.pop_front ();
+		
+		lock.unlock ();
+		cout << "Encoding " << work.image->frame() << "\n";
+		work.image->encode_locally ();
+		work.image->encoded()->send (work.fd);
+		lock.lock ();
+
+		worker_condition.notify_all ();
+	}
+}
 
 int main ()
 {
+	for (int i = 0; i < THREADS; ++i) {
+		worker_threads.push_back (new thread (worker_thread));
+	}
+	
 	int fd = socket (AF_INET, SOCK_STREAM, 0);
 	if (fd < 0) {
 		throw runtime_error ("could not open socket");
@@ -43,8 +93,8 @@ int main ()
 	memset (&server_address, 0, sizeof (server_address));
 	server_address.sin_family = AF_INET;
 	server_address.sin_addr.s_addr = INADDR_ANY;
-	server_address.sin_port = htons (SERVOMATIC_PORT);
-	if (bind (fd, (struct sockaddr *) &server_address, sizeof (server_address)) < 0) {
+	server_address.sin_port = htons (Config::instance()->server_port ());
+	if (::bind (fd, (struct sockaddr *) &server_address, sizeof (server_address)) < 0) {
 		stringstream s;
 		s << "could not bind (" << strerror (errno) << ")";
 		throw runtime_error (s.str());
@@ -65,15 +115,41 @@ int main ()
 		if (n < 0) {
 			throw runtime_error ("error reading from socket");
 		}
-		
-		cout << buffer << "\n";
-		
-		n = write (new_fd, "Piss off", 9);
-		if (n < 0) {
-			throw runtime_error ("error writing to socket");
+
+		string s (buffer);
+		vector<string> b;
+		split (b, s, is_any_of (" "));
+
+		if (b.size() == 5 && b[0] == "encode") {
+			int const w = atoi (b[2].c_str ());
+			int const h = atoi (b[3].c_str ());
+			shared_ptr<Image> image (new Image (atoi (b[1].c_str ()), w, h, atoi (b[4].c_str ())));
+			for (int i = 0; i < 3; ++i) {
+				int n = read (new_fd, image->component_buffer (i), w * h * sizeof (int));
+				if (n < 0) {
+					throw runtime_error ("could not read");
+				}
+			}
+			
+			{
+				mutex::scoped_lock lock (worker_mutex);
+				
+				/* Wait until the queue has gone down a bit */
+				while (int (queue.size()) >= THREADS * 2) {
+					worker_condition.wait (lock);
+				}
+				
+				queue.push_back (Work (image, new_fd));
+				worker_condition.notify_all ();
+			}
+			
+			n = write (new_fd, "OK", 3);
+			if (n < 0) {
+				throw runtime_error ("could not write");
+			}
+		} else {
+			close (new_fd);
 		}
-		
-		close (new_fd);
 	}
 	
 	close (fd);
