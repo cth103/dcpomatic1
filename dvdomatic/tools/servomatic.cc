@@ -83,7 +83,7 @@ worker_thread ()
 int
 main ()
 {
-	int const num_threads = Config::instance()->num_encoding_threads ();
+	int const num_threads = Config::instance()->num_local_encoding_threads ();
 	
 	for (int i = 0; i < num_threads; ++i) {
 		worker_threads.push_back (new thread (worker_thread));
