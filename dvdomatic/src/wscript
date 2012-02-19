@@ -10,9 +10,11 @@ def build(bld):
 		 config.cc
 		 config_dialog.cc
 		 content_type.cc
+		 copy_from_dvd_job.cc
 		 decoder.cc
 		 encoder.cc
 		 error_dialog.cc
+		 examine_content_job.cc
     	         film.cc
 		 film_editor.cc
 		 film_state.cc
@@ -32,13 +34,12 @@ def build(bld):
 		 make_dcp_job.cc
 		 make_mxf_job.cc
 		 opendcp_job.cc
+		 scaler.cc
+		 server.cc
 		 thumbs_job.cc
 	         tiff_encoder.cc
 		 transcode_job.cc
 		 transcoder.cc
 		 util.cc
-		 copy_from_dvd_job.cc
-		 examine_content_job.cc
-		 scaler.cc
 		 """
     obj.target = 'dvdomatic'

@@ -42,7 +42,7 @@ int main (int argc, char* argv[])
 	desc.add_options ()
 		("help", "give help")
 		("deps", "list versions of dependencies")
-		("film", boost::program_options::value<string> (&film_dir), "film")
+		("film", boost::program_options::value<string> (&film_dir)->required(), "film")
 		;
 	boost::program_options::positional_options_description pos;
 	pos.add ("film", 1);

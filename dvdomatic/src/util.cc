@@ -232,3 +232,85 @@ dependency_version_summary ()
 
 	return s.str ();
 }
+
+void
+fd_write (int fd, uint8_t const * data, int size)
+{
+	uint8_t const * p = data;
+	while (size) {
+		int const n = write (fd, p, size);
+		if (n < 0) {
+			throw NetworkError ("could not write");
+		}
+
+		size -= n;
+		p += n;
+	}
+}
+
+SocketReader::SocketReader (int fd)
+	: _fd (fd)
+	, _buffer_data (0)
+{
+
+}
+
+void
+SocketReader::consume (int size)
+{
+	_buffer_data -= size;
+	if (_buffer_data > 0) {
+		memmove (_buffer, _buffer + size, _buffer_data);
+	}
+}
+
+void
+SocketReader::read_definite_and_consume (uint8_t* data, int size)
+{
+	int const from_buffer = min (_buffer_data, size);
+	if (from_buffer > 0) {
+		/* Get data from our buffer */
+		memcpy (data, _buffer, from_buffer);
+		consume (from_buffer);
+		/* Update our output state */
+		data += from_buffer;
+		size -= from_buffer;
+	}
+
+	/* read() the rest */
+	while (size > 0) {
+		int const n = ::read (_fd, data, size);
+		if (n < 0) {
+			throw NetworkError ("could not read");
+		}
+			
+		data += n;
+		size -= n;
+	}
+}
+
+void
+SocketReader::read_indefinite (uint8_t* data, int size)
+{
+	assert (size < int (sizeof (_buffer)));
+
+	/* Amount of extra data we need to read () */
+	int to_read = size - _buffer_data;
+	while (to_read > 0) {
+		/* read as much of it as we can (into our buffer) */
+		int const n = ::read (_fd, _buffer + _buffer_data, to_read);
+		if (n < 0) {
+			throw NetworkError ("could not read");
+		}
+
+		to_read -= n;
+		_buffer_data += n;
+	}
+
+	assert (_buffer_data >= size);
+
+	/* copy data into the output buffer */
+	assert (size >= _buffer_data);
+	memcpy (data, _buffer, size);
+}
+

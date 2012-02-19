@@ -1,6 +1,5 @@
 /*
     Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
-    Copyright (C) 2000-2007 Paul Davis
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,31 +18,28 @@
 */
 
 #include <string>
-#include <gtkmm.h>
-extern "C" {
-#include <libavcodec/avcodec.h>
-}
 
-extern std::string seconds_to_hms (int);
-extern std::string seconds_to_approximate_hms (int);
-extern Gtk::Label & left_aligned_label (std::string);
-extern void stacktrace (std::ostream &, int);
-extern std::string audio_sample_format_to_string (AVSampleFormat);
-extern AVSampleFormat audio_sample_format_from_string (std::string);
-extern std::string dependency_version_summary ();
-extern void fd_write (int, uint8_t const *, int);
-
-class SocketReader
+class Server
 {
 public:
-	SocketReader (int);
+	Server (std::string h, int t)
+		: _host_name (h)
+		, _threads (t)
+	{}
 
-	void read_definite_and_consume (uint8_t *, int);
-	void read_indefinite (uint8_t *, int);
-	void consume (int);
+	std::string host_name () const {
+		return _host_name;
+	}
+
+	int threads () const {
+		return _threads;
+	}
+
+	std::string get_as_metadata () const;
+	
+	static Server * create_from_metadata (std::string);
 
 private:
-	int _fd;
-	uint8_t _buffer[256];
-	int _buffer_data;
+	std::string _host_name;
+	int _threads;
 };

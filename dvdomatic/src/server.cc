@@ -1,6 +1,5 @@
 /*
     Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
-    Copyright (C) 2000-2007 Paul Davis
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,31 +18,31 @@
 */
 
 #include <string>
-#include <gtkmm.h>
-extern "C" {
-#include <libavcodec/avcodec.h>
+#include <vector>
+#include <sstream>
+#include <boost/algorithm/string.hpp>
+#include "server.h"
+
+using namespace std;
+using namespace boost;
+
+Server *
+Server::create_from_metadata (string v)
+{
+	vector<string> b;
+	split (b, v, is_any_of (" "));
+
+	if (b.size() != 2) {
+		return 0;
+	}
+
+	return new Server (b[0], atoi (b[1].c_str ()));
 }
 
-extern std::string seconds_to_hms (int);
-extern std::string seconds_to_approximate_hms (int);
-extern Gtk::Label & left_aligned_label (std::string);
-extern void stacktrace (std::ostream &, int);
-extern std::string audio_sample_format_to_string (AVSampleFormat);
-extern AVSampleFormat audio_sample_format_from_string (std::string);
-extern std::string dependency_version_summary ();
-extern void fd_write (int, uint8_t const *, int);
-
-class SocketReader
+string
+Server::get_as_metadata () const
 {
-public:
-	SocketReader (int);
-
-	void read_definite_and_consume (uint8_t *, int);
-	void read_indefinite (uint8_t *, int);
-	void consume (int);
-
-private:
-	int _fd;
-	uint8_t _buffer[256];
-	int _buffer_data;
-};
+	stringstream s;
+	s << _host_name << " " << _threads;
+	return s.str ();
+}
