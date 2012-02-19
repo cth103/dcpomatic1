@@ -164,10 +164,16 @@ void
 J2KWAVEncoder::process_end ()
 {
 	boost::mutex::scoped_lock lock (_worker_mutex);
-	_process_end = true;
-	lock.unlock ();
+
+	/* Keep waking workers until the queue is empty */
+	while (!_queue.empty ()) {
+		_worker_condition.notify_all ();
+		_worker_condition.wait (lock);
+	}
 	
+	_process_end = true;
 	_worker_condition.notify_all ();
+	lock.unlock ();
 
 	for (list<boost::thread *>::iterator i = _worker_threads.begin(); i != _worker_threads.end(); ++i) {
 		(*i)->join ();
