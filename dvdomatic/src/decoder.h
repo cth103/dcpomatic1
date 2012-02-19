@@ -111,7 +111,7 @@ private:
 	/** libpostprocess context, 0 if no post-processing is to be done */
 	pp_context* _pp_context;
 	uint8_t** _pp_buffer;
-	int _pp_stride[3];
+	int _pp_stride[4];
 
 	bool _minimal;
 	bool _ignore_length;
