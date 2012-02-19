@@ -35,9 +35,9 @@
 #include "image.h"
 #include "exceptions.h"
 #include "util.h"
+#include "config.h"
 
 #define BACKLOG 8
-#define THREADS 4
 
 using namespace std;
 using namespace boost;
@@ -83,7 +83,9 @@ worker_thread ()
 int
 main ()
 {
-	for (int i = 0; i < THREADS; ++i) {
+	int const num_threads = Config::instance()->num_encoding_threads ();
+	
+	for (int i = 0; i < num_threads; ++i) {
 		worker_threads.push_back (new thread (worker_thread));
 	}
 	
@@ -138,7 +140,7 @@ main ()
 				mutex::scoped_lock lock (worker_mutex);
 				
 				/* Wait until the queue has gone down a bit */
-				while (int (queue.size()) >= THREADS * 2) {
+				while (int (queue.size()) >= num_threads * 2) {
 					worker_condition.wait (lock);
 				}
 

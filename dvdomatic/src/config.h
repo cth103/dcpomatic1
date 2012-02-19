@@ -17,6 +17,9 @@
 
 */
 
+#ifndef DVDOMATIC_CONFIG_H
+#define DVDOMATIC_CONFIG_H
+
 #include <list>
 
 class Server;
@@ -83,3 +86,5 @@ private:
 	static Config* _instance;
 
 };
+
+#endif
