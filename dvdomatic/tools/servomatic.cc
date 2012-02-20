@@ -132,9 +132,7 @@ main ()
 			int const w = atoi (b[2].c_str ());
 			int const h = atoi (b[3].c_str ());
 			shared_ptr<Image> image (new Image (atoi (b[1].c_str ()), w, h, atoi (b[4].c_str ())));
-			for (int i = 0; i < 3; ++i) {
-				reader.read_definite_and_consume ((uint8_t *) image->component_buffer (i), w * h * sizeof (int));
-			}
+			reader.read_definite_and_consume ((uint8_t *) image->rgb (), w * h * 3);
 			
 			{
 				mutex::scoped_lock lock (worker_mutex);

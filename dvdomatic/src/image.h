@@ -72,7 +72,7 @@ public:
 	Image (int, int, int, int);
 	virtual ~Image ();
 
-	int * component_buffer (int) const;
+	uint8_t * rgb () const;
 
 	void encode_locally ();
 	void encode_remotely (Server const *);
@@ -87,7 +87,8 @@ public:
 private:
 	void create_openjpeg_container ();
 	void write_encoded (boost::shared_ptr<const Options>, uint8_t *, int);
-	
+
+	uint8_t* _rgb;
 	int _frame;
 	opj_image_cmptparm_t _cmptparm[3];
 	opj_image* _image;

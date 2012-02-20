@@ -48,7 +48,8 @@ using namespace boost;
 
 /** Construct an empty image */
 Image::Image (int f, int w, int h, int fps)
-	: _frame (f)
+	: _rgb (0)
+	, _frame (f)
 	, _parameters (0)
 	, _cinfo (0)
 	, _cio (0)
@@ -57,12 +58,13 @@ Image::Image (int f, int w, int h, int fps)
 	, _frames_per_second (fps)
 	, _encoded (0)
 {
-	create_openjpeg_container ();
+	_rgb = new uint8_t[w * h * 3];
 }
 
 /** Construct an Image from an RGB buffer */
 Image::Image (uint8_t* rgb, int f, int w, int h, int fps)
-	: _frame (f)
+	: _rgb (0)
+	, _frame (f)
 	, _parameters (0)
 	, _cinfo (0)
 	, _cio (0)
@@ -71,44 +73,8 @@ Image::Image (uint8_t* rgb, int f, int w, int h, int fps)
 	, _frames_per_second (fps)
 	, _encoded (0)
 {
-	create_openjpeg_container ();
-
-	int const size = _width * _height;
-
-	struct {
-		float r, g, b;
-	} s;
-
-	struct {
-		float x, y, z;
-	} d;
-
-	/* Copy our RGB into it, converting to XYZ in the process */
-
-	int const lut_index = Config::instance()->colour_lut_index ();
-	
-	uint8_t* p = rgb;
-	for (int i = 0; i < size; ++i) {
-		/* In gamma LUT (converting 8-bit input to 12-bit) */
-		s.r = lut_in[lut_index][*p++ << 4];
-		s.g = lut_in[lut_index][*p++ << 4];
-		s.b = lut_in[lut_index][*p++ << 4];
-
-		/* RGB to XYZ Matrix */
-		d.x = ((s.r * color_matrix[lut_index][0][0]) + (s.g * color_matrix[lut_index][0][1]) + (s.b * color_matrix[lut_index][0][2]));
-		d.y = ((s.r * color_matrix[lut_index][1][0]) + (s.g * color_matrix[lut_index][1][1]) + (s.b * color_matrix[lut_index][1][2]));
-		d.z = ((s.r * color_matrix[lut_index][2][0]) + (s.g * color_matrix[lut_index][2][1]) + (s.b * color_matrix[lut_index][2][2]));
-
-		/* DCI companding */
-		d.x = d.x * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
-		d.y = d.y * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
-		d.z = d.z * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
-		
-		/* Out gamma LUT */
-		_image->comps[0].data[i] = lut_out[LO_DCI][(int) d.x];
-		_image->comps[1].data[i] = lut_out[LO_DCI][(int) d.y];
-		_image->comps[2].data[i] = lut_out[LO_DCI][(int) d.z];
-	}
+	_rgb = new uint8_t[w * h * 3];
+	memcpy (_rgb, rgb, w * h * 3);
 }
 
 void
@@ -155,13 +121,52 @@ Image::~Image ()
 	}
 	
 	delete _parameters;
-
 	delete _encoded;
+	delete[] _rgb;
 }
 
 void
 Image::encode_locally ()
 {
+	create_openjpeg_container ();
+
+	int const size = _width * _height;
+
+	struct {
+		float r, g, b;
+	} s;
+
+	struct {
+		float x, y, z;
+	} d;
+
+	/* Copy our RGB into the openjpeg container, converting to XYZ in the process */
+
+	int const lut_index = Config::instance()->colour_lut_index ();
+	
+	uint8_t* p = _rgb;
+	for (int i = 0; i < size; ++i) {
+		/* In gamma LUT (converting 8-bit input to 12-bit) */
+		s.r = lut_in[lut_index][*p++ << 4];
+		s.g = lut_in[lut_index][*p++ << 4];
+		s.b = lut_in[lut_index][*p++ << 4];
+
+		/* RGB to XYZ Matrix */
+		d.x = ((s.r * color_matrix[lut_index][0][0]) + (s.g * color_matrix[lut_index][0][1]) + (s.b * color_matrix[lut_index][0][2]));
+		d.y = ((s.r * color_matrix[lut_index][1][0]) + (s.g * color_matrix[lut_index][1][1]) + (s.b * color_matrix[lut_index][1][2]));
+		d.z = ((s.r * color_matrix[lut_index][2][0]) + (s.g * color_matrix[lut_index][2][1]) + (s.b * color_matrix[lut_index][2][2]));
+
+		/* DCI companding */
+		d.x = d.x * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
+		d.y = d.y * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
+		d.z = d.z * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
+		
+		/* Out gamma LUT */
+		_image->comps[0].data[i] = lut_out[LO_DCI][(int) d.x];
+		_image->comps[1].data[i] = lut_out[LO_DCI][(int) d.y];
+		_image->comps[2].data[i] = lut_out[LO_DCI][(int) d.z];
+	}
+	
 	int const bw = Config::instance()->j2k_bandwidth ();
 
 	/* Set the max image and component sizes based on frame_rate */
@@ -264,10 +269,7 @@ Image::encode_remotely (Server const * serv)
 	stringstream s;
 	s << "encode " << _frame << " " << _width << " " << _height << " " << _frames_per_second;
 	fd_write (fd, (uint8_t *) s.str().c_str(), s.str().length() + 1);
-
-	for (int i = 0; i < 3; ++i) {
-		fd_write (fd, (uint8_t *) _image->comps[i].data, _width * _height * sizeof (int));
-	}
+	fd_write (fd, (uint8_t *) _rgb, _width * _height * 3);
 
 	SocketReader reader (fd);
 
@@ -291,10 +293,10 @@ Image::encode_remotely (Server const * serv)
 	_encoded = e;
 }
 
-int *
-Image::component_buffer (int n) const
+uint8_t *
+Image::rgb () const
 {
-	return _image->comps[n].data;
+	return _rgb;
 }
 
 
