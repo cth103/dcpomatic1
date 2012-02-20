@@ -53,6 +53,7 @@ Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const 
 	, _video_stream (-1)
 	, _audio_stream (-1)
 	, _frame_in (0)
+	  /* XXX: this should go, with its buffer */
 	, _frame_out (0)
 	, _video_codec_context (0)
 	, _video_codec (0)
@@ -256,6 +257,7 @@ Decoder::pass ()
 					uint8_t** p = filter_buffer->data;
 					int* s = filter_buffer->linesize;
 
+					/* XXX: offload this to the encode thread too? */
 					if (_pp_mode) {
 						/* Do FFMPEG post-processing */
 						pp_postprocess (
@@ -269,6 +271,7 @@ Decoder::pass ()
 						s = _pp_stride;
 					}
 
+#if 0					
 					/* Scale and convert from YUV to RGB */
 					sws_scale (
 						_conversion_context,
@@ -276,10 +279,11 @@ Decoder::pass ()
 						0, filter_buffer->video->h,
 						_frame_out->data, _frame_out->linesize
 						);
+#endif					
 
 					/* Emit the result */
-					Video (_frame_out->data[0], _frame_out->linesize[0], _video_frame);
-					
+					Video (p, s, filter_buffer->video->w, filter_buffer->video->h, _video_frame);
+
 					avfilter_unref_buffer (filter_buffer);
 					av_free_packet (&_packet);
 					return PASS_VIDEO;

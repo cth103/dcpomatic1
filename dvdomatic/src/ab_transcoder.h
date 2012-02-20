@@ -38,7 +38,7 @@ public:
 	void go ();
 
 private:
-	void process_video (uint8_t *, int, int, int);
+	void process_video (uint8_t **, int *, int, int, int, int);
 	
 	boost::shared_ptr<const FilmState> _fs_a;
 	boost::shared_ptr<const FilmState> _fs_b;

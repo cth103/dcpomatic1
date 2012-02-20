@@ -53,8 +53,9 @@ ABTranscoder::~ABTranscoder ()
 }
 
 void
-ABTranscoder::process_video (uint8_t* rgb, int line_size, int frame, int index)
+ABTranscoder::process_video (uint8_t** yuv, int* line_size, int, int, int frame, int index)
 {
+#if 0	
 	int const half_line_size = line_size / 2;
 
 	uint8_t* p = _rgb;
@@ -75,6 +76,7 @@ ABTranscoder::process_video (uint8_t* rgb, int line_size, int frame, int index)
 	}
 	
 	_last_frame = frame;
+#endif	
 }
 
 

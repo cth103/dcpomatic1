@@ -47,36 +47,55 @@ using namespace std;
 using namespace boost;
 
 /** Construct an empty image */
-Image::Image (int f, int w, int h, int fps)
-	: _rgb (0)
+Image::Image (int f, int in_w, int in_h, int out_w, int out_h, int fps)
+	: _yuv (0)
 	, _frame (f)
 	, _image (0)
 	, _parameters (0)
 	, _cinfo (0)
 	, _cio (0)
-	, _width (w)
-	, _height (h)
+	, _in_width (in_w)
+	, _in_height (in_h)
+	, _out_width (out_w)
+	, _out_height (out_h)
 	, _frames_per_second (fps)
 	, _encoded (0)
 {
-	_rgb = new uint8_t[w * h * 3];
+	/* XXX: 4? */
+	_yuv = new uint8_t*[4];
+	_yuv_line_size = new int[4];
+
+	for (int i = 0; i < 4; ++i) {
+		/* XXX: this could be smaller if we knew the linesize */
+		_yuv[i] = new uint8_t[_in_width * _in_height];
+		_yuv_line_size[i] = _in_width;
+	}
 }
 
-/** Construct an Image from an RGB buffer */
-Image::Image (uint8_t* rgb, int f, int w, int h, int fps)
-	: _rgb (0)
+/** Construct an Image from a set of YUV buffers */
+Image::Image (uint8_t** yuv, int* line_size, int f, int in_w, int in_h, int out_w, int out_h, int fps)
+	: _yuv (0)
 	, _frame (f)
 	, _image (0)
 	, _parameters (0)
 	, _cinfo (0)
 	, _cio (0)
-	, _width (w)
-	, _height (h)
+	, _in_width (in_w)
+	, _in_height (in_h)
+	, _out_width (out_w)
+	, _out_height (out_h)
 	, _frames_per_second (fps)
 	, _encoded (0)
 {
-	_rgb = new uint8_t[w * h * 3];
-	memcpy (_rgb, rgb, w * h * 3);
+	/* XXX: 4? */
+	_yuv = new uint8_t*[4];
+	_yuv_line_size = new int[4];
+
+	for (int i = 0; i < 4; ++i) {
+		_yuv[i] = new uint8_t[_in_width * _in_height];
+		memcpy (_yuv[i], yuv[i], line_size[i] * _in_height);
+		_yuv_line_size[i] = line_size[i];
+	}
 }
 
 void
@@ -85,8 +104,8 @@ Image::create_openjpeg_container ()
 	for (int i = 0; i < 3; ++i) {
 		_cmptparm[i].dx = 1;
 		_cmptparm[i].dy = 1;
-		_cmptparm[i].w = _width;
-		_cmptparm[i].h = _height;
+		_cmptparm[i].w = _out_width;
+		_cmptparm[i].h = _out_height;
 		_cmptparm[i].x0 = 0;
 		_cmptparm[i].y0 = 0;
 		_cmptparm[i].prec = 12;
@@ -101,8 +120,8 @@ Image::create_openjpeg_container ()
 
 	_image->x0 = 0;
 	_image->y0 = 0;
-	_image->x1 = _width;
-	_image->y1 = _height;
+	_image->x1 = _out_width;
+	_image->y1 = _out_height;
 }
 
 Image::~Image ()
@@ -126,15 +145,47 @@ Image::~Image ()
 	
 	delete _parameters;
 	delete _encoded;
-	delete[] _rgb;
+
+	/* XXX: 4? */
+	for (int i = 0; i < 4; ++i) {
+		delete[] _yuv[i];
+	}
+
+	delete[] _yuv;
 }
 
 void
 Image::encode_locally ()
 {
+	AVFrame* frame_out = avcodec_alloc_frame ();
+	if (frame_out == 0) {
+		throw EncodeError ("could not allocate frame");
+	}
+
+	/* XXX XXX */
+	/* XXX: free this */
+	/* XXX: YUV422P?! */
+	
+	struct SwsContext* conversion_context = sws_getContext (
+		_in_width, _in_height, PIX_FMT_YUV422P,
+		_out_width, _out_height, PIX_FMT_RGB24,
+		SWS_BICUBIC, 0, 0, 0
+		);
+	
+	uint8_t* rgb = (uint8_t *) av_malloc (_out_width * _out_height * 3);
+	avpicture_fill ((AVPicture *) frame_out, rgb, PIX_FMT_RGB24, _out_width, _out_height);
+	
+	/* Scale and convert from YUV to RGB */
+	sws_scale (
+		conversion_context,
+		_yuv, _yuv_line_size,
+		0, _in_height,
+		frame_out->data, frame_out->linesize
+		);
+	
 	create_openjpeg_container ();
 
-	int const size = _width * _height;
+	int const size = _out_width * _out_height;
 
 	struct {
 		float r, g, b;
@@ -148,7 +199,7 @@ Image::encode_locally ()
 
 	int const lut_index = Config::instance()->colour_lut_index ();
 	
-	uint8_t* p = _rgb;
+	uint8_t* p = rgb;
 	for (int i = 0; i < size; ++i) {
 		/* In gamma LUT (converting 8-bit input to 12-bit) */
 		s.r = lut_in[lut_index][*p++ << 4];
@@ -170,6 +221,9 @@ Image::encode_locally ()
 		_image->comps[1].data[i] = lut_out[LO_DCI][(int) d.y];
 		_image->comps[2].data[i] = lut_out[LO_DCI][(int) d.z];
 	}
+
+	av_free (frame_out);
+	av_free (rgb);
 	
 	int const bw = Config::instance()->j2k_bandwidth ();
 
@@ -271,9 +325,12 @@ Image::encode_remotely (Server const * serv)
 	}
 
 	stringstream s;
-	s << "encode " << _frame << " " << _width << " " << _height << " " << _frames_per_second;
+	s << "encode " << _frame << " " << _in_width << " " << _in_height << " " << _out_width << " " << _out_height << _frames_per_second;
 	fd_write (fd, (uint8_t *) s.str().c_str(), s.str().length() + 1);
-	fd_write (fd, (uint8_t *) _rgb, _width * _height * 3);
+	/* XXX: 4? */
+	for (int i = 0; i < 4; ++i) {
+		fd_write (fd, (uint8_t *) _yuv, _in_width * _in_height);
+	}
 
 	SocketReader reader (fd);
 
@@ -298,9 +355,9 @@ Image::encode_remotely (Server const * serv)
 }
 
 uint8_t *
-Image::rgb () const
+Image::yuv (int i) const
 {
-	return _rgb;
+	return _yuv[i];
 }
 
 

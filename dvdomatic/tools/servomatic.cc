@@ -130,11 +130,16 @@ main ()
 		vector<string> b;
 		split (b, s, is_any_of (" "));
 
-		if (b.size() == 5 && b[0] == "encode") {
-			int const w = atoi (b[2].c_str ());
-			int const h = atoi (b[3].c_str ());
-			shared_ptr<Image> image (new Image (atoi (b[1].c_str ()), w, h, atoi (b[4].c_str ())));
-			reader.read_definite_and_consume ((uint8_t *) image->rgb (), w * h * 3);
+		if (b.size() == 7 && b[0] == "encode") {
+			int const in_w = atoi (b[2].c_str ());
+			int const in_h = atoi (b[3].c_str ());
+			int const out_w = atoi (b[4].c_str ());
+			int const out_h = atoi (b[5].c_str ());
+			shared_ptr<Image> image (new Image (atoi (b[1].c_str ()), in_w, in_h, out_w, out_h, atoi (b[6].c_str ())));
+			/* XXX: 4? */
+			for (int i = 0; i < 4; ++i) {
+				reader.read_definite_and_consume ((uint8_t *) image->yuv (i), in_w * in_h);
+			}
 			
 			{
 				mutex::scoped_lock lock (worker_mutex);

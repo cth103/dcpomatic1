@@ -68,7 +68,7 @@ public:
 
 	PassResult pass ();
 	
-	sigc::signal<void, uint8_t *, int, int> Video;
+	sigc::signal<void, uint8_t **, int *, int, int, int> Video;
 	sigc::signal<void, uint8_t *, int, int> Audio;
 	
 private:

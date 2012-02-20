@@ -72,13 +72,17 @@ J2KWAVEncoder::~J2KWAVEncoder ()
 }	
 
 void
-J2KWAVEncoder::process_video (uint8_t* rgb, int line_size, int frame)
+J2KWAVEncoder::process_video (uint8_t** yuv, int* line_size, int in_w, int in_h, int frame)
 {
 	boost::mutex::scoped_lock lock (_worker_mutex);
 
+	cout << "p: queue is " << _queue.size() << "\n";
+
 	/* Wait until the queue has gone down a bit */
 	while (_queue.size() >= _worker_threads.size() * 2 && !_process_end) {
+		cout << "process sleeps.\n";
 		_worker_condition.wait (lock);
+		cout << "process wakes.\n";
 	}
 
 	if (_process_end) {
@@ -87,7 +91,10 @@ J2KWAVEncoder::process_video (uint8_t* rgb, int line_size, int frame)
 
 	/* Only do the processing if we don't already have a file for this frame */
 	if (!boost::filesystem::exists (_opt->frame_out_path (frame, false))) {
-		_queue.push_back (boost::shared_ptr<Image> (new Image (rgb, frame, _opt->out_width, _opt->out_height, _fs->frames_per_second)));
+		_queue.push_back (boost::shared_ptr<Image> (
+					  new Image (yuv, line_size, frame, in_w, in_h, _opt->out_width, _opt->out_height, _fs->frames_per_second)
+					  ));
+		
 		_worker_condition.notify_all ();
 	}
 }

@@ -36,8 +36,8 @@ public:
 	Encoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>);
 
 	virtual void process_begin () = 0;
-	virtual void process_video (uint8_t*, int, int) = 0;
-	virtual void process_audio (uint8_t*, int, int) = 0;
+	virtual void process_video (uint8_t **, int *, int, int, int) = 0;
+	virtual void process_audio (uint8_t *, int, int) = 0;
 	virtual void process_end () = 0;
 
 protected:

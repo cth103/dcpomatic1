@@ -68,11 +68,11 @@ public:
 class Image
 {
 public:
-	Image (uint8_t *, int, int, int, int);
-	Image (int, int, int, int);
+	Image (uint8_t **, int *, int, int, int, int, int, int);
+	Image (int, int, int, int, int, int);
 	virtual ~Image ();
 
-	uint8_t * rgb () const;
+	uint8_t * yuv (int) const;
 
 	void encode_locally ();
 	void encode_remotely (Server const *);
@@ -88,15 +88,18 @@ private:
 	void create_openjpeg_container ();
 	void write_encoded (boost::shared_ptr<const Options>, uint8_t *, int);
 
-	uint8_t* _rgb;
+	uint8_t** _yuv;
+	int* _yuv_line_size;
 	int _frame;
 	opj_image_cmptparm_t _cmptparm[3];
 	opj_image* _image;
 	opj_cparameters_t* _parameters;
 	opj_cinfo_t* _cinfo;
 	opj_cio_t* _cio;
-	int _width;
-	int _height;
+	int _in_width;
+	int _in_height;
+	int _out_width;
+	int _out_height;
 	int _frames_per_second;
 	EncodedData* _encoded;
 };

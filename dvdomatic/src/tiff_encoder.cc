@@ -47,8 +47,9 @@ TIFFEncoder::~TIFFEncoder ()
 }	
 
 void
-TIFFEncoder::process_video (uint8_t* data, int line_size, int frame)
+TIFFEncoder::process_video (uint8_t** data, int* line_size, int, int, int frame)
 {
+#if 0	
 	string tmp_file = _opt->frame_out_path (frame, true);
 	TIFF* output = TIFFOpen (tmp_file.c_str (), "w");
 	if (output == 0) {
@@ -70,4 +71,5 @@ TIFFEncoder::process_video (uint8_t* data, int line_size, int frame)
 	TIFFClose (output);
 
 	boost::filesystem::rename (tmp_file, _opt->frame_out_path (frame, false));
+#endif
 }
