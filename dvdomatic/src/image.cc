@@ -50,6 +50,7 @@ using namespace boost;
 Image::Image (int f, int w, int h, int fps)
 	: _rgb (0)
 	, _frame (f)
+	, _image (0)
 	, _parameters (0)
 	, _cinfo (0)
 	, _cio (0)
@@ -65,6 +66,7 @@ Image::Image (int f, int w, int h, int fps)
 Image::Image (uint8_t* rgb, int f, int w, int h, int fps)
 	: _rgb (0)
 	, _frame (f)
+	, _image (0)
 	, _parameters (0)
 	, _cinfo (0)
 	, _cio (0)
@@ -105,7 +107,9 @@ Image::create_openjpeg_container ()
 
 Image::~Image ()
 {
-	opj_image_destroy (_image);
+	if (_image) {
+		opj_image_destroy (_image);
+	}
 
 	if (_cio) {
 		opj_cio_close (_cio);
