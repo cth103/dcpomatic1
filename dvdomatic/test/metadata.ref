@@ -10,6 +10,7 @@ top_crop 3
 bottom_crop 4
 filter pphb
 filter unsharp
+scaler bicubic
 dcp_frames 42
 dcp_ab 1
 width 0

@@ -39,6 +39,7 @@ BOOST_AUTO_TEST_CASE (film_metadata_test)
 	Filter::setup_filters ();
 	Format::setup_formats ();
 	ContentType::setup_content_types ();
+	Scaler::setup_scalers ();
 	
 	string const test_film = "build/test/film";
 	
@@ -150,7 +151,7 @@ BOOST_AUTO_TEST_CASE (make_dcp_test)
 	if (boost::filesystem::exists (test_film)) {
 		boost::filesystem::remove_all (test_film);
 	}
-	
+
 	Film f (test_film, false);
 	f.write_metadata ();
 	boost::filesystem::copy_file ("test/zombie.mpeg", "build/test/film/zombie.mpeg");
@@ -164,7 +165,9 @@ BOOST_AUTO_TEST_CASE (make_dcp_test)
 	BOOST_CHECK_EQUAL (audio_sample_format_to_string (f.audio_sample_format()), "S16");
 	
 	f.set_format (Format::get_from_nickname ("Flat"));
+	cout << "==============> make_dcp\n";
 	f.make_dcp ();
+	cout << "<============== make_dcp\n";
 
 	while (JobManager::instance()->work_to_do ()) {
 		sleep (1);

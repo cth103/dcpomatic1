@@ -481,6 +481,7 @@ Film::make_dcp ()
 	if (_state.dcp_ab) {
 		JobManager::instance()->add (shared_ptr<Job> (new ABTranscodeJob (fs, o, log ())));
 	} else {
+		cout << "New TranscodeJob\n";
 		JobManager::instance()->add (shared_ptr<Job> (new TranscodeJob (fs, o, log ())));
 	}
 	

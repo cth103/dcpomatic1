@@ -45,4 +45,4 @@ def configure(conf):
 def build(bld):
     bld.recurse('src')
     bld.recurse('tools')
-#    bld.recurse('test')
+    bld.recurse('test')

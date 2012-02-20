@@ -328,7 +328,12 @@ YUVImage::YUVImage (int const * ls, Size s, PixelFormat pix)
 	
 	for (int i = 0; i < components; ++i) {
 		_line_size[i] = ls[i];
-		_data[i] = new uint8_t[_line_size[i] * _size.height];
+		if (_line_size[i] > 0) {
+			_data[i] = (uint8_t *) av_malloc (_line_size[i] * _size.height);;
+			printf("new[] at %p %d\n", _data[i], _line_size[i] * _size.height);
+		} else {
+			_data[i] = 0;
+		}
 	}
 
 	_our_data = true;
@@ -355,7 +360,13 @@ YUVImage::deep_copy ()
 {
 	shared_ptr<YUVImage> copy (new YUVImage (_line_size, _size, _pixel_format));
 	for (int i = 0; i < components; ++i) {
-		memcpy (copy->data (i), _data[i], _line_size[i] * _size.height);
+		assert ((copy->data(i) && _data[i]) || (copy->data(i) == 0 && _data[i] == 0));
+		if (copy->data(i) && _data[i]) {
+			printf ("memcpy from %p %d to %p\n", _data[i], _line_size[i] * _size.height, copy->data (i));
+			memcpy (copy->data (i), _data[i], _line_size[i] * _size.height);
+			printf ("memcpy ok\n");
+		}
+		cout << "ok.\n";
 	}
 
 	return copy;
@@ -365,10 +376,11 @@ YUVImage::~YUVImage ()
 {
 	if (_our_data) {
 		for (int i = 0; i < components; ++i) {
-			delete[] _data[i];
+			av_free (_data[i]);
 		}
 	}
 
+	printf ("delete[] %p\n", _data);
 	delete[] _data;
 	delete[] _line_size;
 }

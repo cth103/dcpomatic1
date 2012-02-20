@@ -98,7 +98,7 @@ Decoder::~Decoder ()
 
 	if (_pp_buffer) {
 		for (int i = 0; i < 4; ++i) {
-			delete[] _pp_buffer[i];
+			av_free (_pp_buffer[i]);
 		}
 	}
 
@@ -223,11 +223,22 @@ Decoder::pass ()
 			
 			while (avfilter_poll_frame (_buffer_sink_context->inputs[0])) {
 				AVFilterBufferRef* filter_buffer;
-				av_buffersink_get_buffer_ref (_buffer_sink_context, &filter_buffer, 0);
-				if (filter_buffer) {
+				if (av_buffersink_get_buffer_ref (_buffer_sink_context, &filter_buffer, 0) >= 0) {
 
 					uint8_t** p = filter_buffer->data;
 					int* s = filter_buffer->linesize;
+
+					for (int i = 0; i < 8; ++i) {
+						cout << "buffer ls[" << i << "] = " << filter_buffer->linesize[i] << "\n";
+					}
+
+					cout << "video " << filter_buffer->video->w << " by " << filter_buffer->video->h << "\n";
+
+					cout << "Pix fmt " << _video_codec_context->pix_fmt << "\n";
+					cout << ((int) av_pix_fmt_descriptors[_video_codec_context->pix_fmt].nb_components << " comps.\n";
+					for (int i = 0; i < (filter_buffer->linesize[2] * filter_buffer->video->h); ++i) {
+						int y = p[2][i] * 42;
+					}
 
 					/* XXX: offload this to the encode thread too? */
 					if (_pp_mode) {
@@ -437,7 +448,7 @@ Decoder::setup_post_process_filters ()
 
 	_pp_buffer = new uint8_t*[4];
 	for (int i = 0; i < 4; ++i) {
-		_pp_buffer[i] = new uint8_t[_post_filter_width * _post_filter_height];
+		_pp_buffer[i] = (uint8_t *) av_malloc (_post_filter_width * _post_filter_height);
 		_pp_stride[i] = _post_filter_width;
 	}
 }

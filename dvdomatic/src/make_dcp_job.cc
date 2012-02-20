@@ -18,6 +18,9 @@
 */
 
 #include <boost/filesystem.hpp>
+extern "C" {
+#include <libavutil/pixdesc.h>
+}
 #include "make_dcp_job.h"
 #include "film_state.h"
 #include "content_type.h"
