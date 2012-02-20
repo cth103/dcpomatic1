@@ -240,7 +240,9 @@ fd_write (int fd, uint8_t const * data, int size)
 	while (size) {
 		int const n = write (fd, p, size);
 		if (n < 0) {
-			throw NetworkError ("could not write");
+			stringstream s;
+			s << "could not write (" << strerror (errno) << ")";
+			throw NetworkError (s.str ());
 		}
 
 		size -= n;

@@ -122,9 +122,9 @@ J2KWAVEncoder::encoder_thread (Server* server)
 		if (server) {
 			try {
 				im->encode_remotely (server);
-			} catch (...) {
+			} catch (std::exception& e) {
 				++failures;
-				cerr << "Remote encode failed; thread sleeping for " << failures << "s.\n";
+				cerr << "Remote encode failed (" << e.what() << "); thread sleeping for " << failures << "s.\n";
 				sleep (failures);
 			}
 				

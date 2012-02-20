@@ -325,11 +325,13 @@ Image::encode_remotely (Server const * serv)
 	}
 
 	stringstream s;
-	s << "encode " << _frame << " " << _in_width << " " << _in_height << " " << _out_width << " " << _out_height << _frames_per_second;
+	s << "encode " << _frame << " " << _in_width << " " << _in_height << " " << _out_width << " " << _out_height << " " << _frames_per_second;
+	cout << s.str() << "\n";
 	fd_write (fd, (uint8_t *) s.str().c_str(), s.str().length() + 1);
 	/* XXX: 4? */
 	for (int i = 0; i < 4; ++i) {
-		fd_write (fd, (uint8_t *) _yuv, _in_width * _in_height);
+		cout << "Write YUV comp " << i << " " << (_in_width * _in_height) << "\n";
+		fd_write (fd, _yuv[i], _in_width * _in_height);
 	}
 
 	SocketReader reader (fd);
