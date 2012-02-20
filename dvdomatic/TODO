@@ -53,5 +53,7 @@ THX_Monster with master Intel Core i3 M350 (2.27GHz), slave Intel Core 2 Duo E46
 
 
 4 local:			2m45
+4 local [im-mod]:		2m53
 4 local + 2 slave [Gbit]:	2m22
 4 local + 4 slave [Gbit]:	2m21
+4 local + 4 slave [Gbit,in-mod]:2m21

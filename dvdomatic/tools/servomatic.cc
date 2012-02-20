@@ -71,9 +71,11 @@ worker_thread ()
 		queue.pop_front ();
 		
 		lock.unlock ();
-		cout << "Encoding " << work.image->frame() << "\n";
+		cout << "Encoding " << work.image->frame() << ": ";
+		cout.flush ();
 		work.image->encode_locally ();
 		work.image->encoded()->send (work.fd);
+		cout << "done.\n";
 		lock.lock ();
 
 		worker_condition.notify_all ();
@@ -142,7 +144,6 @@ main ()
 					worker_condition.wait (lock);
 				}
 
-				cout << "Queue " << image->frame() << "\n";
 				queue.push_back (Work (image, new_fd));
 				worker_condition.notify_all ();
 			}
