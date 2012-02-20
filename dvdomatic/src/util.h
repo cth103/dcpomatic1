@@ -18,7 +18,11 @@
 
 */
 
+#ifndef DVDOMATIC_UTIL_H
+#define DVDOMATIC_UTIL_H
+
 #include <string>
+#include <boost/shared_ptr.hpp>
 #include <gtkmm.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -47,3 +51,63 @@ private:
 	uint8_t _buffer[256];
 	int _buffer_data;
 };
+
+struct Size {
+	Size ()
+		: width (0)
+		, height (0)
+	{}
+		
+	Size (int w, int h)
+		: width (w)
+		, height (h)
+	{}
+	
+	int width;
+	int height;
+};
+
+class YUVImage {
+public:
+	YUVImage (int const *, Size, PixelFormat);
+	YUVImage (uint8_t **, int const *, Size, PixelFormat);
+	~YUVImage ();
+
+	Size size () {
+		return _size;
+	}
+
+	uint8_t** data () const {
+		return _data;
+	}
+	
+	uint8_t* data (int n) const {
+		return _data[n];
+	}
+
+	int* line_size () const {
+		return _line_size;
+	}
+	
+	int line_size (int n) const {
+		return _line_size[n];
+	}
+	
+	PixelFormat pixel_format () const {
+		return _pixel_format;
+	}
+
+	boost::shared_ptr<YUVImage> deep_copy ();
+
+	static int const components;
+
+private:
+	
+	uint8_t** _data;
+	int* _line_size;
+	Size _size;
+	PixelFormat _pixel_format;
+	bool _our_data;
+};
+
+#endif

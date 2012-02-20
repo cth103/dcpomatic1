@@ -24,8 +24,8 @@
 #include <sndfile.h>
 #include "encoder.h"
 
-class Image;
 class Server;
+class DCPVideoFrame;
 
 class J2KWAVEncoder : public Encoder
 {
@@ -34,7 +34,7 @@ public:
 	~J2KWAVEncoder ();
 
 	void process_begin ();
-	void process_video (uint8_t **, int *, int, int, int);
+	void process_video (boost::shared_ptr<YUVImage>, int);
 	void process_audio (uint8_t *, int, int);
 	void process_end ();
 
@@ -47,7 +47,7 @@ private:
 	uint8_t* _deinterleave_buffer;
 
 	bool _process_end;
-	std::list<boost::shared_ptr<Image> > _queue;
+	std::list<boost::shared_ptr<DCPVideoFrame> > _queue;
 	std::list<boost::thread *> _worker_threads;
 	boost::mutex _worker_mutex;
 	boost::condition _worker_condition;

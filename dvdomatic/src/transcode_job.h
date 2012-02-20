@@ -23,7 +23,6 @@ class TranscodeJob : public Job
 {
 public:
 	TranscodeJob (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Log *);
-	~TranscodeJob ();
 	
 	std::string name () const;
 	void run ();

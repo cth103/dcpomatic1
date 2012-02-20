@@ -32,7 +32,7 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
 #include "config.h"
-#include "image.h"
+#include "dcp_video_frame.h"
 #include "exceptions.h"
 #include "util.h"
 #include "config.h"
@@ -45,12 +45,12 @@ using namespace boost;
 static vector<thread *> worker_threads;
 
 struct Work {
-	Work (shared_ptr<Image> i, int f)
-		: image (i)
-		, fd (f)
+	Work (shared_ptr<DCPVideoFrame> f, int d)
+		: frame (f)
+		, fd (fd)
 	{}
 	
-	shared_ptr<Image> image;
+	shared_ptr<DCPVideoFrame> frame;
 	int fd;
 };
 
@@ -71,10 +71,11 @@ worker_thread ()
 		queue.pop_front ();
 		
 		lock.unlock ();
-		cout << "Encoding " << work.image->frame() << ": ";
+		cout << "Encoding " << work.frame->frame() << ": ";
 		cout.flush ();
-		work.image->encode_locally ();
-		work.image->encoded()->send (work.fd);
+		work.frame->encode_locally ();
+		work.frame->encoded()->send (work.fd);
+		close (work.fd);
 		cout << "done.\n";
 		lock.lock ();
 
@@ -130,24 +131,38 @@ main ()
 		vector<string> b;
 		split (b, s, is_any_of (" "));
 
+		cout << s << "\n";
+
 		/* XXX */
 		if (b.size() >= 7 && b[0] == "encode") {
-			int const in_w = atoi (b[2].c_str ());
-			int const in_h = atoi (b[3].c_str ());
-			int const out_w = atoi (b[4].c_str ());
-			int const out_h = atoi (b[5].c_str ());
+			cout << "Hello darling.\n";
+			int n = 1;
+			Size const in_size  (atoi (b[n].c_str()), atoi (b[n + 1].c_str ()));
+			n += 2;
+			PixelFormat const pixel_format = (PixelFormat) atoi (b[n].c_str());
+			++n;
+			Size const out_size (atoi (b[n].c_str()), atoi (b[n + 1].c_str ()));
+			n += 2;
+			int const frame = atoi (b[n].c_str ());
+			++n;
+			int const frames_per_second = atoi (b[n].c_str ());
+			++n;
 
-			int line_size[4];
-			for (int i = 0; i < 4; ++i) {
-				line_size[i] = atoi (b[6 + i].c_str ());
+			int line_size[YUVImage::components];
+			for (int i = 0; i < YUVImage::components; ++i) {
+				line_size[i] = atoi (b[n].c_str ());
+				++n;
 			}
-			
-			shared_ptr<Image> image (new Image (line_size, atoi (b[1].c_str ()), in_w, in_h, out_w, out_h, atoi (b[6].c_str ())));
 
-			/* XXX: 4? */
-			for (int i = 0; i < 4; ++i) {
-				reader.read_definite_and_consume ((uint8_t *) image->yuv (i), line_size[i]);
+			shared_ptr<YUVImage> yuv (new YUVImage (line_size, in_size, pixel_format));
+
+			for (int i = 0; i < YUVImage::components; ++i) {
+				reader.read_definite_and_consume (yuv->data(i), yuv->line_size(i) * yuv->size().height);
 			}
+
+			shared_ptr<DCPVideoFrame> dcp_video_frame (
+				new DCPVideoFrame (yuv, out_size, frame, frames_per_second)
+				);
 			
 			{
 				mutex::scoped_lock lock (worker_mutex);
@@ -157,7 +172,7 @@ main ()
 					worker_condition.wait (lock);
 				}
 
-				queue.push_back (Work (image, new_fd));
+				queue.push_back (Work (dcp_video_frame, new_fd));
 				worker_condition.notify_all ();
 			}
 

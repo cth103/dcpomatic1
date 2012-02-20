@@ -42,8 +42,10 @@ extern "C" {
 #include "film_state.h"
 #include "options.h"
 #include "exceptions.h"
+#include "util.h"
 
 using namespace std;
+using namespace boost;
 
 Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Job* j, bool minimal, bool ignore_length)
 	: _fs (s)
@@ -53,14 +55,10 @@ Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const 
 	, _video_stream (-1)
 	, _audio_stream (-1)
 	, _frame_in (0)
-	  /* XXX: this should go, with its buffer */
-	, _frame_out (0)
 	, _video_codec_context (0)
 	, _video_codec (0)
-	, _frame_out_buffer (0)
 	, _buffer_src_context (0)
 	, _buffer_sink_context (0)
-	, _conversion_context (0)
 	, _audio_codec_context (0)
 	, _audio_codec (0)
 	, _video_frame (0)
@@ -79,19 +77,14 @@ Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const 
 
 Decoder::~Decoder ()
 {
-	sws_freeContext (_conversion_context);
-
 	if (_audio_codec_context) {
 		avcodec_close (_audio_codec_context);
 	}
-	
-	av_free (_frame_out_buffer);
 	
 	if (_video_codec_context) {
 		avcodec_close (_video_codec_context);
 	}
 	
-	av_free (_frame_out);
 	av_free (_frame_in);
 	avformat_close_input (&_format_context);
 
@@ -146,11 +139,6 @@ Decoder::setup_general ()
 	if (_frame_in == 0) {
 		throw DecodeError ("could not allocate frame");
 	}
-
-	_frame_out = avcodec_alloc_frame ();
-	if (_frame_out == 0) {
-		throw DecodeError ("could not allocate frame");
-	}
 }
 
 void
@@ -167,11 +155,6 @@ Decoder::setup_video ()
 		throw DecodeError ("could not open video decoder");
 	}
 
-	int num_bytes = avpicture_get_size (PIX_FMT_RGB24, _opt->out_width, _opt->out_height);
-	_frame_out_buffer = (uint8_t *) av_malloc (num_bytes);
-
-	avpicture_fill ((AVPicture *) _frame_out, _frame_out_buffer, PIX_FMT_RGB24, _opt->out_width, _opt->out_height);
-
 	_post_filter_width = _video_codec_context->width;
 	_post_filter_height = _video_codec_context->height;
 	
@@ -181,17 +164,6 @@ Decoder::setup_video ()
 	}
 
 	setup_post_process_filters ();
-
-	_conversion_context = sws_getContext (
-		_post_filter_width, _post_filter_height, _video_codec_context->pix_fmt,
-		_opt->out_width, _opt->out_height, PIX_FMT_RGB24,
-		_fs->scaler->ffmpeg_id (), 0, 0, 0
-		);
-
-	if (_conversion_context == 0) {
-		throw DecodeError ("could not obtain YUV -> RGB conversion context");
-	}
-
 	setup_video_filters ();
 }
 
@@ -271,18 +243,14 @@ Decoder::pass ()
 						s = _pp_stride;
 					}
 
-#if 0					
-					/* Scale and convert from YUV to RGB */
-					sws_scale (
-						_conversion_context,
-						p, s,
-						0, filter_buffer->video->h,
-						_frame_out->data, _frame_out->linesize
-						);
-#endif					
-
 					/* Emit the result */
-					Video (p, s, filter_buffer->video->w, filter_buffer->video->h, _video_frame);
+					boost::shared_ptr<YUVImage> yuv (
+						new YUVImage (
+							p, s, Size (filter_buffer->video->w, filter_buffer->video->h), _video_codec_context->pix_fmt
+							)
+						);
+					
+					Video (yuv, _video_frame);
 
 					avfilter_unref_buffer (filter_buffer);
 					av_free_packet (&_packet);

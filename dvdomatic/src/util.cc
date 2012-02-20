@@ -41,6 +41,8 @@ extern "C" {
 using namespace std;
 using namespace boost;
 
+int const YUVImage::components = 4;
+
 /** Convert some number of seconds to a string representation
  *  in hours, minutes and seconds.
  *
@@ -316,3 +318,57 @@ SocketReader::read_indefinite (uint8_t* data, int size)
 	memcpy (data, _buffer, size);
 }
 
+/** Create an empty YUVImage with a given set of line sizes */
+YUVImage::YUVImage (int const * ls, Size s, PixelFormat pix)
+	: _size (s)
+	, _pixel_format (pix)
+{
+	_line_size = new int[components];
+	_data = new uint8_t*[components];
+	
+	for (int i = 0; i < components; ++i) {
+		_line_size[i] = ls[i];
+		_data[i] = new uint8_t[_line_size[i] * _size.height];
+	}
+
+	_our_data = true;
+}
+
+/** Create a YUVImage by shallow copying existing data */
+YUVImage::YUVImage (uint8_t** data, int const * ls, Size s, PixelFormat pix)
+	: _size (s)
+	, _pixel_format (pix)
+{
+	_line_size = new int[components];
+	_data = new uint8_t*[components];
+	
+	for (int i = 0; i < components; ++i) {
+		_line_size[i] = ls[i];
+		_data[i] = data[i];
+	}
+
+	_our_data = false;
+}
+
+shared_ptr<YUVImage>
+YUVImage::deep_copy ()
+{
+	shared_ptr<YUVImage> copy (new YUVImage (_line_size, _size, _pixel_format));
+	for (int i = 0; i < components; ++i) {
+		memcpy (copy->data (i), _data[i], _line_size[i] * _size.height);
+	}
+
+	return copy;
+}
+
+YUVImage::~YUVImage ()
+{
+	if (_our_data) {
+		for (int i = 0; i < components; ++i) {
+			delete[] _data[i];
+		}
+	}
+
+	delete[] _data;
+	delete[] _line_size;
+}

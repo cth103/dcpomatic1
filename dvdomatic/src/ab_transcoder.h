@@ -25,6 +25,7 @@ class Encoder;
 class Decoder;
 class FilmState;
 class Options;
+class YUVImage;
 
 /** A transcoder which uses one FilmState for the left half of the screen, and a different one
  *  for the right half (to facilitate A/B comparisons of settings)
@@ -38,7 +39,7 @@ public:
 	void go ();
 
 private:
-	void process_video (uint8_t **, int *, int, int, int, int);
+	void process_video (boost::shared_ptr<YUVImage>, int, int);
 	
 	boost::shared_ptr<const FilmState> _fs_a;
 	boost::shared_ptr<const FilmState> _fs_b;

@@ -36,6 +36,7 @@ struct AVCodec;
 class Job;
 class FilmState;
 class Options;
+class YUVImage;
 
 class Decoder
 {
@@ -68,7 +69,7 @@ public:
 
 	PassResult pass ();
 	
-	sigc::signal<void, uint8_t **, int *, int, int, int> Video;
+	sigc::signal<void, boost::shared_ptr<YUVImage>, int> Video;
 	sigc::signal<void, uint8_t *, int, int> Audio;
 	
 private:
@@ -87,14 +88,11 @@ private:
 	int _video_stream;
 	int _audio_stream;
 	AVFrame* _frame_in;
-	AVFrame* _frame_out;
 	
 	AVCodecContext* _video_codec_context;
 	AVCodec* _video_codec;
-	uint8_t* _frame_out_buffer;
 	AVFilterContext* _buffer_src_context;
 	AVFilterContext* _buffer_sink_context;
-	struct SwsContext* _conversion_context;
 	
 	AVCodecContext* _audio_codec_context;
 	AVCodec* _audio_codec;

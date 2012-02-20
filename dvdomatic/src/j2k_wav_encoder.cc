@@ -30,7 +30,7 @@
 #include "film_state.h"
 #include "options.h"
 #include "exceptions.h"
-#include "image.h"
+#include "dcp_video_frame.h"
 #include "server.h"
 
 using namespace std;
@@ -72,7 +72,7 @@ J2KWAVEncoder::~J2KWAVEncoder ()
 }	
 
 void
-J2KWAVEncoder::process_video (uint8_t** yuv, int* line_size, int in_w, int in_h, int frame)
+J2KWAVEncoder::process_video (shared_ptr<YUVImage> yuv, int frame)
 {
 	boost::mutex::scoped_lock lock (_worker_mutex);
 
@@ -91,8 +91,8 @@ J2KWAVEncoder::process_video (uint8_t** yuv, int* line_size, int in_w, int in_h,
 
 	/* Only do the processing if we don't already have a file for this frame */
 	if (!boost::filesystem::exists (_opt->frame_out_path (frame, false))) {
-		_queue.push_back (boost::shared_ptr<Image> (
-					  new Image (yuv, line_size, frame, in_w, in_h, _opt->out_width, _opt->out_height, _fs->frames_per_second)
+		_queue.push_back (boost::shared_ptr<DCPVideoFrame> (
+					  new DCPVideoFrame (yuv->deep_copy (), Size (_opt->out_width, _opt->out_height), frame, _fs->frames_per_second)
 					  ));
 		
 		_worker_condition.notify_all ();
@@ -114,14 +114,14 @@ J2KWAVEncoder::encoder_thread (Server* server)
 			return;
 		}
 
-		boost::shared_ptr<Image> im = _queue.front ();
+		boost::shared_ptr<DCPVideoFrame> vf = _queue.front ();
 		_queue.pop_front ();
 		
 		lock.unlock ();
 
 		if (server) {
 			try {
-				im->encode_remotely (server);
+				vf->encode_remotely (server);
 			} catch (std::exception& e) {
 				++failures;
 				cerr << "Remote encode failed (" << e.what() << "); thread sleeping for " << failures << "s.\n";
@@ -129,14 +129,14 @@ J2KWAVEncoder::encoder_thread (Server* server)
 			}
 				
 		} else {
-			im->encode_locally ();
+			vf->encode_locally ();
 		}
 
-		if (im->encoded ()) {
-			im->encoded()->write (_opt, im->frame ());
+		if (vf->encoded ()) {
+			vf->encoded()->write (_opt, vf->frame ());
 		} else {
 			lock.lock ();
-			_queue.push_front (im);
+			_queue.push_front (vf);
 			lock.unlock ();
 		}
 

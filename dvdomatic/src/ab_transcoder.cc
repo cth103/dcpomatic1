@@ -18,6 +18,7 @@
 */
 
 #include <iostream>
+#include <boost/shared_ptr.hpp>
 #include <sigc++/bind.h>
 #include "ab_transcoder.h"
 #include "film.h"
@@ -28,6 +29,7 @@
 #include "options.h"
 
 using namespace std;
+using namespace boost;
 
 ABTranscoder::ABTranscoder (boost::shared_ptr<const FilmState> a, boost::shared_ptr<const FilmState> b, boost::shared_ptr<const Options> o, Job* j, Encoder* e)
 	: _fs_a (a)
@@ -43,8 +45,6 @@ ABTranscoder::ABTranscoder (boost::shared_ptr<const FilmState> a, boost::shared_
 	_da->Video.connect (sigc::bind (sigc::mem_fun (*this, &ABTranscoder::process_video), 0));
 	_db->Video.connect (sigc::bind (sigc::mem_fun (*this, &ABTranscoder::process_video), 1));
 	_da->Audio.connect (sigc::mem_fun (*e, &Encoder::process_audio));
-
-	_rgb = new uint8_t[o->out_width * o->out_height * 3];
 }
 
 ABTranscoder::~ABTranscoder ()
@@ -53,7 +53,7 @@ ABTranscoder::~ABTranscoder ()
 }
 
 void
-ABTranscoder::process_video (uint8_t** yuv, int* line_size, int, int, int frame, int index)
+ABTranscoder::process_video (shared_ptr<YUVImage> yuv, int frame, int index)
 {
 #if 0	
 	int const half_line_size = line_size / 2;

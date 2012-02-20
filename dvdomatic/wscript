@@ -8,6 +8,8 @@ def configure(conf):
     conf.check_cfg(package = 'gtkmm-2.4', args = '--cflags --libs', uselib_store = 'GTKMM', mandatory = True)
     conf.check_cfg(package = 'libavformat', args = '--cflags --libs', uselib_store = 'AVFORMAT', mandatory = True)
     conf.check_cfg(package = 'libavfilter', args = '--cflags --libs', uselib_store = 'AVFILTER', mandatory = True)
+    conf.check_cfg(package = 'libavcodec', args = '--cflags --libs', uselib_store = 'AVCODEC', mandatory = True)
+    conf.check_cfg(package = 'libavutil', args = '--cflags --libs', uselib_store = 'AVUTIL', mandatory = True)
     conf.check_cfg(package = 'libswscale', args = '--cflags --libs', uselib_store = 'SWSCALE', mandatory = True)
     conf.check_cfg(package = 'libswresample', args = '--cflags --libs', uselib_store = 'SWRESAMPLE', mandatory = True)
     conf.check_cfg(package = 'libpostproc', args = '--cflags --libs', uselib_store = 'POSTPROC', mandatory = True)
@@ -43,4 +45,4 @@ def configure(conf):
 def build(bld):
     bld.recurse('src')
     bld.recurse('tools')
-    bld.recurse('test')
+#    bld.recurse('test')
