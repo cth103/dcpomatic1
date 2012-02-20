@@ -69,7 +69,7 @@ class Image
 {
 public:
 	Image (uint8_t **, int *, int, int, int, int, int, int);
-	Image (int, int, int, int, int, int);
+	Image (int *, int, int, int, int, int, int);
 	virtual ~Image ();
 
 	uint8_t * yuv (int) const;

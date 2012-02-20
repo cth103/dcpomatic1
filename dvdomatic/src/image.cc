@@ -47,7 +47,7 @@ using namespace std;
 using namespace boost;
 
 /** Construct an empty image */
-Image::Image (int f, int in_w, int in_h, int out_w, int out_h, int fps)
+Image::Image (int* line_size, int f, int in_w, int in_h, int out_w, int out_h, int fps)
 	: _yuv (0)
 	, _frame (f)
 	, _image (0)
@@ -66,9 +66,8 @@ Image::Image (int f, int in_w, int in_h, int out_w, int out_h, int fps)
 	_yuv_line_size = new int[4];
 
 	for (int i = 0; i < 4; ++i) {
-		/* XXX: this could be smaller if we knew the linesize */
-		_yuv[i] = new uint8_t[_in_width * _in_height];
-		_yuv_line_size[i] = _in_width;
+		_yuv[i] = new uint8_t[line_size[i]];
+		_yuv_line_size[i] = line_size[i];
 	}
 }
 
@@ -325,13 +324,21 @@ Image::encode_remotely (Server const * serv)
 	}
 
 	stringstream s;
-	s << "encode " << _frame << " " << _in_width << " " << _in_height << " " << _out_width << " " << _out_height << " " << _frames_per_second;
-	cout << s.str() << "\n";
-	fd_write (fd, (uint8_t *) s.str().c_str(), s.str().length() + 1);
+	s << "encode " << _frame << " " << _in_width << " " << _in_height << " " << _out_width << " " << _out_height << " " << _frames_per_second << " ";
+
 	/* XXX: 4? */
 	for (int i = 0; i < 4; ++i) {
-		cout << "Write YUV comp " << i << " " << (_in_width * _in_height) << "\n";
-		fd_write (fd, _yuv[i], _in_width * _in_height);
+		s << _yuv_line_size[i] << " ";
+	}
+
+	cout << s.str() << "\n";
+	
+	fd_write (fd, (uint8_t *) s.str().c_str(), s.str().length() + 1);
+	
+	/* XXX: 4? */
+	for (int i = 0; i < 4; ++i) {
+		cout << "Write YUV comp " << i << " " << _yuv_line_size[i] << "\n";
+		fd_write (fd, _yuv[i], _yuv_line_size[i]);
 	}
 
 	SocketReader reader (fd);

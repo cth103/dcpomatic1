@@ -130,15 +130,23 @@ main ()
 		vector<string> b;
 		split (b, s, is_any_of (" "));
 
-		if (b.size() == 7 && b[0] == "encode") {
+		/* XXX */
+		if (b.size() >= 7 && b[0] == "encode") {
 			int const in_w = atoi (b[2].c_str ());
 			int const in_h = atoi (b[3].c_str ());
 			int const out_w = atoi (b[4].c_str ());
 			int const out_h = atoi (b[5].c_str ());
-			shared_ptr<Image> image (new Image (atoi (b[1].c_str ()), in_w, in_h, out_w, out_h, atoi (b[6].c_str ())));
+
+			int line_size[4];
+			for (int i = 0; i < 4; ++i) {
+				line_size[i] = atoi (b[6 + i].c_str ());
+			}
+			
+			shared_ptr<Image> image (new Image (line_size, atoi (b[1].c_str ()), in_w, in_h, out_w, out_h, atoi (b[6].c_str ())));
+
 			/* XXX: 4? */
 			for (int i = 0; i < 4; ++i) {
-				reader.read_definite_and_consume ((uint8_t *) image->yuv (i), in_w * in_h);
+				reader.read_definite_and_consume ((uint8_t *) image->yuv (i), line_size[i]);
 			}
 			
 			{
