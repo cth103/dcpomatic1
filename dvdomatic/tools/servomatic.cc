@@ -54,7 +54,7 @@ worker_thread ()
 	while (1) {
 		mutex::scoped_lock lock (worker_mutex);
 		while (queue.empty ()) {
-			worker_condition.wait (worker_mutex);
+			worker_condition.wait (lock);
 		}
 
 		int fd = queue.front ();
