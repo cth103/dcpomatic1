@@ -44,17 +44,7 @@ using namespace boost;
 
 static vector<thread *> worker_threads;
 
-struct Work {
-	Work (shared_ptr<DCPVideoFrame> f, int d)
-		: frame (f)
-		, fd (d)
-	{}
-	
-	shared_ptr<DCPVideoFrame> frame;
-	int fd;
-};
-
-static std::list<Work> queue;
+static std::list<int> queue;
 static mutex worker_mutex;
 static condition worker_condition;
 
@@ -67,16 +57,59 @@ worker_thread ()
 			worker_condition.wait (worker_mutex);
 		}
 
-		Work work = queue.front ();
+		int fd = queue.front ();
 		queue.pop_front ();
 		
 		lock.unlock ();
-		cout << "Encoding " << work.frame->frame () << ".\n";
-		work.frame->encode_locally ();
-		work.frame->encoded()->send (work.fd);
-		close (work.fd);
-		lock.lock ();
 
+		cout << "Encoding from " << fd << "\n";
+
+		SocketReader reader (fd);
+		
+		char buffer[128];
+		reader.read_indefinite ((uint8_t *) buffer, sizeof (buffer));
+		reader.consume (strlen (buffer) + 1);
+
+		string s (buffer);
+		vector<string> b;
+		split (b, s, is_any_of (" "));
+
+		if (b.size() < 1 || b[0] != "encode") {
+			close (fd);
+			continue;
+		}
+		
+		int n = 1;
+		Size const in_size (atoi (b[n].c_str()), atoi (b[n + 1].c_str ()));
+		n += 2;
+		PixelFormat const pixel_format = (PixelFormat) atoi (b[n].c_str());
+		++n;
+		Size const out_size (atoi (b[n].c_str()), atoi (b[n + 1].c_str ()));
+		n += 2;
+		int const frame = atoi (b[n].c_str ());
+		++n;
+		int const frames_per_second = atoi (b[n].c_str ());
+		++n;
+		
+		shared_ptr<AllocImage> image (new AllocImage (pixel_format, in_size));
+		
+		for (int i = 0; i < image->components(); ++i) {
+			image->set_line_size (i, atoi (b[n].c_str ()));
+			++n;
+		}
+		
+		for (int i = 0; i < image->components(); ++i) {
+			reader.read_definite_and_consume (image->data()[i], image->line_size()[i] * image->lines(i));
+		}
+
+		fd_write (fd, (uint8_t *) "OK", 3);
+		
+		DCPVideoFrame dcp_video_frame (image, out_size, frame, frames_per_second);
+		dcp_video_frame.encode_locally ();
+		dcp_video_frame.encoded()->send (fd);
+		close (fd);
+		lock.lock ();
+		
 		worker_condition.notify_all ();
 	}
 }
@@ -119,61 +152,15 @@ main ()
 			throw NetworkError ("error on accept");
 		}
 
-		SocketReader reader (new_fd);
+		mutex::scoped_lock lock (worker_mutex);
 		
-		char buffer[128];
-		reader.read_indefinite ((uint8_t *) buffer, sizeof (buffer));
-		reader.consume (strlen (buffer) + 1);
-
-		string s (buffer);
-		vector<string> b;
-		split (b, s, is_any_of (" "));
-
-		if (b.size() >= 1 && b[0] == "encode") {
-			int n = 1;
-			Size const in_size (atoi (b[n].c_str()), atoi (b[n + 1].c_str ()));
-			n += 2;
-			PixelFormat const pixel_format = (PixelFormat) atoi (b[n].c_str());
-			++n;
-			Size const out_size (atoi (b[n].c_str()), atoi (b[n + 1].c_str ()));
-			n += 2;
-			int const frame = atoi (b[n].c_str ());
-			++n;
-			int const frames_per_second = atoi (b[n].c_str ());
-			++n;
-			
-			shared_ptr<AllocImage> image (new AllocImage (pixel_format, in_size));
-
-			for (int i = 0; i < image->components(); ++i) {
-				image->set_line_size (i, atoi (b[n].c_str ()));
-				++n;
-			}
-
-			for (int i = 0; i < image->components(); ++i) {
-				reader.read_definite_and_consume (image->data()[i], image->line_size()[i] * image->lines(i));
-			}
-
-			shared_ptr<DCPVideoFrame> dcp_video_frame (
-				new DCPVideoFrame (image, out_size, frame, frames_per_second)
-				);
-			
-			{
-				mutex::scoped_lock lock (worker_mutex);
-				
-				/* Wait until the queue has gone down a bit */
-				while (int (queue.size()) >= num_threads * 2) {
-					worker_condition.wait (lock);
-				}
-
-				queue.push_back (Work (dcp_video_frame, new_fd));
-				worker_condition.notify_all ();
-			}
-
-			fd_write (new_fd, (uint8_t *) "OK", 3);
-			
-		} else {
-			close (new_fd);
+		/* Wait until the queue has gone down a bit */
+		while (int (queue.size()) >= num_threads * 2) {
+			worker_condition.wait (lock);
 		}
+		
+		queue.push_back (new_fd);
+		worker_condition.notify_all ();
 	}
 	
 	close (fd);
