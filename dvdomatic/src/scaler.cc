@@ -45,7 +45,6 @@ Scaler::get_all ()
 void
 Scaler::setup_scalers ()
 {
-	cout << "setup.\n";
 	_scalers.push_back (new Scaler (SWS_BICUBIC, "bicubic", "Bicubic"));
 	_scalers.push_back (new Scaler (SWS_X, "x", "X"));
 	_scalers.push_back (new Scaler (SWS_AREA, "area", "Area"));
@@ -60,18 +59,15 @@ Scaler::setup_scalers ()
 Scaler const *
 Scaler::get_from_id (string id)
 {
-	cout << "scaler from " << id << "\n";
 	vector<Scaler const *>::iterator i = _scalers.begin ();
 	while (i != _scalers.end() && (*i)->id() != id) {
 		++i;
 	}
 
 	if (i == _scalers.end ()) {
-		cout << "0\n";
 		return 0;
 	}
 
-	cout << *i << "\n";
 	return *i;
 }
 

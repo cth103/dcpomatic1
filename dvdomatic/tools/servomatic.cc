@@ -47,7 +47,7 @@ static vector<thread *> worker_threads;
 struct Work {
 	Work (shared_ptr<DCPVideoFrame> f, int d)
 		: frame (f)
-		, fd (fd)
+		, fd (d)
 	{}
 	
 	shared_ptr<DCPVideoFrame> frame;
@@ -71,12 +71,12 @@ worker_thread ()
 		queue.pop_front ();
 		
 		lock.unlock ();
-		cout << "Encoding " << work.frame->frame() << ": ";
+		cout << "Encoding " << work.frame->frame () << "... ";
 		cout.flush ();
 		work.frame->encode_locally ();
 		work.frame->encoded()->send (work.fd);
+		cout << "ok\n";
 		close (work.fd);
-		cout << "done.\n";
 		lock.lock ();
 
 		worker_condition.notify_all ();
@@ -131,11 +131,7 @@ main ()
 		vector<string> b;
 		split (b, s, is_any_of (" "));
 
-		cout << s << "\n";
-
-		/* XXX */
-		if (b.size() >= 7 && b[0] == "encode") {
-			cout << "Hello darling.\n";
+		if (b.size() >= 1 && b[0] == "encode") {
 			int n = 1;
 			Size const in_size (atoi (b[n].c_str()), atoi (b[n + 1].c_str ()));
 			n += 2;
@@ -147,7 +143,7 @@ main ()
 			++n;
 			int const frames_per_second = atoi (b[n].c_str ());
 			++n;
-
+			
 			shared_ptr<AllocImage> image (new AllocImage (pixel_format, in_size));
 
 			for (int i = 0; i < image->components(); ++i) {

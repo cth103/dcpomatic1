@@ -76,13 +76,9 @@ J2KWAVEncoder::process_video (shared_ptr<Image> yuv, int frame)
 {
 	boost::mutex::scoped_lock lock (_worker_mutex);
 
-	cout << "p: queue is " << _queue.size() << "\n";
-
 	/* Wait until the queue has gone down a bit */
 	while (_queue.size() >= _worker_threads.size() * 2 && !_process_end) {
-		cout << "process sleeps.\n";
 		_worker_condition.wait (lock);
-		cout << "process wakes.\n";
 	}
 
 	if (_process_end) {
@@ -118,8 +114,6 @@ J2KWAVEncoder::encoder_thread (Server* server)
 		_queue.pop_front ();
 		
 		lock.unlock ();
-
-		cout << "Go go worker thread " << vf->frame () << "\n";
 
 		if (server) {
 			try {

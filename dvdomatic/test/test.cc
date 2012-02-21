@@ -165,9 +165,7 @@ BOOST_AUTO_TEST_CASE (make_dcp_test)
 	BOOST_CHECK_EQUAL (audio_sample_format_to_string (f.audio_sample_format()), "S16");
 	
 	f.set_format (Format::get_from_nickname ("Flat"));
-	cout << "==============> make_dcp\n";
 	f.make_dcp ();
-	cout << "<============== make_dcp\n";
 
 	while (JobManager::instance()->work_to_do ()) {
 		sleep (1);

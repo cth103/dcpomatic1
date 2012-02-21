@@ -291,8 +291,6 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 		s << _yuv->line_size()[i] << " ";
 	}
 
-	cout << s.str() << "\n";
-	
 	fd_write (fd, (uint8_t *) s.str().c_str(), s.str().length() + 1);
 	
 	for (int i = 0; i < _yuv->components(); ++i) {
