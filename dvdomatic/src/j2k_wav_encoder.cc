@@ -78,9 +78,7 @@ J2KWAVEncoder::process_video (shared_ptr<Image> yuv, int frame)
 
 	/* Wait until the queue has gone down a bit */
 	while (_queue.size() >= _worker_threads.size() * 2 && !_process_end) {
-		cout << "queue " << _queue.size() << "; sleep.\n";
 		_worker_condition.wait (lock);
-		cout << "wake.\n";
 	}
 
 	if (_process_end) {
@@ -105,7 +103,7 @@ J2KWAVEncoder::encoder_thread (Server* server)
 	while (1) {
 		boost::mutex::scoped_lock lock (_worker_mutex);
 		while (_queue.empty () && !_process_end) {
-			_worker_condition.wait (_worker_mutex);
+			_worker_condition.wait (lock);
 		}
 
 		if (_process_end) {
@@ -127,7 +125,11 @@ J2KWAVEncoder::encoder_thread (Server* server)
 			}
 				
 		} else {
-			vf->encode_locally ();
+			try {
+				vf->encode_locally ();
+			} catch (std::exception& e) {
+				cerr << "Local encode failed " << e.what() << ".\n";
+			}
 		}
 
 		if (vf->encoded ()) {
@@ -139,12 +141,11 @@ J2KWAVEncoder::encoder_thread (Server* server)
 		}
 
 		if (failures == 4) {
-			cerr << "Giving up on encode thread\n";
+			cerr << "Giving up on encode thread.\n";
 			return;
 		}
-		
-		lock.lock ();
 
+		lock.lock ();
 		_worker_condition.notify_all ();
 	}
 }
