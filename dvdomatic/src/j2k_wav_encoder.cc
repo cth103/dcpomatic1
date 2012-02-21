@@ -119,8 +119,6 @@ J2KWAVEncoder::encoder_thread (Server* server)
 		
 		lock.unlock ();
 
-		cout << "Go go worker thread " << vf->frame () << "\n";
-
 		if (server) {
 			try {
 				vf->encode_remotely (server);

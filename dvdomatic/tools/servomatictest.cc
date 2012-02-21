@@ -26,7 +26,7 @@
 #include "util.h"
 #include "scaler.h"
 #include "server.h"
-#include "image.h"
+#include "dcp_video_frame.h"
 #include "options.h"
 #include "decoder.h"
 #include "exceptions.h"
@@ -37,10 +37,10 @@ using namespace boost;
 static Server* server;
 
 void
-process_video (uint8_t* rgb, int line_size, int frame)
+process_video (shared_ptr<Image> image, int frame)
 {
-	shared_ptr<Image> local (new Image (rgb, frame, 1024, 1024, 24));
-	shared_ptr<Image> remote (new Image (rgb, frame, 1024, 1024, 24));
+	shared_ptr<DCPVideoFrame> local (new DCPVideoFrame (image, Size (1024, 1024), frame, 24));
+	shared_ptr<DCPVideoFrame> remote (new DCPVideoFrame (image, Size (1024, 1024), frame, 24));
 
 	cout << "Frame " << frame << ": ";
 	cout.flush ();
