@@ -71,11 +71,9 @@ worker_thread ()
 		queue.pop_front ();
 		
 		lock.unlock ();
-		cout << "Encoding " << work.frame->frame () << "... ";
-		cout.flush ();
+		cout << "Encoding " << work.frame->frame () << ".\n";
 		work.frame->encode_locally ();
 		work.frame->encoded()->send (work.fd);
-		cout << "ok\n";
 		close (work.fd);
 		lock.lock ();
 
