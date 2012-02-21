@@ -122,6 +122,18 @@ private:
 	uint8_t** _data;
 	int* _line_size;
 };
+
+class Timer
+{
+public:
+	Timer (std::string);
+	~Timer ();
 	
+private:
+	double seconds (struct timeval) const;
+	
+	std::string _name;
+	struct timeval _start;
+};
 
 #endif

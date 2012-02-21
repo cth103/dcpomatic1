@@ -23,6 +23,7 @@
 #include <iostream>
 #include <execinfo.h>
 #include <cxxabi.h>
+#include <sys/time.h>
 #include <boost/algorithm/string.hpp>
 #include <openjpeg.h>
 extern "C" {
@@ -82,10 +83,18 @@ seconds_to_approximate_hms (int s)
 		if (m > 30) {
 			ap << (h + 1) << " hours";
 		} else {
-			ap << h << " hours";
+			if (h == 1) {
+				ap << "1 hour";
+			} else {
+				ap << h << " hours";
+			}
 		}
 	} else if (m > 0) {
-		ap << m << " minutes";
+		if (m == 1) {
+			ap << "1 minute";
+		} else {
+			ap << m << " minutes";
+		}
 	} else {
 		ap << s << " seconds";
 	}
@@ -426,3 +435,24 @@ AllocImage::size () const
 {
 	return _size;
 }
+
+Timer::Timer (string n)
+	: _name (n)
+{
+	gettimeofday (&_start, 0);
+}
+
+Timer::~Timer ()
+{
+	struct timeval stop;
+	gettimeofday (&stop, 0);
+	cout << "T: " << _name << ": " << (seconds (stop) - seconds (_start)) << "\n";
+}
+
+double
+Timer::seconds (struct timeval t) const
+{
+	return t.tv_sec + (double (t.tv_usec) / 1e6);
+}
+
+	
