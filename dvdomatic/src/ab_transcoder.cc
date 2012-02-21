@@ -53,7 +53,7 @@ ABTranscoder::~ABTranscoder ()
 }
 
 void
-ABTranscoder::process_video (shared_ptr<YUVImage> yuv, int frame, int index)
+ABTranscoder::process_video (shared_ptr<Image> yuv, int frame, int index)
 {
 #if 0	
 	int const half_line_size = line_size / 2;

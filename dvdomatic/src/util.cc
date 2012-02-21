@@ -34,14 +34,13 @@ extern "C" {
 #include <libavfilter/avcodec.h>
 #include <libavfilter/buffersink.h>
 #include <libpostproc/postprocess.h>
+#include <libavutil/pixfmt.h>
 }
 #include "util.h"
 #include "exceptions.h"
 
 using namespace std;
 using namespace boost;
-
-int const YUVImage::components = 4;
 
 /** Convert some number of seconds to a string representation
  *  in hours, minutes and seconds.
@@ -318,69 +317,112 @@ SocketReader::read_indefinite (uint8_t* data, int size)
 	memcpy (data, _buffer, size);
 }
 
-/** Create an empty YUVImage with a given set of line sizes */
-YUVImage::YUVImage (int const * ls, Size s, PixelFormat pix)
-	: _size (s)
-	, _pixel_format (pix)
+int
+Image::lines (int n) const
 {
-	_line_size = new int[components];
-	_data = new uint8_t*[components];
-	
-	for (int i = 0; i < components; ++i) {
-		_line_size[i] = ls[i];
-		if (_line_size[i] > 0) {
-			_data[i] = (uint8_t *) av_malloc (_line_size[i] * _size.height);;
-			printf("new[] at %p %d\n", _data[i], _line_size[i] * _size.height);
+	switch (_pixel_format) {
+	case PIX_FMT_YUV420P:
+		if (n == 0) {
+			return size().height;
 		} else {
-			_data[i] = 0;
+			return size().height / 2;
 		}
+		break;
+	default:
+		assert (false);
 	}
 
-	_our_data = true;
+	return 0;
 }
 
-/** Create a YUVImage by shallow copying existing data */
-YUVImage::YUVImage (uint8_t** data, int const * ls, Size s, PixelFormat pix)
-	: _size (s)
-	, _pixel_format (pix)
+
+int
+Image::components () const
 {
-	_line_size = new int[components];
-	_data = new uint8_t*[components];
+	switch (_pixel_format) {
+	case PIX_FMT_YUV420P:
+		return 3;
+	default:
+		assert (false);
+	}
+
+	return 0;
+}	
+
+FilterBuffer::FilterBuffer (PixelFormat p, AVFilterBufferRef* b)
+	: Image (p)
+	, _buffer (b)
+{
+
+}
+
+FilterBuffer::~FilterBuffer ()
+{
+	avfilter_unref_buffer (_buffer);
+}
+
+uint8_t **
+FilterBuffer::data () const
+{
+	return _buffer->data;
+}
+
+int *
+FilterBuffer::line_size () const
+{
+	return _buffer->linesize;
+}
+
+Size
+FilterBuffer::size () const
+{
+	return Size (_buffer->video->w, _buffer->video->h);
+}
+
+AllocImage::AllocImage (PixelFormat p, Size s)
+	: Image (p)
+	, _size (s)
+{
+	_data = (uint8_t **) av_malloc (components() * sizeof (uint8_t *));
+	_line_size = (int *) av_malloc (components() * sizeof (int));
 	
-	for (int i = 0; i < components; ++i) {
-		_line_size[i] = ls[i];
-		_data[i] = data[i];
+	for (int i = 0; i < components(); ++i) {
+		_data[i] = 0;
+		_line_size[i] = 0;
 	}
-
-	_our_data = false;
 }
 
-shared_ptr<YUVImage>
-YUVImage::deep_copy ()
+AllocImage::~AllocImage ()
 {
-	shared_ptr<YUVImage> copy (new YUVImage (_line_size, _size, _pixel_format));
-	for (int i = 0; i < components; ++i) {
-		assert ((copy->data(i) && _data[i]) || (copy->data(i) == 0 && _data[i] == 0));
-		if (copy->data(i) && _data[i]) {
-			printf ("memcpy from %p %d to %p\n", _data[i], _line_size[i] * _size.height, copy->data (i));
-			memcpy (copy->data (i), _data[i], _line_size[i] * _size.height);
-			printf ("memcpy ok\n");
-		}
-		cout << "ok.\n";
+	for (int i = 0; i < components(); ++i) {
+		av_free (_data[i]);
 	}
 
-	return copy;
+	av_free (_data);
+	av_free (_line_size);
 }
 
-YUVImage::~YUVImage ()
+void
+AllocImage::set_line_size (int i, int s)
 {
-	if (_our_data) {
-		for (int i = 0; i < components; ++i) {
-			av_free (_data[i]);
-		}
-	}
+	_line_size[i] = s;
+	_data[i] = (uint8_t *) av_malloc (s * lines (i));
+}
 
-	printf ("delete[] %p\n", _data);
-	delete[] _data;
-	delete[] _line_size;
+uint8_t **
+AllocImage::data () const
+{
+	return _data;
+}
+
+int *
+AllocImage::line_size () const
+{
+	return _line_size;
+}
+
+Size
+AllocImage::size () const
+{
+	return _size;
 }

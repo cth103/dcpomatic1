@@ -26,6 +26,7 @@
 #include <gtkmm.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
+#include <libavfilter/avfilter.h>
 }
 
 extern std::string seconds_to_hms (int);
@@ -67,47 +68,60 @@ struct Size {
 	int height;
 };
 
-class YUVImage {
+class Image
+{
 public:
-	YUVImage (int const *, Size, PixelFormat);
-	YUVImage (uint8_t **, int const *, Size, PixelFormat);
-	~YUVImage ();
-
-	Size size () {
-		return _size;
-	}
-
-	uint8_t** data () const {
-		return _data;
-	}
+	Image (PixelFormat p)
+		: _pixel_format (p)
+	{}
 	
-	uint8_t* data (int n) const {
-		return _data[n];
-	}
+	virtual ~Image () {}
+	virtual uint8_t ** data () const = 0;
+	virtual int * line_size () const = 0;
+	virtual Size size () const = 0;
 
-	int* line_size () const {
-		return _line_size;
-	}
-	
-	int line_size (int n) const {
-		return _line_size[n];
-	}
+	int components () const;
+	int lines (int) const;
 	
 	PixelFormat pixel_format () const {
 		return _pixel_format;
 	}
 
-	boost::shared_ptr<YUVImage> deep_copy ();
+private:
+	PixelFormat _pixel_format;
+};
 
-	static int const components;
+class FilterBuffer : public Image
+{
+public:
+	FilterBuffer (PixelFormat, AVFilterBufferRef *);
+	~FilterBuffer ();
+
+	uint8_t ** data () const;
+	int * line_size () const;
+	Size size () const;
 
 private:
+	AVFilterBufferRef* _buffer;
+};
+
+class AllocImage : public Image
+{
+public:
+	AllocImage (PixelFormat, Size);
+	~AllocImage ();
+
+	uint8_t ** data () const;
+	int * line_size () const;
+	Size size () const;
 	
+	void set_line_size (int, int);
+
+private:
+	Size _size;
 	uint8_t** _data;
 	int* _line_size;
-	Size _size;
-	PixelFormat _pixel_format;
-	bool _our_data;
 };
+	
 
 #endif

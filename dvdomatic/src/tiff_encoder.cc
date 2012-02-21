@@ -47,7 +47,7 @@ TIFFEncoder::~TIFFEncoder ()
 }	
 
 void
-TIFFEncoder::process_video (shared_ptr<YUVImage> yuv, int frame)
+TIFFEncoder::process_video (shared_ptr<Image> yuv, int frame)
 {
 #if 0	
 	string tmp_file = _opt->frame_out_path (frame, true);

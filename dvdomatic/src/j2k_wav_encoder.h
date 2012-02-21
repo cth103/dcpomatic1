@@ -26,6 +26,7 @@
 
 class Server;
 class DCPVideoFrame;
+class Image;
 
 class J2KWAVEncoder : public Encoder
 {
@@ -34,7 +35,7 @@ public:
 	~J2KWAVEncoder ();
 
 	void process_begin ();
-	void process_video (boost::shared_ptr<YUVImage>, int);
+	void process_video (boost::shared_ptr<Image>, int);
 	void process_audio (uint8_t *, int, int);
 	void process_end ();
 

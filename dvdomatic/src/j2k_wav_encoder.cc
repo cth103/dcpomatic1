@@ -72,7 +72,7 @@ J2KWAVEncoder::~J2KWAVEncoder ()
 }	
 
 void
-J2KWAVEncoder::process_video (shared_ptr<YUVImage> yuv, int frame)
+J2KWAVEncoder::process_video (shared_ptr<Image> yuv, int frame)
 {
 	boost::mutex::scoped_lock lock (_worker_mutex);
 
@@ -92,7 +92,7 @@ J2KWAVEncoder::process_video (shared_ptr<YUVImage> yuv, int frame)
 	/* Only do the processing if we don't already have a file for this frame */
 	if (!boost::filesystem::exists (_opt->frame_out_path (frame, false))) {
 		_queue.push_back (boost::shared_ptr<DCPVideoFrame> (
-					  new DCPVideoFrame (yuv->deep_copy (), Size (_opt->out_width, _opt->out_height), frame, _fs->frames_per_second)
+					  new DCPVideoFrame (yuv, Size (_opt->out_width, _opt->out_height), frame, _fs->frames_per_second)
 					  ));
 		
 		_worker_condition.notify_all ();
@@ -118,6 +118,8 @@ J2KWAVEncoder::encoder_thread (Server* server)
 		_queue.pop_front ();
 		
 		lock.unlock ();
+
+		cout << "Go go worker thread " << vf->frame () << "\n";
 
 		if (server) {
 			try {

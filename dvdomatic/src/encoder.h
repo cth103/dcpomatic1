@@ -22,7 +22,7 @@
 
 class FilmState;
 class Options;
-class YUVImage;
+class Image;
 
 /** Parent class for classes which can encode video and audio frames.
  *  Video is supplied to process_video as YUV frames, and audio
@@ -37,7 +37,7 @@ public:
 	Encoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>);
 
 	virtual void process_begin () = 0;
-	virtual void process_video (boost::shared_ptr<YUVImage>, int) = 0;
+	virtual void process_video (boost::shared_ptr<Image>, int) = 0;
 	virtual void process_audio (uint8_t *, int, int) = 0;
 	virtual void process_end () = 0;
 

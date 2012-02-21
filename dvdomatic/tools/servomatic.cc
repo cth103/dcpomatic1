@@ -137,7 +137,7 @@ main ()
 		if (b.size() >= 7 && b[0] == "encode") {
 			cout << "Hello darling.\n";
 			int n = 1;
-			Size const in_size  (atoi (b[n].c_str()), atoi (b[n + 1].c_str ()));
+			Size const in_size (atoi (b[n].c_str()), atoi (b[n + 1].c_str ()));
 			n += 2;
 			PixelFormat const pixel_format = (PixelFormat) atoi (b[n].c_str());
 			++n;
@@ -148,20 +148,19 @@ main ()
 			int const frames_per_second = atoi (b[n].c_str ());
 			++n;
 
-			int line_size[YUVImage::components];
-			for (int i = 0; i < YUVImage::components; ++i) {
-				line_size[i] = atoi (b[n].c_str ());
+			shared_ptr<AllocImage> image (new AllocImage (pixel_format, in_size));
+
+			for (int i = 0; i < image->components(); ++i) {
+				image->set_line_size (i, atoi (b[n].c_str ()));
 				++n;
 			}
 
-			shared_ptr<YUVImage> yuv (new YUVImage (line_size, in_size, pixel_format));
-
-			for (int i = 0; i < YUVImage::components; ++i) {
-				reader.read_definite_and_consume (yuv->data(i), yuv->line_size(i) * yuv->size().height);
+			for (int i = 0; i < image->components(); ++i) {
+				reader.read_definite_and_consume (image->data()[i], image->line_size()[i] * image->lines(i));
 			}
 
 			shared_ptr<DCPVideoFrame> dcp_video_frame (
-				new DCPVideoFrame (yuv, out_size, frame, frames_per_second)
+				new DCPVideoFrame (image, out_size, frame, frames_per_second)
 				);
 			
 			{

@@ -225,22 +225,12 @@ Decoder::pass ()
 				AVFilterBufferRef* filter_buffer;
 				if (av_buffersink_get_buffer_ref (_buffer_sink_context, &filter_buffer, 0) >= 0) {
 
-					uint8_t** p = filter_buffer->data;
-					int* s = filter_buffer->linesize;
+					/* This takes ownership of filter_buffer */
+					shared_ptr<FilterBuffer> buffer (new FilterBuffer (_video_codec_context->pix_fmt, filter_buffer));
 
-					for (int i = 0; i < 8; ++i) {
-						cout << "buffer ls[" << i << "] = " << filter_buffer->linesize[i] << "\n";
-					}
-
-					cout << "video " << filter_buffer->video->w << " by " << filter_buffer->video->h << "\n";
-
-					cout << "Pix fmt " << _video_codec_context->pix_fmt << "\n";
-					cout << ((int) av_pix_fmt_descriptors[_video_codec_context->pix_fmt].nb_components << " comps.\n";
-					for (int i = 0; i < (filter_buffer->linesize[2] * filter_buffer->video->h); ++i) {
-						int y = p[2][i] * 42;
-					}
-
+#if 0					
 					/* XXX: offload this to the encode thread too? */
+					/* XXX: memory management */
 					if (_pp_mode) {
 						/* Do FFMPEG post-processing */
 						pp_postprocess (
@@ -253,17 +243,11 @@ Decoder::pass ()
 						p = _pp_buffer;
 						s = _pp_stride;
 					}
+#endif					
 
 					/* Emit the result */
-					boost::shared_ptr<YUVImage> yuv (
-						new YUVImage (
-							p, s, Size (filter_buffer->video->w, filter_buffer->video->h), _video_codec_context->pix_fmt
-							)
-						);
-					
-					Video (yuv, _video_frame);
+					Video (buffer, _video_frame);
 
-					avfilter_unref_buffer (filter_buffer);
 					av_free_packet (&_packet);
 					return PASS_VIDEO;
 				}

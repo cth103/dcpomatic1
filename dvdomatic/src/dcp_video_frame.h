@@ -69,7 +69,7 @@ public:
 class DCPVideoFrame
 {
 public:
-	DCPVideoFrame (boost::shared_ptr<YUVImage>, Size, int, int);
+	DCPVideoFrame (boost::shared_ptr<Image>, Size, int, int);
 	virtual ~DCPVideoFrame ();
 
 	void encode_locally ();
@@ -86,7 +86,7 @@ private:
 	void create_openjpeg_container ();
 	void write_encoded (boost::shared_ptr<const Options>, uint8_t *, int);
 
-	boost::shared_ptr<YUVImage> _yuv;
+	boost::shared_ptr<Image> _yuv;
 	int _frame;
 	opj_image_cmptparm_t _cmptparm[3];
 	opj_image* _image;

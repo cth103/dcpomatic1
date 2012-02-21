@@ -47,7 +47,7 @@ using namespace std;
 using namespace boost;
 
 /** Construct a DCP video frame */
-DCPVideoFrame::DCPVideoFrame (shared_ptr<YUVImage> yuv, Size out, int f, int fps)
+DCPVideoFrame::DCPVideoFrame (shared_ptr<Image> yuv, Size out, int f, int fps)
 	: _yuv (yuv)
 	, _frame (f)
 	, _image (0)
@@ -281,22 +281,22 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 
 	stringstream s;
 	s << "encode "
-	  << _yuv->size().width << " " << _yuv->size().height
-	  << _yuv->pixel_format()
-	  << _out_size.width << " " << _out_size.height
-	  << _frame
+	  << _yuv->size().width << " " << _yuv->size().height << " "
+	  << _yuv->pixel_format() << " "
+	  << _out_size.width << " " << _out_size.height << " "
+	  << _frame << " "
 	  << _frames_per_second;
 
-	for (int i = 0; i < YUVImage::components; ++i) {
-		s << _yuv->line_size(i) << " ";
+	for (int i = 0; i < _yuv->components(); ++i) {
+		s << _yuv->line_size()[i] << " ";
 	}
 
 	cout << s.str() << "\n";
 	
 	fd_write (fd, (uint8_t *) s.str().c_str(), s.str().length() + 1);
 	
-	for (int i = 0; i < YUVImage::components; ++i) {
-		fd_write (fd, _yuv->data(i), _yuv->line_size(i) * _yuv->size().height);
+	for (int i = 0; i < _yuv->components(); ++i) {
+		fd_write (fd, _yuv->data()[i], _yuv->line_size()[i] * _yuv->lines(i));
 	}
 
 	SocketReader reader (fd);
