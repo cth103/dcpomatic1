@@ -62,7 +62,8 @@ worker_thread ()
 		
 		lock.unlock ();
 
-		cout << "Encoding from " << fd << "\n";
+		struct timeval start;
+		gettimeofday (&start, 0);
 
 		SocketReader reader (fd);
 		
@@ -109,6 +110,10 @@ worker_thread ()
 		dcp_video_frame.encoded()->send (fd);
 		close (fd);
 		lock.lock ();
+
+		struct timeval end;
+		gettimeofday (&end, 0);
+		cout << "Encoded frame in " << (seconds (end) - seconds (start)) << "\n";
 		
 		worker_condition.notify_all ();
 	}

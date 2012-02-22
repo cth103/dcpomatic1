@@ -37,6 +37,7 @@ extern std::string audio_sample_format_to_string (AVSampleFormat);
 extern AVSampleFormat audio_sample_format_from_string (std::string);
 extern std::string dependency_version_summary ();
 extern void fd_write (int, uint8_t const *, int);
+extern double seconds (struct timeval);
 
 class SocketReader
 {
@@ -123,17 +124,7 @@ private:
 	int* _line_size;
 };
 
-class Timer
-{
-public:
-	virtual ~Timer () {}
-
-protected:
-	double seconds (struct timeval) const;
-
-};
-
-class PeriodTimer : public Timer
+class PeriodTimer
 {
 public:
 	PeriodTimer (std::string);
@@ -145,7 +136,7 @@ private:
 	struct timeval _start;
 };
 
-class StateTimer : public Timer
+class StateTimer
 {
 public:
 	StateTimer (std::string, std::string);

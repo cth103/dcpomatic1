@@ -260,6 +260,12 @@ fd_write (int fd, uint8_t const * data, int size)
 	}
 }
 
+double
+seconds (struct timeval t)
+{
+	return t.tv_sec + (double (t.tv_usec) / 1e6);
+}
+
 SocketReader::SocketReader (int fd)
 	: _fd (fd)
 	, _buffer_data (0)
@@ -447,12 +453,6 @@ PeriodTimer::~PeriodTimer ()
 	struct timeval stop;
 	gettimeofday (&stop, 0);
 	cout << "T: " << _name << ": " << (seconds (stop) - seconds (_start)) << "\n";
-}
-
-double
-Timer::seconds (struct timeval t) const
-{
-	return t.tv_sec + (double (t.tv_usec) / 1e6);
 }
 
 	
