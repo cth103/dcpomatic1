@@ -42,6 +42,7 @@
 #include "exceptions.h"
 #include "server.h"
 #include "util.h"
+#include "scaler.h"
 
 #ifdef DEBUG_HASH
 #include <mhash.h>
@@ -51,8 +52,9 @@ using namespace std;
 using namespace boost;
 
 /** Construct a DCP video frame */
-DCPVideoFrame::DCPVideoFrame (shared_ptr<Image> yuv, Size out, int f, int fps)
+DCPVideoFrame::DCPVideoFrame (shared_ptr<Image> yuv, Size out, Scaler const * s, int f, int fps)
 	: _yuv (yuv)
+	, _scaler (s)
 	, _frame (f)
 	, _image (0)
 	, _parameters (0)
@@ -122,11 +124,10 @@ DCPVideoFrame::encode_locally ()
 		throw EncodeError ("could not allocate frame");
 	}
 
-	/* XXX: scaler()->ffmpeg_id () */
 	struct SwsContext* scale_context = sws_getContext (
 		_yuv->size().width, _yuv->size().height, _yuv->pixel_format(),
 		_out_size.width, _out_size.height, PIX_FMT_RGB24,
-		SWS_BICUBIC, 0, 0, 0
+		_scaler->ffmpeg_id (), 0, 0, 0
 		);
 
 	uint8_t* rgb = (uint8_t *) av_malloc (_out_size.width * _out_size.height * 3);
@@ -292,6 +293,7 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 	  << _yuv->size().width << " " << _yuv->size().height << " "
 	  << _yuv->pixel_format() << " "
 	  << _out_size.width << " " << _out_size.height << " "
+	  << _scaler->id () << " "
 	  << _frame << " "
 	  << _frames_per_second << " ";
 
@@ -308,13 +310,6 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 	SocketReader reader (fd);
 
 	char buffer[32];
-	reader.read_indefinite ((uint8_t *) buffer, sizeof (buffer));
-	reader.consume (strlen (buffer) + 1);
-
-	if (strcmp (buffer, "OK") != 0) {
-		throw NetworkError ("bad reply from server");
-	}
-
 	reader.read_indefinite ((uint8_t *) buffer, sizeof (buffer));
 	reader.consume (strlen (buffer) + 1);
 	EncodedData* e = new RemotelyEncodedData (atoi (buffer));

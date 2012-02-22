@@ -36,6 +36,7 @@
 #include "exceptions.h"
 #include "util.h"
 #include "config.h"
+#include "scaler.h"
 
 #define BACKLOG 8
 
@@ -87,6 +88,11 @@ worker_thread ()
 		++n;
 		Size const out_size (atoi (b[n].c_str()), atoi (b[n + 1].c_str ()));
 		n += 2;
+		Scaler const * scaler = Scaler::get_from_id (b[n]);
+		if (scaler == 0) {
+			throw NetworkError ("bad scalar specified");
+		}
+		++n;
 		int const frame = atoi (b[n].c_str ());
 		++n;
 		int const frames_per_second = atoi (b[n].c_str ());
@@ -103,13 +109,11 @@ worker_thread ()
 			reader.read_definite_and_consume (image->data()[i], image->line_size()[i] * image->lines(i));
 		}
 
-		fd_write (fd, (uint8_t *) "OK", 3);
-
 #ifdef DEBUG_HASH
 		image->hash ();
 #endif		
 		
-		DCPVideoFrame dcp_video_frame (image, out_size, frame, frames_per_second);
+		DCPVideoFrame dcp_video_frame (image, out_size, scaler, frame, frames_per_second);
 		dcp_video_frame.encode_locally ();
 		dcp_video_frame.encoded()->send (fd);
 		close (fd);
@@ -130,6 +134,8 @@ worker_thread ()
 int
 main ()
 {
+	Scaler::setup_scalers ();
+
 	int const num_threads = Config::instance()->num_local_encoding_threads ();
 	
 	for (int i = 0; i < num_threads; ++i) {

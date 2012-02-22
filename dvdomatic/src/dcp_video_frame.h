@@ -24,6 +24,7 @@
 class FilmState;
 class Options;
 class Server;
+class Scaler;
 
 class EncodedData
 {
@@ -73,7 +74,7 @@ public:
 class DCPVideoFrame
 {
 public:
-	DCPVideoFrame (boost::shared_ptr<Image>, Size, int, int);
+	DCPVideoFrame (boost::shared_ptr<Image>, Size, Scaler const *, int, int);
 	virtual ~DCPVideoFrame ();
 
 	void encode_locally ();
@@ -91,6 +92,7 @@ private:
 	void write_encoded (boost::shared_ptr<const Options>, uint8_t *, int);
 
 	boost::shared_ptr<Image> _yuv;
+	Scaler const * _scaler;
 	int _frame;
 	opj_image_cmptparm_t _cmptparm[3];
 	opj_image* _image;
