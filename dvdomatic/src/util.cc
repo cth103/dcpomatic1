@@ -23,7 +23,6 @@
 #include <iostream>
 #include <execinfo.h>
 #include <cxxabi.h>
-#include <sys/time.h>
 #include <boost/algorithm/string.hpp>
 #include <openjpeg.h>
 extern "C" {
@@ -367,56 +366,3 @@ FilterBuffer::size () const
 	return Size (_buffer->video->w, _buffer->video->h);
 }
 
-PeriodTimer::PeriodTimer (string n)
-	: _name (n)
-{
-	gettimeofday (&_start, 0);
-}
-
-PeriodTimer::~PeriodTimer ()
-{
-	struct timeval stop;
-	gettimeofday (&stop, 0);
-	cout << "T: " << _name << ": " << (seconds (stop) - seconds (_start)) << "\n";
-}
-
-	
-StateTimer::StateTimer (string n, string s)
-	: _name (n)
-{
-	struct timeval t;
-	gettimeofday (&t, 0);
-	_time = seconds (t);
-	_state = s;
-}
-
-void
-StateTimer::set_state (string s)
-{
-	double const last = _time;
-	struct timeval t;
-	gettimeofday (&t, 0);
-	_time = seconds (t);
-
-	if (_totals.find (s) == _totals.end ()) {
-		_totals[s] = 0;
-	}
-
-	_totals[_state] += _time - last;
-	_state = s;
-}
-
-StateTimer::~StateTimer ()
-{
-	if (_state.empty ()) {
-		return;
-	}
-
-	
-	set_state ("");
-
-	cout << _name << ":\n";
-	for (map<string, double>::iterator i = _totals.begin(); i != _totals.end(); ++i) {
-		cout << "\t" << i->first << " " << i->second << "\n";
-	}
-}

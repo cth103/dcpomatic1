@@ -17,8 +17,8 @@
 
 */
 
-#ifndef DVDOMATIC_UTIL_H
-#define DVDOMATIC_UTIL_H
+#ifndef DVDOMATIC_IMAGE_H
+#define DVDOMATIC_IMAGE_H
 
 #include <string>
 #include <boost/shared_ptr.hpp>

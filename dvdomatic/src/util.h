@@ -131,31 +131,4 @@ private:
 	int* _line_size;
 };
 
-class PeriodTimer
-{
-public:
-	PeriodTimer (std::string);
-	~PeriodTimer ();
-	
-private:
-	
-	std::string _name;
-	struct timeval _start;
-};
-
-class StateTimer
-{
-public:
-	StateTimer (std::string, std::string);
-	~StateTimer ();
-
-	void set_state (std::string);
-
-private:
-	std::string _name;
-	std::string _state;
-	double _time;
-	std::map<std::string, double> _totals;
-};
-
 #endif

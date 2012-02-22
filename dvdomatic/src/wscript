@@ -41,6 +41,7 @@ def build(bld):
 		 server.cc
 		 thumbs_job.cc
 	         tiff_encoder.cc
+                 timer.cc
 		 transcode_job.cc
 		 transcoder.cc
 		 util.cc
