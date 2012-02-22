@@ -53,12 +53,13 @@ using namespace std;
 using namespace boost;
 
 /** Construct a DCP video frame */
-DCPVideoFrame::DCPVideoFrame (shared_ptr<Image> yuv, Size out, Scaler const * s, int f, int fps)
+DCPVideoFrame::DCPVideoFrame (shared_ptr<Image> yuv, Size out, Scaler const * s, int f, int fps, string pp)
 	: _yuv (yuv)
 	, _out_size (out)
 	, _scaler (s)
 	, _frame (f)
 	, _frames_per_second (fps)
+	, _post_process (pp)
 	, _image (0)
 	, _parameters (0)
 	, _cinfo (0)
@@ -120,7 +121,10 @@ DCPVideoFrame::~DCPVideoFrame ()
 void
 DCPVideoFrame::encode_locally ()
 {
-	shared_ptr<RGBFrameImage> scaled = _yuv->scale_and_convert_to_rgb (_out_size, _scaler);
+	shared_ptr<Image> prepared = _yuv->scale_and_convert_to_rgb (_out_size, _scaler);
+	if (!_post_process.empty ()) {
+		prepared = prepared->post_process (_post_process);
+	}
 
 	create_openjpeg_container ();
 
@@ -138,7 +142,7 @@ DCPVideoFrame::encode_locally ()
 
 	int const lut_index = Config::instance()->colour_lut_index ();
 	
-	uint8_t* p = scaled->data()[0];
+	uint8_t* p = prepared->data()[0];
 	for (int i = 0; i < size; ++i) {
 		/* In gamma LUT (converting 8-bit input to 12-bit) */
 		s.r = lut_in[lut_index][*p++ << 4];
@@ -271,7 +275,8 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 	  << _out_size.width << " " << _out_size.height << " "
 	  << _scaler->id () << " "
 	  << _frame << " "
-	  << _frames_per_second << " ";
+	  << _frames_per_second << " "
+	  << (_post_process.empty() ? "none" : _post_process) << " ";
 
 	for (int i = 0; i < _yuv->components(); ++i) {
 		s << _yuv->line_size()[i] << " ";

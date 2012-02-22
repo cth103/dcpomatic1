@@ -41,6 +41,8 @@ Filter::get_all ()
 void
 Filter::setup_filters ()
 {
+	/* Note: "none" is a magic id name, so don't use it here */
+	   
 	_filters.push_back (new Filter ("pphb", "Horizontal deblocking filter", "", "hb"));
 	_filters.push_back (new Filter ("ppvb", "Vertical deblocking filter", "", "vb"));
 	_filters.push_back (new Filter ("ppha", "Horizontal deblocking filter A", "", "ha"));

@@ -32,6 +32,7 @@
 #include "exceptions.h"
 #include "dcp_video_frame.h"
 #include "server.h"
+#include "filter.h"
 
 using namespace std;
 using namespace boost;
@@ -87,8 +88,9 @@ J2KWAVEncoder::process_video (shared_ptr<Image> yuv, int frame)
 
 	/* Only do the processing if we don't already have a file for this frame */
 	if (!boost::filesystem::exists (_opt->frame_out_path (frame, false))) {
+		pair<string, string> const s = Filter::ffmpeg_strings (_fs->filters);
 		_queue.push_back (boost::shared_ptr<DCPVideoFrame> (
-					  new DCPVideoFrame (yuv, _opt->out_size, _fs->scaler, frame, _fs->frames_per_second)
+					  new DCPVideoFrame (yuv, _opt->out_size, _fs->scaler, frame, _fs->frames_per_second, s.second)
 					  ));
 		
 		_worker_condition.notify_all ();

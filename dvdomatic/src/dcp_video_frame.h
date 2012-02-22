@@ -75,7 +75,7 @@ public:
 class DCPVideoFrame
 {
 public:
-	DCPVideoFrame (boost::shared_ptr<Image>, Size, Scaler const *, int, int);
+	DCPVideoFrame (boost::shared_ptr<Image>, Size, Scaler const *, int, int, std::string);
 	virtual ~DCPVideoFrame ();
 
 	void encode_locally ();
@@ -97,6 +97,7 @@ private:
 	Scaler const * _scaler;
 	int _frame;
 	int _frames_per_second;
+	std::string _post_process;
 	opj_image_cmptparm_t _cmptparm[3];
 	opj_image* _image;
 	opj_cparameters_t* _parameters;

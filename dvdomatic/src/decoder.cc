@@ -209,13 +209,7 @@ Decoder::pass ()
 					/* This takes ownership of filter_buffer */
 					shared_ptr<Image> image (new FilterBufferImage (_video_codec_context->pix_fmt, filter_buffer));
 
-					/* Post process if required */
-					pair<string, string> const s = Filter::ffmpeg_strings (_fs->filters);
-					if (!s.second.empty ()) {
-						image = image->post_process (s.second);
-					}
-					
-					/* Emit the result */
+					/* Emit */
 					Video (image, _video_frame);
 
 					av_free_packet (&_packet);

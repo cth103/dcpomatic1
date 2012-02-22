@@ -98,6 +98,8 @@ worker_thread ()
 		++n;
 		int const frames_per_second = atoi (b[n].c_str ());
 		++n;
+		string const post_process = b[n] == "none" ? "" : b[n];
+		++n;
 		
 		shared_ptr<SimpleImage> image (new SimpleImage (pixel_format, in_size));
 		
@@ -114,7 +116,7 @@ worker_thread ()
 		image->hash ();
 #endif		
 		
-		DCPVideoFrame dcp_video_frame (image, out_size, scaler, frame, frames_per_second);
+		DCPVideoFrame dcp_video_frame (image, out_size, scaler, frame, frames_per_second, post_process);
 		dcp_video_frame.encode_locally ();
 		dcp_video_frame.encoded()->send (fd);
 		close (fd);
