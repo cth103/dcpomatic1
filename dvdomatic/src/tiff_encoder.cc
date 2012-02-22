@@ -31,6 +31,7 @@
 #include "film_state.h"
 #include "options.h"
 #include "exceptions.h"
+#include "image.h"
 
 using namespace std;
 using namespace boost;

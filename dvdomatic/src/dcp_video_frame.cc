@@ -43,6 +43,7 @@
 #include "server.h"
 #include "util.h"
 #include "scaler.h"
+#include "image.h"
 
 #ifdef DEBUG_HASH
 #include <mhash.h>

@@ -42,6 +42,7 @@ extern "C" {
 #include "film_state.h"
 #include "options.h"
 #include "exceptions.h"
+#include "image.h"
 #include "util.h"
 
 using namespace std;

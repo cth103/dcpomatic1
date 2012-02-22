@@ -25,6 +25,7 @@ class FilmState;
 class Options;
 class Server;
 class Scaler;
+class Image;
 
 class EncodedData
 {

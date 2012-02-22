@@ -37,6 +37,7 @@
 #include "util.h"
 #include "config.h"
 #include "scaler.h"
+#include "image.h"
 
 #define BACKLOG 8
 

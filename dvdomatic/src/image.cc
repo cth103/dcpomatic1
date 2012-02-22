@@ -36,7 +36,7 @@ extern "C" {
 #include <libpostproc/postprocess.h>
 #include <libavutil/pixfmt.h>
 }
-#include "util.h"
+#include "image.h"
 #include "exceptions.h"
 #include "scaler.h"
 
@@ -187,3 +187,35 @@ AllocImage::size () const
 {
 	return _size;
 }
+
+
+FilterBuffer::FilterBuffer (PixelFormat p, AVFilterBufferRef* b)
+	: Image (p)
+	, _buffer (b)
+{
+
+}
+
+FilterBuffer::~FilterBuffer ()
+{
+	avfilter_unref_buffer (_buffer);
+}
+
+uint8_t **
+FilterBuffer::data () const
+{
+	return _buffer->data;
+}
+
+int *
+FilterBuffer::line_size () const
+{
+	return _buffer->linesize;
+}
+
+Size
+FilterBuffer::size () const
+{
+	return Size (_buffer->video->w, _buffer->video->h);
+}
+
