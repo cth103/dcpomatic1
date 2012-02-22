@@ -27,6 +27,7 @@ def build(bld):
 		 filter_view.cc
 		 format.cc
 		 gpl.cc
+                 image.cc
 		 j2k_wav_encoder.cc
 		 job.cc
 		 job_manager.cc
