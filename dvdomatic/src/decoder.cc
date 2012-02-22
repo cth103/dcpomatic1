@@ -227,7 +227,7 @@ Decoder::pass ()
 				if (av_buffersink_get_buffer_ref (_buffer_sink_context, &filter_buffer, 0) >= 0) {
 
 					/* This takes ownership of filter_buffer */
-					shared_ptr<FilterBuffer> buffer (new FilterBuffer (_video_codec_context->pix_fmt, filter_buffer));
+					shared_ptr<FilterBufferImage> buffer (new FilterBufferImage (_video_codec_context->pix_fmt, filter_buffer));
 
 #if 0					
 					/* XXX: offload this to the encode thread too? */

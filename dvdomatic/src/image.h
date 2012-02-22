@@ -58,11 +58,11 @@ private:
 	PixelFormat _pixel_format;
 };
 
-class FilterBuffer : public Image
+class FilterBufferImage : public Image
 {
 public:
-	FilterBuffer (PixelFormat, AVFilterBufferRef *);
-	~FilterBuffer ();
+	FilterBufferImage (PixelFormat, AVFilterBufferRef *);
+	~FilterBufferImage ();
 
 	uint8_t ** data () const;
 	int * line_size () const;

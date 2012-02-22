@@ -189,32 +189,32 @@ AllocImage::size () const
 }
 
 
-FilterBuffer::FilterBuffer (PixelFormat p, AVFilterBufferRef* b)
+FilterBufferImage::FilterBufferImage (PixelFormat p, AVFilterBufferRef* b)
 	: Image (p)
 	, _buffer (b)
 {
 
 }
 
-FilterBuffer::~FilterBuffer ()
+FilterBufferImage::~FilterBufferImage ()
 {
 	avfilter_unref_buffer (_buffer);
 }
 
 uint8_t **
-FilterBuffer::data () const
+FilterBufferImage::data () const
 {
 	return _buffer->data;
 }
 
 int *
-FilterBuffer::line_size () const
+FilterBufferImage::line_size () const
 {
 	return _buffer->linesize;
 }
 
 Size
-FilterBuffer::size () const
+FilterBufferImage::size () const
 {
 	return Size (_buffer->video->w, _buffer->video->h);
 }
