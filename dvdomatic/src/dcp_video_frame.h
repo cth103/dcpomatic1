@@ -93,14 +93,14 @@ private:
 	void write_encoded (boost::shared_ptr<const Options>, uint8_t *, int);
 
 	boost::shared_ptr<Image> _yuv;
+	Size _out_size;
 	Scaler const * _scaler;
 	int _frame;
+	int _frames_per_second;
 	opj_image_cmptparm_t _cmptparm[3];
 	opj_image* _image;
 	opj_cparameters_t* _parameters;
 	opj_cinfo_t* _cinfo;
 	opj_cio_t* _cio;
-	Size _out_size;
-	int _frames_per_second;
 	EncodedData* _encoded;
 };

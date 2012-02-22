@@ -55,14 +55,14 @@ using namespace boost;
 /** Construct a DCP video frame */
 DCPVideoFrame::DCPVideoFrame (shared_ptr<Image> yuv, Size out, Scaler const * s, int f, int fps)
 	: _yuv (yuv)
+	, _out_size (out)
 	, _scaler (s)
 	, _frame (f)
+	, _frames_per_second (fps)
 	, _image (0)
 	, _parameters (0)
 	, _cinfo (0)
 	, _cio (0)
-	, _out_size (out)
-	, _frames_per_second (fps)
 	, _encoded (0)
 {
 	
