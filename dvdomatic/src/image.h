@@ -31,6 +31,7 @@ extern "C" {
 
 class Scaler;
 class RGBFrameImage;
+class PostProcessImage;
 
 class Image
 {
@@ -47,6 +48,8 @@ public:
 	int components () const;
 	int lines (int) const;
 	boost::shared_ptr<RGBFrameImage> scale_and_convert_to_rgb (Size, Scaler const *) const;
+	boost::shared_ptr<PostProcessImage> post_process (std::string) const;
+	
 #ifdef DEBUG_HASH	
 	void hash () const;
 #endif	
@@ -105,6 +108,22 @@ private:
 	Size _size;
 	AVFrame* _frame;
 	uint8_t* _data;
+};
+
+class PostProcessImage : public Image
+{
+public:
+	PostProcessImage (PixelFormat, Size);
+	~PostProcessImage ();
+
+	uint8_t ** data () const;
+	int * line_size () const;
+	Size size () const;
+
+private:
+	Size _size;
+	uint8_t** _data;
+	int* _line_size;
 };
 
 #endif

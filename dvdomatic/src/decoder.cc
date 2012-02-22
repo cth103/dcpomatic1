@@ -65,9 +65,6 @@ Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const 
 	, _video_frame (0)
 	, _post_filter_width (0)
 	, _post_filter_height (0)
-	, _pp_mode (0)
-	, _pp_context (0)
-	, _pp_buffer (0)
 	, _minimal (minimal)
 	, _ignore_length (ignore_length)
 {
@@ -88,22 +85,6 @@ Decoder::~Decoder ()
 	
 	av_free (_frame_in);
 	avformat_close_input (&_format_context);
-
-	if (_pp_mode) {
-		pp_free_mode (_pp_mode);
-	}
-
-	if (_pp_context) {
-		pp_free_context (_pp_context);
-	}
-
-	if (_pp_buffer) {
-		for (int i = 0; i < 4; ++i) {
-			av_free (_pp_buffer[i]);
-		}
-	}
-
-	delete[] _pp_buffer;
 }	
 
 void
@@ -164,7 +145,6 @@ Decoder::setup_video ()
 		_post_filter_height -= _fs->top_crop + _fs->bottom_crop;		
 	}
 
-	setup_post_process_filters ();
 	setup_video_filters ();
 }
 
@@ -227,27 +207,16 @@ Decoder::pass ()
 				if (av_buffersink_get_buffer_ref (_buffer_sink_context, &filter_buffer, 0) >= 0) {
 
 					/* This takes ownership of filter_buffer */
-					shared_ptr<FilterBufferImage> buffer (new FilterBufferImage (_video_codec_context->pix_fmt, filter_buffer));
+					shared_ptr<Image> image (new FilterBufferImage (_video_codec_context->pix_fmt, filter_buffer));
 
-#if 0					
-					/* XXX: offload this to the encode thread too? */
-					/* XXX: memory management */
-					if (_pp_mode) {
-						/* Do FFMPEG post-processing */
-						pp_postprocess (
-							(const uint8_t **) filter_buffer->data, filter_buffer->linesize,
-							_pp_buffer, _pp_stride,
-							_post_filter_width, _post_filter_height,
-							0, 0, _pp_mode, _pp_context, 0
-							);
-
-						p = _pp_buffer;
-						s = _pp_stride;
+					/* Post process if required */
+					pair<string, string> const s = Filter::ffmpeg_strings (_fs->filters);
+					if (!s.second.empty ()) {
+						image = image->post_process (s.second);
 					}
-#endif					
-
+					
 					/* Emit the result */
-					Video (buffer, _video_frame);
+					Video (image, _video_frame);
 
 					av_free_packet (&_packet);
 					return PASS_VIDEO;
@@ -413,25 +382,6 @@ Decoder::go ()
 		}
 	}
 }
-
-void
-Decoder::setup_post_process_filters ()
-{
-	pair<string, string> s = Filter::ffmpeg_strings (_fs->filters);
-	if (s.second.empty ()) {
-		return;
-	}
-
-	_pp_mode = pp_get_mode_by_name_and_quality (s.second.c_str(), PP_QUALITY_MAX);
-	_pp_context = pp_get_context (_post_filter_width, _post_filter_height, PP_FORMAT_420 | PP_CPU_CAPS_MMX2);
-
-	_pp_buffer = new uint8_t*[4];
-	for (int i = 0; i < 4; ++i) {
-		_pp_buffer[i] = (uint8_t *) av_malloc (_post_filter_width * _post_filter_height);
-		_pp_stride[i] = _post_filter_width;
-	}
-}
-
 /** @return Number of frames that we will be decoding */
 int
 Decoder::decoding_frames () const

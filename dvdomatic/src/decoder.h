@@ -78,7 +78,6 @@ private:
 	void setup_video ();
 	void setup_video_filters ();
 	void setup_audio ();
-	void setup_post_process_filters ();
 
 	boost::shared_ptr<const FilmState> _fs;
 	boost::shared_ptr<const Options> _opt;
@@ -103,13 +102,6 @@ private:
 
 	int _post_filter_width;
 	int _post_filter_height;
-
-	/** libpostprocess mode, or 0 if no post-processing is to be done */
-	pp_mode* _pp_mode;
-	/** libpostprocess context, 0 if no post-processing is to be done */
-	pp_context* _pp_context;
-	uint8_t** _pp_buffer;
-	int _pp_stride[4];
 
 	bool _minimal;
 	bool _ignore_length;
