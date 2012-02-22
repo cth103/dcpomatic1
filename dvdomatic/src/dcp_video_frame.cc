@@ -43,6 +43,10 @@
 #include "server.h"
 #include "util.h"
 
+#ifdef DEBUG_HASH
+#include <mhash.h>
+#endif
+
 using namespace std;
 using namespace boost;
 
@@ -279,6 +283,10 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 		throw NetworkError (s.str());
 	}
 
+#ifdef DEBUG_HASH
+	_yuv->hash ();
+#endif
+
 	stringstream s;
 	s << "encode "
 	  << _yuv->size().width << " " << _yuv->size().height << " "
@@ -314,6 +322,10 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 	/* now read the rest */
 	reader.read_definite_and_consume (e->data(), e->size());
 
+#ifdef DEBUG_HASH
+	e->hash ();
+#endif	
+	
 	close (fd);
 
 	_encoded = e;
@@ -346,6 +358,28 @@ EncodedData::send (int fd)
 	fd_write (fd, (uint8_t *) s.str().c_str(), s.str().length() + 1);
 	fd_write (fd, _data, _size);
 }
+
+#ifdef DEBUG_HASH
+void
+EncodedData::hash () const
+{
+	MHASH ht = mhash_init (MHASH_MD5);
+	if (ht == MHASH_FAILED) {
+		throw EncodeError ("could not create hash thread");
+	}
+
+	mhash (ht, _data, _size);
+	
+	uint8_t hash[16];
+	mhash_deinit (ht, hash);
+	
+	printf ("Encoded image: ");
+	for (int i = 0; i < int (mhash_get_block_size (MHASH_MD5)); ++i) {
+		printf ("%.2x", hash[i]);
+	}
+	printf ("\n");
+}
+#endif		
 
 RemotelyEncodedData::RemotelyEncodedData (int s)
 	: EncodedData (new uint8_t[s], s)

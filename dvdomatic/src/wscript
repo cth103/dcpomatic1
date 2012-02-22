@@ -3,6 +3,8 @@ def build(bld):
     obj.name   = 'libdvdomatic'
     obj.export_includes = ['.']
     obj.uselib = 'GLIB AVCODEC AVUTIL AVFORMAT AVFILTER SWSCALE SWRESAMPLE SNDFILE BOOST_FILESYSTEM BOOST_THREAD GTKMM OPENJPEG POSTPROC'
+    if bld.env.DEBUG_HASH:
+        obj.uselib += ' MHASH'
     obj.lib    = 'tiff'
     obj.source = """
 		 ab_transcode_job.cc

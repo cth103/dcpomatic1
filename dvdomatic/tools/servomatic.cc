@@ -104,12 +104,20 @@ worker_thread ()
 		}
 
 		fd_write (fd, (uint8_t *) "OK", 3);
+
+#ifdef DEBUG_HASH
+		image->hash ();
+#endif		
 		
 		DCPVideoFrame dcp_video_frame (image, out_size, frame, frames_per_second);
 		dcp_video_frame.encode_locally ();
 		dcp_video_frame.encoded()->send (fd);
 		close (fd);
 		lock.lock ();
+
+#ifdef DEBUG_HASH
+		dcp_video_frame.encoded()->hash ();
+#endif		
 
 		struct timeval end;
 		gettimeofday (&end, 0);

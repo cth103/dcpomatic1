@@ -38,6 +38,10 @@ public:
 	void send (int);
 	void write (boost::shared_ptr<const Options>, int);
 
+#ifdef DEBUG_HASH
+	void hash () const;
+#endif	
+
 	uint8_t* data () const {
 		return _data;
 	}

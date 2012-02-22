@@ -40,6 +40,10 @@ extern "C" {
 #include "util.h"
 #include "exceptions.h"
 
+#ifdef DEBUG_HASH
+#include <mhash.h>
+#endif
+
 using namespace std;
 using namespace boost;
 
@@ -350,7 +354,6 @@ Image::lines (int n) const
 	return 0;
 }
 
-
 int
 Image::components () const
 {
@@ -362,7 +365,31 @@ Image::components () const
 	}
 
 	return 0;
-}	
+}
+
+#ifdef DEBUG_HASH
+void
+Image::hash () const
+{
+	MHASH ht = mhash_init (MHASH_MD5);
+	if (ht == MHASH_FAILED) {
+		throw EncodeError ("could not create hash thread");
+	}
+	
+	for (int i = 0; i < components(); ++i) {
+		mhash (ht, data()[i], line_size()[i] * lines(i));
+	}
+	
+	uint8_t hash[16];
+	mhash_deinit (ht, hash);
+	
+	printf ("YUV input: ");
+	for (int i = 0; i < int (mhash_get_block_size (MHASH_MD5)); ++i) {
+		printf ("%.2x", hash[i]);
+	}
+	printf ("\n");
+}
+#endif		
 
 FilterBuffer::FilterBuffer (PixelFormat p, AVFilterBufferRef* b)
 	: Image (p)

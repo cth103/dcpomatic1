@@ -83,6 +83,9 @@ public:
 
 	int components () const;
 	int lines (int) const;
+#ifdef DEBUG_HASH	
+	void hash () const;
+#endif	
 	
 	PixelFormat pixel_format () const {
 		return _pixel_format;
