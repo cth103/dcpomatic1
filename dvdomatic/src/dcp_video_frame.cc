@@ -120,7 +120,7 @@ DCPVideoFrame::~DCPVideoFrame ()
 void
 DCPVideoFrame::encode_locally ()
 {
-	pair<AVFrame *, uint8_t *> scaled = _yuv->scale_and_convert_to_rgb (_out_size, _scaler);
+	shared_ptr<RGBFrameImage> scaled = _yuv->scale_and_convert_to_rgb (_out_size, _scaler);
 
 	create_openjpeg_container ();
 
@@ -138,7 +138,7 @@ DCPVideoFrame::encode_locally ()
 
 	int const lut_index = Config::instance()->colour_lut_index ();
 	
-	uint8_t* p = scaled.second;
+	uint8_t* p = scaled->data()[0];
 	for (int i = 0; i < size; ++i) {
 		/* In gamma LUT (converting 8-bit input to 12-bit) */
 		s.r = lut_in[lut_index][*p++ << 4];
@@ -161,9 +161,6 @@ DCPVideoFrame::encode_locally ()
 		_image->comps[2].data[i] = lut_out[LO_DCI][(int) d.z];
 	}
 
-	av_free (scaled.first);
-	av_free (scaled.second);
-	
 	int const bw = Config::instance()->j2k_bandwidth ();
 
 	/* Set the max image and component sizes based on frame_rate */

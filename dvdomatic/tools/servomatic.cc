@@ -99,7 +99,7 @@ worker_thread ()
 		int const frames_per_second = atoi (b[n].c_str ());
 		++n;
 		
-		shared_ptr<AllocImage> image (new AllocImage (pixel_format, in_size));
+		shared_ptr<SimpleImage> image (new SimpleImage (pixel_format, in_size));
 		
 		for (int i = 0; i < image->components(); ++i) {
 			image->set_line_size (i, atoi (b[n].c_str ()));

@@ -30,6 +30,7 @@ extern "C" {
 #include "util.h"
 
 class Scaler;
+class RGBFrameImage;
 
 class Image
 {
@@ -45,7 +46,7 @@ public:
 
 	int components () const;
 	int lines (int) const;
-	std::pair<AVFrame *, uint8_t *> scale_and_convert_to_rgb (Size, Scaler const *) const;
+	boost::shared_ptr<RGBFrameImage> scale_and_convert_to_rgb (Size, Scaler const *) const;
 #ifdef DEBUG_HASH	
 	void hash () const;
 #endif	
@@ -72,11 +73,11 @@ private:
 	AVFilterBufferRef* _buffer;
 };
 
-class AllocImage : public Image
+class SimpleImage : public Image
 {
 public:
-	AllocImage (PixelFormat, Size);
-	~AllocImage ();
+	SimpleImage (PixelFormat, Size);
+	~SimpleImage ();
 
 	uint8_t ** data () const;
 	int * line_size () const;
@@ -88,6 +89,22 @@ private:
 	Size _size;
 	uint8_t** _data;
 	int* _line_size;
+};
+
+class RGBFrameImage : public Image
+{
+public:
+	RGBFrameImage (PixelFormat, Size);
+	~RGBFrameImage ();
+
+	uint8_t ** data () const;
+	int * line_size () const;
+	Size size () const;
+
+private:
+	Size _size;
+	AVFrame* _frame;
+	uint8_t* _data;
 };
 
 #endif

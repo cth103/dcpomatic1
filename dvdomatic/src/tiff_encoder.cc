@@ -50,7 +50,7 @@ TIFFEncoder::~TIFFEncoder ()
 void
 TIFFEncoder::process_video (shared_ptr<Image> yuv, int frame)
 {
-	pair<AVFrame *, uint8_t *> scaled = yuv->scale_and_convert_to_rgb (_opt->out_size, _fs->scaler);
+	shared_ptr<RGBFrameImage> scaled = yuv->scale_and_convert_to_rgb (_opt->out_size, _fs->scaler);
 	string tmp_file = _opt->frame_out_path (frame, true);
 	TIFF* output = TIFFOpen (tmp_file.c_str (), "w");
 	if (output == 0) {
@@ -65,13 +65,11 @@ TIFFEncoder::process_video (shared_ptr<Image> yuv, int frame)
 	TIFFSetField (output, TIFFTAG_BITSPERSAMPLE, 8);
 	TIFFSetField (output, TIFFTAG_SAMPLESPERPIXEL, 3);
 	
-	if (TIFFWriteEncodedStrip (output, 0, scaled.second, _opt->out_size.width * _opt->out_size.height * 3) == 0) {
+	if (TIFFWriteEncodedStrip (output, 0, scaled->data()[0], _opt->out_size.width * _opt->out_size.height * 3) == 0) {
 		throw WriteFileError (tmp_file);
 	}
 
 	TIFFClose (output);
-	av_free (scaled.first);
-	av_free (scaled.second);
 
 	boost::filesystem::rename (tmp_file, _opt->frame_out_path (frame, false));
 }
