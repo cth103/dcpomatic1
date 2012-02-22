@@ -39,6 +39,7 @@ extern "C" {
 }
 #include "util.h"
 #include "exceptions.h"
+#include "scaler.h"
 
 #ifdef DEBUG_HASH
 #include <mhash.h>
@@ -389,7 +390,45 @@ Image::hash () const
 	}
 	printf ("\n");
 }
-#endif		
+#endif
+
+/** Scale this image to a given size and convert it to RGB.
+ *  Caller must pass both returned values to av_free ().
+ *  @param out_size Output image size in pixels.
+ *  @param scaler Scaler to use.
+ */
+
+pair<AVFrame *, uint8_t *>
+Image::scale_and_convert_to_rgb (Size out_size, Scaler const * scaler) const
+{
+	assert (scaler);
+	
+	AVFrame* frame_out = avcodec_alloc_frame ();
+	if (frame_out == 0) {
+		throw EncodeError ("could not allocate frame");
+	}
+
+	struct SwsContext* scale_context = sws_getContext (
+		size().width, size().height, pixel_format(),
+		out_size.width, out_size.height, PIX_FMT_RGB24,
+		scaler->ffmpeg_id (), 0, 0, 0
+		);
+
+	uint8_t* rgb = (uint8_t *) av_malloc (out_size.width * out_size.height * 3);
+	avpicture_fill ((AVPicture *) frame_out, rgb, PIX_FMT_RGB24, out_size.width, out_size.height);
+	
+	/* Scale and convert from YUV to RGB */
+	sws_scale (
+		scale_context,
+		data(), line_size(),
+		0, size().height,
+		frame_out->data, frame_out->linesize
+		);
+
+	sws_freeContext (scale_context);
+
+	return make_pair (frame_out, rgb);
+}
 
 FilterBuffer::FilterBuffer (PixelFormat p, AVFilterBufferRef* b)
 	: Image (p)

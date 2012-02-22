@@ -71,8 +71,8 @@ FilmViewer::load_thumbnail (int n)
 
 	_pixbuf = Gdk::Pixbuf::create_from_file (_film->thumb_file (n));
 
-	int const cw = _film->width() - left - right;
-	int const ch = _film->height() - top - bottom;
+	int const cw = _film->size().width - left - right;
+	int const ch = _film->size().height - top - bottom;
 	_cropped_pixbuf = Gdk::Pixbuf::create_subpixbuf (_pixbuf, left, top, cw, ch);
 	update_scaled_pixbuf ();
 	_image.set (_scaled_pixbuf);
@@ -149,8 +149,8 @@ FilmViewer::scaled_pixbuf_size () const
 		return make_pair (0, 0);
 	}
 	
-	int const cw = _film->width() - _film->left_crop() - _film->right_crop(); 
-	int const ch = _film->height() - _film->top_crop() - _film->bottom_crop();
+	int const cw = _film->size().width - _film->left_crop() - _film->right_crop(); 
+	int const ch = _film->size().height - _film->top_crop() - _film->bottom_crop();
 
 	float ratio = 1;
 	if (_film->format()) {
@@ -184,8 +184,7 @@ FilmViewer::update_button_clicked ()
 
 	shared_ptr<const FilmState> s = _film->state_copy ();
 	shared_ptr<Options> o (new Options (s->dir ("thumbs"), ".tiff", ""));
-	o->out_width = _film->width ();
-	o->out_height = _film->height ();
+	o->out_size = _film->size ();
 	o->apply_crop = false;
 	o->decode_audio = false;
 	o->decode_video_frequency = 128;

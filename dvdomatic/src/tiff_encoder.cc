@@ -49,27 +49,28 @@ TIFFEncoder::~TIFFEncoder ()
 void
 TIFFEncoder::process_video (shared_ptr<Image> yuv, int frame)
 {
-#if 0	
+	pair<AVFrame *, uint8_t *> scaled = yuv->scale_and_convert_to_rgb (_opt->out_size, _fs->scaler);
 	string tmp_file = _opt->frame_out_path (frame, true);
 	TIFF* output = TIFFOpen (tmp_file.c_str (), "w");
 	if (output == 0) {
 		throw CreateFileError (tmp_file);
 	}
 						
-	TIFFSetField (output, TIFFTAG_IMAGEWIDTH, _opt->out_width);
-	TIFFSetField (output, TIFFTAG_IMAGELENGTH, _opt->out_height);
+	TIFFSetField (output, TIFFTAG_IMAGEWIDTH, _opt->out_size.width);
+	TIFFSetField (output, TIFFTAG_IMAGELENGTH, _opt->out_size.height);
 	TIFFSetField (output, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
 	TIFFSetField (output, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
 	TIFFSetField (output, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
 	TIFFSetField (output, TIFFTAG_BITSPERSAMPLE, 8);
 	TIFFSetField (output, TIFFTAG_SAMPLESPERPIXEL, 3);
 	
-	if (TIFFWriteEncodedStrip (output, 0, data, _opt->out_width * _opt->out_height * 3) == 0) {
+	if (TIFFWriteEncodedStrip (output, 0, scaled.second, _opt->out_size.width * _opt->out_size.height * 3) == 0) {
 		throw WriteFileError (tmp_file);
 	}
 
 	TIFFClose (output);
+	av_free (scaled.first);
+	av_free (scaled.second);
 
 	boost::filesystem::rename (tmp_file, _opt->frame_out_path (frame, false));
-#endif
 }

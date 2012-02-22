@@ -29,6 +29,8 @@ extern "C" {
 #include <libavfilter/avfilter.h>
 }
 
+class Scaler;
+
 extern std::string seconds_to_hms (int);
 extern std::string seconds_to_approximate_hms (int);
 extern Gtk::Label & left_aligned_label (std::string);
@@ -54,7 +56,8 @@ private:
 	int _buffer_data;
 };
 
-struct Size {
+struct Size
+{
 	Size ()
 		: width (0)
 		, height (0)
@@ -83,6 +86,7 @@ public:
 
 	int components () const;
 	int lines (int) const;
+	std::pair<AVFrame *, uint8_t *> scale_and_convert_to_rgb (Size, Scaler const *) const;
 #ifdef DEBUG_HASH	
 	void hash () const;
 #endif	

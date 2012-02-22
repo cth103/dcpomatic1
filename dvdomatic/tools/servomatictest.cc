@@ -118,8 +118,7 @@ main (int argc, char* argv[])
 	Film film (film_dir, true);
 
 	shared_ptr<Options> opt (new Options ("fred", "jim", "sheila"));
-	opt->out_width = 1024;
-	opt->out_height = 1024;
+	opt->out_size = Size (1024, 1024);
 	opt->apply_crop = false;
 	opt->decode_audio = false;
 	

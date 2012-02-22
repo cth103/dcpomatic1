@@ -119,30 +119,8 @@ DCPVideoFrame::~DCPVideoFrame ()
 void
 DCPVideoFrame::encode_locally ()
 {
-	AVFrame* frame_out = avcodec_alloc_frame ();
-	if (frame_out == 0) {
-		throw EncodeError ("could not allocate frame");
-	}
+	pair<AVFrame *, uint8_t *> scaled = _yuv->scale_and_convert_to_rgb (_out_size, _scaler);
 
-	struct SwsContext* scale_context = sws_getContext (
-		_yuv->size().width, _yuv->size().height, _yuv->pixel_format(),
-		_out_size.width, _out_size.height, PIX_FMT_RGB24,
-		_scaler->ffmpeg_id (), 0, 0, 0
-		);
-
-	uint8_t* rgb = (uint8_t *) av_malloc (_out_size.width * _out_size.height * 3);
-	avpicture_fill ((AVPicture *) frame_out, rgb, PIX_FMT_RGB24, _out_size.width, _out_size.height);
-	
-	/* Scale and convert from YUV to RGB */
-	sws_scale (
-		scale_context,
-		_yuv->data(), _yuv->line_size(),
-		0, _yuv->size().height,
-		frame_out->data, frame_out->linesize
-		);
-
-	sws_freeContext (scale_context);
-	
 	create_openjpeg_container ();
 
 	int const size = _out_size.width * _out_size.height;
@@ -159,7 +137,7 @@ DCPVideoFrame::encode_locally ()
 
 	int const lut_index = Config::instance()->colour_lut_index ();
 	
-	uint8_t* p = rgb;
+	uint8_t* p = scaled.second;
 	for (int i = 0; i < size; ++i) {
 		/* In gamma LUT (converting 8-bit input to 12-bit) */
 		s.r = lut_in[lut_index][*p++ << 4];
@@ -182,8 +160,8 @@ DCPVideoFrame::encode_locally ()
 		_image->comps[2].data[i] = lut_out[LO_DCI][(int) d.z];
 	}
 
-	av_free (frame_out);
-	av_free (rgb);
+	av_free (scaled.first);
+	av_free (scaled.second);
 	
 	int const bw = Config::instance()->j2k_bandwidth ();
 

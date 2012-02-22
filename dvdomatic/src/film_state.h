@@ -27,6 +27,7 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 #include "scaler.h"
+#include "util.h"
 
 class Format;
 class ContentType;
@@ -52,8 +53,6 @@ public:
 		, scaler (Scaler::get_from_id ("bicubic"))
 		, dcp_frames (0)
 		, dcp_ab (false)
-		, width (0)
-		, height (0)
 		, length (0)
 		, frames_per_second (0)
 		, audio_channels (0)
@@ -124,10 +123,8 @@ public:
 
 	/** Vector of frame indices for each of our `thumbnails */
 	std::vector<int> thumbs;
-	/** Width, in pixels, of the source (ignoring cropping) */
-	int width;
-	/** Height, in pixels, of the source (ignoring cropping) */
-	int height;
+	/** Size, in pixels, of the source (ignoring cropping) */
+	Size size;
 	/** Length in frames */
 	int length;
 	/** Frames per second of the source */

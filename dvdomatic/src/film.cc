@@ -183,13 +183,11 @@ Film::set_content (string c)
 	shared_ptr<FilmState> s = state_copy ();
 	s->content = f;
 	shared_ptr<Options> o (new Options ("", "", ""));
-	o->out_width = 1024;
-	o->out_height = 1024;
+	o->out_size = Size (1024, 1024);
 
 	Decoder d (s, o, 0);
 	
-	_state.width = d.native_width ();
-	_state.height = d.native_height ();
+	_state.size = d.native_size ();
 	_state.length = d.length_in_frames ();
 	_state.frames_per_second = d.frames_per_second ();
 	_state.audio_channels = d.audio_channels ();
@@ -198,7 +196,7 @@ Film::set_content (string c)
 
 	_state.content = f;
 	
-	signal_changed (Size);
+	signal_changed (FilmSize);
 	signal_changed (Length);
 	signal_changed (FramesPerSecond);
 	signal_changed (AudioChannels);
@@ -474,8 +472,7 @@ Film::make_dcp ()
 
 	shared_ptr<const FilmState> fs = state_copy ();
 	shared_ptr<Options> o (new Options (j2k_dir(), ".j2c", _state.dir ("wavs")));
-	o->out_width = format()->dci_width ();
-	o->out_height = format()->dci_height ();
+	o->out_size = format()->dci_size ();
 	o->num_frames = dcp_frames ();
 	
 	if (_state.dcp_ab) {

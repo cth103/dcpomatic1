@@ -336,8 +336,8 @@ FilmEditor::film_changed (Film::Property p)
 		s << _film->audio_sample_rate ();
 		_audio_sample_rate.set_text (s.str ());
 		break;
-	case Film::Size:
-		s << _film->width() << " x " << _film->height();
+	case Film::FilmSize:
+		s << _film->size().width << " x " << _film->size().height;
 		_original_size.set_text (s.str ());
 		break;
 	case Film::Length:
@@ -446,7 +446,7 @@ FilmEditor::set_film (Film* f)
 	film_changed (Film::Filters);
 	film_changed (Film::DCPFrames);
 	film_changed (Film::DCPAB);
-	film_changed (Film::Size);
+	film_changed (Film::FilmSize);
 	film_changed (Film::Length);
 	film_changed (Film::FramesPerSecond);
 	film_changed (Film::AudioChannels);

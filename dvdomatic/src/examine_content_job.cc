@@ -49,8 +49,7 @@ void
 ExamineContentJob::run ()
 {
 	shared_ptr<Options> o (new Options ("", "", ""));
-	o->out_width = 512;
-	o->out_height = 512;
+	o->out_size = Size (512, 512);
 	o->apply_crop = false;
 
 	_decoder = new Decoder (_fs, o, this, true, true);

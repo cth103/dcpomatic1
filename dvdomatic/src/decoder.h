@@ -25,6 +25,7 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libpostproc/postprocess.h>
 }
+#include "util.h"
 
 struct AVFilterGraph;
 struct AVCodecContext;
@@ -48,8 +49,7 @@ public:
 	int length_in_frames () const;
 	int decoding_frames () const;
 	float frames_per_second () const;
-	int native_width () const;
-	int native_height () const;
+	Size native_size () const;
 	int audio_channels () const;
 	int audio_sample_rate () const;
 	AVSampleFormat audio_sample_format () const;

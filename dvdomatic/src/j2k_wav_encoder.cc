@@ -88,7 +88,7 @@ J2KWAVEncoder::process_video (shared_ptr<Image> yuv, int frame)
 	/* Only do the processing if we don't already have a file for this frame */
 	if (!boost::filesystem::exists (_opt->frame_out_path (frame, false))) {
 		_queue.push_back (boost::shared_ptr<DCPVideoFrame> (
-					  new DCPVideoFrame (yuv, Size (_opt->out_width, _opt->out_height), _fs->scaler, frame, _fs->frames_per_second)
+					  new DCPVideoFrame (yuv, _opt->out_size, _fs->scaler, frame, _fs->frames_per_second)
 					  ));
 		
 		_worker_condition.notify_all ();

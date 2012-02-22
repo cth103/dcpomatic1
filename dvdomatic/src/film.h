@@ -125,14 +125,10 @@ public:
 	void set_guess_dcp_long_name (bool);
 	void set_dcp_content_type (ContentType const *);
 
-	int width () const {
-		return _state.width;
+	Size size () const {
+		return _state.size;
 	}
 	
-	int height () const {
-		return _state.height;
-	}
-
 	int length () const {
 		return _state.length;
 	}
@@ -187,7 +183,7 @@ public:
 		DCPFrames,
 		DCPAB,
 		Thumbs,
-		Size,
+		FilmSize,
 		Length,
 		FramesPerSecond,
 		AudioChannels,

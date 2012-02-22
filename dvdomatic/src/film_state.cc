@@ -61,8 +61,8 @@ FilmState::write_metadata (ofstream& f) const
 	for (vector<int>::const_iterator i = thumbs.begin(); i != thumbs.end(); ++i) {
 		f << "thumb " << *i << "\n";
 	}
-	f << "width " << width << "\n";
-	f << "height " << height << "\n";
+	f << "width " << size.width << "\n";
+	f << "height " << size.height << "\n";
 	f << "length " << length << "\n";
 	f << "frames_per_second " << frames_per_second << "\n";
 	f << "audio_channels " << audio_channels << "\n";
@@ -112,9 +112,9 @@ FilmState::read_metadata (string k, string v)
 			thumbs.push_back (n);
 		}
 	} else if (k == "width") {
-		width = atoi (v.c_str ());
+		size.width = atoi (v.c_str ());
 	} else if (k == "height") {
-		height = atoi (v.c_str ());
+		size.height = atoi (v.c_str ());
 	} else if (k == "length") {
 		length = atof (v.c_str ());
 	} else if (k == "frames_per_second") {

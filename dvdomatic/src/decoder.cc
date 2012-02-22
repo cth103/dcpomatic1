@@ -393,16 +393,10 @@ Decoder::audio_sample_format () const
 	return _audio_codec_context->sample_fmt;
 }
 
-int
-Decoder::native_width () const
+Size
+Decoder::native_size () const
 {
-	return _video_codec_context->width;
-}
-
-int
-Decoder::native_height () const
-{
-	return _video_codec_context->height;
+	return Size (_video_codec_context->width, _video_codec_context->height);
 }
 
 void

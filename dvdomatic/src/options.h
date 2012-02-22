@@ -20,6 +20,7 @@
 #include <string>
 #include <iomanip>
 #include <sstream>
+#include "util.h"
 
 /** Options for a transcoding operation */
 class Options
@@ -27,9 +28,7 @@ class Options
 public:
 
 	Options (std::string f, std::string e, std::string m)
-		: out_width (0)
-		, out_height (0)
-		, apply_crop (true)
+		: apply_crop (true)
 		, num_frames (0)
 		, decode_video (true)
 		, decode_video_frequency (0)
@@ -70,8 +69,7 @@ public:
 		return s.str ();
 	}
 
-	int out_width;              ///< width of output images
-	int out_height;             ///< height of output images
+	Size out_size;              ///< size of output images
 	bool apply_crop;            ///< true to apply cropping
 	int num_frames;             ///< number of video frames to decode, or 0 for all
 	bool decode_video;          ///< true to decode video, otherwise false

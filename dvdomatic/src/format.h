@@ -19,11 +19,12 @@
 
 #include <string>
 #include <vector>
+#include "util.h"
 
 class Format
 {
 public:
-	Format (int, int, int, std::string, std::string);
+	Format (int, Size, std::string, std::string);
 
 	int ratio_as_integer () const {
 		return _ratio;
@@ -33,12 +34,8 @@ public:
 		return _ratio / 100.0;
 	}
 
-	int dci_width () const {
-		return _dci_width;
-	}
-
-	int dci_height () const {
-		return _dci_height;
+	Size dci_size () const {
+		return _dci_size;
 	}
 
 	std::string name () const;
@@ -65,8 +62,7 @@ private:
 
 	/** Ratio expressed as the actual ratio multiplied by 100 */
 	int _ratio;
-	int _dci_width;
-	int _dci_height;
+	Size _dci_size;
 	std::string _nickname;
 	std::string _dcp_name;
 
