@@ -52,8 +52,7 @@ Config::Config ()
 		string const k = line.substr (0, s);
 		string const v = line.substr (s + 1);
 
-		/* XXX: backwards compat */
-		if (k == "num_local_encoding_threads" || k == "num_encoding_threads") {
+		if (k == "num_local_encoding_threads") {
 			_num_local_encoding_threads = atoi (v.c_str ());
 		} else if (k == "server_port") {
 			_server_port = atoi (v.c_str ());
@@ -89,8 +88,7 @@ void
 Config::write () const
 {
 	ofstream f (get_file().c_str ());
-	/* XXX: backwards compat */
-	f << "num_encoding_threads " << _num_local_encoding_threads << "\n"
+	f << "num_local_encoding_threads " << _num_local_encoding_threads << "\n"
 	  << "server_port " << _server_port << "\n"
 	  << "colour_lut_index " << _colour_lut_index << "\n"
 	  << "j2k_bandwidth " << _j2k_bandwidth << "\n";
