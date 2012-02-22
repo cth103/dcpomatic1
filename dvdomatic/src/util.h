@@ -126,14 +126,38 @@ private:
 class Timer
 {
 public:
-	Timer (std::string);
-	~Timer ();
+	virtual ~Timer () {}
+
+protected:
+	double seconds (struct timeval) const;
+
+};
+
+class PeriodTimer : public Timer
+{
+public:
+	PeriodTimer (std::string);
+	~PeriodTimer ();
 	
 private:
-	double seconds (struct timeval) const;
 	
 	std::string _name;
 	struct timeval _start;
+};
+
+class StateTimer : public Timer
+{
+public:
+	StateTimer (std::string, std::string);
+	~StateTimer ();
+
+	void set_state (std::string);
+
+private:
+	std::string _name;
+	std::string _state;
+	double _time;
+	std::map<std::string, double> _totals;
 };
 
 #endif

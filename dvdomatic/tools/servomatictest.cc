@@ -49,7 +49,7 @@ process_video (shared_ptr<Image> image, int frame)
 
 	string remote_error;
 	try {
-		remote->encode_remotely (server);
+		remote->encode_remotely (server, &timer);
 	} catch (NetworkError& e) {
 		remote_error = e.what ();
 	}
