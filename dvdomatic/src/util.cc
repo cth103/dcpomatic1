@@ -335,3 +335,25 @@ SocketReader::read_indefinite (uint8_t* data, int size)
 	assert (size >= _buffer_data);
 	memcpy (data, _buffer, size);
 }
+
+#ifdef DEBUG_HASH
+void
+md5_data (string title, void const * data, int size)
+{
+	MHASH ht = mhash_init (MHASH_MD5);
+	if (ht == MHASH_FAILED) {
+		throw EncodeError ("could not create hash thread");
+	}
+
+	mhash (ht, data, size);
+	
+	uint8_t hash[16];
+	mhash_deinit (ht, hash);
+	
+	printf ("%s: ", title.c_str ());
+	for (int i = 0; i < int (mhash_get_block_size (MHASH_MD5)); ++i) {
+		printf ("%.2x", hash[i]);
+	}
+	printf ("\n");
+}
+#endif

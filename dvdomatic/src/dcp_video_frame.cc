@@ -232,11 +232,21 @@ DCPVideoFrame::encode_locally ()
 
 	_cio = opj_cio_open ((opj_common_ptr) _cinfo, 0, 0);
 
+#ifdef DEBUG_HASH
+	md5_data ("J2K in R", _image->comps[0].data, _image->comps[0].w * _image->comps[0].h);
+	md5_data ("J2K in G", _image->comps[1].data, _image->comps[1].w * _image->comps[1].h);
+	md5_data ("J2K in B", _image->comps[2].data, _image->comps[2].w * _image->comps[2].h);
+#endif	
+	
 	int const r = opj_encode (_cinfo, _cio, _image, 0);
 	if (r == 0) {
 		throw EncodeError ("jpeg2000 encoding failed");
 	}
 
+#ifdef DEBUG_HASH
+	md5_data ("J2K out", _cio->buffer, cio_tell (_cio));
+#endif	
+	
 	_encoded = new LocallyEncodedData (_cio->buffer, cio_tell (_cio));
 }
 
@@ -339,21 +349,7 @@ EncodedData::send (int fd)
 void
 EncodedData::hash (string n) const
 {
-	MHASH ht = mhash_init (MHASH_MD5);
-	if (ht == MHASH_FAILED) {
-		throw EncodeError ("could not create hash thread");
-	}
-
-	mhash (ht, _data, _size);
-	
-	uint8_t hash[16];
-	mhash_deinit (ht, hash);
-	
-	printf ("%s: ", n.c_str ());
-	for (int i = 0; i < int (mhash_get_block_size (MHASH_MD5)); ++i) {
-		printf ("%.2x", hash[i]);
-	}
-	printf ("\n");
+	md5_data (n, _data, _size);
 }
 #endif		
 
