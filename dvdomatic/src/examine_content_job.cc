@@ -20,6 +20,7 @@
 #include "examine_content_job.h"
 #include "options.h"
 #include "film_state.h"
+#include "decoder_factory.h"
 #include "decoder.h"
 
 using namespace std;
@@ -52,7 +53,7 @@ ExamineContentJob::run ()
 	o->out_size = Size (512, 512);
 	o->apply_crop = false;
 
-	_decoder = new Decoder (_fs, o, this, _log, true, true);
+	_decoder = decoder_factory (_fs, o, this, _log, true, true);
 	_decoder->go ();
 	
 	set_progress (1);

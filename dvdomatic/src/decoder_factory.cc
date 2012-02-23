@@ -17,34 +17,12 @@
 
 */
 
-#include "decoder.h"
+#include "ffmpeg_decoder.h"
 
-class Film;
-class Job;
-class Encoder;
-class FilmState;
-
-/** A class which takes a FilmState and some Options, then uses those to transcode a Film.
- *  The same (FFmpeg) decoder is always used, and the encoder can be specified as a parameter
- *  to the constructor.
- */
-class Transcoder
+Decoder *
+decoder_factory (
+	boost::shared_ptr<const FilmState> fs, boost::shared_ptr<const Options> o, Job* j, Log* l, bool minimal = false, bool ignore_length = false
+	)
 {
-public:
-	Transcoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Job* j, Log* l, Encoder* e);
-
-	void go ();
-
-	/** @return Our decoder */
-	Decoder* decoder () {
-		return _decoder;
-	}
-
-protected:
-	/** A Job that is running this Transcoder, or 0 */
-	Job* _job;
-	/** The encoder that we will use */
-	Encoder* _encoder;
-	/** The decoder that we will use */
-	Decoder* _decoder;
-};
+	return new FFmpegDecoder (fs, o, j, l, minimal, ignore_length);
+}

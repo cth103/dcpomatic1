@@ -45,6 +45,7 @@
 #include "version.h"
 #include "examine_content_job.h"
 #include "scaler.h"
+#include "decoder_factory.h"
 
 using namespace std;
 using namespace boost;
@@ -185,14 +186,16 @@ Film::set_content (string c)
 	shared_ptr<Options> o (new Options ("", "", ""));
 	o->out_size = Size (1024, 1024);
 
-	Decoder d (s, o, 0, _log);
+	Decoder* d = decoder_factory (s, o, 0, _log);
 	
-	_state.size = d.native_size ();
-	_state.length = d.length_in_frames ();
-	_state.frames_per_second = d.frames_per_second ();
-	_state.audio_channels = d.audio_channels ();
-	_state.audio_sample_rate = d.audio_sample_rate ();
-	_state.audio_sample_format = d.audio_sample_format ();
+	_state.size = d->native_size ();
+	_state.length = d->length_in_frames ();
+	_state.frames_per_second = d->frames_per_second ();
+	_state.audio_channels = d->audio_channels ();
+	_state.audio_sample_rate = d->audio_sample_rate ();
+	_state.audio_sample_format = d->audio_sample_format ();
+
+	delete d;
 
 	_state.content = f;
 	

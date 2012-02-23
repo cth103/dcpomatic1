@@ -28,6 +28,7 @@
 #include "film_state.h"
 #include "options.h"
 #include "image.h"
+#include "decoder_factory.h"
 
 using namespace std;
 using namespace boost;
@@ -42,8 +43,8 @@ ABTranscoder::ABTranscoder (
 	, _encoder (e)
 	, _last_frame (0)
 {
-	_da = new Decoder (_fs_a, o, j, _log);
-	_db = new Decoder (_fs_b, o, j, _log);
+	_da = decoder_factory (_fs_a, o, j, _log);
+	_db = decoder_factory (_fs_b, o, j, _log);
 
 	_da->Video.connect (sigc::bind (sigc::mem_fun (*this, &ABTranscoder::process_video), 0));
 	_db->Video.connect (sigc::bind (sigc::mem_fun (*this, &ABTranscoder::process_video), 1));

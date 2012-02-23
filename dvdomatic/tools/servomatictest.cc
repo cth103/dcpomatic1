@@ -32,6 +32,7 @@
 #include "exceptions.h"
 #include "scaler.h"
 #include "log.h"
+#include "decoder_factory.h"
 
 using namespace std;
 using namespace boost;
@@ -122,9 +123,10 @@ main (int argc, char* argv[])
 	opt->apply_crop = false;
 	opt->decode_audio = false;
 	
-	Decoder decoder (film.state_copy(), opt, 0, &log_);
-	decoder.Video.connect (sigc::ptr_fun (process_video));
-	decoder.go ();
+	Decoder* decoder = decoder_factory (film.state_copy(), opt, 0, &log_);
+	decoder->Video.connect (sigc::ptr_fun (process_video));
+	decoder->go ();
+	delete decoder;
 
 	return 0;
 }
