@@ -125,8 +125,8 @@ worker_thread ()
 #endif		
 		
 		DCPVideoFrame dcp_video_frame (image, out_size, scaler, frame, frames_per_second, post_process, colour_lut_index, j2k_bandwidth);
-		dcp_video_frame.encode_locally ();
-		dcp_video_frame.encoded()->send (fd);
+		shared_ptr<EncodedData> encoded = dcp_video_frame.encode_locally ();
+		encoded->send (fd);
 		close (fd);
 		lock.lock ();
 

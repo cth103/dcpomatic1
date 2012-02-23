@@ -67,7 +67,6 @@ DCPVideoFrame::DCPVideoFrame (
 	, _parameters (0)
 	, _cinfo (0)
 	, _cio (0)
-	, _encoded (0)
 {
 	
 }
@@ -118,10 +117,9 @@ DCPVideoFrame::~DCPVideoFrame ()
 	}
 	
 	delete _parameters;
-	delete _encoded;
 }
 
-void
+shared_ptr<EncodedData>
 DCPVideoFrame::encode_locally ()
 {
 	shared_ptr<Image> prepared = _yuv->scale_and_convert_to_rgb (_out_size, _scaler);
@@ -246,10 +244,10 @@ DCPVideoFrame::encode_locally ()
 	md5_data ("J2K out", _cio->buffer, cio_tell (_cio));
 #endif	
 	
-	_encoded = new LocallyEncodedData (_cio->buffer, cio_tell (_cio));
+	return shared_ptr<EncodedData> (new LocallyEncodedData (_cio->buffer, cio_tell (_cio)));
 }
 
-void
+shared_ptr<EncodedData>
 DCPVideoFrame::encode_remotely (Server const * serv)
 {
 	int const fd = socket (AF_INET, SOCK_STREAM, 0);
@@ -304,7 +302,7 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 	char buffer[32];
 	reader.read_indefinite ((uint8_t *) buffer, sizeof (buffer));
 	reader.consume (strlen (buffer) + 1);
-	EncodedData* e = new RemotelyEncodedData (atoi (buffer));
+	shared_ptr<EncodedData> e (new RemotelyEncodedData (atoi (buffer)));
 
 	/* now read the rest */
 	reader.read_definite_and_consume (e->data(), e->size());
@@ -314,8 +312,7 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 #endif	
 	
 	close (fd);
-
-	_encoded = e;
+	return e;
 }
 
 void

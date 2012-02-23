@@ -50,11 +50,12 @@ process_video (shared_ptr<Image> image, int frame)
 	cout.flush ();
 #endif	
 
-	local->encode_locally ();
+	shared_ptr<EncodedData> local_encoded = local->encode_locally ();
+	shared_ptr<EncodedData> remote_encoded;
 
 	string remote_error;
 	try {
-		remote->encode_remotely (server);
+		remote_encoded = remote->encode_remotely (server);
 	} catch (NetworkError& e) {
 		remote_error = e.what ();
 	}
@@ -69,14 +70,14 @@ process_video (shared_ptr<Image> image, int frame)
 		return;
 	}
 
-	if (local->encoded()->size() != remote->encoded()->size()) {
+	if (local_encoded->size() != remote_encoded->size()) {
 		cout << "\033[0;31msizes differ\033[0m\n";
 		return;
 	}
 		
-	uint8_t* p = local->encoded()->data();
-	uint8_t* q = remote->encoded()->data();
-	for (int i = 0; i < local->encoded()->size(); ++i) {
+	uint8_t* p = local_encoded->data();
+	uint8_t* q = remote_encoded->data();
+	for (int i = 0; i < local_encoded->size(); ++i) {
 		if (*p++ != *q++) {
 			cout << "\033[0;31mdata differ\033[0m at byte " << i << "\n";
 			return;

@@ -119,9 +119,11 @@ J2KWAVEncoder::encoder_thread (Server* server)
 		
 		lock.unlock ();
 
+		shared_ptr<EncodedData> encoded;
+
 		if (server) {
 			try {
-				vf->encode_remotely (server);
+				encoded = vf->encode_remotely (server);
 			} catch (std::exception& e) {
 				++failures;
 				cerr << "Remote encode failed (" << e.what() << "); thread sleeping for " << failures << "s.\n";
@@ -130,14 +132,14 @@ J2KWAVEncoder::encoder_thread (Server* server)
 				
 		} else {
 			try {
-				vf->encode_locally ();
+				encoded = vf->encode_locally ();
 			} catch (std::exception& e) {
 				cerr << "Local encode failed " << e.what() << ".\n";
 			}
 		}
 
-		if (vf->encoded ()) {
-			vf->encoded()->write (_opt, vf->frame ());
+		if (encoded) {
+			encoded->write (_opt, vf->frame ());
 		} else {
 			lock.lock ();
 			_queue.push_front (vf);

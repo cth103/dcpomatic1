@@ -78,11 +78,8 @@ public:
 	DCPVideoFrame (boost::shared_ptr<Image>, Size, Scaler const *, int, int, std::string, int, int);
 	virtual ~DCPVideoFrame ();
 
-	void encode_locally ();
-	void encode_remotely (Server const *);
-	EncodedData* encoded () {
-		return _encoded;
-	}
+	boost::shared_ptr<EncodedData> encode_locally ();
+	boost::shared_ptr<EncodedData> encode_remotely (Server const *);
 
 	int frame () const {
 		return _frame;
@@ -106,5 +103,4 @@ private:
 	opj_cparameters_t* _parameters;
 	opj_cinfo_t* _cinfo;
 	opj_cio_t* _cio;
-	EncodedData* _encoded;
 };
