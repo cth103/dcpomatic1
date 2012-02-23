@@ -141,6 +141,11 @@ DCPVideoFrame::encode_locally ()
 	/* Copy our RGB into the openjpeg container, converting to XYZ in the process */
 
 	int const lut_index = Config::instance()->colour_lut_index ();
+
+	/* ! */
+	int* fuckwit = new int[size];
+	int* tosstwat = new int[size];
+	int* wankballs = new int[size];
 	
 	uint8_t* p = prepared->data()[0];
 	md5_data ("Before RGB -> XYZ", p, prepared->line_size()[0] * prepared->size().width);
@@ -150,21 +155,34 @@ DCPVideoFrame::encode_locally ()
 		s.g = lut_in[lut_index][*p++ << 4];
 		s.b = lut_in[lut_index][*p++ << 4];
 
+		fuckwit[i] = s.r;
+
 		/* RGB to XYZ Matrix */
 		d.x = ((s.r * color_matrix[lut_index][0][0]) + (s.g * color_matrix[lut_index][0][1]) + (s.b * color_matrix[lut_index][0][2]));
 		d.y = ((s.r * color_matrix[lut_index][1][0]) + (s.g * color_matrix[lut_index][1][1]) + (s.b * color_matrix[lut_index][1][2]));
 		d.z = ((s.r * color_matrix[lut_index][2][0]) + (s.g * color_matrix[lut_index][2][1]) + (s.b * color_matrix[lut_index][2][2]));
 
+		tosstwat[i] = d.x;
+
 		/* DCI companding */
 		d.x = d.x * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
 		d.y = d.y * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
 		d.z = d.z * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
+
+		wankballs[i] = d.x;
 		
 		/* Out gamma LUT */
 		_image->comps[0].data[i] = lut_out[LO_DCI][(int) d.x];
 		_image->comps[1].data[i] = lut_out[LO_DCI][(int) d.y];
 		_image->comps[2].data[i] = lut_out[LO_DCI][(int) d.z];
 	}
+
+	md5_data ("\tpost gamma lut", fuckwit, size * sizeof(int));
+	md5_data ("\tpost rgb->xyz", tosstwat, size * sizeof(int));
+	md5_data ("\tpost companding", wankballs, size * sizeof(int));
+	delete[] fuckwit;
+	delete[] tosstwat;
+	delete[] wankballs;
 
 	int const bw = Config::instance()->j2k_bandwidth ();
 
@@ -229,9 +247,9 @@ DCPVideoFrame::encode_locally ()
 	_cinfo->event_mgr = 0;
 
 #ifdef DEBUG_HASH
-	md5_data ("J2K in R", _image->comps[0].data, size * sizeof (int));
-	md5_data ("J2K in G", _image->comps[1].data, size * sizeof (int));
-	md5_data ("J2K in B", _image->comps[2].data, size * sizeof (int));
+	md5_data ("J2K in X", _image->comps[0].data, size * sizeof (int));
+	md5_data ("J2K in Y", _image->comps[1].data, size * sizeof (int));
+	md5_data ("J2K in Z", _image->comps[2].data, size * sizeof (int));
 #endif	
 	
 	/* Setup the encoder parameters using the current image and user parameters */
