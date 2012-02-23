@@ -131,11 +131,11 @@ DCPVideoFrame::encode_locally ()
 	int const size = _out_size.width * _out_size.height;
 
 	struct {
-		float r, g, b;
+		double r, g, b;
 	} s;
 
 	struct {
-		float x, y, z;
+		double x, y, z;
 	} d;
 
 	/* Copy our RGB into the openjpeg container, converting to XYZ in the process */
@@ -143,9 +143,9 @@ DCPVideoFrame::encode_locally ()
 	int const lut_index = Config::instance()->colour_lut_index ();
 
 	/* ! */
-	float* fuckwit = new float[size];
-	float* tosstwat = new float[size];
-	float* wankballs = new float[size];
+	double* fuckwit = new double[size];
+	double* tosstwat = new double[size];
+	double* wankballs = new double[size];
 
 	cout << "clut " << lut_index << "\n";
 	
@@ -199,9 +199,9 @@ DCPVideoFrame::encode_locally ()
 		_image->comps[2].data[i] = lut_out[LO_DCI][(int) d.z];
 	}
 
-	md5_data ("\tpost gamma lut", fuckwit, size * sizeof(float));
-	md5_data ("\tpost rgb->xyz", tosstwat, size * sizeof(float));
-	md5_data ("\tpost companding", wankballs, size * sizeof(float));
+	md5_data ("\tpost gamma lut", fuckwit, size * sizeof(double));
+	md5_data ("\tpost rgb->xyz", tosstwat, size * sizeof(double));
+	md5_data ("\tpost companding", wankballs, size * sizeof(double));
 	delete[] fuckwit;
 	delete[] tosstwat;
 	delete[] wankballs;
