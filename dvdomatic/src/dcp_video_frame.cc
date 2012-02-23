@@ -142,69 +142,28 @@ DCPVideoFrame::encode_locally ()
 
 	int const lut_index = Config::instance()->colour_lut_index ();
 
-	/* ! */
-	double* fuckwit = new double[size];
-	double* tosstwat = new double[size];
-	double* wankballs = new double[size];
-
-	cout << "clut " << lut_index << "\n";
-	
 	uint8_t* p = prepared->data()[0];
-	md5_data ("Before RGB -> XYZ", p, prepared->line_size()[0] * prepared->size().width);
-
-	for (int x = 0; x < 3; ++x) {
-		for (int y = 0; y < 3; ++y) {
-			cout << "CM " << x << " " << y << " z " << color_matrix[lut_index][x][y] << "\n";
-		}
-	}
-	
-	bool arse = false;
 	for (int i = 0; i < size; ++i) {
 		/* In gamma LUT (converting 8-bit input to 12-bit) */
 		s.r = lut_in[lut_index][*p++ << 4];
 		s.g = lut_in[lut_index][*p++ << 4];
 		s.b = lut_in[lut_index][*p++ << 4];
 
-		fuckwit[i] = s.r;
-
-//		cout << "beljup mult " << s.r << " " << s.g << " " << s.b << "\n";
-//		cout << "beljup by " << color_matrix[lut_index][0][0]
-//		     << " " << color_matrix[lut_index][0][1]
-//		     << " " << color_matrix[lut_index][0][2] << "\n";
-
 		/* RGB to XYZ Matrix */
 		d.x = ((s.r * color_matrix[lut_index][0][0]) + (s.g * color_matrix[lut_index][0][1]) + (s.b * color_matrix[lut_index][0][2]));
 		d.y = ((s.r * color_matrix[lut_index][1][0]) + (s.g * color_matrix[lut_index][1][1]) + (s.b * color_matrix[lut_index][1][2]));
 		d.z = ((s.r * color_matrix[lut_index][2][0]) + (s.g * color_matrix[lut_index][2][1]) + (s.b * color_matrix[lut_index][2][2]));
 											     
-//		cout << "beljup for " << d.x << "\n";
-
-		tosstwat[i] = d.x;
-
 		/* DCI companding */
 		d.x = d.x * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
 		d.y = d.y * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
 		d.z = d.z * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
 
-		if (!arse) {
-			cout << "got " << d.x << " by " << DCI_COEFFICENT << " and " << (DCI_LUT_SIZE - 1) << "\n";
-			arse = true;
-		}
-
-		wankballs[i] = d.x;
-		
 		/* Out gamma LUT */
 		_image->comps[0].data[i] = lut_out[LO_DCI][(int) d.x];
 		_image->comps[1].data[i] = lut_out[LO_DCI][(int) d.y];
 		_image->comps[2].data[i] = lut_out[LO_DCI][(int) d.z];
 	}
-
-	md5_data ("\tpost gamma lut", fuckwit, size * sizeof(double));
-	md5_data ("\tpost rgb->xyz", tosstwat, size * sizeof(double));
-	md5_data ("\tpost companding", wankballs, size * sizeof(double));
-	delete[] fuckwit;
-	delete[] tosstwat;
-	delete[] wankballs;
 
 	int const bw = Config::instance()->j2k_bandwidth ();
 
