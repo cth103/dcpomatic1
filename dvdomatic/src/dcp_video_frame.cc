@@ -152,8 +152,8 @@ DCPVideoFrame::encode_locally ()
 	uint8_t* p = prepared->data()[0];
 	md5_data ("Before RGB -> XYZ", p, prepared->line_size()[0] * prepared->size().width);
 
-	for (int x = 0; x < 3: ++x) {
-		for (int y = 0; y < 3: ++y) {
+	for (int x = 0; x < 3; ++x) {
+		for (int y = 0; y < 3; ++y) {
 			cout << "CM " << x << " " << y << " z " << color_matrix[lut_index][x][y] << "\n";
 		}
 	}
