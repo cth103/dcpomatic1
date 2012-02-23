@@ -227,17 +227,17 @@ DCPVideoFrame::encode_locally ()
 	/* Set event manager to null (openjpeg 1.3 bug) */
 	_cinfo->event_mgr = 0;
 
+#ifdef DEBUG_HASH
+	md5_data ("J2K in R", _image->comps[0].data, size * sizeof (int));
+	md5_data ("J2K in G", _image->comps[1].data, size * sizeof (int));
+	md5_data ("J2K in B", _image->comps[2].data, size * sizeof (int));
+#endif	
+	
 	/* Setup the encoder parameters using the current image and user parameters */
 	opj_setup_encoder (_cinfo, _parameters, _image);
 
 	_cio = opj_cio_open ((opj_common_ptr) _cinfo, 0, 0);
 
-#ifdef DEBUG_HASH
-	md5_data ("J2K in R", _image->comps[0].data, _image->comps[0].w * _image->comps[0].h);
-	md5_data ("J2K in G", _image->comps[1].data, _image->comps[1].w * _image->comps[1].h);
-	md5_data ("J2K in B", _image->comps[2].data, _image->comps[2].w * _image->comps[2].h);
-#endif	
-	
 	int const r = opj_encode (_cinfo, _cio, _image, 0);
 	if (r == 0) {
 		throw EncodeError ("jpeg2000 encoding failed");

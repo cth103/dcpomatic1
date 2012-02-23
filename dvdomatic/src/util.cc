@@ -350,7 +350,7 @@ md5_data (string title, void const * data, int size)
 	uint8_t hash[16];
 	mhash_deinit (ht, hash);
 	
-	printf ("%s: ", title.c_str ());
+	printf ("%s [%d]: ", title.c_str (), size);
 	for (int i = 0; i < int (mhash_get_block_size (MHASH_MD5)); ++i) {
 		printf ("%.2x", hash[i]);
 	}
