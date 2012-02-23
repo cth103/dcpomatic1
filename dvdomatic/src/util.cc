@@ -206,14 +206,15 @@ opendcp_version ()
 	while (!feof (f)) {
 		char* buf = 0;
 		size_t n = 0;
-		getline (&buf, &n, f);
-		if (n > 0) {
+		ssize_t const r = getline (&buf, &n, f);
+		if (r > 0) {
 			string s (buf);
 			vector<string> b;
 			split (b, s, is_any_of (" "));
 			if (b.size() >= 3 && b[0] == "OpenDCP" && b[1] == "version") {
 				version = b[2];
 			}
+			free (buf);
 		}
 	}
 
