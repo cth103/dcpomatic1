@@ -89,7 +89,7 @@ public:
 	std::string directory;
 	/** Name for DVD-o-matic */
 	std::string name;
-	/** File containing content (relative to directory) */
+	/** File or directory containing content (relative to our directory) */
 	std::string content;
 	/** DCP long name (e.g. BLUES-BROTHERS_FTR_F_EN-XX ...) */
 	std::string dcp_long_name;

@@ -42,6 +42,7 @@ def build(bld):
 		 scaler.cc
 		 server.cc
 		 thumbs_job.cc
+                 tiff_decoder.cc
 	         tiff_encoder.cc
                  timer.cc
 		 transcode_job.cc

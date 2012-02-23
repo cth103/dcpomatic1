@@ -40,6 +40,7 @@ public:
 
 	/* Methods to query our input video */
 	virtual int length_in_frames () const = 0;
+	/** @return video frames per second, or 0 if unknown */
 	virtual float frames_per_second () const = 0;
 	virtual Size native_size () const = 0;
 	virtual int audio_channels () const = 0;
@@ -53,9 +54,10 @@ public:
 		PASS_VIDEO,   ///< a video frame is available
 		PASS_AUDIO    ///< some audio is available
 	};
-	
-	virtual PassResult pass () = 0;
 
+	virtual PassResult do_pass () = 0;
+	
+	PassResult pass ();
 	void go ();
 
 	int last_video_frame () const {

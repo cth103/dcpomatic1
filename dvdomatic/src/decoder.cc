@@ -72,3 +72,13 @@ Decoder::decoding_frames () const
 	
 	return _fs->length;
 }
+
+Decoder::PassResult
+Decoder::pass ()
+{
+	if (_opt->num_frames != 0 && _video_frame >= _opt->num_frames) {
+		return PASS_DONE;
+	}
+
+	return do_pass ();
+}

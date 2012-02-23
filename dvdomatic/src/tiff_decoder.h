@@ -17,39 +17,30 @@
 
 */
 
+#ifndef DVDOMATIC_TIFF_DECODER_H
+#define DVDOMATIC_TIFF_DECODER_H
+
 #include <vector>
 #include <string>
 #include <stdint.h>
 #include <boost/shared_ptr.hpp>
-extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libpostproc/postprocess.h>
-}
 #include "util.h"
 #include "decoder.h"
 
-struct AVFilterGraph;
-struct AVCodecContext;
-struct AVFilterContext;
-struct AVFormatContext;
-struct AVFrame;
-struct AVBufferContext;
-struct AVCodec;
 class Job;
 class FilmState;
 class Options;
 class Image;
 class Log;
 
-class FFmpegDecoder : public Decoder
+class TIFFDecoder : public Decoder
 {
 public:
-	FFmpegDecoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *, Log *, bool, bool);
-	~FFmpegDecoder ();
+	TIFFDecoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *, Log *, bool, bool);
+	~TIFFDecoder ();
 
 	/* Methods to query our input video */
 	int length_in_frames () const;
-	int decoding_frames () const;
 	float frames_per_second () const;
 	Size native_size () const;
 	int audio_channels () const;
@@ -59,34 +50,9 @@ public:
 	PassResult do_pass ();
 
 private:
-
-	void setup_general ();
-	void setup_video ();
-	void setup_video_filters ();
-	void setup_audio ();
-
-	boost::shared_ptr<const FilmState> _fs;
-	boost::shared_ptr<const Options> _opt;
-	Job* _job;
-	Log* _log;
-	
-	AVFormatContext* _format_context;
-	int _video_stream;
-	int _audio_stream;
-	AVFrame* _frame_in;
-	
-	AVCodecContext* _video_codec_context;
-	AVCodec* _video_codec;
-	AVFilterContext* _buffer_src_context;
-	AVFilterContext* _buffer_sink_context;
-	
-	AVCodecContext* _audio_codec_context;
-	AVCodec* _audio_codec;
-
-	AVPacket _packet;
-
-	int _video_frame;
-
-	int _post_filter_width;
-	int _post_filter_height;
+	std::string file_path (std::string) const;
+	std::list<std::string> _files;
+	std::list<std::string>::iterator _iter;
 };
+
+#endif

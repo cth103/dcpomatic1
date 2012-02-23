@@ -162,14 +162,10 @@ FFmpegDecoder::setup_audio ()
 }
 
 FFmpegDecoder::PassResult
-FFmpegDecoder::pass ()
+FFmpegDecoder::do_pass ()
 {
 	int r = av_read_frame (_format_context, &_packet);
 	if (r < 0) {
-		return PASS_DONE;
-	}
-
-	if (_opt->num_frames != 0 && _video_frame >= _opt->num_frames) {
 		return PASS_DONE;
 	}
 
