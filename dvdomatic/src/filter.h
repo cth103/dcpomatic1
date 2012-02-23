@@ -17,31 +17,40 @@
 
 */
 
+/** @file src/filter.h
+ *  @brief A class to describe one of FFmpeg's video or post-processing filters.
+ */
+
 #ifndef DVDOMATIC_FILTER_H
 #define DVDOMATIC_FILTER_H
 
 #include <string>
 #include <vector>
 
+/** A class to describe one of FFmpeg's video or post-processing filters */
 class Filter
 {
 public:
 	Filter (std::string, std::string, std::string, std::string);
 
+	/** @return our id */
 	std::string id () const {
 		return _id;
 	}
 
+	/** @return user-visible name */
 	std::string name () const {
 		return _name;
 	}
-	
-	std::string pp () const {
-		return _pp;
-	}
-	
+
+	/** @return string for a FFmpeg video filter descriptor */
 	std::string vf () const {
 		return _vf;
+	}
+	
+	/** @return string for a FFmpeg post-processing descriptor */
+	std::string pp () const {
+		return _pp;
 	}
 	
 	static std::vector<Filter const *> get_all ();
@@ -51,11 +60,16 @@ public:
 
 private:
 
+	/** our id */
 	std::string _id;
+	/** user-visible name */
 	std::string _name;
+	/** string for a FFmpeg video filter descriptor */
 	std::string _vf;
+	/** string for a FFmpeg post-processing descriptor */
 	std::string _pp;
 
+	/** all available filters */
 	static std::vector<Filter const *> _filters;
 };
 

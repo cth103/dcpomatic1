@@ -17,12 +17,21 @@
 
 */
 
+/** @file src/filter.cc
+ *  @brief A class to describe one of FFmpeg's video or post-processing filters.
+ */
+
 #include "filter.h"
 
 using namespace std;
 
 vector<Filter const *> Filter::_filters;
 
+/** @param i Our id.
+ *  @param n User-visible name.
+ *  @param v String for a FFmpeg video filter descriptor, or "".
+ *  @param p String for a FFmpeg post-processing descriptor, or "".
+ */
 Filter::Filter (string i, string n, string v, string p)
 	: _id (i)
 	, _name (n)
@@ -32,12 +41,17 @@ Filter::Filter (string i, string n, string v, string p)
 
 }
 
+/** @return All available filters */
 vector<Filter const *>
 Filter::get_all ()
 {
 	return _filters;
 }
 
+
+/** Set up the static _filters vector; must be called before get_from_*
+ *  methods are used.
+ */
 void
 Filter::setup_filters ()
 {
@@ -68,6 +82,10 @@ Filter::setup_filters ()
 	_filters.push_back (new Filter ("ow", "Overcomplete wavelet denoiser", "mp=ow", ""));
 }
 
+/** @param filters Set of filters.
+ *  @return A pair; .first is a string to pass to FFmpeg for the video filters,
+ *  .second is a string to pass for the post-processors.
+ */
 pair<string, string>
 Filter::ffmpeg_strings (vector<Filter const *> const & filters)
 {
@@ -93,6 +111,9 @@ Filter::ffmpeg_strings (vector<Filter const *> const & filters)
 	return make_pair (vf, pp);
 }
 
+/** @param d Our id.
+ *  @return Corresponding Filter, or 0.
+ */
 Filter const *
 Filter::get_from_id (string d)
 {

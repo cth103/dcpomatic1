@@ -27,6 +27,7 @@ using namespace std;
 
 Config* Config::_instance = 0;
 
+/** Construct default configuration */
 Config::Config ()
 	: _num_local_encoding_threads (2)
 	, _server_port (6192)
@@ -66,6 +67,7 @@ Config::Config ()
 	}
 }
 
+/** @return Filename to write configuration to */
 string
 Config::get_file () const
 {
@@ -74,6 +76,7 @@ Config::get_file () const
 	return s.str ();
 }
 
+/** @return Singleton instance */
 Config *
 Config::instance ()
 {
@@ -84,6 +87,7 @@ Config::instance ()
 	return _instance;
 }
 
+/** Write our configuration to disk */
 void
 Config::write () const
 {

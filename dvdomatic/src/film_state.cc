@@ -30,6 +30,9 @@
 using namespace std;
 using namespace boost;
 
+/** Write state to a stream.
+ *  @param f Stream to write to.
+ */
 void
 FilmState::write_metadata (ofstream& f) const
 {
@@ -70,6 +73,10 @@ FilmState::write_metadata (ofstream& f) const
 	f << "audio_sample_format " << audio_sample_format_to_string (audio_sample_format) << "\n";
 }
 
+/** Read state from a key / value pair.
+ *  @param k Key.
+ *  @param v Value.
+ */
 void
 FilmState::read_metadata (string k, string v)
 {
