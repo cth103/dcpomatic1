@@ -144,8 +144,8 @@ DCPVideoFrame::encode_locally ()
 
 	/* ! */
 	int* fuckwit = new int[size];
-	int* tosstwat = new int[size];
-	int* wankballs = new int[size];
+	float* tosstwat = new float[size];
+	float* wankballs = new float[size];
 	
 	uint8_t* p = prepared->data()[0];
 	md5_data ("Before RGB -> XYZ", p, prepared->line_size()[0] * prepared->size().width);
