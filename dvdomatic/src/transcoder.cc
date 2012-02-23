@@ -25,15 +25,26 @@
 using namespace std;
 using namespace boost;
 
+/** Construct a transcoder using a Decoder that we create and a supplied Encoder.
+ *  @param s FilmState of Film that we are transcoding.
+ *  @param o Options.
+ *  @param j Job that we are running under, or 0.
+ *  @param e Encoder to use.
+ */
 Transcoder::Transcoder (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Job* j, Encoder* e)
 	: _job (j)
 	, _encoder (e)
 	, _decoder (s, o, j)
 {
+	assert (_encoder);
+	
 	_decoder.Video.connect (sigc::mem_fun (*e, &Encoder::process_video));
 	_decoder.Audio.connect (sigc::mem_fun (*e, &Encoder::process_audio));
 }
 
+/** Run the decoder, passing its output to the encoder, until the decoder
+ *  has no more data to present.
+ */
 void
 Transcoder::go ()
 {

@@ -56,6 +56,7 @@ public:
 	{}
 };
 
+/** Parent class for file-related errors */
 class FileError : public StringError
 {
 public:
@@ -75,6 +76,7 @@ private:
 };
 	
 
+/** Some error occurred when trying to open a file */
 class OpenFileError : public FileError
 {
 public:
@@ -83,25 +85,31 @@ public:
 	{}
 };
 
+/** Some error occurred when trying to create a file */
 class CreateFileError : public FileError
 {
 public:
+	/** @param f File that we were trying to create */
 	CreateFileError (std::string f)
 		: FileError ("could not create file " + f, f)
 	{}
 };
 
+/** Some error occurred when trying to write to a file */
 class WriteFileError : public FileError
 {
 public:
+	/** @param f File that we were trying to write to */
 	WriteFileError (std::string f)
 		: FileError ("could not write to file " + f, f)
 	{}
 };
 
+/** A Film is missing a setting that is required for some operation */
 class MissingSettingError : public StringError
 {
 public:
+	/** @param s Name of setting that was required */
 	MissingSettingError (std::string s)
 		: StringError ("missing required setting " + s)
 		, _setting (s)
