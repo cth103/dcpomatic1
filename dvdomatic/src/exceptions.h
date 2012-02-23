@@ -22,17 +22,20 @@
 class StringError : public std::exception
 {
 public:
+	/** @param w Error message */
 	StringError (std::string w) {
 		_what = w;
 	}
 
 	virtual ~StringError () throw () {}
 
+	/** @return error message */
 	char const * what () const throw () {
 		return _what.c_str ();
 	}
 
 private:
+	/** error message */
 	std::string _what;
 };
 

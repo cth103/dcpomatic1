@@ -31,6 +31,10 @@
 using namespace std;
 using namespace boost;
 
+/** @param s FilmState to use.
+ *  @param o Options.
+ *  @param l A log that we can write to.
+ */
 ThumbsJob::ThumbsJob (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
 	: Job (s, o, l)
 {

@@ -193,6 +193,7 @@ audio_sample_format_from_string (string s)
 	return AV_SAMPLE_FMT_NONE;
 }
 
+/** @return Version of OpenDCP that is on the path (and hence that we will use) */
 static string
 opendcp_version ()
 {
@@ -223,6 +224,9 @@ opendcp_version ()
 	return version;
 }
 
+/** @param v Version as used by FFmpeg.
+ *  @return A string representation of v.
+ */
 static string
 ffmpeg_version_to_string (int v)
 {
@@ -231,6 +235,7 @@ ffmpeg_version_to_string (int v)
 	return s.str ();
 }
 
+/** Return a user-readable string summarising the versions of our dependencies */
 string
 dependency_version_summary ()
 {
@@ -248,6 +253,11 @@ dependency_version_summary ()
 	return s.str ();
 }
 
+/** Write some data to a file descriptor.
+ *  @param fd File descriptor.
+ *  @param data Data.
+ *  @param size Amount to write, in bytes.
+ */
 void
 fd_write (int fd, uint8_t const * data, int size)
 {
@@ -271,6 +281,7 @@ seconds (struct timeval t)
 	return t.tv_sec + (double (t.tv_usec) / 1e6);
 }
 
+/** @param fd File descriptor to read from */
 SocketReader::SocketReader (int fd)
 	: _fd (fd)
 	, _buffer_data (0)
@@ -278,15 +289,27 @@ SocketReader::SocketReader (int fd)
 
 }
 
+/** Mark some data as being `consumed', so that it will not be returned
+ *  as data again.
+ *  @param Amount of data to consume, in bytes.
+ */
 void
 SocketReader::consume (int size)
 {
+	assert (_buffer_data >= size);
+	
 	_buffer_data -= size;
 	if (_buffer_data > 0) {
+		/* Shift still-valid data to the start of the buffer */
 		memmove (_buffer, _buffer + size, _buffer_data);
 	}
 }
 
+/** Read a definite amount of data from our socket, and mark
+ *  it as consumed.
+ *  @param data Where to put the data.
+ *  @param size Number of bytes to read.
+ */
 void
 SocketReader::read_definite_and_consume (uint8_t* data, int size)
 {
@@ -312,6 +335,10 @@ SocketReader::read_definite_and_consume (uint8_t* data, int size)
 	}
 }
 
+/** Read as much data as is available, up to some limit.
+ *  @param data Where to put the data.
+ *  @param size Maximum amount of data to read.
+ */
 void
 SocketReader::read_indefinite (uint8_t* data, int size)
 {

@@ -45,6 +45,7 @@ extern double seconds (struct timeval);
 extern void md5_data (std::string, void const *, int);
 #endif
 
+/** A helper class from reading from sockets (or indeed any file descriptor) */
 class SocketReader
 {
 public:
@@ -55,24 +56,34 @@ public:
 	void consume (int);
 
 private:
+	/** file descriptor we are reading from */
 	int _fd;
+	/** a buffer for small reads */
 	uint8_t _buffer[256];
+	/** amount of valid data in the buffer */
 	int _buffer_data;
 };
 
+/** Representation of the size of something */
 struct Size
 {
+	/** Construct a zero Size */
 	Size ()
 		: width (0)
 		, height (0)
 	{}
-		
+
+	/** @param w Width.
+	 *  @param h Height.
+	 */
 	Size (int w, int h)
 		: width (w)
 		, height (h)
 	{}
-	
+
+	/** width */
 	int width;
+	/** height */
 	int height;
 };
 
