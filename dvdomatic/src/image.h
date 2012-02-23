@@ -33,6 +33,13 @@ class Scaler;
 class RGBFrameImage;
 class PostProcessImage;
 
+/** Parent class for wrappers of some image, in some format, that
+ *  can present a set of components and a size in pixels.  This
+ *  class also has some conversion / processing methods.
+ *
+ *  The main point of this class (and its subclasses) is to abstract
+ *  details of FFmpeg's memory management and varying data formats.
+ */
 class Image
 {
 public:
@@ -41,8 +48,14 @@ public:
 	{}
 	
 	virtual ~Image () {}
+
+	/** @return Array of pointers to arrays of the component data */
 	virtual uint8_t ** data () const = 0;
+
+	/** @return Array of sizes of each line, in pixels */
 	virtual int * line_size () const = 0;
+
+	/** @return Size of the image, in pixels */
 	virtual Size size () const = 0;
 
 	int components () const;
@@ -59,9 +72,10 @@ public:
 	}
 
 private:
-	PixelFormat _pixel_format;
+	PixelFormat _pixel_format; ///< FFmpeg's way of describing the pixel format of this Image
 };
 
+/** An Image that is held in an AVFilterBufferRef */
 class FilterBufferImage : public Image
 {
 public:
@@ -76,6 +90,7 @@ private:
 	AVFilterBufferRef* _buffer;
 };
 
+/** An Image for which memory is allocated using a `simple' av_malloc(). */
 class SimpleImage : public Image
 {
 public:
@@ -89,11 +104,12 @@ public:
 	void set_line_size (int, int);
 
 private:
-	Size _size;
-	uint8_t** _data;
-	int* _line_size;
+	Size _size; ///< size in pixels
+	uint8_t** _data; ///< array of pointers to components
+	int* _line_size; ///< array of widths of each line, in bytes
 };
 
+/** An RGB image that is held within an AVFrame */
 class RGBFrameImage : public Image
 {
 public:
@@ -110,6 +126,7 @@ private:
 	uint8_t* _data;
 };
 
+/** An image that is the result of an FFmpeg post-processing run */
 class PostProcessImage : public Image
 {
 public:

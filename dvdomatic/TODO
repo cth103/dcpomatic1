@@ -7,6 +7,7 @@ Nice error when trying to thumbnail with no content.
 Floating point fps hoo-ha
 Stop server crashing / quitting
 Server must exchange ~/.dvdomatic contents
+Fix up A/B transcoder
 
 options summary
 

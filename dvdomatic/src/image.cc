@@ -44,9 +44,16 @@ extern "C" {
 #include <mhash.h>
 #endif
 
+/** @file src/image.cc
+ *  @brief A set of classes to describe video images.
+ */
+
 using namespace std;
 using namespace boost;
 
+/** @param n Component index.
+ *  @return Number of lines in the image for the given component.
+ */
 int
 Image::lines (int n) const
 {
@@ -65,6 +72,7 @@ Image::lines (int n) const
 	return 0;
 }
 
+/** @return Number of components */
 int
 Image::components () const
 {
@@ -79,6 +87,9 @@ Image::components () const
 }
 
 #ifdef DEBUG_HASH
+/** Write a MD5 hash of the image's data to stdout.
+ *  @param n Title to give the output.
+ */
 void
 Image::hash (string n) const
 {
@@ -106,7 +117,6 @@ Image::hash (string n) const
  *  @param out_size Output image size in pixels.
  *  @param scaler Scaler to use.
  */
-
 shared_ptr<RGBFrameImage>
 Image::scale_and_convert_to_rgb (Size out_size, Scaler const * scaler) const
 {
@@ -133,6 +143,10 @@ Image::scale_and_convert_to_rgb (Size out_size, Scaler const * scaler) const
 	return rgb;
 }
 
+/** Run a FFmpeg post-process on this image and return the processed version.
+ *  @param pp Flags for the required set of post processes.
+ *  @return Post-processed image.
+ */
 shared_ptr<PostProcessImage>
 Image::post_process (string pp) const
 {
@@ -154,6 +168,12 @@ Image::post_process (string pp) const
 	return out;
 }
 
+/** Construct a SimpleImage of a given size and format, allocating memory
+ *  as required.
+ *
+ *  @param p Pixel format.
+ *  @param s Size in pixels.
+ */
 SimpleImage::SimpleImage (PixelFormat p, Size s)
 	: Image (p)
 	, _size (s)
@@ -167,6 +187,7 @@ SimpleImage::SimpleImage (PixelFormat p, Size s)
 	}
 }
 
+/** Destroy a SimpleImage */
 SimpleImage::~SimpleImage ()
 {
 	for (int i = 0; i < components(); ++i) {
