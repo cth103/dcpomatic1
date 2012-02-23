@@ -143,7 +143,7 @@ DCPVideoFrame::encode_locally ()
 	int const lut_index = Config::instance()->colour_lut_index ();
 	
 	uint8_t* p = prepared->data()[0];
-	md5_data ("Before RGB -> XYZ", p, prepared->line_size() * prepared->size().width);
+	md5_data ("Before RGB -> XYZ", p, prepared->line_size()[0] * prepared->size().width);
 	for (int i = 0; i < size; ++i) {
 		/* In gamma LUT (converting 8-bit input to 12-bit) */
 		s.r = lut_in[lut_index][*p++ << 4];
