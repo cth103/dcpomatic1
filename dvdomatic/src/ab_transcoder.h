@@ -48,6 +48,6 @@ private:
 	Encoder* _encoder;
 	Decoder* _da;
 	Decoder* _db;
-	uint8_t* _rgb;
 	int _last_frame;
+	boost::shared_ptr<Image> _image;
 };

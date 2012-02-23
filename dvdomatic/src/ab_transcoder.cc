@@ -27,6 +27,7 @@
 #include "job.h"
 #include "film_state.h"
 #include "options.h"
+#include "image.h"
 
 using namespace std;
 using namespace boost;
@@ -49,34 +50,37 @@ ABTranscoder::ABTranscoder (boost::shared_ptr<const FilmState> a, boost::shared_
 
 ABTranscoder::~ABTranscoder ()
 {
-	delete[] _rgb;
+
 }
 
 void
 ABTranscoder::process_video (shared_ptr<Image> yuv, int frame, int index)
 {
-#if 0	
-	int const half_line_size = line_size / 2;
+	if (index == 0) {
+		/* Keep this image around until we get the other half */
+		_image = yuv;
+	} else {
+		/* Copy the right half of yuv into _image */
+		for (int i = 0; i < yuv->components(); ++i) {
+			int const line_size = yuv->line_size()[i];
+			int const half_line_size = line_size / 2;
 
-	uint8_t* p = _rgb;
-	for (int y = 0; y < _opt->out_height; ++y) {
-		if (index == 0) {
-			memcpy (p, rgb, half_line_size);
-		} else {
-			memcpy (p + half_line_size, rgb + half_line_size, half_line_size);
+			uint8_t* p = _image->data()[i];
+			uint8_t* q = yuv->data()[i];
+			
+			for (int j = 0; j < yuv->lines (i); ++j) {
+				memcpy (p + half_line_size, q + half_line_size, half_line_size);
+				p += line_size;
+				q += line_size;
+			}
+			
+			/* And pass it to the encoder */
+			_encoder->process_video (_image, frame);
+			_image.reset ();
 		}
-
-		p += line_size;
-		rgb += line_size;
-	}
-
-	if (index == 1) {
-		/* Now we have a complete frame, so pass it on to the encoder */
-		_encoder->process_video (_rgb, line_size, frame);
 	}
 	
 	_last_frame = frame;
-#endif	
 }
 
 
