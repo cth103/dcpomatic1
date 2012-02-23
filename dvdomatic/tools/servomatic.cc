@@ -112,6 +112,8 @@ worker_thread ()
 			reader.read_definite_and_consume (image->data()[i], image->line_size()[i] * image->lines(i));
 		}
 
+		cout << "==== Frame " << frame << "\n";
+
 #ifdef DEBUG_HASH
 		image->hash ("Image for encoding (as received by server)");
 #endif		
