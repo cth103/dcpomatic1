@@ -143,7 +143,7 @@ DCPVideoFrame::encode_locally ()
 	int const lut_index = Config::instance()->colour_lut_index ();
 
 	/* ! */
-	float* fuckwit = new int[size];
+	float* fuckwit = new float[size];
 	float* tosstwat = new float[size];
 	float* wankballs = new float[size];
 
