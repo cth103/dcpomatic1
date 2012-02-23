@@ -53,8 +53,8 @@ void
 ThumbsJob::run ()
 {
 	try {
-		TIFFEncoder e (_fs, _opt);
-		Transcoder w (_fs, _opt, this, &e);
+		TIFFEncoder e (_fs, _opt, _log);
+		Transcoder w (_fs, _opt, this, _log, &e);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

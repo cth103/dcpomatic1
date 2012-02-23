@@ -44,14 +44,16 @@ extern "C" {
 #include "exceptions.h"
 #include "image.h"
 #include "util.h"
+#include "log.h"
 
 using namespace std;
 using namespace boost;
 
-Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Job* j, bool minimal, bool ignore_length)
+Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Job* j, Log* l, bool minimal, bool ignore_length)
 	: _fs (s)
 	, _opt (o)
 	, _job (j)
+	, _log (l)
 	, _format_context (0)
 	, _video_stream (-1)
 	, _audio_stream (-1)
@@ -201,7 +203,7 @@ Decoder::pass ()
 			if (av_vsrc_buffer_add_frame (_buffer_src_context, _frame_in, 0) < 0) {
 				throw DecodeError ("could not push buffer into filter chain.");
 			}
-			
+
 			while (avfilter_poll_frame (_buffer_sink_context->inputs[0])) {
 				AVFilterBufferRef* filter_buffer;
 				if (av_buffersink_get_buffer_ref (_buffer_sink_context, &filter_buffer, 0) >= 0) {
@@ -210,6 +212,13 @@ Decoder::pass ()
 					shared_ptr<Image> image (new FilterBufferImage (_video_codec_context->pix_fmt, filter_buffer));
 
 					/* Emit */
+
+					{
+						stringstream s;
+						s << "Encoder generates video frame " << _video_frame;
+						_log->log (s.str ());
+					}
+					
 					Video (image, _video_frame);
 
 					av_free_packet (&_packet);

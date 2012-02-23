@@ -26,12 +26,13 @@
 #include "encoder.h"
 
 class FilmState;
+class Log;
 
 /** An encoder that writes TIFF files (and does nothing with audio) */
 class TIFFEncoder : public Encoder
 {
 public:
-	TIFFEncoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o);
+	TIFFEncoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log *);
 
 	void process_begin () {}
 	void process_video (boost::shared_ptr<Image>, int);

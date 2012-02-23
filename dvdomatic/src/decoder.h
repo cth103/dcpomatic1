@@ -38,11 +38,12 @@ class Job;
 class FilmState;
 class Options;
 class Image;
+class Log;
 
 class Decoder
 {
 public:
-	Decoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *, bool minimal = false, bool ignore_length = false);
+	Decoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *, Log *, bool minimal = false, bool ignore_length = false);
 	~Decoder ();
 
 	/* Methods to query our input video */
@@ -82,6 +83,7 @@ private:
 	boost::shared_ptr<const FilmState> _fs;
 	boost::shared_ptr<const Options> _opt;
 	Job* _job;
+	Log* _log;
 	
 	AVFormatContext* _format_context;
 	int _video_stream;

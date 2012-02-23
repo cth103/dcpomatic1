@@ -204,10 +204,7 @@ window_closed (GdkEventAny *)
 int
 main (int argc, char* argv[])
 {
-	Format::setup_formats ();
-	Filter::setup_filters ();
-	ContentType::setup_content_types ();
-	Scaler::setup_scalers ();
+	dvdomatic_setup ();
 	
 	Gtk::Main kit (argc, argv);
 

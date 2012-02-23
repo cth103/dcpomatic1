@@ -38,6 +38,7 @@
 #include "config.h"
 #include "scaler.h"
 #include "image.h"
+#include "log.h"
 
 #define BACKLOG 8
 
@@ -49,6 +50,7 @@ static vector<thread *> worker_threads;
 static std::list<int> queue;
 static mutex worker_mutex;
 static condition worker_condition;
+static Log log_ ("servomatic.log");
 
 void
 worker_thread ()
@@ -124,7 +126,7 @@ worker_thread ()
 		image->hash ("Image for encoding (as received by server)");
 #endif		
 		
-		DCPVideoFrame dcp_video_frame (image, out_size, scaler, frame, frames_per_second, post_process, colour_lut_index, j2k_bandwidth);
+		DCPVideoFrame dcp_video_frame (image, out_size, scaler, frame, frames_per_second, post_process, colour_lut_index, j2k_bandwidth, &log_);
 		shared_ptr<EncodedData> encoded = dcp_video_frame.encode_locally ();
 		encoded->send (fd);
 		close (fd);

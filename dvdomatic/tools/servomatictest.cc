@@ -31,17 +31,19 @@
 #include "decoder.h"
 #include "exceptions.h"
 #include "scaler.h"
+#include "log.h"
 
 using namespace std;
 using namespace boost;
 
 static Server* server;
+static Log log_ ("servomatictest.log");
 
 void
 process_video (shared_ptr<Image> image, int frame)
 {
-	shared_ptr<DCPVideoFrame> local (new DCPVideoFrame (image, Size (1024, 1024), Scaler::get_from_id ("bicubic"), frame, 24, "", 0, 250000000));
-	shared_ptr<DCPVideoFrame> remote (new DCPVideoFrame (image, Size (1024, 1024), Scaler::get_from_id ("bicubic"), frame, 24, "", 0, 250000000));
+	shared_ptr<DCPVideoFrame> local (new DCPVideoFrame (image, Size (1024, 1024), Scaler::get_from_id ("bicubic"), frame, 24, "", 0, 250000000, &log_));
+	shared_ptr<DCPVideoFrame> remote (new DCPVideoFrame (image, Size (1024, 1024), Scaler::get_from_id ("bicubic"), frame, 24, "", 0, 250000000, &log_));
 
 #if defined(DEBUG_HASH)
 	cout << "Frame " << frame << ":\n";
@@ -109,11 +111,8 @@ main (int argc, char* argv[])
 	}
 	
         boost::program_options::notify (vm);
-	
-	Format::setup_formats ();
-	Filter::setup_filters ();
-	ContentType::setup_content_types ();
-	Scaler::setup_scalers ();
+
+	dvdomatic_setup ();
 
 	server = new Server (server_host, 1);
 	Film film (film_dir, true);
@@ -123,7 +122,7 @@ main (int argc, char* argv[])
 	opt->apply_crop = false;
 	opt->decode_audio = false;
 	
-	Decoder decoder (film.state_copy(), opt, 0);
+	Decoder decoder (film.state_copy(), opt, 0, &log_);
 	decoder.Video.connect (sigc::ptr_fun (process_video));
 	decoder.go ();
 

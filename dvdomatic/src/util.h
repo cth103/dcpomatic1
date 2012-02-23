@@ -44,6 +44,7 @@ extern AVSampleFormat audio_sample_format_from_string (std::string);
 extern std::string dependency_version_summary ();
 extern void fd_write (int, uint8_t const *, int);
 extern double seconds (struct timeval);
+extern void dvdomatic_setup ();
 
 #ifdef DEBUG_HASH
 extern void md5_data (std::string, void const *, int);

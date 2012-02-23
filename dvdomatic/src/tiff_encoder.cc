@@ -40,9 +40,10 @@ using namespace boost;
 
 /** @param s FilmState of the film that we are encoding.
  *  @param o Options.
+ *  @param l Log.
  */
-TIFFEncoder::TIFFEncoder (shared_ptr<const FilmState> s, shared_ptr<const Options> o)
-	: Encoder (s, o)
+TIFFEncoder::TIFFEncoder (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
+	: Encoder (s, o, l)
 {
 	
 }

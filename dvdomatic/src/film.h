@@ -165,7 +165,7 @@ public:
 		return _dirty;
 	}
 
-	void make_dcp ();
+	void make_dcp (int freq = 0);
 
 	enum Property {
 		Name,

@@ -43,6 +43,9 @@ extern "C" {
 #include "util.h"
 #include "exceptions.h"
 #include "scaler.h"
+#include "format.h"
+#include "content_type.h"
+#include "filter.h"
 
 #ifdef DEBUG_HASH
 #include <mhash.h>
@@ -386,6 +389,15 @@ SocketReader::read_indefinite (uint8_t* data, int size)
 	memcpy (data, _buffer, size);
 }
 
+void
+dvdomatic_setup ()
+{
+	Format::setup_formats ();
+	ContentType::setup_content_types ();
+	Scaler::setup_scalers ();
+	Filter::setup_filters ();
+}
+
 #ifdef DEBUG_HASH
 void
 md5_data (string title, void const * data, int size)
@@ -407,3 +419,4 @@ md5_data (string title, void const * data, int size)
 	printf ("\n");
 }
 #endif
+

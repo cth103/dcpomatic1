@@ -26,6 +26,7 @@ class Options;
 class Server;
 class Scaler;
 class Image;
+class Log;
 
 class EncodedData
 {
@@ -75,7 +76,7 @@ public:
 class DCPVideoFrame
 {
 public:
-	DCPVideoFrame (boost::shared_ptr<Image>, Size, Scaler const *, int, int, std::string, int, int);
+	DCPVideoFrame (boost::shared_ptr<Image>, Size, Scaler const *, int, int, std::string, int, int, Log *);
 	virtual ~DCPVideoFrame ();
 
 	boost::shared_ptr<EncodedData> encode_locally ();
@@ -97,6 +98,8 @@ private:
 	std::string _post_process;
 	int _colour_lut_index;
 	int _j2k_bandwidth;
+
+	Log* _log;
 	
 	opj_image_cmptparm_t _cmptparm[3];
 	opj_image* _image;

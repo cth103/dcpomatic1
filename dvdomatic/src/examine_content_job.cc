@@ -52,7 +52,7 @@ ExamineContentJob::run ()
 	o->out_size = Size (512, 512);
 	o->apply_crop = false;
 
-	_decoder = new Decoder (_fs, o, this, true, true);
+	_decoder = new Decoder (_fs, o, this, _log, true, true);
 	_decoder->go ();
 	
 	set_progress (1);

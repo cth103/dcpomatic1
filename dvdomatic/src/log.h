@@ -25,9 +25,17 @@ class Log
 public:
 	Log (std::string);
 
-	void log (std::string);
+	enum Level {
+		STANDARD = 0,
+		VERBOSE = 1
+	};
+
+	void log (std::string, Level level = STANDARD);
+
+	void set_level (Level);
 
 private:
 	boost::mutex _mutex;
 	std::string _file;
+	Level _level;
 };
