@@ -40,6 +40,10 @@ static Server* server;
 void
 process_video (shared_ptr<Image> image, int frame)
 {
+	if (frame < 33) {
+		return;
+	}
+	
 	shared_ptr<DCPVideoFrame> local (new DCPVideoFrame (image, Size (1024, 1024), Scaler::get_from_id ("bicubic"), frame, 24, ""));
 	shared_ptr<DCPVideoFrame> remote (new DCPVideoFrame (image, Size (1024, 1024), Scaler::get_from_id ("bicubic"), frame, 24, ""));
 
