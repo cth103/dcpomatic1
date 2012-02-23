@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/copy_from_dvd_job.cc
+ *  @brief A job to copy a film from a DVD.
+ */
+
 #include <stdio.h>
 #include <boost/algorithm/string.hpp>
 #include "copy_from_dvd_job.h"
@@ -25,6 +29,9 @@
 using namespace std;
 using namespace boost;
 
+/** @param fs FilmState for the film to write DVD data into.
+ *  @param l Log that we can write to.
+ */
 CopyFromDVDJob::CopyFromDVDJob (shared_ptr<FilmState> fs, Log* l)
 	: Job (fs, shared_ptr<Options> (), l)
 {
