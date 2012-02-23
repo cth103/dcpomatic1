@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/encoder.h
+ *  @brief Parent class for classes which can encode video and audio frames.
+ */
+
 #include <boost/shared_ptr.hpp>
 #include <stdint.h>
 
@@ -36,12 +40,28 @@ class Encoder
 public:
 	Encoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>);
 
+	/** Called to indicate that a processing run is about to begin */
 	virtual void process_begin () = 0;
-	virtual void process_video (boost::shared_ptr<Image>, int) = 0;
-	virtual void process_audio (uint8_t *, int, int) = 0;
+
+	/** Called with a frame of video.
+	 *  @param i Video frame image.
+	 *  @param f Frame number within the film.
+	 */
+	virtual void process_video (boost::shared_ptr<Image> i, int f) = 0;
+
+	/** Called with some audio data.
+	 *  @param d Data.
+	 *  @param c Number of channels in the data.
+	 *  @param s Size of data (in bytes)
+	 */
+	virtual void process_audio (uint8_t* d, int c, int s) = 0;
+
+	/** Called when a processing run has finished */
 	virtual void process_end () = 0;
 
 protected:
+	/** FilmState of the film that we are encoding */
 	boost::shared_ptr<const FilmState> _fs;
+	/** Options */
 	boost::shared_ptr<const Options> _opt;
 };

@@ -17,14 +17,16 @@
 
 */
 
+/** @file src/thumbs_job.cc
+ *  @brief A job to create thumbnails.
+ */
+
 #include <exception>
 #include "thumbs_job.h"
-#include "film.h"
 #include "film_state.h"
 #include "tiff_encoder.h"
 #include "transcoder.h"
 #include "options.h"
-#include "exceptions.h"
 
 using namespace std;
 using namespace boost;

@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/job.h
+ *  @brief A parent class to represent long-running tasks which are run in their own thread.
+ */
+
 #ifndef DVDOMATIC_JOB_H
 #define DVDOMATIC_JOB_H
 
@@ -28,12 +32,15 @@ class Log;
 class FilmState;
 class Options;
 
+/** A parent class to represent long-running tasks which are run in their own thread */
 class Job
 {
 public:
 	Job (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Log *);
 
+	/** @return user-readable name of this job */
 	virtual std::string name () const = 0;
+	/** Run this job */
 	virtual void run () = 0;
 	
 	void start ();
@@ -72,6 +79,8 @@ protected:
 
 	boost::shared_ptr<const FilmState> _fs;
 	boost::shared_ptr<const Options> _opt;
+
+	/** A log that this job can write to */
 	Log* _log;
 
 private:
@@ -96,6 +105,7 @@ private:
 
 	std::list<Level> _stack;
 
+	/** true if this job's progress will always be unknown */
 	bool _progress_unknown;
 };
 

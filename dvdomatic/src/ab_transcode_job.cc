@@ -27,6 +27,10 @@
 
 using namespace std;
 
+/** @param s FilmState to compare (with filters and/or a non-bicubic scaler).
+ *  @param o Options.
+ *  @Param l A log that we can write to.
+ */
 ABTranscodeJob::ABTranscodeJob (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log* l)
 	: Job (s, o, l)
 {
@@ -34,11 +38,6 @@ ABTranscodeJob::ABTranscodeJob (boost::shared_ptr<const FilmState> s, boost::sha
 	_fs_b->filters.clear ();
 	/* This is somewhat arbitrary, but hey ho */
 	_fs_b->scaler = Scaler::get_from_id ("bicubic");
-}
-
-ABTranscodeJob::~ABTranscodeJob ()
-{
-	
 }
 
 string

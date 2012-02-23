@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/image.h
+ *  @brief A set of classes to describe video images.
+ */
+
 #ifndef DVDOMATIC_IMAGE_H
 #define DVDOMATIC_IMAGE_H
 

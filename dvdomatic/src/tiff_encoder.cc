@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/tiff_encoder.h
+ *  @brief An encoder that writes TIFF files (and does nothing with audio).
+ */
+
 #include <stdexcept>
 #include <vector>
 #include <sstream>
@@ -26,8 +30,6 @@
 #include <tiffio.h>
 #include "tiff_encoder.h"
 #include "film.h"
-#include "format.h"
-#include "decoder.h"
 #include "film_state.h"
 #include "options.h"
 #include "exceptions.h"
@@ -36,16 +38,14 @@
 using namespace std;
 using namespace boost;
 
+/** @param s FilmState of the film that we are encoding.
+ *  @param o Options.
+ */
 TIFFEncoder::TIFFEncoder (shared_ptr<const FilmState> s, shared_ptr<const Options> o)
 	: Encoder (s, o)
 {
 	
 }
-
-TIFFEncoder::~TIFFEncoder ()
-{
-	
-}	
 
 void
 TIFFEncoder::process_video (shared_ptr<Image> yuv, int frame)

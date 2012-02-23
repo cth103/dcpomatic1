@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/image.cc
+ *  @brief A set of classes to describe video images.
+ */
+
 #include <sstream>
 #include <iomanip>
 #include <iostream>
@@ -43,10 +47,6 @@ extern "C" {
 #ifdef DEBUG_HASH
 #include <mhash.h>
 #endif
-
-/** @file src/image.cc
- *  @brief A set of classes to describe video images.
- */
 
 using namespace std;
 using namespace boost;

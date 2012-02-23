@@ -17,10 +17,15 @@
 
 */
 
+/** @file src/thumbs_job.h
+ *  @brief A job to create thumbnails.
+ */
+
 #include "job.h"
 
 class FilmState;
 
+/** A job to create thumbnails (single frames of the film spaced out throughout the film) */
 class ThumbsJob : public Job
 {
 public:

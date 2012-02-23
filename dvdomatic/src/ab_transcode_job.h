@@ -17,10 +17,14 @@
 
 */
 
+/** @file src/ab_transcode_job.h
+ *  @brief Job to run a transcoder which produces output for A/B comparison of various settings.
+ */
+
 #include <boost/shared_ptr.hpp>
 #include "job.h"
 
-/** A transcoder which produces output for A/B comparison of various settings.
+/** Job to run a transcoder which produces output for A/B comparison of various settings.
  *  The right half of the frame will be processed using the FilmState supplied;
  *  the left half will be processed using the same state but *without* filters
  *  and with the scaler set to SWS_BICUBIC.
@@ -29,11 +33,13 @@ class ABTranscodeJob : public Job
 {
 public:
 	ABTranscodeJob (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Log *);
-	~ABTranscodeJob ();
 
 	std::string name () const;
 	void run ();
 
 private:
+	/** Copy of our FilmState with filters removed and scaler set back to bicubic;
+	 *  this is the `reference' (left-half-frame) state.
+	 */
 	boost::shared_ptr<FilmState> _fs_b;
 };

@@ -17,12 +17,20 @@
 
 */
 
+/** @file src/job.cc
+ *  @brief A parent class to represent long-running tasks which are run in their own thread.
+ */
+
 #include <boost/thread.hpp>
 #include "job.h"
 
 using namespace std;
 using namespace boost;
 
+/** @param s FilmState for the film that we are operating on.
+ *  @param o Options.
+ *  @param l A log that we can write to.
+ */
 Job::Job (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
 	: _fs (s)
 	, _opt (o)
@@ -31,6 +39,8 @@ Job::Job (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
 	, _start_time (0)
 	, _progress_unknown (false)
 {
+	assert (_log);
+	
 	descend (1);
 }
 
@@ -43,6 +53,7 @@ Job::start ()
 	boost::thread (boost::bind (&Job::run_wrapper, this));
 }
 
+/** A wrapper for the ::run() method to catch exceptions */
 void
 Job::run_wrapper ()
 {
@@ -59,6 +70,7 @@ Job::run_wrapper ()
 	}
 }
 
+/** @return true if the job is running */
 bool
 Job::running () const
 {
@@ -66,6 +78,7 @@ Job::running () const
 	return _state == RUNNING;
 }
 
+/** @return true if the job has finished (either successfully or unsuccessfully) */
 bool
 Job::finished () const
 {
@@ -73,6 +86,7 @@ Job::finished () const
 	return _state == FINISHED_OK || _state == FINISHED_ERROR;
 }
 
+/** @return true if the job has finished successfully */
 bool
 Job::finished_ok () const
 {
@@ -80,6 +94,7 @@ Job::finished_ok () const
 	return _state == FINISHED_OK;
 }
 
+/** @return true if the job has finished unsuccessfully */
 bool
 Job::finished_in_error () const
 {
@@ -87,6 +102,9 @@ Job::finished_in_error () const
 	return _state == FINISHED_ERROR;
 }
 
+/** Set the state of this job.
+ *  @param s New state.
+ */
 void
 Job::set_state (State s)
 {
@@ -105,6 +123,7 @@ Job::emit_finished ()
 	Finished ();
 }
 
+/** @return Time (in seconds) that this job has been running */
 int
 Job::elapsed_time () const
 {
@@ -115,6 +134,9 @@ Job::elapsed_time () const
 	return time (0) - _start_time;
 }
 
+/** Set the progress of the current part of the job.
+ *  @param p Progress (from 0 to 1)
+ */
 void
 Job::set_progress (float p)
 {
@@ -145,6 +167,7 @@ Job::get_overall_progress () const
 	return overall;
 }
 
+/** Ascend up one level in terms of progress reporting; see descend() */
 void
 Job::ascend ()
 {
@@ -185,6 +208,7 @@ Job::set_error (string e)
 	_error = e;
 }
 
+/** Set that this job's progress will always be unknown */
 void
 Job::set_progress_unknown ()
 {
