@@ -18,6 +18,10 @@
 
 */
 
+/** @file src/util.h
+ *  @brief Some utility functions and classes.
+ */
+
 #ifndef DVDOMATIC_UTIL_H
 #define DVDOMATIC_UTIL_H
 

@@ -18,6 +18,10 @@
 
 */
 
+/** @file src/timer.h
+ *  @brief Some timing classes for debugging and profiling.
+ */
+
 #ifndef DVDOMATIC_TIMER_H
 #define DVDOMATIC_TIMER_H
 
@@ -25,6 +29,9 @@
 #include <map>
 #include <sys/time.h>
 
+/** A class to allow timing of a period within the caller.
+ *  On destruction, it will output the time since its construction.
+ */
 class PeriodTimer
 {
 public:
@@ -32,11 +39,19 @@ public:
 	~PeriodTimer ();
 	
 private:
-	
+
+	/** name to use when giving output */
 	std::string _name;
+	/** time that this class was constructed */
 	struct timeval _start;
 };
 
+/** A class to allow measurement of the amount of time a program
+ *  spends in one of a set of states.
+ *  Once constructed, the caller can call set_state() whenever
+ *  its state changes.  When StateTimer is destroyed, it will
+ *  output (to cout) a summary of the time spent in each state.
+ */
 class StateTimer
 {
 public:
@@ -46,9 +61,13 @@ public:
 	void set_state (std::string);
 
 private:
+	/** name to add to the output */
 	std::string _name;
+	/** current state */
 	std::string _state;
+	/** time that _state was entered */
 	double _time;
+	/** time that has been spent in each state so far */
 	std::map<std::string, double> _totals;
 };
 

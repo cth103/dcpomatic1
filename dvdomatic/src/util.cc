@@ -18,6 +18,10 @@
 
 */
 
+/** @file src/util.cc
+ *  @brief Some utility functions and classes.
+ */
+
 #include <sstream>
 #include <iomanip>
 #include <iostream>
@@ -54,7 +58,6 @@ using namespace boost;
  *  @return String of the form H:M:S (where H is hours, M
  *  is minutes and S is seconds).
  */
- 
 string
 seconds_to_hms (int s)
 {
@@ -73,6 +76,9 @@ seconds_to_hms (int s)
 	return hms.str ();
 }
 
+/** @param s Number of seconds.
+ *  @return String containing an approximate description of s (e.g. "about 2 hours")
+ */
 string
 seconds_to_approximate_hms (int s)
 {
@@ -106,6 +112,9 @@ seconds_to_approximate_hms (int s)
 	return ap.str ();
 }
 
+/** @param t Label text.
+ *  @return GTK label containing t, left-aligned (passed through Gtk::manage)
+ */
 Gtk::Label &
 left_aligned_label (string t)
 {
@@ -114,6 +123,9 @@ left_aligned_label (string t)
 	return *l;
 }
 
+/** @param l Mangled C++ identifier.
+ *  @return Demangled version.
+ */
 static string
 demangle (string l)
 {
@@ -148,6 +160,10 @@ demangle (string l)
 	return l;
 }
 
+/** Write a stacktrace to an ostream.
+ *  @param out Stream to write to.
+ *  @param levels Number of levels to go up the call stack.
+ */
 void
 stacktrace (ostream& out, int levels)
 {
@@ -168,6 +184,9 @@ stacktrace (ostream& out, int levels)
 	}
 }
 
+/** @param s Sample format.
+ *  @return String representation.
+ */
 string
 audio_sample_format_to_string (AVSampleFormat s)
 {
@@ -183,6 +202,9 @@ audio_sample_format_to_string (AVSampleFormat s)
 	return "Unknown";
 }
 
+/** @param s String representation of a sample format, as returned from audio_sample_format_to_string().
+ *  @return Sample format.
+ */
 AVSampleFormat
 audio_sample_format_from_string (string s)
 {

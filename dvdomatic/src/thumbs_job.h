@@ -29,7 +29,7 @@ class FilmState;
 class ThumbsJob : public Job
 {
 public:
-	ThumbsJob (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Log *);
+	ThumbsJob (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log* l);
 	std::string name () const;
 	void run ();
 };

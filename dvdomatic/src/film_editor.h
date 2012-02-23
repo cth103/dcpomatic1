@@ -17,9 +17,16 @@
 
 */
 
+/** @file src/film_editor.h
+ *  @brief A GTK widget to edit a film's metadata, and perform various functions.
+ */
+
 #include <gtkmm.h>
 #include "film.h"
 
+/** Class generating a GTK widget to edit a film's metadata, and perform various
+ *  functions.
+ */
 class FilmEditor
 {
 public:
@@ -56,34 +63,61 @@ private:
 
 	void set_things_sensitive (bool);
 
+	/** The film we are editing */
 	Film* _film;
+	/** The overall VBox containing our widget */
 	Gtk::VBox _vbox;
+	/** The Film's directory */
 	Gtk::Label _directory;
+	/** The Film's name */
 	Gtk::Entry _name;
+	/** The Film's format */
 	Gtk::ComboBoxText _format;
+	/** The Film's content file */
 	Gtk::FileChooserButton _content;
+	/** Button to copy content from a DVD */
 	Gtk::Button _copy_from_dvd_button;
+	/** The Film's left crop */
 	Gtk::SpinButton _left_crop;
+	/** The Film's right crop */
 	Gtk::SpinButton _right_crop;
+	/** The Film's top crop */
 	Gtk::SpinButton _top_crop;
+	/** The Film's bottom crop */
 	Gtk::SpinButton _bottom_crop;
+	/** Currently-applied filters */
 	Gtk::Label _filters;
+	/** Button to open the filters dialogue */
 	Gtk::Button _filters_button;
+	/** The Film's scaler */
 	Gtk::ComboBoxText _scaler;
+	/** The Film's DCP long name */
 	Gtk::Entry _dcp_long_name;
+	/** Button to choose whether to guess the contents of _dcp_long_name */
 	Gtk::CheckButton _guess_dcp_long_name;
+	/** The Film's DCP content type */
 	Gtk::ComboBoxText _dcp_content_type;
+	/** The Film's original size */
 	Gtk::Label _original_size;
+	/** The Film's length */
 	Gtk::Label _length;
+	/** The Film's frames per second */
 	Gtk::Label _frames_per_second;
+	/** The Film's audio channels */
 	Gtk::Label _audio_channels;
+	/** The Film's audio sample rate */
 	Gtk::Label _audio_sample_rate;
 
+	/** Button to start an examination of the Film's content */
 	Gtk::Button _examine_content_button;
-	
+	/** Button to start making a DCP */
 	Gtk::Button _make_dcp_button;
+	/** Selector to make a DCP of the whole Film */
 	Gtk::RadioButton _dcp_whole;
+	/** Selector to make a DCP for part of the Film */
 	Gtk::RadioButton _dcp_for;
+	/** Number of frames to make the DCP for if _dcp_for is selected */
 	Gtk::SpinButton _dcp_for_frames;
+	/** Selector to generate an A/B comparison DCP */
 	Gtk::CheckButton _dcp_ab;
 };

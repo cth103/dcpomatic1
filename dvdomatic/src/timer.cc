@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/timer.cc
+ *  @brief Some timing classes for debugging and profiling.
+ */
+
 #include <iostream>
 #include <sys/time.h>
 #include "timer.h"
@@ -24,12 +28,14 @@
 
 using namespace std;
 
+/** @param n Name to use when giving output */
 PeriodTimer::PeriodTimer (string n)
 	: _name (n)
 {
 	gettimeofday (&_start, 0);
 }
 
+/** Destroy PeriodTimer and output the time elapsed since its construction */
 PeriodTimer::~PeriodTimer ()
 {
 	struct timeval stop;
@@ -37,7 +43,9 @@ PeriodTimer::~PeriodTimer ()
 	cout << "T: " << _name << ": " << (seconds (stop) - seconds (_start)) << "\n";
 }
 
-	
+/** @param n Name to use when giving output.
+ *  @param s Initial state.
+ */
 StateTimer::StateTimer (string n, string s)
 	: _name (n)
 {
@@ -47,6 +55,7 @@ StateTimer::StateTimer (string n, string s)
 	_state = s;
 }
 
+/** @param s New state that the caller is in */
 void
 StateTimer::set_state (string s)
 {
@@ -63,6 +72,7 @@ StateTimer::set_state (string s)
 	_state = s;
 }
 
+/** Destroy StateTimer and generate a summary of the state timings on cout */
 StateTimer::~StateTimer ()
 {
 	if (_state.empty ()) {

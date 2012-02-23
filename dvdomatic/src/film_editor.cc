@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/film_editor.cc
+ *  @brief A GTK widget to edit a film's metadata, and perform various functions.
+ */
+
 #include <iostream>
 #include <gtkmm.h>
 #include <boost/thread.hpp>
@@ -39,6 +43,7 @@ using namespace std;
 using namespace boost;
 using namespace Gtk;
 
+/** @param f Film to edit */
 FilmEditor::FilmEditor (Film* f)
 	: _film (f)
 	, _copy_from_dvd_button ("Copy from DVD")
@@ -202,12 +207,14 @@ FilmEditor::FilmEditor (Film* f)
 	
 }
 
+/** @return Our main widget, which contains everything else */
 Widget&
 FilmEditor::get_widget ()
 {
 	return _vbox;
 }
 
+/** Called when the left crop widget has been changed */
 void
 FilmEditor::left_crop_changed ()
 {
@@ -216,6 +223,7 @@ FilmEditor::left_crop_changed ()
 	}
 }
 
+/** Called when the right crop widget has been changed */
 void
 FilmEditor::right_crop_changed ()
 {
@@ -224,6 +232,7 @@ FilmEditor::right_crop_changed ()
 	}
 }
 
+/** Called when the top crop widget has been changed */
 void
 FilmEditor::top_crop_changed ()
 {
@@ -232,6 +241,7 @@ FilmEditor::top_crop_changed ()
 	}
 }
 
+/** Called when the bottom crop value has been changed */
 void
 FilmEditor::bottom_crop_changed ()
 {
@@ -240,6 +250,7 @@ FilmEditor::bottom_crop_changed ()
 	}
 }
 
+/** Called when the content filename has been changed */
 void
 FilmEditor::content_changed ()
 {
@@ -257,6 +268,7 @@ FilmEditor::content_changed ()
 	}
 }
 
+/** Called when the number of DCP frames has been changed */
 void
 FilmEditor::dcp_frames_changed ()
 {
@@ -271,6 +283,7 @@ FilmEditor::dcp_frames_changed ()
 	}
 }
 
+/** Called when the DCP A/B switch has been toggled */
 void
 FilmEditor::dcp_ab_toggled ()
 {
@@ -279,6 +292,7 @@ FilmEditor::dcp_ab_toggled ()
 	}
 }
 
+/** Called when the name widget has been changed */
 void
 FilmEditor::name_changed ()
 {
@@ -287,6 +301,10 @@ FilmEditor::name_changed ()
 	}
 }
 
+/** Called when the metadata stored in the Film object has changed;
+ *  so that we can update the GUI.
+ *  @param p Property of the Film that has changed.
+ */
 void
 FilmEditor::film_changed (Film::Property p)
 {
@@ -376,6 +394,7 @@ FilmEditor::film_changed (Film::Property p)
 	}
 }
 
+/** Called when the format widget has been changed */
 void
 FilmEditor::format_changed ()
 {
@@ -384,6 +403,7 @@ FilmEditor::format_changed ()
 	}
 }
 
+/** Called when the `Make DCP' button has been clicked */
 void
 FilmEditor::make_dcp_clicked ()
 {
@@ -400,6 +420,7 @@ FilmEditor::make_dcp_clicked ()
 	}
 }
 
+/** Called when the DCP content type widget has been changed */
 void
 FilmEditor::dcp_content_type_changed ()
 {
@@ -408,6 +429,7 @@ FilmEditor::dcp_content_type_changed ()
 	}
 }
 
+/** Called when the DCP long name widget has been changed */
 void
 FilmEditor::dcp_long_name_changed ()
 {
@@ -416,6 +438,7 @@ FilmEditor::dcp_long_name_changed ()
 	}
 }
 
+/** Sets the Film that we are editing */
 void
 FilmEditor::set_film (Film* f)
 {
@@ -454,6 +477,9 @@ FilmEditor::set_film (Film* f)
 	film_changed (Film::FilmScaler);
 }
 
+/** Updates the sensitivity of lots of widgets to a given value.
+ *  @param s true to make sensitive, false to make insensitive.
+ */
 void
 FilmEditor::set_things_sensitive (bool s)
 {
@@ -477,6 +503,7 @@ FilmEditor::set_things_sensitive (bool s)
 	_dcp_ab.set_sensitive (s);
 }
 
+/** Called when the `Edit filters' button has been clicked */
 void
 FilmEditor::edit_filters_clicked ()
 {
@@ -484,6 +511,7 @@ FilmEditor::edit_filters_clicked ()
 	d.run ();
 }
 
+/** Called when the selector to guess the DCP long name has been toggled */
 void
 FilmEditor::guess_dcp_long_name_toggled ()
 {
@@ -494,6 +522,7 @@ FilmEditor::guess_dcp_long_name_toggled ()
 	_film->set_guess_dcp_long_name (_guess_dcp_long_name.get_active ());
 }
 
+/** Called when the `Copy from DVD' button has been clicked */
 void
 FilmEditor::copy_from_dvd_clicked ()
 {
@@ -502,12 +531,14 @@ FilmEditor::copy_from_dvd_clicked ()
 	JobManager::instance()->add (j);
 }
 
+/** Called when the `Examine content' button has been clicked */
 void
 FilmEditor::examine_content_clicked ()
 {
 	_film->examine_content ();
 }
 
+/** Called when the scaler widget has been changed */
 void
 FilmEditor::scaler_changed ()
 {
