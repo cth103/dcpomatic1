@@ -53,13 +53,16 @@ using namespace std;
 using namespace boost;
 
 /** Construct a DCP video frame */
-DCPVideoFrame::DCPVideoFrame (shared_ptr<Image> yuv, Size out, Scaler const * s, int f, int fps, string pp)
+DCPVideoFrame::DCPVideoFrame (
+	shared_ptr<Image> yuv, Size out, Scaler const * s, int f, int fps, string pp, int clut, int bw)
 	: _yuv (yuv)
 	, _out_size (out)
 	, _scaler (s)
 	, _frame (f)
 	, _frames_per_second (fps)
 	, _post_process (pp)
+	, _colour_lut_index (clut)
+	, _j2k_bandwidth (bw)
 	, _image (0)
 	, _parameters (0)
 	, _cinfo (0)
@@ -140,19 +143,17 @@ DCPVideoFrame::encode_locally ()
 
 	/* Copy our RGB into the openjpeg container, converting to XYZ in the process */
 
-	int const lut_index = Config::instance()->colour_lut_index ();
-
 	uint8_t* p = prepared->data()[0];
 	for (int i = 0; i < size; ++i) {
 		/* In gamma LUT (converting 8-bit input to 12-bit) */
-		s.r = lut_in[lut_index][*p++ << 4];
-		s.g = lut_in[lut_index][*p++ << 4];
-		s.b = lut_in[lut_index][*p++ << 4];
+		s.r = lut_in[_colour_lut_index][*p++ << 4];
+		s.g = lut_in[_colour_lut_index][*p++ << 4];
+		s.b = lut_in[_colour_lut_index][*p++ << 4];
 
 		/* RGB to XYZ Matrix */
-		d.x = ((s.r * color_matrix[lut_index][0][0]) + (s.g * color_matrix[lut_index][0][1]) + (s.b * color_matrix[lut_index][0][2]));
-		d.y = ((s.r * color_matrix[lut_index][1][0]) + (s.g * color_matrix[lut_index][1][1]) + (s.b * color_matrix[lut_index][1][2]));
-		d.z = ((s.r * color_matrix[lut_index][2][0]) + (s.g * color_matrix[lut_index][2][1]) + (s.b * color_matrix[lut_index][2][2]));
+		d.x = ((s.r * color_matrix[_colour_lut_index][0][0]) + (s.g * color_matrix[_colour_lut_index][0][1]) + (s.b * color_matrix[_colour_lut_index][0][2]));
+		d.y = ((s.r * color_matrix[_colour_lut_index][1][0]) + (s.g * color_matrix[_colour_lut_index][1][1]) + (s.b * color_matrix[_colour_lut_index][1][2]));
+		d.z = ((s.r * color_matrix[_colour_lut_index][2][0]) + (s.g * color_matrix[_colour_lut_index][2][1]) + (s.b * color_matrix[_colour_lut_index][2][2]));
 											     
 		/* DCI companding */
 		d.x = d.x * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
@@ -165,10 +166,8 @@ DCPVideoFrame::encode_locally ()
 		_image->comps[2].data[i] = lut_out[LO_DCI][(int) d.z];
 	}
 
-	int const bw = Config::instance()->j2k_bandwidth ();
-
 	/* Set the max image and component sizes based on frame_rate */
-	int const max_cs_len = ((float) bw) / 8 / _frames_per_second;
+	int const max_cs_len = ((float) _j2k_bandwidth) / 8 / _frames_per_second;
 	int const max_comp_size = max_cs_len / 1.25;
 
 	/* Set encoding parameters to default values */
@@ -286,7 +285,9 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 	  << _scaler->id () << " "
 	  << _frame << " "
 	  << _frames_per_second << " "
-	  << (_post_process.empty() ? "none" : _post_process) << " ";
+	  << (_post_process.empty() ? "none" : _post_process) << " "
+	  << Config::instance()->colour_lut_index () << " "
+	  << Config::instance()->j2k_bandwidth () << " ";
 
 	for (int i = 0; i < _yuv->components(); ++i) {
 		s << _yuv->line_size()[i] << " ";

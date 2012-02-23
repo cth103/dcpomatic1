@@ -73,52 +73,58 @@ worker_thread ()
 		reader.read_indefinite ((uint8_t *) buffer, sizeof (buffer));
 		reader.consume (strlen (buffer) + 1);
 
-		string s (buffer);
-		vector<string> b;
-		split (b, s, is_any_of (" "));
+		stringstream s (buffer);
 
-		if (b.size() < 1 || b[0] != "encode") {
+		string command;
+		s >> command;
+		if (command != "encode") {
 			close (fd);
 			continue;
 		}
 		
-		int n = 1;
-		Size const in_size (atoi (b[n].c_str()), atoi (b[n + 1].c_str ()));
-		n += 2;
-		PixelFormat const pixel_format = (PixelFormat) atoi (b[n].c_str());
-		++n;
-		Size const out_size (atoi (b[n].c_str()), atoi (b[n + 1].c_str ()));
-		n += 2;
-		Scaler const * scaler = Scaler::get_from_id (b[n]);
-		if (scaler == 0) {
-			throw NetworkError ("bad scalar specified");
+		Size in_size;
+		int pixel_format_int;
+		Size out_size;
+		string scaler_id;
+		int frame;
+		float frames_per_second;
+		string post_process;
+		int colour_lut_index;
+		int j2k_bandwidth;
+
+		s >> in_size.width >> in_size.height
+		  >> pixel_format_int
+		  >> out_size.width >> out_size.height
+		  >> scaler_id
+		  >> frame
+		  >> frames_per_second
+		  >> post_process
+		  >> colour_lut_index
+		  >> j2k_bandwidth;
+
+		PixelFormat pixel_format = (PixelFormat) pixel_format_int;
+		Scaler const * scaler = Scaler::get_from_id (scaler_id);
+		if (post_process == "none") {
+			post_process = "";
 		}
-		++n;
-		int const frame = atoi (b[n].c_str ());
-		++n;
-		int const frames_per_second = atoi (b[n].c_str ());
-		++n;
-		string const post_process = b[n] == "none" ? "" : b[n];
-		++n;
-		
+			
 		shared_ptr<SimpleImage> image (new SimpleImage (pixel_format, in_size));
 		
 		for (int i = 0; i < image->components(); ++i) {
-			image->set_line_size (i, atoi (b[n].c_str ()));
-			++n;
+			int line_size;
+			s >> line_size;
+			image->set_line_size (i, line_size);
 		}
 		
 		for (int i = 0; i < image->components(); ++i) {
 			reader.read_definite_and_consume (image->data()[i], image->line_size()[i] * image->lines(i));
 		}
 
-		cout << "==== Frame " << frame << "\n";
-
 #ifdef DEBUG_HASH
 		image->hash ("Image for encoding (as received by server)");
 #endif		
 		
-		DCPVideoFrame dcp_video_frame (image, out_size, scaler, frame, frames_per_second, post_process);
+		DCPVideoFrame dcp_video_frame (image, out_size, scaler, frame, frames_per_second, post_process, colour_lut_index, j2k_bandwidth);
 		dcp_video_frame.encode_locally ();
 		dcp_video_frame.encoded()->send (fd);
 		close (fd);
@@ -130,7 +136,7 @@ worker_thread ()
 
 		struct timeval end;
 		gettimeofday (&end, 0);
-		cout << "Encoded frame in " << (seconds (end) - seconds (start)) << "\n";
+		cout << "Encoded frame " << frame << " in " << (seconds (end) - seconds (start)) << "\n";
 		
 		worker_condition.notify_all ();
 	}

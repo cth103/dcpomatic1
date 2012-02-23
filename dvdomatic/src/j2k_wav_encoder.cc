@@ -90,7 +90,9 @@ J2KWAVEncoder::process_video (shared_ptr<Image> yuv, int frame)
 	if (!boost::filesystem::exists (_opt->frame_out_path (frame, false))) {
 		pair<string, string> const s = Filter::ffmpeg_strings (_fs->filters);
 		_queue.push_back (boost::shared_ptr<DCPVideoFrame> (
-					  new DCPVideoFrame (yuv, _opt->out_size, _fs->scaler, frame, _fs->frames_per_second, s.second)
+					  new DCPVideoFrame (
+						  yuv, _opt->out_size, _fs->scaler, frame, _fs->frames_per_second, s.second,
+						  Config::instance()->colour_lut_index (), Config::instance()->j2k_bandwidth ())
 					  ));
 		
 		_worker_condition.notify_all ();
