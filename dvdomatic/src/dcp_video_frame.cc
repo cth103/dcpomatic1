@@ -149,6 +149,7 @@ DCPVideoFrame::encode_locally ()
 	
 	uint8_t* p = prepared->data()[0];
 	md5_data ("Before RGB -> XYZ", p, prepared->line_size()[0] * prepared->size().width);
+	bool arse = false;
 	for (int i = 0; i < size; ++i) {
 		/* In gamma LUT (converting 8-bit input to 12-bit) */
 		s.r = lut_in[lut_index][*p++ << 4];
@@ -168,6 +169,11 @@ DCPVideoFrame::encode_locally ()
 		d.x = d.x * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
 		d.y = d.y * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
 		d.z = d.z * DCI_COEFFICENT * (DCI_LUT_SIZE - 1);
+
+		if (!arse) {
+			cout << "got " << d.x << " by " << DCI_COEFFICENT << " and " << (DCI_LUT_SIZE - 1) << "\n";
+			arse = true;
+		}
 
 		wankballs[i] = d.x;
 		
