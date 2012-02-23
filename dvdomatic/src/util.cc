@@ -313,7 +313,7 @@ SocketReader::SocketReader (int fd)
 
 /** Mark some data as being `consumed', so that it will not be returned
  *  as data again.
- *  @param Amount of data to consume, in bytes.
+ *  @param size Amount of data to consume, in bytes.
  */
 void
 SocketReader::consume (int size)

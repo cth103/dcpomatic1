@@ -17,25 +17,33 @@
 
 */
 
+/** @file src/scaler.h
+ *  @brief A class to describe one of FFmpeg's software scalers.
+ */
+
 #ifndef DVDOMATIC_SCALER_H
 #define DVDOMATIC_SCALER_H
 
 #include <string>
 #include <vector>
 
+/** Class to describe one of FFmpeg's software scalers */
 class Scaler
 {
 public:
 	Scaler (int, std::string, std::string);
 
+	/** @return id used for calls to FFmpeg's pp_postprocess */
 	int ffmpeg_id () const {
 		return _ffmpeg_id;
 	}
 
+	/** @return id for our use */
 	std::string id () const {
 		return _id;
 	}
-	
+
+	/** @return user-visible name for this scaler */
 	std::string name () const {
 		return _name;
 	}
@@ -48,10 +56,14 @@ public:
 
 private:
 
+	/** id used for calls to FFmpeg's pp_postprocess */
 	int _ffmpeg_id;
+	/** id for our use */
 	std::string _id;
+	/** user-visible name for this scaler */
 	std::string _name;
 
+	/** sll available scalers */
 	static std::vector<Scaler const *> _scalers;
 };
 

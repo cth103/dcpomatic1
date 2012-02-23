@@ -35,7 +35,7 @@
 class PeriodTimer
 {
 public:
-	PeriodTimer (std::string);
+	PeriodTimer (std::string n);
 	~PeriodTimer ();
 	
 private:
@@ -55,10 +55,10 @@ private:
 class StateTimer
 {
 public:
-	StateTimer (std::string, std::string);
+	StateTimer (std::string n, std::string s);
 	~StateTimer ();
 
-	void set_state (std::string);
+	void set_state (std::string s);
 
 private:
 	/** name to add to the output */

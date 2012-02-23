@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/scaler.cc
+ *  @brief A class to describe one of FFmpeg's software scalers.
+ */
+
 #include <iostream>
 #include <cassert>
 extern "C" {
@@ -28,6 +32,10 @@ using namespace std;
 
 vector<Scaler const *> Scaler::_scalers;
 
+/** @param f FFmpeg id.
+ *  @param i Our id.
+ *  @param n User-visible name.
+ */
 Scaler::Scaler (int f, string i, string n)
 	: _ffmpeg_id (f)
 	, _id (i)
@@ -36,12 +44,16 @@ Scaler::Scaler (int f, string i, string n)
 
 }
 
+/** @return All available scalers */
 vector<Scaler const *>
 Scaler::get_all ()
 {
 	return _scalers;
 }
 
+/** Set up the static _scalers vector; must be called before get_from_*
+ *  methods are used.
+ */
 void
 Scaler::setup_scalers ()
 {
@@ -56,6 +68,9 @@ Scaler::setup_scalers ()
 	_scalers.push_back (new Scaler (SWS_FAST_BILINEAR, "fastbilinear", "Fast Bilinear"));
 }
 
+/** @param One of our ids.
+ *  @return Corresponding scaler, or 0.
+ */
 Scaler const *
 Scaler::get_from_id (string id)
 {
@@ -71,6 +86,9 @@ Scaler::get_from_id (string id)
 	return *i;
 }
 
+/** @param A scaler from our static list.
+ *  @return Index of the scaler with the list, or 0.
+ */
 int
 Scaler::get_as_index (Scaler const * s)
 {
@@ -86,6 +104,9 @@ Scaler::get_as_index (Scaler const * s)
 	return i;
 }
 
+/** @param An index returned from get_as_index().
+ *  @return Corresponding scaler.
+ */
 Scaler const *
 Scaler::get_from_index (int i)
 {
