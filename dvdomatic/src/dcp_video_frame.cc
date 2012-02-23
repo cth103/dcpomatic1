@@ -151,6 +151,13 @@ DCPVideoFrame::encode_locally ()
 	
 	uint8_t* p = prepared->data()[0];
 	md5_data ("Before RGB -> XYZ", p, prepared->line_size()[0] * prepared->size().width);
+
+	for (x = 0; x < 3: ++x) {
+		for (y = 0; y < 3: ++y) {
+			cout << "CM " << x << " " << y << " z " << color_matrix[lut_index][x][y] << "\n";
+		}
+	}
+	
 	bool arse = false;
 	for (int i = 0; i < size; ++i) {
 		/* In gamma LUT (converting 8-bit input to 12-bit) */
