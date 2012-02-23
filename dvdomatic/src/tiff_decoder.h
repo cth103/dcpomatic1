@@ -37,7 +37,6 @@ class TIFFDecoder : public Decoder
 {
 public:
 	TIFFDecoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *, Log *, bool, bool);
-	~TIFFDecoder ();
 
 	/* Methods to query our input video */
 	int length_in_frames () const;

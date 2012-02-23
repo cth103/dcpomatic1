@@ -62,7 +62,6 @@ FFmpegDecoder::FFmpegDecoder (boost::shared_ptr<const FilmState> s, boost::share
 	, _buffer_sink_context (0)
 	, _audio_codec_context (0)
 	, _audio_codec (0)
-	, _video_frame (0)
 	, _post_filter_width (0)
 	, _post_filter_height (0)
 {

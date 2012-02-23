@@ -65,11 +65,6 @@ private:
 	void setup_video_filters ();
 	void setup_audio ();
 
-	boost::shared_ptr<const FilmState> _fs;
-	boost::shared_ptr<const Options> _opt;
-	Job* _job;
-	Log* _log;
-	
 	AVFormatContext* _format_context;
 	int _video_stream;
 	int _audio_stream;
@@ -84,8 +79,6 @@ private:
 	AVCodec* _audio_codec;
 
 	AVPacket _packet;
-
-	int _video_frame;
 
 	int _post_filter_width;
 	int _post_filter_height;
