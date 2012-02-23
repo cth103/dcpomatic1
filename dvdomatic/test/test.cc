@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE (format_test)
 {
 	Format::setup_formats ();
 	
-	Format* f = Format::get_from_nickname ("Flat");
+	Format const * f = Format::get_from_nickname ("Flat");
 	BOOST_CHECK (f);
 	BOOST_CHECK_EQUAL (f->ratio_as_integer(), 185);
 	

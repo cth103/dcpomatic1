@@ -17,8 +17,13 @@
 
 */
 
+/** @file src/make_dcp_job.h
+ *  @brief A job to create DCPs.
+ */
+
 #include "opendcp_job.h"
 
+/** A job to create DCPs */
 class MakeDCPJob : public OpenDCPJob
 {
 public:

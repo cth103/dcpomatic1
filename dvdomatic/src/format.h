@@ -17,56 +17,78 @@
 
 */
 
+/** @file src/format.h
+ *  @brief Class to describe a format (aspect ratio) that a Film should
+ *  be shown in.
+ */
+
 #include <string>
 #include <vector>
 #include "util.h"
 
+/** Class to describe a format (aspect ratio) that a Film should
+ *  be shown in.
+ */
 class Format
 {
 public:
 	Format (int, Size, std::string, std::string);
 
+	/** @return the aspect ratio multiplied by 100
+	 *  (e.g. 239 for Cinemascope 2.39:1)
+	 */
 	int ratio_as_integer () const {
 		return _ratio;
 	}
 
+	/** @return the ratio as a floating point number */
 	float ratio_as_float () const {
 		return _ratio / 100.0;
 	}
 
+	/** @return size in pixels of the DCI specified size for this ratio */
 	Size dci_size () const {
 		return _dci_size;
 	}
 
+	/** @return Full name to present to the user */
 	std::string name () const;
 
+	/** @return Nickname (e.g. Flat, Scope) */
 	std::string nickname () const {
 		return _nickname;
 	}
 
+	/** @return Text to use for this format as part of a DCP name
+	 *  (e.g. F, S)
+	 */
 	std::string dcp_name () const {
 		return _dcp_name;
 	}
 
 	std::string get_as_metadata () const;
 
-	static Format * get_from_ratio (int);
-	static Format * get_from_nickname (std::string);
-	static Format * get_from_metadata (std::string);
-	static Format * get_from_index (int);
+	static Format const * get_from_ratio (int);
+	static Format const * get_from_nickname (std::string);
+	static Format const * get_from_metadata (std::string);
+	static Format const * get_from_index (int);
 	static int get_as_index (Format const *);
-	static std::vector<Format*> get_all ();
+	static std::vector<Format const *> get_all ();
 	static void setup_formats ();
 	
 private:
 
 	/** Ratio expressed as the actual ratio multiplied by 100 */
 	int _ratio;
+	/** size in pixels of the DCI specified size for this ratio */
 	Size _dci_size;
+	/** nickname (e.g. Flat, Scope) */
 	std::string _nickname;
+	/** text to use for this format as part of a DCP name (e.g. F, S) */
 	std::string _dcp_name;
 
-	static std::vector<Format *> _formats;
+	/** all available formats */
+	static std::vector<Format const *> _formats;
 };
 
 	

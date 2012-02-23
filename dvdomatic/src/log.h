@@ -17,9 +17,14 @@
 
 */
 
+/** @file src/log.h
+ *  @brief A very simple logging class.
+ */
+
 #include <string>
 #include <boost/thread/mutex.hpp>
 
+/** A very simple logging class */
 class Log
 {
 public:
@@ -28,6 +33,8 @@ public:
 	void log (std::string);
 
 private:
+	/** mutex to prevent simultaneous writes to the file */
 	boost::mutex _mutex;
+	/** filename to write to */
 	std::string _file;
 };

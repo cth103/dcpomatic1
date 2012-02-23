@@ -17,18 +17,24 @@
 
 */
 
+/** @file src/log.cc
+ *  @brief A very simple logging class.
+ */
+
 #include <fstream>
 #include <time.h>
 #include "log.h"
 
 using namespace std;
 
+/** @param f Filename to write log to */
 Log::Log (string f)
 	: _file (f)
 {
 
 }
 
+/** @param n String to log */
 void
 Log::log (string m)
 {

@@ -17,6 +17,11 @@
 
 */
 
+/** @file src/server.cc
+ *  @brief Class to describe a server to which we can send
+ *  encoding work.
+ */
+
 #include <string>
 #include <vector>
 #include <sstream>
@@ -26,6 +31,10 @@
 using namespace std;
 using namespace boost;
 
+/** Create a server from a string of metadata returned from get_as_metadata().
+ *  @param v Metadata.
+ *  @return Server, or 0.
+ */
 Server *
 Server::create_from_metadata (string v)
 {
@@ -39,6 +48,7 @@ Server::create_from_metadata (string v)
 	return new Server (b[0], atoi (b[1].c_str ()));
 }
 
+/** @return Description of this server as text */
 string
 Server::get_as_metadata () const
 {

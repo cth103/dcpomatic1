@@ -120,7 +120,7 @@ public:
 	void set_bottom_crop (int);
 	void set_left_crop (int);
 	void set_right_crop (int);
-	void set_format (Format *);
+	void set_format (Format const *);
 	void set_dcp_long_name (std::string);
 	void set_guess_dcp_long_name (bool);
 	void set_dcp_content_type (ContentType const *);

@@ -70,8 +70,8 @@ FilmEditor::FilmEditor (Film* f)
 	_bottom_crop.set_increments (1, 16);
 	_filters.set_alignment (0, 0.5);
 
-	vector<Format*> fmt = Format::get_all ();
-	for (vector<Format*>::iterator i = fmt.begin(); i != fmt.end(); ++i) {
+	vector<Format const *> fmt = Format::get_all ();
+	for (vector<Format const *>::iterator i = fmt.begin(); i != fmt.end(); ++i) {
 		_format.append_text ((*i)->name ());
 	}
 

@@ -17,6 +17,11 @@
 
 */
 
+/** @file src/format.cc
+ *  @brief Class to describe a format (aspect ratio) that a Film should
+ *  be shown in.
+ */
+
 #include <sstream>
 #include <cstdlib>
 #include <cassert>
@@ -26,8 +31,13 @@
 
 using namespace std;
 
-vector<Format *> Format::_formats;
+vector<Format const *> Format::_formats;
 
+/** @param r Ratio multiplied by 100 (e.g. 185)
+ *  @param dci Size (in pixels) of the DCI specification (e.g. 1998x1080)
+ *  @param n Nick name (e.g. Flat)
+ *  @param d Text to use as part of a DCP name (e.g. F)
+ */
 Format::Format (int r, Size dci, string n, string d)
 	: _ratio (r)
 	, _dci_size (dci)
@@ -37,6 +47,7 @@ Format::Format (int r, Size dci, string n, string d)
 
 }
 
+/** @return A name to be presented to the user */
 string
 Format::name () const
 {
@@ -54,6 +65,7 @@ Format::name () const
 	return s.str ();
 }
 
+/** @return Identifier for this format as metadata for a Film's metadata file */
 string
 Format::get_as_metadata () const
 {
@@ -62,6 +74,7 @@ Format::get_as_metadata () const
 	return s.str ();
 }
 
+/** Fill our _formats vector with all available formats */
 void
 Format::setup_formats ()
 {
@@ -71,10 +84,13 @@ Format::setup_formats ()
 	_formats.push_back (new Format (185, Size (200, 100), "Test", "F"));
 }
 
-Format *
+/** @param r Ratio multiplied by 100.
+ *  @return Matching Format, or 0.
+ */
+Format const *
 Format::get_from_ratio (int r)
 {
-	vector<Format*>::iterator i = _formats.begin ();
+	vector<Format const *>::iterator i = _formats.begin ();
 	while (i != _formats.end() && (*i)->ratio_as_integer() != r) {
 		++i;
 	}
@@ -86,10 +102,13 @@ Format::get_from_ratio (int r)
 	return *i;
 }
 
-Format *
+/** @param n Nickname.
+ *  @return Matching Format, or 0.
+ */
+Format const *
 Format::get_from_nickname (string n)
 {
-	vector<Format*>::iterator i = _formats.begin ();
+	vector<Format const *>::iterator i = _formats.begin ();
 	while (i != _formats.end() && (*i)->nickname() != n) {
 		++i;
 	}
@@ -101,12 +120,18 @@ Format::get_from_nickname (string n)
 	return *i;
 }
 
-Format *
+/** @param m Metadata, as returned from get_as_metadata().
+ *  @return Matching Format, or 0.
+ */
+Format const *
 Format::get_from_metadata (string m)
 {
 	return get_from_ratio (atoi (m.c_str ()));
 }
 
+/** @param f A Format.
+ *  @return Index of f within our static list, or -1.
+ */
 int
 Format::get_as_index (Format const * f)
 {
@@ -122,14 +147,18 @@ Format::get_as_index (Format const * f)
 	return i;
 }
 
-Format *
+/** @param i An index returned from get_as_index().
+ *  @return Corresponding Format.
+ */
+Format const *
 Format::get_from_index (int i)
 {
 	assert (i <= int(_formats.size ()));
 	return _formats[i];
 }
 
-vector<Format*>
+/** @return All available formats */
+vector<Format const *>
 Format::get_all ()
 {
 	return _formats;

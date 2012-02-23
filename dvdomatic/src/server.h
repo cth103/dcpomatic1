@@ -17,8 +17,16 @@
 
 */
 
+/** @file src/server.h
+ *  @brief Class to describe a server to which we can send
+ *  encoding work.
+ */
+
 #include <string>
 
+/** Class to describe a server to which we can send
+ *  encoding work.
+ */
 class Server
 {
 public:
@@ -27,10 +35,12 @@ public:
 		, _threads (t)
 	{}
 
+	/** @return server's host name */
 	std::string host_name () const {
 		return _host_name;
 	}
 
+	/** @return number of threads to use on the server */
 	int threads () const {
 		return _threads;
 	}
@@ -40,6 +50,8 @@ public:
 	static Server * create_from_metadata (std::string);
 
 private:
+	/** server's host name */
 	std::string _host_name;
+	/** number of threads to use on the server */
 	int _threads;
 };

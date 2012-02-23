@@ -206,7 +206,7 @@ Film::set_content (string c)
 
 /** Set the format that this Film should be shown in */
 void
-Film::set_format (Format* f)
+Film::set_format (Format const * f)
 {
 	_state.format = f;
 	signal_changed (FilmFormat);

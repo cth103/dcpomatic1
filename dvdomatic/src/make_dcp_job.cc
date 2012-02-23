@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/make_dcp_job.cc
+ *  @brief A job to create DCPs.
+ */
+
 #include <boost/filesystem.hpp>
 extern "C" {
 #include <libavutil/pixdesc.h>
@@ -29,6 +33,10 @@ extern "C" {
 using namespace std;
 using namespace boost;
 
+/** @param s FilmState of the Film we are making the DCP for.
+ *  @param o Options.
+ *  @param l Log.
+ */
 MakeDCPJob::MakeDCPJob (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
 	: OpenDCPJob (s, o, l)
 {

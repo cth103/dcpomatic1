@@ -87,7 +87,7 @@ Scaler::get_from_id (string id)
 }
 
 /** @param A scaler from our static list.
- *  @return Index of the scaler with the list, or 0.
+ *  @return Index of the scaler with the list, or -1.
  */
 int
 Scaler::get_as_index (Scaler const * s)
