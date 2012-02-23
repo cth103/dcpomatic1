@@ -143,9 +143,11 @@ DCPVideoFrame::encode_locally ()
 	int const lut_index = Config::instance()->colour_lut_index ();
 
 	/* ! */
-	int* fuckwit = new int[size];
+	float* fuckwit = new int[size];
 	float* tosstwat = new float[size];
 	float* wankballs = new float[size];
+
+	cout << "clut " << lut_index << "\n";
 	
 	uint8_t* p = prepared->data()[0];
 	md5_data ("Before RGB -> XYZ", p, prepared->line_size()[0] * prepared->size().width);
@@ -183,9 +185,9 @@ DCPVideoFrame::encode_locally ()
 		_image->comps[2].data[i] = lut_out[LO_DCI][(int) d.z];
 	}
 
-	md5_data ("\tpost gamma lut", fuckwit, size * sizeof(int));
-	md5_data ("\tpost rgb->xyz", tosstwat, size * sizeof(int));
-	md5_data ("\tpost companding", wankballs, size * sizeof(int));
+	md5_data ("\tpost gamma lut", fuckwit, size * sizeof(float));
+	md5_data ("\tpost rgb->xyz", tosstwat, size * sizeof(float));
+	md5_data ("\tpost companding", wankballs, size * sizeof(float));
 	delete[] fuckwit;
 	delete[] tosstwat;
 	delete[] wankballs;
