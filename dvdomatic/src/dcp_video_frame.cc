@@ -265,7 +265,7 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 	}
 
 #ifdef DEBUG_HASH
-	_yuv->hash ();
+	_yuv->hash ("Input for remote encoding (before sending)");
 #endif
 
 	stringstream s;
@@ -299,7 +299,7 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 	reader.read_definite_and_consume (e->data(), e->size());
 
 #ifdef DEBUG_HASH
-	e->hash ();
+	e->hash ("Encoded image (after receiving)");
 #endif	
 	
 	close (fd);
@@ -337,7 +337,7 @@ EncodedData::send (int fd)
 
 #ifdef DEBUG_HASH
 void
-EncodedData::hash () const
+EncodedData::hash (string n) const
 {
 	MHASH ht = mhash_init (MHASH_MD5);
 	if (ht == MHASH_FAILED) {
@@ -349,7 +349,7 @@ EncodedData::hash () const
 	uint8_t hash[16];
 	mhash_deinit (ht, hash);
 	
-	printf ("Encoded image: ");
+	printf ("%s: ", n.c_str ());
 	for (int i = 0; i < int (mhash_get_block_size (MHASH_MD5)); ++i) {
 		printf ("%.2x", hash[i]);
 	}

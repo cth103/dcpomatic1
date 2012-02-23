@@ -41,7 +41,7 @@ public:
 	void write (boost::shared_ptr<const Options>, int);
 
 #ifdef DEBUG_HASH
-	void hash () const;
+	void hash (std::string) const;
 #endif	
 
 	uint8_t* data () const {

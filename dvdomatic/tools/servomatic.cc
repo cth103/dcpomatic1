@@ -113,7 +113,7 @@ worker_thread ()
 		}
 
 #ifdef DEBUG_HASH
-		image->hash ();
+		image->hash ("Image for encoding (as received by server)");
 #endif		
 		
 		DCPVideoFrame dcp_video_frame (image, out_size, scaler, frame, frames_per_second, post_process);
@@ -123,7 +123,7 @@ worker_thread ()
 		lock.lock ();
 
 #ifdef DEBUG_HASH
-		dcp_video_frame.encoded()->hash ();
+		dcp_video_frame.encoded()->hash ("Encoded image (as made by server and as sent back)");
 #endif		
 
 		struct timeval end;

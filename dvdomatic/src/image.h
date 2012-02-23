@@ -51,7 +51,7 @@ public:
 	boost::shared_ptr<PostProcessImage> post_process (std::string) const;
 	
 #ifdef DEBUG_HASH	
-	void hash () const;
+	void hash (std::string) const;
 #endif	
 	
 	PixelFormat pixel_format () const {

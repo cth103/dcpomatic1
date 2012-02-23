@@ -80,7 +80,7 @@ Image::components () const
 
 #ifdef DEBUG_HASH
 void
-Image::hash () const
+Image::hash (string n) const
 {
 	MHASH ht = mhash_init (MHASH_MD5);
 	if (ht == MHASH_FAILED) {
@@ -94,7 +94,7 @@ Image::hash () const
 	uint8_t hash[16];
 	mhash_deinit (ht, hash);
 	
-	printf ("YUV input: ");
+	printf ("%s: ", n.c_str ());
 	for (int i = 0; i < int (mhash_get_block_size (MHASH_MD5)); ++i) {
 		printf ("%.2x", hash[i]);
 	}
