@@ -19,6 +19,7 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
 #include <stdint.h>
 #include <boost/shared_ptr.hpp>
 #include <boost/filesystem.hpp>
@@ -124,6 +125,7 @@ TIFFDecoder::do_pass ()
 	}
 
 	if (!have_video_frame_ready ()) {
+		++_iter;
 		return PASS_NOTHING;
 	}
 	
