@@ -17,11 +17,18 @@
 
 */
 
+/** @file  src/make_mxf_job.h
+ *  @brief A job that creates a MXF file from some data.
+ */
+
 #include "opendcp_job.h"
 
 class FilmState;
 class Options;
 
+/** @class MakeMXFJob
+ *  @brief A job that creates a MXF file from some data.
+ */
 class MakeMXFJob : public OpenDCPJob
 {
 public:

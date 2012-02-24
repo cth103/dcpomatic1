@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/decoder.cc
+ *  @brief Parent class for decoders of content.
+ */
+
 #include <stdint.h>
 #include "film.h"
 #include "format.h"

@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/make_mxf_job.cc
+ *  @brief A job that creates a MXF file from some data.
+ */
+
 #include <iostream>
 #include "make_mxf_job.h"
 #include "film.h"
@@ -25,6 +29,10 @@
 
 using namespace std;
 using namespace boost;
+
+/** @class MakeMXFJob
+ *  @brief A job that creates a MXF file from some data.
+ */
 
 MakeMXFJob::MakeMXFJob (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l, Type t)
 	: OpenDCPJob (s, o, l)

@@ -18,6 +18,16 @@
 
 */
 
+/** @file  src/dcp_video_frame.cc
+ *  @brief A single frame of video destined for a DCP.
+ *
+ *  Given an Image and some settings, this class knows how to encode
+ *  the image to J2K either on the local host or on a remote server.
+ *
+ *  Objects of this class are used for the queue that we keep
+ *  of images that require encoding.
+ */
+
 #include <stdint.h>
 #include <cstring>
 #include <cstdlib>

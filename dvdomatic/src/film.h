@@ -42,7 +42,10 @@ class Filter;
 class Log;
 class ExamineContentJob;
 
-/** A representation of a piece of video (with sound), including naming,
+/** @class Film
+ *  @brief A representation of a video with sound.
+ *
+ *  A representation of a piece of video (with sound), including naming,
  *  the source content file, and how it should be presented in a DCP.
  */
 class Film
@@ -101,7 +104,7 @@ public:
 		return _state.scaler;
 	}
 
-	/** @return number of frames to put in the DCP, or 0 for all *
+	/** @return number of frames to put in the DCP, or 0 for all */
 	int dcp_frames () const {
 		return _state.dcp_frames;
 	}

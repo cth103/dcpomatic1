@@ -17,8 +17,15 @@
 
 */
 
+/** @file  src/exceptions.h
+ *  @brief Our exceptions.
+ */
+
 #include <stdexcept>
 
+/** @class StringError
+ *  @brief A parent class for exceptions using messages held in a std::string
+ */
 class StringError : public std::exception
 {
 public:
@@ -39,7 +46,8 @@ private:
 	std::string _what;
 };
 
-/** A low-level problem with the decoder (possibly due to the nature
+/** @class DecodeError
+ *  @brief A low-level problem with the decoder (possibly due to the nature
  *  of a source file).
  */
 class DecodeError : public StringError
@@ -50,7 +58,9 @@ public:
 	{}
 };
 
-/** A low-level problem with an encoder */
+/** @class EncodeError
+ *  @brief A low-level problem with an encoder.
+ */
 class EncodeError : public StringError
 {
 public:
@@ -59,7 +69,9 @@ public:
 	{}
 };
 
-/** Parent class for file-related errors */
+/** @class FileError.
+ *  @brief Parent class for file-related errors.
+ */
 class FileError : public StringError
 {
 public:
@@ -79,7 +91,9 @@ private:
 };
 	
 
-/** Some error occurred when trying to open a file */
+/** @class OpenFileError.
+ *  @brief Indicates that some error occurred when trying to open a file.
+ */
 class OpenFileError : public FileError
 {
 public:
@@ -89,7 +103,9 @@ public:
 	{}
 };
 
-/** Some error occurred when trying to create a file */
+/** @class CreateFileError.
+ *  @brief Indicates that some error occurred when trying to create a file.
+ */
 class CreateFileError : public FileError
 {
 public:
@@ -99,7 +115,9 @@ public:
 	{}
 };
 
-/** Some error occurred when trying to write to a file */
+/** @class WriteFileError.
+ *  @brief Indicates that some error occurred when trying to write to a file
+ */
 class WriteFileError : public FileError
 {
 public:
@@ -109,7 +127,9 @@ public:
 	{}
 };
 
-/** A Film is missing a setting that is required for some operation */
+/** @class MissingSettingError.
+ *  @brief Indicates that a Film is missing a setting that is required for some operation
+ */
 class MissingSettingError : public StringError
 {
 public:
@@ -131,7 +151,9 @@ private:
 };
 	
 
-/** A content location outside the Film's directory has been specified */
+/** @class BadContentLocationError.
+ *  @brief Indicates that a content location outside the Film's directory has been specified.
+ */
 class BadContentLocationError : public std::exception
 {
 public:
@@ -142,7 +164,9 @@ public:
 	}
 };
 
-/** Some problem with communication between an encode client and server */
+/** @class NetworkError.
+ *  @brief Indicates that some problem with communication between an encode client and server.
+ */
 class NetworkError : public StringError
 {
 public:

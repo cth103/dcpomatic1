@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/decoder.h
+ *  @brief Parent class for decoders of content.
+ */
+
 #ifndef DVDOMATIC_DECODER_H
 #define DVDOMATIC_DECODER_H
 
@@ -32,7 +36,10 @@ class Options;
 class Image;
 class Log;
 
-/** Parent class for decoders of content.  These classes can be instructed run through their content
+/** @class Decoder.
+ *  @brief Parent class for decoders of content.
+ *
+ *  These classes can be instructed run through their content
  *  (by calling ::go), and they emit signals when video or audio data is ready for something else
  *  to process.
  */

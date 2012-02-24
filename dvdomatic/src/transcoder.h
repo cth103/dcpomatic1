@@ -19,14 +19,21 @@
 
 #include "decoder.h"
 
+/** @file  src/transcoder.h
+ *  @brief A class which takes a FilmState and some Options, then uses those to transcode a Film.
+ *
+ *  A decoder is selected according to the content type, and the encoder can be specified
+ *  as a parameter to the constructor.
+ */
+
 class Film;
 class Job;
 class Encoder;
 class FilmState;
 
 /** A class which takes a FilmState and some Options, then uses those to transcode a Film.
- *  The same (FFmpeg) decoder is always used, and the encoder can be specified as a parameter
- *  to the constructor.
+ *  A decoder is selected according to the content type, and the encoder can be specified
+ *  as a parameter to the constructor.
  */
 class Transcoder
 {

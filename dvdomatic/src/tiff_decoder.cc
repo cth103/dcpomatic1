@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/tiff_decoder.cc
+ *  @brief A decoder which reads a numbered set of TIFF files, one per frame.
+ */
+
 #include <vector>
 #include <string>
 #include <iostream>

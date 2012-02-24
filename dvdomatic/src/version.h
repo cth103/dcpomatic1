@@ -17,4 +17,8 @@
 
 */
 
+/** @file  src/version.h
+ *  @brief DVD-o-matic version.
+ */
+
 #define DVDOMATIC_VERSION "0.13-pre"

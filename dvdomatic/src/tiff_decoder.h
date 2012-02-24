@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/tiff_decoder.h
+ *  @brief A decoder which reads a numbered set of TIFF files, one per frame.
+ */
+
 #ifndef DVDOMATIC_TIFF_DECODER_H
 #define DVDOMATIC_TIFF_DECODER_H
 
@@ -33,6 +37,9 @@ class Options;
 class Image;
 class Log;
 
+/** @class TIFFDecoder.
+ *  @brief A decoder which reads a numbered set of TIFF files, one per frame.
+ */
 class TIFFDecoder : public Decoder
 {
 public:

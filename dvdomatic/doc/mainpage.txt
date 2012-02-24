@@ -1,0 +1,6 @@
+/** @mainpage DVD-o-matic
+ *
+ *  DVD-o-matic is a tool to create digital cinema packages (DCPs) from
+ *  video files, or from sets of TIFF image files.
+ *
+ */

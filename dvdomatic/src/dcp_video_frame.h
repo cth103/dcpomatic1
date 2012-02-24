@@ -61,7 +61,7 @@ public:
 
 protected:
 	uint8_t* _data; ///< data
-	int _size;      ///< size in bytes
+	int _size;      ///< data size in bytes
 };
 
 /** EncodedData that was encoded locally; this class
@@ -89,9 +89,10 @@ public:
 	~RemotelyEncodedData ();
 };
 
-/** A single frame of video destined for a DCP.  Given an Image
- *  and some settings, this class knows how to encode the image
- *  to J2K either on the local host or on a remote server.
+/** @brief A single frame of video destined for a DCP.
+ *
+ *  Given an Image and some settings, this class knows how to encode
+ *  the image to J2K either on the local host or on a remote server.
  *
  *  Objects of this class are used for the queue that we keep
  *  of images that require encoding.
