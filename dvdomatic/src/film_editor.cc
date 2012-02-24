@@ -264,9 +264,12 @@ FilmEditor::content_changed ()
 	try {
 		/* XXX: hack; set to parent directory if we get a TIFF */
 		string const f = _content.get_filename ();
-		string const ext = filesystem::path (f).extension().string();
+#if BOOST_FILESYSTEM_VERSION == 3		
+		string const ext = filesystem::path(f).extension().string();
+#else
+		string const ext = filesystem::path(f).extension();
+#endif		
 		if (ext == ".tif" || ext == ".tiff") {
-			cout << "TIFF: hacking...\n";
 			_film->set_content (filesystem::path (f).branch_path().string ());
 		} else {
 			_film->set_content (f);

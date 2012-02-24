@@ -47,10 +47,11 @@ TIFFDecoder::TIFFDecoder (boost::shared_ptr<const FilmState> fs, boost::shared_p
 
 	for (filesystem::directory_iterator i = filesystem::directory_iterator (dir); i != filesystem::directory_iterator(); ++i) {
 		/* Aah, the sweet smell of progress */
-		string const ext = filesystem::path(*i).extension().string();
 #if BOOST_FILESYSTEM_VERSION == 3
+		string const ext = filesystem::path(*i).extension().string();
 		string const l = filesystem::path(*i).leaf().generic_string();
 #else
+		string const ext = filesystem::path(*i).extension();
 		string const l = i->leaf ();
 #endif
 		if (ext == ".tif" || ext == ".tiff") {
