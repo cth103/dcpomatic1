@@ -52,6 +52,73 @@ static mutex worker_mutex;
 static condition worker_condition;
 static Log log_ ("servomatic.log");
 
+int
+process (int fd)
+{
+	SocketReader reader (fd);
+	
+	char buffer[128];
+	reader.read_indefinite ((uint8_t *) buffer, sizeof (buffer));
+	reader.consume (strlen (buffer) + 1);
+	
+	stringstream s (buffer);
+	
+	string command;
+	s >> command;
+	if (command != "encode") {
+		close (fd);
+		return -1;
+	}
+	
+	Size in_size;
+	int pixel_format_int;
+	Size out_size;
+	string scaler_id;
+	int frame;
+	float frames_per_second;
+	string post_process;
+	int colour_lut_index;
+	int j2k_bandwidth;
+	
+	s >> in_size.width >> in_size.height
+	  >> pixel_format_int
+	  >> out_size.width >> out_size.height
+	  >> scaler_id
+	  >> frame
+	  >> frames_per_second
+	  >> post_process
+	  >> colour_lut_index
+	  >> j2k_bandwidth;
+	
+	PixelFormat pixel_format = (PixelFormat) pixel_format_int;
+	Scaler const * scaler = Scaler::get_from_id (scaler_id);
+	if (post_process == "none") {
+		post_process = "";
+	}
+	
+	shared_ptr<SimpleImage> image (new SimpleImage (pixel_format, in_size));
+	
+	for (int i = 0; i < image->components(); ++i) {
+		int line_size;
+		s >> line_size;
+		image->set_line_size (i, line_size);
+	}
+	
+	for (int i = 0; i < image->components(); ++i) {
+		reader.read_definite_and_consume (image->data()[i], image->line_size()[i] * image->lines(i));
+	}
+	
+#ifdef DEBUG_HASH
+	image->hash ("Image for encoding (as received by server)");
+#endif		
+	
+	DCPVideoFrame dcp_video_frame (image, out_size, scaler, frame, frames_per_second, post_process, colour_lut_index, j2k_bandwidth, &log_);
+	shared_ptr<EncodedData> encoded = dcp_video_frame.encode_locally ();
+	encoded->send (fd);
+
+	return frame;
+}
+
 void
 worker_thread ()
 {
@@ -66,79 +133,32 @@ worker_thread ()
 		
 		lock.unlock ();
 
+		int frame = -1;
+
 		struct timeval start;
 		gettimeofday (&start, 0);
-
-		SocketReader reader (fd);
 		
-		char buffer[128];
-		reader.read_indefinite ((uint8_t *) buffer, sizeof (buffer));
-		reader.consume (strlen (buffer) + 1);
-
-		stringstream s (buffer);
-
-		string command;
-		s >> command;
-		if (command != "encode") {
-			close (fd);
-			continue;
+		try {
+			frame = process (fd);
+		} catch (std::exception& e) {
+			cerr << "Error: " << e.what() << "\n";
 		}
 		
-		Size in_size;
-		int pixel_format_int;
-		Size out_size;
-		string scaler_id;
-		int frame;
-		float frames_per_second;
-		string post_process;
-		int colour_lut_index;
-		int j2k_bandwidth;
-
-		s >> in_size.width >> in_size.height
-		  >> pixel_format_int
-		  >> out_size.width >> out_size.height
-		  >> scaler_id
-		  >> frame
-		  >> frames_per_second
-		  >> post_process
-		  >> colour_lut_index
-		  >> j2k_bandwidth;
-
-		PixelFormat pixel_format = (PixelFormat) pixel_format_int;
-		Scaler const * scaler = Scaler::get_from_id (scaler_id);
-		if (post_process == "none") {
-			post_process = "";
-		}
-			
-		shared_ptr<SimpleImage> image (new SimpleImage (pixel_format, in_size));
-		
-		for (int i = 0; i < image->components(); ++i) {
-			int line_size;
-			s >> line_size;
-			image->set_line_size (i, line_size);
-		}
-		
-		for (int i = 0; i < image->components(); ++i) {
-			reader.read_definite_and_consume (image->data()[i], image->line_size()[i] * image->lines(i));
-		}
-
-#ifdef DEBUG_HASH
-		image->hash ("Image for encoding (as received by server)");
-#endif		
-		
-		DCPVideoFrame dcp_video_frame (image, out_size, scaler, frame, frames_per_second, post_process, colour_lut_index, j2k_bandwidth, &log_);
-		shared_ptr<EncodedData> encoded = dcp_video_frame.encode_locally ();
-		encoded->send (fd);
 		close (fd);
+		
 		lock.lock ();
 
 #ifdef DEBUG_HASH
-		dcp_video_frame.encoded()->hash ("Encoded image (as made by server and as sent back)");
+		if (frame >= 0) {
+			dcp_video_frame.encoded()->hash ("Encoded image (as made by server and as sent back)");
+		}
 #endif		
 
-		struct timeval end;
-		gettimeofday (&end, 0);
-		cout << "Encoded frame " << frame << " in " << (seconds (end) - seconds (start)) << "\n";
+		if (frame >= 0) {
+			struct timeval end;
+			gettimeofday (&end, 0);
+			cout << "Encoded frame " << frame << " in " << (seconds (end) - seconds (start)) << "\n";
+		}
 		
 		worker_condition.notify_all ();
 	}
@@ -163,6 +183,12 @@ main ()
 	int const o = 1;
 	setsockopt (fd, SOL_SOCKET, SO_REUSEADDR, &o, sizeof (o));
 
+	struct timeval tv;
+	tv.tv_sec = 20;
+	tv.tv_usec = 0;
+	setsockopt (fd, SOL_SOCKET, SO_RCVTIMEO, (void *) &tv, sizeof (tv));
+	setsockopt (fd, SOL_SOCKET, SO_SNDTIMEO, (void *) &tv, sizeof (tv));
+
 	struct sockaddr_in server_address;
 	memset (&server_address, 0, sizeof (server_address));
 	server_address.sin_family = AF_INET;
@@ -181,7 +207,9 @@ main ()
 		socklen_t client_length = sizeof (client_address);
 		int new_fd = accept (fd, (struct sockaddr *) &client_address, &client_length);
 		if (new_fd < 0) {
-			throw NetworkError ("error on accept");
+			stringstream s;
+			s << "error on accept (" << strerror (errno) << ")";
+			throw NetworkError (s.str ());
 		}
 
 		mutex::scoped_lock lock (worker_mutex);
@@ -190,6 +218,12 @@ main ()
 		while (int (queue.size()) >= num_threads * 2) {
 			worker_condition.wait (lock);
 		}
+
+		struct timeval tv;
+		tv.tv_sec = 20;
+		tv.tv_usec = 0;
+		setsockopt (new_fd, SOL_SOCKET, SO_RCVTIMEO, (void *) &tv, sizeof (tv));
+		setsockopt (new_fd, SOL_SOCKET, SO_SNDTIMEO, (void *) &tv, sizeof (tv));
 		
 		queue.push_back (new_fd);
 		worker_condition.notify_all ();

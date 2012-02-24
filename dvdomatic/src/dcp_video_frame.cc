@@ -38,8 +38,6 @@
 #include <iostream>
 #include <unistd.h>
 #include <errno.h>
-#include <sys/types.h> 
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <boost/filesystem.hpp>
@@ -291,6 +289,18 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 		throw NetworkError ("could not create socket");
 	}
 
+	struct timeval tv;
+	tv.tv_sec = 20;
+	tv.tv_usec = 0;
+	
+	if (setsockopt (fd, SOL_SOCKET, SO_RCVTIMEO, (void *) &tv, sizeof (tv)) < 0) {
+		throw NetworkError ("setsockopt failed");
+	}
+
+	if (setsockopt (fd, SOL_SOCKET, SO_SNDTIMEO, (void *) &tv, sizeof (tv)) < 0) {
+		throw NetworkError ("setsockopt failed");
+	}
+	
 	struct hostent* server = gethostbyname (serv->host_name().c_str ());
 	if (server == 0) {
 		throw NetworkError ("gethostbyname failed");
@@ -327,10 +337,10 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 		s << _input->line_size()[i] << " ";
 	}
 
-	fd_write (fd, (uint8_t *) s.str().c_str(), s.str().length() + 1);
-	
+	socket_write (fd, (uint8_t *) s.str().c_str(), s.str().length() + 1);
+
 	for (int i = 0; i < _input->components(); ++i) {
-		fd_write (fd, _input->data()[i], _input->line_size()[i] * _input->lines(i));
+		socket_write (fd, _input->data()[i], _input->line_size()[i] * _input->lines(i));
 	}
 
 	SocketReader reader (fd);
@@ -381,8 +391,8 @@ EncodedData::send (int fd)
 {
 	stringstream s;
 	s << _size;
-	fd_write (fd, (uint8_t *) s.str().c_str(), s.str().length() + 1);
-	fd_write (fd, _data, _size);
+	socket_write (fd, (uint8_t *) s.str().c_str(), s.str().length() + 1);
+	socket_write (fd, _data, _size);
 }
 
 #ifdef DEBUG_HASH

@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <exception>
 #include <boost/program_options.hpp>
 #include "format.h"
 #include "film.h"
@@ -122,10 +123,15 @@ main (int argc, char* argv[])
 	opt->out_size = Size (1024, 1024);
 	opt->apply_crop = false;
 	opt->decode_audio = false;
-	
+
 	Decoder* decoder = decoder_factory (film.state_copy(), opt, 0, &log_);
-	decoder->Video.connect (sigc::ptr_fun (process_video));
-	decoder->go ();
+	try {
+		decoder->Video.connect (sigc::ptr_fun (process_video));
+		decoder->go ();
+	} catch (std::exception& e) {
+		cerr << "Error: " << e.what() << "\n";
+	}
+
 	delete decoder;
 
 	return 0;

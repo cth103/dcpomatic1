@@ -27,6 +27,8 @@
 #include <iostream>
 #include <execinfo.h>
 #include <cxxabi.h>
+#include <sys/types.h> 
+#include <sys/socket.h>
 #include <boost/algorithm/string.hpp>
 #include <openjpeg.h>
 extern "C" {
@@ -278,17 +280,17 @@ dependency_version_summary ()
 	return s.str ();
 }
 
-/** Write some data to a file descriptor.
- *  @param fd File descriptor.
+/** Write some data to a socket.
+ *  @param fd Socket file descriptor.
  *  @param data Data.
  *  @param size Amount to write, in bytes.
  */
 void
-fd_write (int fd, uint8_t const * data, int size)
+socket_write (int fd, uint8_t const * data, int size)
 {
 	uint8_t const * p = data;
 	while (size) {
-		int const n = write (fd, p, size);
+		int const n = send (fd, p, size, MSG_NOSIGNAL);
 		if (n < 0) {
 			stringstream s;
 			s << "could not write (" << strerror (errno) << ")";
@@ -351,7 +353,7 @@ SocketReader::read_definite_and_consume (uint8_t* data, int size)
 	/* read() the rest */
 	while (size > 0) {
 		int const n = ::read (_fd, data, size);
-		if (n < 0) {
+		if (n <= 0) {
 			throw NetworkError ("could not read");
 		}
 
@@ -374,7 +376,7 @@ SocketReader::read_indefinite (uint8_t* data, int size)
 	while (to_read > 0) {
 		/* read as much of it as we can (into our buffer) */
 		int const n = ::read (_fd, _buffer + _buffer_data, to_read);
-		if (n < 0) {
+		if (n <= 0) {
 			throw NetworkError ("could not read");
 		}
 
