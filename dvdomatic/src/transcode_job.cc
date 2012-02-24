@@ -54,8 +54,8 @@ TranscodeJob::run ()
 
 		_log->log ("Transcode job starting");
 
-		J2KWAVEncoder e (_fs, _opt);
-		Transcoder w (_fs, _opt, this, &e);
+		J2KWAVEncoder e (_fs, _opt, _log);
+		Transcoder w (_fs, _opt, this, _log, &e);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

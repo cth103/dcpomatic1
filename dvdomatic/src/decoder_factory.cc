@@ -17,25 +17,21 @@
 
 */
 
-/** @file src/tiff_encoder.h
- *  @brief An encoder that writes TIFF files (and does nothing with audio).
- */
+#include <boost/filesystem.hpp>
+#include "ffmpeg_decoder.h"
+#include "tiff_decoder.h"
+#include "film_state.h"
 
-#include <string>
-#include <sndfile.h>
-#include "encoder.h"
+using namespace boost;
 
-class FilmState;
-class Log;
-
-/** An encoder that writes TIFF files (and does nothing with audio) */
-class TIFFEncoder : public Encoder
+Decoder *
+decoder_factory (
+	shared_ptr<const FilmState> fs, shared_ptr<const Options> o, Job* j, Log* l, bool minimal = false, bool ignore_length = false
+	)
 {
-public:
-	TIFFEncoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log *);
+	if (filesystem::is_directory (fs->file (fs->content))) {
+		return new TIFFDecoder (fs, o, j, l, minimal, ignore_length);
+	}
 
-	void process_begin () {}
-	void process_video (boost::shared_ptr<Image>, int);
-	void process_audio (uint8_t *, int, int) {}
-	void process_end () {}
-};
+	return new FFmpegDecoder (fs, o, j, l, minimal, ignore_length);
+}

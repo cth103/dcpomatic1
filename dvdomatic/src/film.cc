@@ -45,6 +45,7 @@
 #include "version.h"
 #include "examine_content_job.h"
 #include "scaler.h"
+#include "decoder_factory.h"
 
 using namespace std;
 using namespace boost;
@@ -185,14 +186,16 @@ Film::set_content (string c)
 	shared_ptr<Options> o (new Options ("", "", ""));
 	o->out_size = Size (1024, 1024);
 
-	Decoder d (s, o, 0);
+	Decoder* d = decoder_factory (s, o, 0, _log);
 	
-	_state.size = d.native_size ();
-	_state.length = d.length_in_frames ();
-	_state.frames_per_second = d.frames_per_second ();
-	_state.audio_channels = d.audio_channels ();
-	_state.audio_sample_rate = d.audio_sample_rate ();
-	_state.audio_sample_format = d.audio_sample_format ();
+	_state.size = d->native_size ();
+	_state.length = d->length_in_frames ();
+	_state.frames_per_second = d->frames_per_second ();
+	_state.audio_channels = d->audio_channels ();
+	_state.audio_sample_rate = d->audio_sample_rate ();
+	_state.audio_sample_format = d->audio_sample_format ();
+
+	delete d;
 
 	_state.content = f;
 	
@@ -442,7 +445,7 @@ Film::signal_changed (Property p)
 
 /** Add suitable Jobs to the JobManager to create a DCP for this Film */
 void
-Film::make_dcp ()
+Film::make_dcp (int freq)
 {
 	{
 		stringstream s;
@@ -474,6 +477,7 @@ Film::make_dcp ()
 	shared_ptr<Options> o (new Options (j2k_dir(), ".j2c", _state.dir ("wavs")));
 	o->out_size = format()->dci_size ();
 	o->num_frames = dcp_frames ();
+	o->decode_video_frequency = freq;
 	
 	if (_state.dcp_ab) {
 		JobManager::instance()->add (shared_ptr<Job> (new ABTranscodeJob (fs, o, log ())));
@@ -599,4 +603,11 @@ Film::set_scaler (Scaler const * s)
 {
 	_state.scaler = s;
 	signal_changed (FilmScaler);
+}
+
+void
+Film::set_frames_per_second (float f)
+{
+	_state.frames_per_second = f;
+	signal_changed (FramesPerSecond);
 }

@@ -30,11 +30,19 @@ class Log
 public:
 	Log (std::string);
 
-	void log (std::string);
+	enum Level {
+		STANDARD = 0,
+		VERBOSE = 1
+	};
+
+	void log (std::string, Level level = STANDARD);
+
+	void set_level (Level);
 
 private:
 	/** mutex to prevent simultaneous writes to the file */
 	boost::mutex _mutex;
 	/** filename to write to */
 	std::string _file;
+	Level _level;
 };

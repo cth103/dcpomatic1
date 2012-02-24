@@ -44,6 +44,7 @@ private:
 	void top_crop_changed ();
 	void bottom_crop_changed ();
 	void content_changed ();
+	void frames_per_second_changed ();
 	void format_changed ();
 	void dcp_long_name_changed ();
 	void guess_dcp_long_name_toggled ();
@@ -71,6 +72,8 @@ private:
 	Gtk::Label _directory;
 	/** The Film's name */
 	Gtk::Entry _name;
+	/** The Film's frames per second */
+	Gtk::SpinButton _frames_per_second;
 	/** The Film's format */
 	Gtk::ComboBoxText _format;
 	/** The Film's content file */
@@ -101,8 +104,6 @@ private:
 	Gtk::Label _original_size;
 	/** The Film's length */
 	Gtk::Label _length;
-	/** The Film's frames per second */
-	Gtk::Label _frames_per_second;
 	/** The Film's audio channels */
 	Gtk::Label _audio_channels;
 	/** The Film's audio sample rate */

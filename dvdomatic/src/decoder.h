@@ -17,47 +17,35 @@
 
 */
 
+#ifndef DVDOMATIC_DECODER_H
+#define DVDOMATIC_DECODER_H
+
 #include <vector>
 #include <string>
 #include <stdint.h>
 #include <boost/shared_ptr.hpp>
-extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libpostproc/postprocess.h>
-}
 #include "util.h"
 
-struct AVFilterGraph;
-struct AVCodecContext;
-struct AVFilterContext;
-struct AVFormatContext;
-struct AVFrame;
-struct AVBufferContext;
-struct AVCodec;
 class Job;
 class FilmState;
 class Options;
 class Image;
+class Log;
 
 class Decoder
 {
 public:
-	Decoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *, bool minimal = false, bool ignore_length = false);
-	~Decoder ();
+	Decoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *, Log *, bool, bool);
+	virtual ~Decoder ();
 
 	/* Methods to query our input video */
-	int length_in_frames () const;
-	int decoding_frames () const;
-	float frames_per_second () const;
-	Size native_size () const;
-	int audio_channels () const;
-	int audio_sample_rate () const;
-	AVSampleFormat audio_sample_format () const;
-
-	void go ();
-	int last_video_frame () const {
-		return _video_frame;
-	}
+	virtual int length_in_frames () const = 0;
+	/** @return video frames per second, or 0 if unknown */
+	virtual float frames_per_second () const = 0;
+	virtual Size native_size () const = 0;
+	virtual int audio_channels () const = 0;
+	virtual int audio_sample_rate () const = 0;
+	virtual AVSampleFormat audio_sample_format () const = 0;
 
 	enum PassResult {
 		PASS_DONE,    ///< we have decoded all the input
@@ -67,42 +55,30 @@ public:
 		PASS_AUDIO    ///< some audio is available
 	};
 
+	virtual PassResult do_pass () = 0;
+	
 	PassResult pass ();
+	void go ();
+
+	int last_video_frame () const {
+		return _video_frame;
+	}
+	
+	int decoding_frames () const;
 	
 	sigc::signal<void, boost::shared_ptr<Image>, int> Video;
 	sigc::signal<void, uint8_t *, int, int> Audio;
 	
-private:
-
-	void setup_general ();
-	void setup_video ();
-	void setup_video_filters ();
-	void setup_audio ();
-
+protected:
 	boost::shared_ptr<const FilmState> _fs;
 	boost::shared_ptr<const Options> _opt;
 	Job* _job;
-	
-	AVFormatContext* _format_context;
-	int _video_stream;
-	int _audio_stream;
-	AVFrame* _frame_in;
-	
-	AVCodecContext* _video_codec_context;
-	AVCodec* _video_codec;
-	AVFilterContext* _buffer_src_context;
-	AVFilterContext* _buffer_sink_context;
-	
-	AVCodecContext* _audio_codec_context;
-	AVCodec* _audio_codec;
-
-	AVPacket _packet;
-
-	int _video_frame;
-
-	int _post_filter_width;
-	int _post_filter_height;
+	Log* _log;
 
 	bool _minimal;
 	bool _ignore_length;
+
+	int _video_frame;
 };
+
+#endif

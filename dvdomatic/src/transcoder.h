@@ -31,13 +31,13 @@ class FilmState;
 class Transcoder
 {
 public:
-	Transcoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Job* j, Encoder* e);
+	Transcoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Job* j, Log* l, Encoder* e);
 
 	void go ();
 
 	/** @return Our decoder */
 	Decoder* decoder () {
-		return &_decoder;
+		return _decoder;
 	}
 
 protected:
@@ -46,5 +46,5 @@ protected:
 	/** The encoder that we will use */
 	Encoder* _encoder;
 	/** The decoder that we will use */
-	Decoder _decoder;
+	Decoder* _decoder;
 };

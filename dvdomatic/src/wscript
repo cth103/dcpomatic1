@@ -15,9 +15,11 @@ def build(bld):
 		 copy_from_dvd_job.cc
 		 dcp_video_frame.cc
 		 decoder.cc
+                 decoder_factory.cc
 		 encoder.cc
 		 error_dialog.cc
 		 examine_content_job.cc
+                 ffmpeg_decoder.cc
     	         film.cc
 		 film_editor.cc
 		 film_state.cc
@@ -40,6 +42,7 @@ def build(bld):
 		 scaler.cc
 		 server.cc
 		 thumbs_job.cc
+                 tiff_decoder.cc
 	         tiff_encoder.cc
                  timer.cc
 		 transcode_job.cc

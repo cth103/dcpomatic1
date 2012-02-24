@@ -120,6 +120,7 @@ public:
 	void set_bottom_crop (int);
 	void set_left_crop (int);
 	void set_right_crop (int);
+	void set_frames_per_second (float);
 	void set_format (Format const *);
 	void set_dcp_long_name (std::string);
 	void set_guess_dcp_long_name (bool);
@@ -165,7 +166,7 @@ public:
 		return _dirty;
 	}
 
-	void make_dcp ();
+	void make_dcp (int freq = 0);
 
 	enum Property {
 		Name,

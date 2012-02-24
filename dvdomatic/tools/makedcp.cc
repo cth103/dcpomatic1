@@ -55,11 +55,8 @@ int main (int argc, char* argv[])
 	
 	boost::program_options::store (parsed, vm);
 	boost::program_options::notify (vm);
-		
-	Format::setup_formats ();
-	Filter::setup_filters ();
-	ContentType::setup_content_types ();
-	Scaler::setup_scalers ();
+
+	dvdomatic_setup ();
 
 	if (vm.count ("deps")) {
 		cout << "makedcp using " << dependency_version_summary () << "\n";

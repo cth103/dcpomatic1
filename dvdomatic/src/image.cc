@@ -65,6 +65,8 @@ Image::lines (int n) const
 			return size().height / 2;
 		}
 		break;
+	case PIX_FMT_RGB24:
+		return size().height;
 	default:
 		assert (false);
 	}
@@ -79,6 +81,8 @@ Image::components () const
 	switch (_pixel_format) {
 	case PIX_FMT_YUV420P:
 		return 3;
+	case PIX_FMT_RGB24:
+		return 1;
 	default:
 		assert (false);
 	}
@@ -130,7 +134,7 @@ Image::scale_and_convert_to_rgb (Size out_size, Scaler const * scaler) const
 		scaler->ffmpeg_id (), 0, 0, 0
 		);
 
-	/* Scale and convert from YUV to RGB */
+	/* Scale and convert to RGB from whatever its currently in (which may be RGB) */
 	sws_scale (
 		scale_context,
 		data(), line_size(),

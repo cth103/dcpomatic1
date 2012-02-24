@@ -53,9 +53,9 @@ ABTranscodeJob::run ()
 {
 	try {
 
-		J2KWAVEncoder e (_fs, _opt);
+		J2KWAVEncoder e (_fs, _opt, _log);
 		/* _fs_b is the one with no filters */
-		ABTranscoder w (_fs_b, _fs, _opt, this, &e);
+		ABTranscoder w (_fs_b, _fs, _opt, this, _log, &e);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

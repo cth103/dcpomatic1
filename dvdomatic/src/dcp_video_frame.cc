@@ -44,6 +44,7 @@
 #include "util.h"
 #include "scaler.h"
 #include "image.h"
+#include "log.h"
 
 #ifdef DEBUG_HASH
 #include <mhash.h>
@@ -54,7 +55,7 @@ using namespace boost;
 
 /** Construct a DCP video frame */
 DCPVideoFrame::DCPVideoFrame (
-	shared_ptr<Image> yuv, Size out, Scaler const * s, int f, int fps, string pp, int clut, int bw)
+	shared_ptr<Image> yuv, Size out, Scaler const * s, int f, int fps, string pp, int clut, int bw, Log* l)
 	: _yuv (yuv)
 	, _out_size (out)
 	, _scaler (s)
@@ -63,6 +64,7 @@ DCPVideoFrame::DCPVideoFrame (
 	, _post_process (pp)
 	, _colour_lut_index (clut)
 	, _j2k_bandwidth (bw)
+	, _log (l)
 	, _image (0)
 	, _parameters (0)
 	, _cinfo (0)
@@ -243,6 +245,12 @@ DCPVideoFrame::encode_locally ()
 #ifdef DEBUG_HASH
 	md5_data ("J2K out", _cio->buffer, cio_tell (_cio));
 #endif	
+
+	{
+		stringstream s;
+		s << "Writing locally-encoded frame " << _frame << " length " << cio_tell (_cio);
+		_log->log (s.str ());
+	}
 	
 	return shared_ptr<EncodedData> (new LocallyEncodedData (_cio->buffer, cio_tell (_cio)));
 }

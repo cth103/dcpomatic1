@@ -17,25 +17,12 @@
 
 */
 
-/** @file src/tiff_encoder.h
- *  @brief An encoder that writes TIFF files (and does nothing with audio).
- */
-
-#include <string>
-#include <sndfile.h>
-#include "encoder.h"
-
+class Decoder;
 class FilmState;
+class Options;
+class Job;
 class Log;
 
-/** An encoder that writes TIFF files (and does nothing with audio) */
-class TIFFEncoder : public Encoder
-{
-public:
-	TIFFEncoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log *);
-
-	void process_begin () {}
-	void process_video (boost::shared_ptr<Image>, int);
-	void process_audio (uint8_t *, int, int) {}
-	void process_end () {}
-};
+extern Decoder * decoder_factory (
+	boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *, Log *, bool minimal = false, bool ignore_length = false
+	);

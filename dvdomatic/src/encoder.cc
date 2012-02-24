@@ -27,10 +27,12 @@ using namespace boost;
 
 /** @param s FilmState of the film that we are encoding.
  *  @param o Options.
+ *  @param l Log.
  */
-Encoder::Encoder (shared_ptr<const FilmState> s, shared_ptr<const Options> o)
+Encoder::Encoder (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
 	: _fs (s)
 	, _opt (o)
+	, _log (l)
 {
 
 }

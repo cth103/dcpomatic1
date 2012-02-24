@@ -17,25 +17,41 @@
 
 */
 
-/** @file src/tiff_encoder.h
- *  @brief An encoder that writes TIFF files (and does nothing with audio).
- */
+#ifndef DVDOMATIC_TIFF_DECODER_H
+#define DVDOMATIC_TIFF_DECODER_H
 
+#include <vector>
 #include <string>
-#include <sndfile.h>
-#include "encoder.h"
+#include <stdint.h>
+#include <boost/shared_ptr.hpp>
+#include "util.h"
+#include "decoder.h"
 
+class Job;
 class FilmState;
+class Options;
+class Image;
 class Log;
 
-/** An encoder that writes TIFF files (and does nothing with audio) */
-class TIFFEncoder : public Encoder
+class TIFFDecoder : public Decoder
 {
 public:
-	TIFFEncoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log *);
+	TIFFDecoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *, Log *, bool, bool);
 
-	void process_begin () {}
-	void process_video (boost::shared_ptr<Image>, int);
-	void process_audio (uint8_t *, int, int) {}
-	void process_end () {}
+	/* Methods to query our input video */
+	int length_in_frames () const;
+	float frames_per_second () const;
+	Size native_size () const;
+	int audio_channels () const;
+	int audio_sample_rate () const;
+	AVSampleFormat audio_sample_format () const;
+
+	PassResult do_pass ();
+
+private:
+	std::string file_path (std::string) const;
+	std::list<std::string> _files;
+	std::list<std::string>::iterator _iter;
 };
+
+#endif
