@@ -1,6 +1,20 @@
 /** @mainpage DVD-o-matic
  *
  *  DVD-o-matic is a tool to create digital cinema packages (DCPs) from
- *  video files, or from sets of TIFF image files.
+ *  video files, or from sets of TIFF image files.  It is written in C++
+ *  and distributed under the GPL.
  *
+ *  Video files are decoded using FFmpeg (http://ffmpeg.org), so any video
+ *  supported by FFmpeg should be usable with DVD-o-matic.  Most testing has, however,
+ *  happened with files from DVD.
+ *
+ *  It is based on OpenDCP (http://code.google.com/p/opendcp), written by Terrence Meiczinger.
+ * 
+ *  DVD-o-matic is distributed in the hope that there are still cinemas with projectionists
+ *  who might want to use it.  As Mark Kermode says, "if it doesn't have a projectionist
+ *  it's not a cinema - it's a sweetshop with a video-screen."
+ *
+ *  Email correspondance is welcome to cth@carlh.net
+ *
+ *  More details can be found at http://carlh.net/dvdomatic
  */
