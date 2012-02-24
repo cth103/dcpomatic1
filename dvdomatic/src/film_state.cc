@@ -41,6 +41,7 @@ FilmState::write_metadata (ofstream& f) const
 	if (dcp_content_type) {
 		f << "dcp_content_type " << dcp_content_type->pretty_name () << "\n";
 	}
+	f << "frames_per_second " << frames_per_second << "\n";
 	if (format) {
 		f << "format " << format->get_as_metadata () << "\n";
 	}
@@ -64,7 +65,6 @@ FilmState::write_metadata (ofstream& f) const
 	f << "width " << size.width << "\n";
 	f << "height " << size.height << "\n";
 	f << "length " << length << "\n";
-	f << "frames_per_second " << frames_per_second << "\n";
 	f << "audio_channels " << audio_channels << "\n";
 	f << "audio_sample_rate " << audio_sample_rate << "\n";
 	f << "audio_sample_format " << audio_sample_format_to_string (audio_sample_format) << "\n";
@@ -84,6 +84,8 @@ FilmState::read_metadata (string k, string v)
 		guess_dcp_long_name = (v == "1");
 	} else if (k == "dcp_content_type") {
 		dcp_content_type = ContentType::get_from_pretty_name (v);
+	} else if (k == "frames_per_second") {
+		frames_per_second = atof (v.c_str ());
 	} else if (k == "format") {
 		format = Format::get_from_metadata (v);
 	} else if (k == "left_crop") {
@@ -117,8 +119,6 @@ FilmState::read_metadata (string k, string v)
 		size.height = atoi (v.c_str ());
 	} else if (k == "length") {
 		length = atof (v.c_str ());
-	} else if (k == "frames_per_second") {
-		frames_per_second = atof (v.c_str ());
 	} else if (k == "audio_channels") {
 		audio_channels = atoi (v.c_str ());
 	} else if (k == "audio_sample_rate") {

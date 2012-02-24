@@ -45,6 +45,7 @@ public:
 	FilmState ()
 		: guess_dcp_long_name (false)
 		, dcp_content_type (0)
+		, frames_per_second (0)
 		, format (0)
 		, left_crop (0)
 		, right_crop (0)
@@ -54,7 +55,6 @@ public:
 		, dcp_frames (0)
 		, dcp_ab (false)
 		, length (0)
-		, frames_per_second (0)
 		, audio_channels (0)
 		, audio_sample_rate (0)
 		, audio_sample_format (AV_SAMPLE_FMT_NONE)
@@ -96,6 +96,8 @@ public:
 	bool guess_dcp_long_name;
 	/** The type of content that this Film represents (feature, trailer etc.) */
 	ContentType const * dcp_content_type;
+	/** Frames per second of the source */
+	float frames_per_second;
 	/** The format to present this Film in (flat, scope, etc.) */
 	Format const * format;
 	/** Number of pixels to crop from the left-hand side of the original picture */
@@ -127,8 +129,6 @@ public:
 	Size size;
 	/** Length in frames */
 	int length;
-	/** Frames per second of the source */
-	float frames_per_second;
 	/** Number of audio channels */
 	int audio_channels;
 	/** Sample rate of the audio, in Hz */

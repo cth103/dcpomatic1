@@ -75,6 +75,9 @@ FilmEditor::FilmEditor (Film* f)
 		_format.append_text ((*i)->name ());
 	}
 
+	_frames_per_second.set_increments (1, 5);
+	_frames_per_second.set_digits (2);
+
 	vector<ContentType const *> const ct = ContentType::get_all ();
 	for (vector<ContentType const *>::const_iterator i = ct.begin(); i != ct.end(); ++i) {
 		_dcp_content_type.append_text ((*i)->pretty_name ());
@@ -87,7 +90,6 @@ FilmEditor::FilmEditor (Film* f)
 	
 	_original_size.set_alignment (0, 0.5);
 	_length.set_alignment (0, 0.5);
-	_frames_per_second.set_alignment (0, 0.5);
 	_audio_channels.set_alignment (0, 0.5);
 	_audio_sample_rate.set_alignment (0, 0.5);
 
@@ -101,6 +103,7 @@ FilmEditor::FilmEditor (Film* f)
 	
 	/* Now connect to them, since initial values are safely set */
 	_name.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::name_changed));
+	_frames_per_second.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::frames_per_second_changed));
 	_format.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::format_changed));
 	_content.signal_file_set().connect (sigc::mem_fun (*this, &FilmEditor::content_changed));
 	_left_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::left_crop_changed));
@@ -134,6 +137,9 @@ FilmEditor::FilmEditor (Film* f)
 	t->attach (_dcp_long_name, 1, 2, n, n + 1);
 	++n;
 	t->attach (_guess_dcp_long_name, 1, 2, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("Frames Per Second"), 0, 1, n, n + 1);
+	t->attach (_frames_per_second, 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Format"), 0, 1, n, n + 1);
 	t->attach (_format, 1, 2, n, n + 1);
@@ -171,9 +177,6 @@ FilmEditor::FilmEditor (Film* f)
 	++n;
 	t->attach (left_aligned_label ("Length"), 0, 1, n, n + 1);
 	t->attach (_length, 1, 2, n, n + 1);
-	++n;
-	t->attach (left_aligned_label ("Frames Per Second"), 0, 1, n, n + 1);
-	t->attach (_frames_per_second, 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Audio Channels"), 0, 1, n, n + 1);
 	t->attach (_audio_channels, 1, 2, n, n + 1);
@@ -343,8 +346,7 @@ FilmEditor::film_changed (Film::Property p)
 		_name.set_text (_film->name ());
 		break;
 	case Film::FramesPerSecond:
-		s << _film->frames_per_second ();
-		_frames_per_second.set_text (s.str ());
+		_frames_per_second.set_value (_film->frames_per_second ());
 		break;
 	case Film::AudioChannels:
 		s << _film->audio_channels ();
@@ -542,5 +544,16 @@ FilmEditor::examine_content_clicked ()
 void
 FilmEditor::scaler_changed ()
 {
-	_film->set_scaler (Scaler::get_from_index (_scaler.get_active_row_number ()));
+	if (_film) {
+		_film->set_scaler (Scaler::get_from_index (_scaler.get_active_row_number ()));
+	}
+}
+
+/** Called when the frames per second widget has been changed */
+void
+FilmEditor::frames_per_second_changed ()
+{
+	if (_film) {
+		_film->set_frames_per_second (_frames_per_second.get_value ());
+	}
 }

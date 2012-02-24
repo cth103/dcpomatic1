@@ -604,3 +604,10 @@ Film::set_scaler (Scaler const * s)
 	_state.scaler = s;
 	signal_changed (FilmScaler);
 }
+
+void
+Film::set_frames_per_second (float f)
+{
+	_state.frames_per_second = f;
+	signal_changed (FramesPerSecond);
+}
