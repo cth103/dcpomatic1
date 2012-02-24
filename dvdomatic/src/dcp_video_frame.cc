@@ -270,7 +270,7 @@ DCPVideoFrame::encode_locally ()
 
 	{
 		stringstream s;
-		s << "Writing locally-encoded frame " << _frame << " length " << cio_tell (_cio);
+		s << "Finished locally-encoded frame " << _frame << " length " << cio_tell (_cio);
 		_log->log (s.str ());
 	}
 	
@@ -355,7 +355,13 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 
 #ifdef DEBUG_HASH
 	e->hash ("Encoded image (after receiving)");
-#endif	
+#endif
+
+	{
+		stringstream s;
+		s << "Finished remotely-encoded frame " << _frame << " length " << e->size();
+		_log->log (s.str ());
+	}
 	
 	close (fd);
 	return e;

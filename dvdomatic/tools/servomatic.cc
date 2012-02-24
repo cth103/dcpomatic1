@@ -207,9 +207,11 @@ main ()
 		socklen_t client_length = sizeof (client_address);
 		int new_fd = accept (fd, (struct sockaddr *) &client_address, &client_length);
 		if (new_fd < 0) {
-			stringstream s;
-			s << "error on accept (" << strerror (errno) << ")";
-			throw NetworkError (s.str ());
+			if (errno != EAGAIN && errno != EWOULDBLOCK) {
+				throw NetworkError ("accept failed");
+			}
+
+			continue;
 		}
 
 		mutex::scoped_lock lock (worker_mutex);

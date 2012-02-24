@@ -33,6 +33,7 @@
 #include "dcp_video_frame.h"
 #include "server.h"
 #include "filter.h"
+#include "log.h"
 
 using namespace std;
 using namespace boost;
@@ -104,7 +105,11 @@ J2KWAVEncoder::process_video (shared_ptr<Image> yuv, int frame)
 void
 J2KWAVEncoder::encoder_thread (Server* server)
 {
-	int failures = 0;
+	/* Number of seconds that we currently wait between attempts
+	   to connect to the server; not relevant for localhost
+	   encodings.
+	*/
+	int remote_backoff = 0;
 	
 	while (1) {
 		boost::mutex::scoped_lock lock (_worker_mutex);
@@ -126,17 +131,33 @@ J2KWAVEncoder::encoder_thread (Server* server)
 		if (server) {
 			try {
 				encoded = vf->encode_remotely (server);
+
+				if (remote_backoff > 0) {
+					stringstream s;
+					s << server->host_name() << " was lost, but now she is found; removing backoff";
+					_log->log (s.str ());
+				}
+				
+				/* This job succeeded, so remove any backoff */
+				remote_backoff = 0;
+				
 			} catch (std::exception& e) {
-				++failures;
-				cerr << "Remote encode failed (" << e.what() << "); thread sleeping for " << failures << "s.\n";
-				sleep (failures);
+				if (remote_backoff < 60) {
+					/* back off more */
+					remote_backoff += 10;
+				}
+				stringstream s;
+				s << "Remote encode on " << server->host_name() << " failed (" << e.what() << "); thread sleeping for " << remote_backoff << "s.";
+				_log->log (s.str ());
 			}
 				
 		} else {
 			try {
 				encoded = vf->encode_locally ();
 			} catch (std::exception& e) {
-				cerr << "Local encode failed " << e.what() << ".\n";
+				stringstream s;
+				s << "Local encode failed " << e.what() << ".";
+				_log->log (s.str ());
 			}
 		}
 
@@ -148,9 +169,8 @@ J2KWAVEncoder::encoder_thread (Server* server)
 			lock.unlock ();
 		}
 
-		if (failures == 4) {
-			cerr << "Giving up on encode thread.\n";
-			return;
+		if (remote_backoff > 0) {
+			sleep (remote_backoff);
 		}
 
 		lock.lock ();
