@@ -17,4 +17,4 @@
 
 */
 
-#define DVDOMATIC_VERSION "0.12"
+#define DVDOMATIC_VERSION "0.13-pre"
