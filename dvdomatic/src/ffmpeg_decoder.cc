@@ -178,15 +178,7 @@ FFmpegDecoder::do_pass ()
 		
 		if (frame_finished) {
 
-			++_video_frame;
-
-			if (_minimal) {
-				av_free_packet (&_packet);
-				return PASS_VIDEO;
-			}
-
-			/* Use FilmState::length here as our one may be wrong */
-			if (_opt->decode_video_frequency != 0 && (_video_frame % (_fs->length / _opt->decode_video_frequency)) != 0) {
+			if (!have_video_frame_ready ()) {
 				av_free_packet (&_packet);
 				return PASS_NOTHING;
 			}
@@ -202,15 +194,7 @@ FFmpegDecoder::do_pass ()
 					/* This takes ownership of filter_buffer */
 					shared_ptr<Image> image (new FilterBufferImage (_video_codec_context->pix_fmt, filter_buffer));
 
-					/* Emit */
-
-					{
-						stringstream s;
-						s << "Encoder generates video frame " << _video_frame;
-						_log->log (s.str ());
-					}
-					
-					Video (image, _video_frame);
+					emit_video (image);
 
 					av_free_packet (&_packet);
 					return PASS_VIDEO;
@@ -232,8 +216,8 @@ FFmpegDecoder::do_pass ()
 			int const data_size = av_samples_get_buffer_size (
 				0, _audio_codec_context->channels, _frame_in->nb_samples, audio_sample_format (), 1
 				);
-			
-			Audio (_frame_in->data[0], _audio_codec_context->channels, data_size);
+
+			emit_audio (_frame_in->data[0], _audio_codec_context->channels, data_size);
 			av_free_packet (&_packet);
 			return PASS_AUDIO;
 		}

@@ -82,3 +82,37 @@ Decoder::pass ()
 
 	return do_pass ();
 }
+
+/** To be called by subclasses when they have a video frame ready.
+ *  @return false if the subclass should stop and return PASS_NOTHING, otherwise true to proceed.
+ */
+bool
+Decoder::have_video_frame_ready ()
+{
+	if (_minimal) {
+		++_video_frame;
+		return false;
+	}
+
+	/* Use FilmState::length here as our one may be wrong */
+	if (_opt->decode_video_frequency != 0 && (_video_frame % (_fs->length / _opt->decode_video_frequency)) != 0) {
+		++_video_frame;
+		return false;
+	}
+
+	return true;
+}
+
+void
+Decoder::emit_video (shared_ptr<Image> image)
+{
+	Video (image, _video_frame);
+	++_video_frame;
+}
+
+
+void
+Decoder::emit_audio (uint8_t* data, int channels, int size)
+{
+	Audio (data, channels, size);
+}

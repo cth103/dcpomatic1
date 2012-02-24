@@ -123,11 +123,7 @@ TIFFDecoder::do_pass ()
 		return PASS_DONE;
 	}
 
-
-	/* XXX: this should be in Decoder */
-	if (_opt->decode_video_frequency != 0 && (_video_frame % (_fs->length / _opt->decode_video_frequency)) != 0) {
-		++_video_frame;
-		++_iter;
+	if (!have_video_frame_ready ()) {
 		return PASS_NOTHING;
 	}
 	
@@ -167,11 +163,9 @@ TIFFDecoder::do_pass ()
 	_TIFFfree (raster);
 	TIFFClose (t);
 
-	++_video_frame;
-	++_iter;
-	
-	Video (image, _video_frame);
+	emit_video (image);
 
+	++_iter;
 	return Decoder::PASS_VIDEO;
 }
 

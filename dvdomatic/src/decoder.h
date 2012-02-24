@@ -55,8 +55,6 @@ public:
 		PASS_AUDIO    ///< some audio is available
 	};
 
-	virtual PassResult do_pass () = 0;
-	
 	PassResult pass ();
 	void go ();
 
@@ -70,6 +68,12 @@ public:
 	sigc::signal<void, uint8_t *, int, int> Audio;
 	
 protected:
+	virtual PassResult do_pass () = 0;
+	
+	bool have_video_frame_ready ();
+	void emit_video (boost::shared_ptr<Image>);
+	void emit_audio (uint8_t *, int, int);
+	
 	boost::shared_ptr<const FilmState> _fs;
 	boost::shared_ptr<const Options> _opt;
 	Job* _job;
@@ -78,6 +82,7 @@ protected:
 	bool _minimal;
 	bool _ignore_length;
 
+private:	
 	int _video_frame;
 };
 
