@@ -32,7 +32,7 @@
 class ABTranscodeJob : public Job
 {
 public:
-	ABTranscodeJob (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Log *);
+	ABTranscodeJob (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log* l);
 
 	std::string name () const;
 	void run ();

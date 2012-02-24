@@ -17,6 +17,13 @@
 
 */
 
+/** @file src/film_state.cc
+ *  @brief The state of a Film.  This is separate from Film so that
+ *  state can easily be copied and kept around for reference
+ *  by long-running jobs.  This avoids the jobs getting confused
+ *  by the user changing Film settings during their run.
+ */
+
 #include <fstream>
 #include <string>
 #include <iomanip>

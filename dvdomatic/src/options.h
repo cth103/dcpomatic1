@@ -17,12 +17,19 @@
 
 */
 
+/** @file src/options.h
+ *  @brief Options for a transcoding operation.
+ */
+
 #include <string>
 #include <iomanip>
 #include <sstream>
 #include "util.h"
 
-/** Options for a transcoding operation */
+/** Options for a transcoding operation.
+ *  These are settings which may be different, in different circumstances, for
+ *  the same film; ie they are options for a particular transcode operation.
+ */
 class Options
 {
 public:
@@ -38,10 +45,15 @@ public:
 		, _multichannel_audio_out_path (m)
 	{}
 
+	/** @return The path to write video frames to */
 	std::string frame_out_path () const {
 		return _frame_out_path;
 	}
 
+	/** @param f Frame index.
+	 *  @param t true to return a temporary file path, otherwise a permanent one.
+	 *  @return The path to write this video frame to.
+	 */
 	std::string frame_out_path (int f, bool t) const {
 		std::stringstream s;
 		s << _frame_out_path << "/";
@@ -55,10 +67,15 @@ public:
 		return s.str ();
 	}
 
+	/** @return Path to write multichannel audio data to */
 	std::string multichannel_audio_out_path () const {
 		return _multichannel_audio_out_path;
 	}
 
+	/** @param c Audio channel index.
+	 *  @param t true to return a temporary file path, otherwise a permanent one.
+	 *  @return The path to write this audio file to.
+	 */
 	std::string multichannel_audio_out_path (int c, bool t) const {
 		std::stringstream s;
 		s << _multichannel_audio_out_path << "/" << (c + 1) << ".wav";
@@ -77,7 +94,10 @@ public:
 	bool decode_audio;          ///< true to decode audio, otherwise false
 
 private:
+	/** Path of the directory to write video frames to */
 	std::string _frame_out_path;
+	/** Extension to use for video frame files (including the leading .) */
 	std::string _frame_out_extension;
+	/** Path of the directory to write audio files to */
 	std::string _multichannel_audio_out_path;
 };

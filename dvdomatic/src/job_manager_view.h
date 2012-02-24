@@ -17,17 +17,23 @@
 
 */
 
+/** @file src/job_manager_view.h
+ *  @brief Class generating a GTK widget to show the progress of jobs.
+ */
+
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include <gtkmm.h>
 
 class Job;
 
+/** Class generating a GTK widget to show the progress of jobs */
 class JobManagerView
 {
 public:
 	JobManagerView ();
 
+	/** @return Our main widget, which contains everything else */
 	Gtk::Widget& get_widget () {
 		return _scroller;
 	}
@@ -35,10 +41,14 @@ public:
 	void update ();
 
 private:
+	/** Scroller for all our contents */
 	Gtk::ScrolledWindow _scroller;
+	/** View for the jobs */
 	Gtk::TreeView _view;
+	/** Store for the jobs */
 	Glib::RefPtr<Gtk::TreeStore> _store;
 
+	/** The TreeModelColumnRecord for the store */
 	class StoreColumns : public Gtk::TreeModelColumnRecord
 	{
 	public:
@@ -51,12 +61,18 @@ private:
 			add (text);
 		}
 
+		/** Job name */
 		Gtk::TreeModelColumn<std::string> name;
+		/** Job */
 		Gtk::TreeModelColumn<boost::shared_ptr<Job> > job;
+		/** Progress */
 		Gtk::TreeModelColumn<float> progress;
+		/** An increasing integer number if the progress is unknown */
 		Gtk::TreeModelColumn<int> progress_unknown;
+		/** Text to write into the progress bar */
 		Gtk::TreeModelColumn<std::string> text;
 	};
 
+	/** The columns for the store */
 	StoreColumns _columns;
 };

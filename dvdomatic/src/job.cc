@@ -194,6 +194,7 @@ Job::descend (float a)
 	_stack.push_back (Level (a));
 }
 
+/** @return Any error string that the job has generated */
 string
 Job::error () const
 {
@@ -201,6 +202,9 @@ Job::error () const
 	return _error;
 }
 
+/** Set the current error string.
+ *  @param e New error string.
+ */
 void
 Job::set_error (string e)
 {

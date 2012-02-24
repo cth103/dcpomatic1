@@ -28,16 +28,16 @@
 class Log
 {
 public:
-	Log (std::string);
+	Log (std::string f);
 
 	enum Level {
 		STANDARD = 0,
 		VERBOSE = 1
 	};
 
-	void log (std::string, Level level = STANDARD);
+	void log (std::string m, Level l = STANDARD);
 
-	void set_level (Level);
+	void set_level (Level l);
 
 private:
 	/** mutex to prevent simultaneous writes to the file */

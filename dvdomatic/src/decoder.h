@@ -40,17 +40,24 @@ class Decoder
 {
 public:
 	Decoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *, Log *, bool, bool);
-	virtual ~Decoder ();
+	virtual ~Decoder () {}
 
 	/* Methods to query our input video */
+
+	/** @return length in video frames */
 	virtual int length_in_frames () const = 0;
 	/** @return video frames per second, or 0 if unknown */
 	virtual float frames_per_second () const = 0;
+	/** @return native size in pixels */
 	virtual Size native_size () const = 0;
+	/** @return number of audio channels */
 	virtual int audio_channels () const = 0;
+	/** @return audio sampling rate in Hz */
 	virtual int audio_sample_rate () const = 0;
+	/** @return format of audio samples */
 	virtual AVSampleFormat audio_sample_format () const = 0;
 
+	/** Result of a call to pass() */
 	enum PassResult {
 		PASS_DONE,    ///< we have decoded all the input
 		PASS_NOTHING, ///< nothing new is ready after this pass

@@ -17,6 +17,13 @@
 
 */
 
+/** @file src/film_state.h
+ *  @brief The state of a Film.  This is separate from Film so that
+ *  state can easily be copied and kept around for reference
+ *  by long-running jobs.  This avoids the jobs getting confused
+ *  by the user changing Film settings during their run.
+ */
+
 #ifndef DVDOMATIC_FILM_STATE_H
 #define DVDOMATIC_FILM_STATE_H
 
@@ -93,6 +100,7 @@ public:
 	std::string content;
 	/** DCP long name (e.g. BLUES-BROTHERS_FTR_F_EN-XX ...) */
 	std::string dcp_long_name;
+	/** true if we are guessing the dcp_long_name from other state */
 	bool guess_dcp_long_name;
 	/** The type of content that this Film represents (feature, trailer etc.) */
 	ContentType const * dcp_content_type;
@@ -108,10 +116,9 @@ public:
 	int top_crop;
 	/** Number of pixels to crop from the bottom of the original picture */
 	int bottom_crop;
+	/** Video filters that should be used when generating DCPs */
 	std::vector<Filter const *> filters;
-	/** Scaler algorithm to use.
-	 *  (SWS_BICUBIC, SWS_X, SWS_AREA, SWS_GAUSS, SWS_LANCZOS, SWS_SINC, SWS_SPLINE, SWS_BILINEAR, SWS_FAST_BILINEAR)
-	 */
+	/** Scaler algorithm to use */
 	Scaler const * scaler;
 	/** Number of frames to put in the DCP, or 0 for all */
 	int dcp_frames;

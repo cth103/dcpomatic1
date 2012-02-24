@@ -69,10 +69,10 @@ public:
 	std::string get_as_metadata () const;
 
 	static Format const * get_from_ratio (int);
-	static Format const * get_from_nickname (std::string);
-	static Format const * get_from_metadata (std::string);
-	static Format const * get_from_index (int);
-	static int get_as_index (Format const *);
+	static Format const * get_from_nickname (std::string n);
+	static Format const * get_from_metadata (std::string m);
+	static Format const * get_from_index (int i);
+	static int get_as_index (Format const * f);
 	static std::vector<Format const *> get_all ();
 	static void setup_formats ();
 	

@@ -17,8 +17,13 @@
 
 */
 
+/** @file src/config_dialog.h
+ *  @brief A dialogue to edit DVD-o-matic configuration.
+ */
+
 #include <gtkmm.h>
 
+/** A dialogue to edit DVD-o-matic configuration */
 class ConfigDialog : public Gtk::Dialog
 {
 public:

@@ -31,7 +31,7 @@
 class Scaler
 {
 public:
-	Scaler (int, std::string, std::string);
+	Scaler (int f, std::string i, std::string n);
 
 	/** @return id used for calls to FFmpeg's pp_postprocess */
 	int ffmpeg_id () const {
@@ -50,7 +50,7 @@ public:
 	
 	static std::vector<Scaler const *> get_all ();
 	static void setup_scalers ();
-	static Scaler const * get_from_id (std::string);
+	static Scaler const * get_from_id (std::string id);
 	static Scaler const * get_from_index (int);
 	static int get_as_index (Scaler const *);
 

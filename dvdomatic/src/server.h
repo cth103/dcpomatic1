@@ -30,12 +30,15 @@
 class Server
 {
 public:
+	/** @param h Server host name or IP address in string form.
+	 *  @param t Number of threads to use on the server.
+	 */
 	Server (std::string h, int t)
 		: _host_name (h)
 		, _threads (t)
 	{}
 
-	/** @return server's host name */
+	/** @return server's host name or IP address in string form */
 	std::string host_name () const {
 		return _host_name;
 	}
@@ -47,7 +50,7 @@ public:
 
 	std::string get_as_metadata () const;
 	
-	static Server * create_from_metadata (std::string);
+	static Server * create_from_metadata (std::string v);
 
 private:
 	/** server's host name */

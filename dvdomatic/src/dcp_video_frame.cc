@@ -53,10 +53,20 @@
 using namespace std;
 using namespace boost;
 
-/** Construct a DCP video frame */
+/** Construct a DCP video frame.
+ *  @param input Input image.
+ *  @param out Required size of output, in pixels.
+ *  @param s Scaler to use.
+ *  @param f Index of the frame within the Film.
+ *  @param fps Frames per second of the Film.
+ *  @param pp FFmpeg post-processing string to use.
+ *  @param clut Colour look-up table to use (see Config::colour_lut_index ())
+ *  @param bw J2K bandwidth to use (see Config::j2k_bandwidth ())
+ *  @param l Log to write to.
+ */
 DCPVideoFrame::DCPVideoFrame (
 	shared_ptr<Image> yuv, Size out, Scaler const * s, int f, int fps, string pp, int clut, int bw, Log* l)
-	: _yuv (yuv)
+	: _input (yuv)
 	, _out_size (out)
 	, _scaler (s)
 	, _frame (f)
@@ -73,6 +83,7 @@ DCPVideoFrame::DCPVideoFrame (
 	
 }
 
+/** Create a libopenjpeg container suitable for our output image */
 void
 DCPVideoFrame::create_openjpeg_container ()
 {
@@ -121,10 +132,13 @@ DCPVideoFrame::~DCPVideoFrame ()
 	delete _parameters;
 }
 
+/** J2K-encode this frame on the local host.
+ *  @return Encoded data.
+ */
 shared_ptr<EncodedData>
 DCPVideoFrame::encode_locally ()
 {
-	shared_ptr<Image> prepared = _yuv->scale_and_convert_to_rgb (_out_size, _scaler);
+	shared_ptr<Image> prepared = _input->scale_and_convert_to_rgb (_out_size, _scaler);
 	if (!_post_process.empty ()) {
 		prepared = prepared->post_process (_post_process);
 	}
@@ -255,6 +269,10 @@ DCPVideoFrame::encode_locally ()
 	return shared_ptr<EncodedData> (new LocallyEncodedData (_cio->buffer, cio_tell (_cio)));
 }
 
+/** Send this frame to a remote server for J2K encoding, then read the result.
+ *  @param serv Server to send to.
+ *  @return Encoded data.
+ */
 shared_ptr<EncodedData>
 DCPVideoFrame::encode_remotely (Server const * serv)
 {
@@ -280,13 +298,13 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 	}
 
 #ifdef DEBUG_HASH
-	_yuv->hash ("Input for remote encoding (before sending)");
+	_input->hash ("Input for remote encoding (before sending)");
 #endif
 
 	stringstream s;
 	s << "encode "
-	  << _yuv->size().width << " " << _yuv->size().height << " "
-	  << _yuv->pixel_format() << " "
+	  << _input->size().width << " " << _input->size().height << " "
+	  << _input->pixel_format() << " "
 	  << _out_size.width << " " << _out_size.height << " "
 	  << _scaler->id () << " "
 	  << _frame << " "
@@ -295,14 +313,14 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 	  << Config::instance()->colour_lut_index () << " "
 	  << Config::instance()->j2k_bandwidth () << " ";
 
-	for (int i = 0; i < _yuv->components(); ++i) {
-		s << _yuv->line_size()[i] << " ";
+	for (int i = 0; i < _input->components(); ++i) {
+		s << _input->line_size()[i] << " ";
 	}
 
 	fd_write (fd, (uint8_t *) s.str().c_str(), s.str().length() + 1);
 	
-	for (int i = 0; i < _yuv->components(); ++i) {
-		fd_write (fd, _yuv->data()[i], _yuv->line_size()[i] * _yuv->lines(i));
+	for (int i = 0; i < _input->components(); ++i) {
+		fd_write (fd, _input->data()[i], _input->line_size()[i] * _input->lines(i));
 	}
 
 	SocketReader reader (fd);
@@ -323,6 +341,10 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 	return e;
 }
 
+/** Write this data to a J2K file.
+ *  @param opt Options.
+ *  @param frame Frame index.
+ */
 void
 EncodedData::write (shared_ptr<const Options> opt, int frame)
 {
@@ -341,7 +363,9 @@ EncodedData::write (shared_ptr<const Options> opt, int frame)
 	filesystem::rename (tmp_j2k, opt->frame_out_path (frame, false));
 }
 
-
+/** Send this data to a file descriptor.
+ *  @param fd File descriptor.
+ */
 void
 EncodedData::send (int fd)
 {
@@ -359,6 +383,7 @@ EncodedData::hash (string n) const
 }
 #endif		
 
+/** @param s Size of data in bytes */
 RemotelyEncodedData::RemotelyEncodedData (int s)
 	: EncodedData (new uint8_t[s], s)
 {

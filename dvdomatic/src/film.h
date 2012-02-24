@@ -17,6 +17,11 @@
 
 */
 
+/** @file  src/film.cc
+ *  @brief A representation of a piece of video (with sound), including naming,
+ *  the source content file, and how it should be presented in a DCP.
+ */
+
 #ifndef DVDOMATIC_FILM_H
 #define DVDOMATIC_FILM_H
 
@@ -43,54 +48,68 @@ class ExamineContentJob;
 class Film
 {
 public:
-	Film (std::string, bool must_exist = true);
+	Film (std::string d, bool must_exist = true);
 	Film (Film const &);
 	~Film ();
 
 	void write_metadata () const;
 
+	/** @return complete path to directory containing the film metadata */
 	std::string directory () const {
 		return _state.directory;
 	}
-	
+
 	std::string content () const;
 
+	/** @return name for DVD-o-matic */
 	std::string name () const {
 		return _state.name;
 	}
 
+	/** @return number of pixels to crop from the top of the original picture */
 	int top_crop () const {
 		return _state.top_crop;
 	}
 
+	/** @return number of pixels to crop from the bottom of the original picture */
 	int bottom_crop () const {
 		return _state.bottom_crop;
 	}
 
+	/** @return number of pixels to crop from the left-hand side of the original picture */
 	int left_crop () const {
 		return _state.left_crop;
 	}
 
+	/** @return number of pixels to crop from the right-hand side of the original picture */
 	int right_crop () const {
 		return _state.right_crop;
 	}
 
+	/** @return the format to present this film in (flat, scope, etc.) */
 	Format const * format () const {
 		return _state.format;
 	}
 
+	/** @return video filters that should be used when generating DCPs */
 	std::vector<Filter const *> filters () const {
 		return _state.filters;
 	}
 
+	/** @return scaler algorithm to use */
 	Scaler const * scaler () const {
 		return _state.scaler;
 	}
 
+	/** @return number of frames to put in the DCP, or 0 for all *
 	int dcp_frames () const {
 		return _state.dcp_frames;
 	}
 
+	/** @return true to create an A/B comparison DCP, where the left half of the image
+	 *  is the video without any filters or post-processing, and the right half
+	 *  has the specified filters and post-processing.
+	 */
 	bool dcp_ab () const {
 		return _state.dcp_ab;
 	}
@@ -99,14 +118,17 @@ public:
 
 	void set_scaler (Scaler const *);
 
+	/** @return DCP long name (e.g. BLUES-BROTHERS_FTR_F_EN-XX ...) */
 	std::string dcp_long_name () const {
 		return _state.dcp_long_name;
 	}
 
+	/** @return true if we are guessing the dcp_long_name from other state */
 	bool guess_dcp_long_name () const {
 		return _state.guess_dcp_long_name;
 	}
 
+	/** @return the type of content that this Film represents (feature, trailer etc.) */
 	ContentType const * dcp_content_type () {
 		return _state.dcp_content_type;
 	}
@@ -126,26 +148,32 @@ public:
 	void set_guess_dcp_long_name (bool);
 	void set_dcp_content_type (ContentType const *);
 
+	/** @return size, in pixels, of the source (ignoring cropping) */
 	Size size () const {
 		return _state.size;
 	}
-	
+
+	/** @return length, in video frames */
 	int length () const {
 		return _state.length;
 	}
 
+	/** @return nnumber of video frames per second */
 	float frames_per_second () const {
 		return _state.frames_per_second;
 	}
 
+	/** @return number of audio channels */
 	int audio_channels () const {
 		return _state.audio_channels;
 	}
 
+	/** @return audio sanmple rate, in Hz */
 	int audio_sample_rate () const {
 		return _state.audio_sample_rate;
 	}
 
+	/** @return format of the audio samples */
 	AVSampleFormat audio_sample_format () const {
 		return _state.audio_sample_format;
 	}
@@ -162,6 +190,7 @@ public:
 	void examine_content ();
 	void examine_content_post_gui ();
 
+	/** @return true if our metadata has been modified since it was last saved */
 	bool dirty () const {
 		return _dirty;
 	}
@@ -210,13 +239,19 @@ private:
 	void signal_changed (Property);
 	void maybe_guess_dcp_long_name ();
 
+	/** The majority of our state.  Kept in a separate object
+	 *  so that it can easily be copied for passing onto long-running
+	 *  jobs (which then have an unchanging set of parameters).
+	 */
 	FilmState _state;
 
 	/** true if our metadata has changed since it was last written to disk */
 	mutable bool _dirty;
 
+	/** Log to write to */
 	Log* _log;
 
+	/** Any running ExamineContentJob, or 0 */
 	boost::shared_ptr<ExamineContentJob> _examine_content_job;
 };
 

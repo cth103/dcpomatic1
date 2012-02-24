@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/job_manager_view.cc
+ *  @brief Class generating a GTK widget to show the progress of jobs.
+ */
+
 #include "job_manager_view.h"
 #include "job_manager.h"
 #include "job.h"
@@ -25,7 +29,7 @@
 using namespace std;
 using namespace boost;
 
-/* Must be called in the GUI thread */
+/** Must be called in the GUI thread */
 JobManagerView::JobManagerView ()
 {
 	_scroller.set_policy (Gtk::POLICY_NEVER, Gtk::POLICY_ALWAYS);
@@ -47,7 +51,9 @@ JobManagerView::JobManagerView ()
 	update ();
 }
 
-/* Must be called in the GUI thread */
+/** Update the view by examining the state of each jobs.
+ *  Must be called in the GUI thread.
+ */
 void
 JobManagerView::update ()
 {

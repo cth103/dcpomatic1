@@ -36,7 +36,7 @@ class Options;
 class Job
 {
 public:
-	Job (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Log *);
+	Job (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log* l);
 
 	/** @return user-readable name of this job */
 	virtual std::string name () const = 0;
@@ -68,16 +68,18 @@ public:
 protected:
 
 	enum State {
-		NEW,
-		RUNNING,
-		FINISHED_OK,
-		FINISHED_ERROR
+		NEW,           ///< the job hasn't been started yet
+		RUNNING,       ///< the job is running
+		FINISHED_OK,   ///< the job has finished successfully
+		FINISHED_ERROR ///< the job has finished in error
 	};
 	
 	void set_state (State);
-	void set_error (std::string);
+	void set_error (std::string e);
 
+	/** The FilmState of the Film that we are working on */
 	boost::shared_ptr<const FilmState> _fs;
+	/** Options for this operation */
 	boost::shared_ptr<const Options> _opt;
 
 	/** A log that this job can write to */

@@ -30,6 +30,7 @@ using namespace boost;
  *  @param s FilmState of Film that we are transcoding.
  *  @param o Options.
  *  @param j Job that we are running under, or 0.
+ *  @param l Log that we can write to.
  *  @param e Encoder to use.
  */
 Transcoder::Transcoder (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Job* j, Log* l, Encoder* e)

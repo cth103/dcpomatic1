@@ -68,7 +68,7 @@ Scaler::setup_scalers ()
 	_scalers.push_back (new Scaler (SWS_FAST_BILINEAR, "fastbilinear", "Fast Bilinear"));
 }
 
-/** @param One of our ids.
+/** @param id One of our ids.
  *  @return Corresponding scaler, or 0.
  */
 Scaler const *
@@ -86,7 +86,7 @@ Scaler::get_from_id (string id)
 	return *i;
 }
 
-/** @param A scaler from our static list.
+/** @param s A scaler from our static list.
  *  @return Index of the scaler with the list, or -1.
  */
 int
@@ -104,7 +104,7 @@ Scaler::get_as_index (Scaler const * s)
 	return i;
 }
 
-/** @param An index returned from get_as_index().
+/** @param i An index returned from get_as_index().
  *  @return Corresponding scaler.
  */
 Scaler const *

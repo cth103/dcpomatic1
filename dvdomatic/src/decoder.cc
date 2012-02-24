@@ -52,11 +52,6 @@ Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const 
 	
 }
 
-Decoder::~Decoder ()
-{
-	
-}	
-
 /** Start decoding */
 void
 Decoder::go ()

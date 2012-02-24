@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/opendcp_job.h
+ *  @brief A job which calls an OpenDCP command via a shell.
+ */
+
 #ifndef DVDOMATIC_OPENDCP_JOB_H
 #define DVDOMATIC_OPENDCP_JOB_H
 
@@ -25,13 +29,14 @@
 class FilmState;
 class Log;
 
+/** A job which calls an OpenDCP command via a shell */
 class OpenDCPJob : public Job
 {
 public:
-	OpenDCPJob (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Log *);
+	OpenDCPJob (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log* l);
 
 protected:
-	void command (std::string);
+	void command (std::string c);
 };
 
 #endif

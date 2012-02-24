@@ -83,6 +83,7 @@ private:
 class OpenFileError : public FileError
 {
 public:
+	/** @param f File that we were trying to open */
 	OpenFileError (std::string f)
 		: FileError ("could not open file " + f, f)
 	{}
@@ -120,6 +121,7 @@ public:
 
 	virtual ~MissingSettingError () throw () {}
 
+	/** @return name of setting that was required */
 	std::string setting () const {
 		return _setting;
 	}

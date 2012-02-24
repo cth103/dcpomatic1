@@ -202,6 +202,10 @@ SimpleImage::~SimpleImage ()
 	av_free (_line_size);
 }
 
+/** Set the size in bytes of each horizontal line of a given component.
+ *  @param i Component index.
+ *  @param s Size of line in bytes.
+ */
 void
 SimpleImage::set_line_size (int i, int s)
 {

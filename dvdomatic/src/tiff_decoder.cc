@@ -37,6 +37,14 @@ extern "C" {
 using namespace std;
 using namespace boost;
 
+/** @param fs FilmState of our Film.
+ *  @param o Options.
+ *  @param j Job that we are associated with, or 0.
+ *  @param l Log that we can write to.
+ *  @param minimal true to do the bare minimum of work; just run through the content.  Useful for acquiring
+ *  accurate frame counts as quickly as possible.  This generates no video or audio output.
+ *  @param ignore_length Ignore the content's claimed length when computing progress.
+ */
 TIFFDecoder::TIFFDecoder (boost::shared_ptr<const FilmState> fs, boost::shared_ptr<const Options> o, Job* j, Log* l, bool minimal, bool ignore_length)
 	: Decoder (fs, o, j, l, minimal, ignore_length)
 {
@@ -171,6 +179,9 @@ TIFFDecoder::do_pass ()
 	return Decoder::PASS_VIDEO;
 }
 
+/** @param file name within our content directory
+ *  @return full path to the file
+ */
 string
 TIFFDecoder::file_path (string f) const
 {

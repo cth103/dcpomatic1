@@ -30,8 +30,21 @@
 #include "image.h"
 #include "decoder_factory.h"
 
+/** @file src/ab_transcoder.cc
+ *  @brief A transcoder which uses one FilmState for the left half of the screen, and a different one
+ *  for the right half (to facilitate A/B comparisons of settings)
+ */
+
 using namespace std;
 using namespace boost;
+
+/** @param a FilmState to use for the left half of the screen.
+ *  @param b FilmState to use for the right half of the screen.
+ *  @param o Options.
+ *  @param j Job that we are associated with.
+ *  @param l Log.
+ *  @param e Encoder to use.
+ */
 
 ABTranscoder::ABTranscoder (
 	boost::shared_ptr<const FilmState> a, boost::shared_ptr<const FilmState> b, boost::shared_ptr<const Options> o, Job* j, Log* l, Encoder* e)

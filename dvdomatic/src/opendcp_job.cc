@@ -17,18 +17,30 @@
 
 */
 
+/** @file src/opendcp_job.cc
+ *  @brief A job which calls an OpenDCP command via a shell.
+ */
+
 #include <stdio.h>
 #include "opendcp_job.h"
 
 using namespace std;
 using namespace boost;
 
+/** @param s Our FilmState.
+ *  @param o Options.
+ *  @param l Log.
+ */
 OpenDCPJob::OpenDCPJob (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
 	: Job (s, o, l)
 {
 
 }
 
+/** Run an OpenDCP command via a shell, parsing its output in
+ *  order to report progress.
+ *  @param c Command to run.
+ */
 void
 OpenDCPJob::command (string c)
 {

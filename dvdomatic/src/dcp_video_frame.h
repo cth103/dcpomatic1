@@ -28,9 +28,13 @@ class Scaler;
 class Image;
 class Log;
 
+/** Container for J2K-encoded data */
 class EncodedData
 {
 public:
+	/** @param d Data (will not be freed by this class, but may be by subclasses)
+	 *  @param s Size of data, in bytes.
+	 */
 	EncodedData (uint8_t* d, int s)
 		: _data (d)
 		, _size (s)
@@ -45,27 +49,39 @@ public:
 	void hash (std::string) const;
 #endif	
 
+	/** @return data */
 	uint8_t* data () const {
 		return _data;
 	}
 
+	/** @return data size, in bytes */
 	int size () const {
 		return _size;
 	}
 
 protected:
-	uint8_t* _data;
-	int _size;
+	uint8_t* _data; ///< data
+	int _size;      ///< size in bytes
 };
 
+/** EncodedData that was encoded locally; this class
+ *  just keeps a pointer to the data, but does no memory
+ *  management.
+ */
 class LocallyEncodedData : public EncodedData
 {
 public:
+	/** @param d Data (which will not be freed by this class)
+	 *  @param s Size of data, in bytes.
+	 */
 	LocallyEncodedData (uint8_t* d, int s)
 		: EncodedData (d, s)
 	{}
 };
 
+/** EncodedData that is being read from a remote server;
+ *  this class allocates and manages memory for the data.
+ */
 class RemotelyEncodedData : public EncodedData
 {
 public:
@@ -73,6 +89,13 @@ public:
 	~RemotelyEncodedData ();
 };
 
+/** A single frame of video destined for a DCP.  Given an Image
+ *  and some settings, this class knows how to encode the image
+ *  to J2K either on the local host or on a remote server.
+ *
+ *  Objects of this class are used for the queue that we keep
+ *  of images that require encoding.
+ */
 class DCPVideoFrame
 {
 public:
@@ -90,20 +113,20 @@ private:
 	void create_openjpeg_container ();
 	void write_encoded (boost::shared_ptr<const Options>, uint8_t *, int);
 
-	boost::shared_ptr<Image> _yuv;
-	Size _out_size;
-	Scaler const * _scaler;
-	int _frame;
-	int _frames_per_second;
-	std::string _post_process;
-	int _colour_lut_index;
-	int _j2k_bandwidth;
+	boost::shared_ptr<Image> _input; ///< the input image
+	Size _out_size;                  ///< the required size of the output, in pixels
+	Scaler const * _scaler;          ///< scaler to use
+	int _frame;                      ///< frame index within the Film
+	int _frames_per_second;          ///< Film's frames per second
+	std::string _post_process;       ///< FFmpeg post-processing string to use
+	int _colour_lut_index;           ///< Colour look-up table to use (see Config::colour_lut_index ())
+	int _j2k_bandwidth;              ///< J2K bandwidth to use (see Config::j2k_bandwidth ())
 
-	Log* _log;
-	
-	opj_image_cmptparm_t _cmptparm[3];
-	opj_image* _image;
-	opj_cparameters_t* _parameters;
-	opj_cinfo_t* _cinfo;
-	opj_cio_t* _cio;
+	Log* _log; ///< log
+
+	opj_image_cmptparm_t _cmptparm[3]; ///< libopenjpeg's opj_image_cmptparm_t
+	opj_image* _image;                 ///< libopenjpeg's image container 
+	opj_cparameters_t* _parameters;    ///< libopenjpeg's parameters
+	opj_cinfo_t* _cinfo;               ///< libopenjpeg's opj_cinfo_t
+	opj_cio_t* _cio;                   ///< libopenjpeg's opj_cio_t
 };

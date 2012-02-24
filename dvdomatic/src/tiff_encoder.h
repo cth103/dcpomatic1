@@ -32,7 +32,7 @@ class Log;
 class TIFFEncoder : public Encoder
 {
 public:
-	TIFFEncoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log *);
+	TIFFEncoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log* l);
 
 	void process_begin () {}
 	void process_video (boost::shared_ptr<Image>, int);

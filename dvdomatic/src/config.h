@@ -52,7 +52,7 @@ public:
 		return _colour_lut_index;
 	}
 
-	/** @return bandwidth for J2K files in Mb/s */
+	/** @return bandwidth for J2K files in bits per second */
 	int j2k_bandwidth () const {
 		return _j2k_bandwidth;
 	}

@@ -39,7 +39,7 @@ class Log;
 class Encoder
 {
 public:
-	Encoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Log *);
+	Encoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log* l);
 
 	/** Called to indicate that a processing run is about to begin */
 	virtual void process_begin () = 0;

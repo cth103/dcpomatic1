@@ -17,6 +17,11 @@
 
 */
 
+/** @file src/ab_transcoder.h
+ *  @brief A transcoder which uses one FilmState for the left half of the screen, and a different one
+ *  for the right half (to facilitate A/B comparisons of settings)
+ */
+
 #include <boost/shared_ptr.hpp>
 #include <stdint.h>
 
@@ -34,7 +39,7 @@ class Log;
 class ABTranscoder
 {
 public:
-	ABTranscoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *, Log *, Encoder *);
+	ABTranscoder (boost::shared_ptr<const FilmState> a, boost::shared_ptr<const FilmState> b, boost::shared_ptr<const Options> o, Job* j, Log* l, Encoder* e);
 	~ABTranscoder ();
 
 	void go ();
