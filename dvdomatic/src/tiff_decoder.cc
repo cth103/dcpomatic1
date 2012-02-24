@@ -31,6 +31,7 @@ extern "C" {
 #include "film_state.h"
 #include "exceptions.h"
 #include "image.h"
+#include "options.h"
 
 using namespace std;
 using namespace boost;
@@ -46,13 +47,13 @@ TIFFDecoder::TIFFDecoder (boost::shared_ptr<const FilmState> fs, boost::shared_p
 
 	for (filesystem::directory_iterator i = filesystem::directory_iterator (dir); i != filesystem::directory_iterator(); ++i) {
 		/* Aah, the sweet smell of progress */
-#if BOOST_FILESYSTEM_VERSION == 3		
+		string const ext = filesystem::path(*i).extension().string();
+#if BOOST_FILESYSTEM_VERSION == 3
 		string const l = filesystem::path(*i).leaf().generic_string();
 #else
 		string const l = i->leaf ();
 #endif
-		size_t const d = l.find (".tiff");
-		if (d != string::npos) {
+		if (ext == ".tif" || ext == ".tiff") {
 			_files.push_back (l);
 		}
 	}
@@ -121,6 +122,14 @@ TIFFDecoder::do_pass ()
 		return PASS_DONE;
 	}
 
+
+	/* XXX: this should be in Decoder */
+	if (_opt->decode_video_frequency != 0 && (_video_frame % (_fs->length / _opt->decode_video_frequency)) != 0) {
+		++_video_frame;
+		++_iter;
+		return PASS_NOTHING;
+	}
+	
 	TIFF* t = TIFFOpen (file_path (*_iter).c_str (), "r");
 	if (t == 0) {
 		throw DecodeError ("could not open TIFF file");
@@ -141,20 +150,25 @@ TIFFDecoder::do_pass ()
 		throw DecodeError ("could not read TIFF data");
 	}
 
-	shared_ptr<Image> image (new SimpleImage (PIX_FMT_RGB24, Size (width, height)));
+	shared_ptr<SimpleImage> image (new SimpleImage (PIX_FMT_RGB24, Size (width, height)));
+	image->set_line_size (0, width * 3);
 
 	uint8_t* p = image->data()[0];
-	for (int i = 0; i < num_pixels; ++i) {
-		*p++ = raster[i] & 0xff;
-		*p++ = (raster[i] & 0xff00) >> 8;
-		*p++ = (raster[i] & 0xff0000) >> 16;
-		p++;
+	for (uint32_t y = 0; y < height; ++y) {
+		for (uint32_t x = 0; x < width; ++x) {
+			uint32_t const i = (height - y - 1) * width + x;
+			*p++ = raster[i] & 0xff;
+			*p++ = (raster[i] & 0xff00) >> 8;
+			*p++ = (raster[i] & 0xff0000) >> 16;
+		}
 	}
 
 	_TIFFfree (raster);
 	TIFFClose (t);
 
 	++_video_frame;
+	++_iter;
+	
 	Video (image, _video_frame);
 
 	return Decoder::PASS_VIDEO;

@@ -49,9 +49,9 @@ TIFFEncoder::TIFFEncoder (shared_ptr<const FilmState> s, shared_ptr<const Option
 }
 
 void
-TIFFEncoder::process_video (shared_ptr<Image> yuv, int frame)
+TIFFEncoder::process_video (shared_ptr<Image> image, int frame)
 {
-	shared_ptr<RGBFrameImage> scaled = yuv->scale_and_convert_to_rgb (_opt->out_size, _fs->scaler);
+	shared_ptr<Image> scaled = image->scale_and_convert_to_rgb (_opt->out_size, _fs->scaler);
 	string tmp_file = _opt->frame_out_path (frame, true);
 	TIFF* output = TIFFOpen (tmp_file.c_str (), "w");
 	if (output == 0) {

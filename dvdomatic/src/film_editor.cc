@@ -77,6 +77,7 @@ FilmEditor::FilmEditor (Film* f)
 
 	_frames_per_second.set_increments (1, 5);
 	_frames_per_second.set_digits (2);
+	_frames_per_second.set_range (0, 60);
 
 	vector<ContentType const *> const ct = ContentType::get_all ();
 	for (vector<ContentType const *>::const_iterator i = ct.begin(); i != ct.end(); ++i) {
@@ -257,9 +258,18 @@ FilmEditor::bottom_crop_changed ()
 void
 FilmEditor::content_changed ()
 {
+	if (!_film) {
+		return;
+	}
 	try {
-		if (_film) {
-			_film->set_content (_content.get_filename ());
+		/* XXX: hack; set to parent directory if we get a TIFF */
+		string const f = _content.get_filename ();
+		string const ext = filesystem::path (f).extension().string();
+		if (ext == ".tif" || ext == ".tiff") {
+			cout << "TIFF: hacking...\n";
+			_film->set_content (filesystem::path (f).branch_path().string ());
+		} else {
+			_film->set_content (f);
 		}
 	} catch (std::exception& e) {
 		_content.set_filename (_film->directory ());
