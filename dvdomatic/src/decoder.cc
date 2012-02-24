@@ -32,6 +32,14 @@
 using namespace std;
 using namespace boost;
 
+/** @param s FilmState of the Film.
+ *  @param o Options.
+ *  @param j Job that we are running within, or 0
+ *  @param l Log to use.
+ *  @param minimal true to do the bare minimum of work; just run through the content.  Useful for acquiring
+ *  accurate frame counts as quickly as possible.  This generates no video or audio output.
+ *  @param ignore_length Ignore the content's claimed length when computing progress.
+ */
 Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Job* j, Log* l, bool minimal, bool ignore_length)
 	: _fs (s)
 	, _opt (o)
@@ -49,6 +57,7 @@ Decoder::~Decoder ()
 	
 }	
 
+/** Start decoding */
 void
 Decoder::go ()
 {
@@ -73,6 +82,10 @@ Decoder::decoding_frames () const
 	return _fs->length;
 }
 
+/** Run one pass.  This may or may not generate any actual video / audio data;
+ *  some decoders may require several passes to generate a single frame.
+ *  @return Pass result.
+ */
 Decoder::PassResult
 Decoder::pass ()
 {
@@ -103,6 +116,7 @@ Decoder::have_video_frame_ready ()
 	return true;
 }
 
+/** Called by subclasses to tell the world that a video frame is ready */
 void
 Decoder::emit_video (shared_ptr<Image> image)
 {
@@ -110,7 +124,7 @@ Decoder::emit_video (shared_ptr<Image> image)
 	++_video_frame;
 }
 
-
+/** Called by subclasses to tell the world that some audio data is ready */
 void
 Decoder::emit_audio (uint8_t* data, int channels, int size)
 {

@@ -32,6 +32,10 @@ class Options;
 class Image;
 class Log;
 
+/** Parent class for decoders of content.  These classes can be instructed run through their content
+ *  (by calling ::go), and they emit signals when video or audio data is ready for something else
+ *  to process.
+ */
 class Decoder
 {
 public:
@@ -58,31 +62,53 @@ public:
 	PassResult pass ();
 	void go ();
 
+	/** @return the index of the last video frame to be processed */
 	int last_video_frame () const {
 		return _video_frame;
 	}
 	
 	int decoding_frames () const;
-	
+
+	/** Emitted when a video frame is ready.
+	 *  First parameter is the frame.
+	 *  Second parameter is its index within the content.
+	 */
 	sigc::signal<void, boost::shared_ptr<Image>, int> Video;
+
+	/** Emitted when some audio data is ready.
+	 *  First parameter is the interleaved sample data, format is given in the FilmState.
+	 *  Second parameter is the number of channels in the data.
+	 *  Third parameter is the size of the data.
+	 */
 	sigc::signal<void, uint8_t *, int, int> Audio;
 	
 protected:
+	/** perform a single pass at our content */
 	virtual PassResult do_pass () = 0;
 	
 	bool have_video_frame_ready ();
 	void emit_video (boost::shared_ptr<Image>);
 	void emit_audio (uint8_t *, int, int);
-	
+
+	/** our FilmState */
 	boost::shared_ptr<const FilmState> _fs;
+	/** our options */
 	boost::shared_ptr<const Options> _opt;
+	/** associated Job, or 0 */
 	Job* _job;
+	/** log that we can write to */
 	Log* _log;
 
+	/** true to do the bare minimum of work; just run through the content.  Useful for acquiring
+	 *  accurate frame counts as quickly as possible.  This generates no video or audio output.
+	 */
 	bool _minimal;
+
+	/** ignore_length Ignore the content's claimed length when computing progress */
 	bool _ignore_length;
 
-private:	
+private:
+	/** last video frame to be processed */
 	int _video_frame;
 };
 
