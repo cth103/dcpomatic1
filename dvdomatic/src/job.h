@@ -40,7 +40,7 @@ public:
 
 	/** @return user-readable name of this job */
 	virtual std::string name () const = 0;
-	/** Run this job */
+	/** Run this job in the current thread. */
 	virtual void run () = 0;
 	
 	void start ();
