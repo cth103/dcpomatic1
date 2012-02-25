@@ -89,11 +89,11 @@ ABTranscoder::process_video (shared_ptr<Image> yuv, int frame, int index)
 				p += line_size;
 				q += line_size;
 			}
-			
-			/* And pass it to the encoder */
-			_encoder->process_video (_image, frame);
-			_image.reset ();
 		}
+			
+		/* And pass it to the encoder */
+		_encoder->process_video (_image, frame);
+		_image.reset ();
 	}
 	
 	_last_frame = frame;
