@@ -18,7 +18,7 @@
 
 */
 
-/** @file src/util.cc
+/** @file src/lib/util.cc
  *  @brief Some utility functions and classes.
  */
 
@@ -115,17 +115,6 @@ seconds_to_approximate_hms (int s)
 	}
 
 	return ap.str ();
-}
-
-/** @param t Label text.
- *  @return GTK label containing t, left-aligned (passed through Gtk::manage)
- */
-Gtk::Label &
-left_aligned_label (string t)
-{
-	Gtk::Label* l = Gtk::manage (new Gtk::Label (t));
-	l->set_alignment (0, 0.5);
-	return *l;
 }
 
 /** @param l Mangled C++ identifier.
@@ -399,13 +388,6 @@ dvdomatic_setup ()
 	ContentType::setup_content_types ();
 	Scaler::setup_scalers ();
 	Filter::setup_filters ();
-}
-
-void
-error_dialog (string m)
-{
-	Gtk::MessageDialog d (m, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
-	d.run ();
 }
 
 #ifdef DEBUG_HASH

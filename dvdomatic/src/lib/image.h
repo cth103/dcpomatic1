@@ -26,7 +26,6 @@
 
 #include <string>
 #include <boost/shared_ptr.hpp>
-#include <gtkmm.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavfilter/avfilter.h>

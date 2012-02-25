@@ -19,18 +19,18 @@
 
 #include <iostream>
 #include <boost/filesystem.hpp>
-#include "film_viewer.h"
-#include "film_editor.h"
-#include "job_manager_view.h"
-#include "film.h"
-#include "format.h"
-#include "config_dialog.h"
-#include "config.h"
-#include "filter.h"
-#include "version.h"
-#include "gpl.h"
-#include "util.h"
-#include "scaler.h"
+#include "gtk/film_viewer.h"
+#include "gtk/film_editor.h"
+#include "gtk/job_manager_view.h"
+#include "gtk/config_dialog.h"
+#include "gtk/gpl.h"
+#include "lib/film.h"
+#include "lib/format.h"
+#include "lib/config.h"
+#include "lib/filter.h"
+#include "lib/version.h"
+#include "lib/util.h"
+#include "lib/scaler.h"
 
 using namespace std;
 

@@ -2,6 +2,7 @@ def build(bld):
     for t in ['dvdomatic', 'makedcp', 'servomatic', 'servomatictest']:
         obj = bld(features = 'cxx cxxprogram')
     	obj.uselib = 'BOOST_THREAD GTKMM BOOST_PROGRAM_OPTIONS'
-        obj.use    = 'libdvdomatic'
+	obj.includes = ['..']
+        obj.use    = ['libdvdomatic', 'libdvdomatic-gtk']
         obj.source = '%s.cc' % t
         obj.target = t

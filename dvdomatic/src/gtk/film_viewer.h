@@ -22,7 +22,7 @@
  */
 
 #include <gtkmm.h>
-#include "film.h"
+#include "lib/film.h"
 
 /** @class FilmViewer
  *  @brief A GTK widget to view `thumbnails' of a Film.

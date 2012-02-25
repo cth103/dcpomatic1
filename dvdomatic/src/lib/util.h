@@ -27,7 +27,6 @@
 
 #include <string>
 #include <boost/shared_ptr.hpp>
-#include <gtkmm.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavfilter/avfilter.h>
@@ -37,7 +36,6 @@ class Scaler;
 
 extern std::string seconds_to_hms (int);
 extern std::string seconds_to_approximate_hms (int);
-extern Gtk::Label & left_aligned_label (std::string);
 extern void stacktrace (std::ostream &, int);
 extern std::string audio_sample_format_to_string (AVSampleFormat);
 extern AVSampleFormat audio_sample_format_from_string (std::string);
@@ -45,7 +43,6 @@ extern std::string dependency_version_summary ();
 extern void socket_write (int, uint8_t const *, int);
 extern double seconds (struct timeval);
 extern void dvdomatic_setup ();
-extern void error_dialog (std::string);
 
 #ifdef DEBUG_HASH
 extern void md5_data (std::string, void const *, int);

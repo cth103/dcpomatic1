@@ -28,6 +28,7 @@
 #include <string>
 #include <stdint.h>
 #include <boost/shared_ptr.hpp>
+#include <sigc++/sigc++.h>
 #include "util.h"
 
 class Job;

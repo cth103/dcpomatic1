@@ -22,8 +22,8 @@
  */
 
 #include <iostream>
+#include "lib/filter.h"
 #include "filter_view.h"
-#include "filter.h"
 
 using namespace std;
 

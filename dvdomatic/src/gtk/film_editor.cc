@@ -24,19 +24,19 @@
 #include <iostream>
 #include <gtkmm.h>
 #include <boost/thread.hpp>
-#include "film_editor.h"
-#include "format.h"
-#include "film.h"
-#include "transcode_job.h"
-#include "ab_transcode_job.h"
-#include "thumbs_job.h"
-#include "make_mxf_job.h"
-#include "make_dcp_job.h"
-#include "job_manager.h"
-#include "util.h"
+#include "lib/format.h"
+#include "lib/film.h"
+#include "lib/transcode_job.h"
+#include "lib/ab_transcode_job.h"
+#include "lib/thumbs_job.h"
+#include "lib/make_mxf_job.h"
+#include "lib/make_dcp_job.h"
+#include "lib/job_manager.h"
+#include "lib/filter.h"
+#include "lib/copy_from_dvd_job.h"
 #include "filter_dialog.h"
-#include "filter.h"
-#include "copy_from_dvd_job.h"
+#include "gtk_util.h"
+#include "film_editor.h"
 
 using namespace std;
 using namespace boost;

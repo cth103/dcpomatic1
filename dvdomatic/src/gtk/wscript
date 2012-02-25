@@ -1,0 +1,17 @@
+def build(bld):
+    obj = bld(features = 'cxx cxxshlib')
+    obj.name   = 'libdvdomatic-gtk'
+    obj.includes = [ '..' ]
+    obj.export_includes = ['.']
+    obj.uselib = 'GLIB GTKMM'
+    obj.source = """
+		 config_dialog.cc
+		 film_editor.cc
+		 film_viewer.cc
+		 filter_dialog.cc
+		 filter_view.cc
+		 gpl.cc
+		 job_manager_view.cc
+		 gtk_util.cc
+		 """
+    obj.target = 'dvdomatic-gtk'

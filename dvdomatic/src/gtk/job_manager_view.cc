@@ -21,10 +21,10 @@
  *  @brief Class generating a GTK widget to show the progress of jobs.
  */
 
+#include "lib/job_manager.h"
+#include "lib/job.h"
+#include "lib/util.h"
 #include "job_manager_view.h"
-#include "job_manager.h"
-#include "job.h"
-#include "util.h"
 
 using namespace std;
 using namespace boost;

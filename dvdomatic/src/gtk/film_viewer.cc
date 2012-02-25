@@ -23,14 +23,14 @@
 
 #include <iostream>
 #include <iomanip>
+#include "lib/film.h"
+#include "lib/format.h"
+#include "lib/util.h"
+#include "lib/thumbs_job.h"
+#include "lib/job_manager.h"
+#include "lib/film_state.h"
+#include "lib/options.h"
 #include "film_viewer.h"
-#include "film.h"
-#include "format.h"
-#include "util.h"
-#include "thumbs_job.h"
-#include "job_manager.h"
-#include "film_state.h"
-#include "options.h"
 
 using namespace std;
 using namespace boost;

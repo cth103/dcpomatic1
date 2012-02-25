@@ -17,30 +17,28 @@
 
 */
 
-/** @file  src/filter_dialog.cc
- *  @brief A dialog to select FFmpeg filters.
+/** @file src/gtk/util.cc
+ *  @brief Some utility functions.
  */
 
-#include "filter_dialog.h"
-#include "film.h"
+#include <gtkmm.h>
 
-FilterDialog::FilterDialog (Film* f)
-	: Gtk::Dialog ("Filters")
-	, _filters (f->filters ())
-	, _film (f)
+using namespace std;
+
+/** @param t Label text.
+ *  @return GTK label containing t, left-aligned (passed through Gtk::manage)
+ */
+Gtk::Label &
+left_aligned_label (string t)
 {
-	get_vbox()->pack_start (_filters.get_widget ());
-
-	_filters.ActiveChanged.connect (sigc::mem_fun (*this, &FilterDialog::active_changed));
-
-	add_button ("Close", Gtk::RESPONSE_CLOSE);
-
-	show_all ();
+	Gtk::Label* l = Gtk::manage (new Gtk::Label (t));
+	l->set_alignment (0, 0.5);
+	return *l;
 }
-	
 
 void
-FilterDialog::active_changed ()
+error_dialog (string m)
 {
-	_film->set_filters (_filters.get_active ());
+	Gtk::MessageDialog d (m, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+	d.run ();
 }

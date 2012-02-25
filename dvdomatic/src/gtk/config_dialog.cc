@@ -22,10 +22,10 @@
  */
 
 #include <iostream>
+#include "lib/config.h"
+#include "lib/server.h"
 #include "config_dialog.h"
-#include "util.h"
-#include "config.h"
-#include "server.h"
+#include "gtk_util.h"
 
 using namespace std;
 
