@@ -6,6 +6,8 @@ More logging
 Nice error when trying to thumbnail with no content.
 Floating point fps hoo-ha
 vobcopy into deps list
+Disallow / in DCP names
+OpenDCP doesn't report progress?! do pulsing.
 
 options summary
 

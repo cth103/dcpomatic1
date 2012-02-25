@@ -75,11 +75,11 @@ MakeDCPJob::run ()
 	_fs->dir (_fs->dcp_long_name);
 	
 	stringstream c;
-	c << "cd " << dcp_path << " && "
+	c << "cd \"" << dcp_path << "\" && "
 	  << " opendcp_xml -d -a " << _fs->dcp_long_name
 	  << " -t \"" << _fs->name << "\""
 	  << " -k " << _fs->dcp_content_type->opendcp_name()
-	  << " --reel " << _fs->file ("video.mxf") << " " << _fs->file ("audio.mxf");
+	  << " --reel \"" << _fs->file ("video.mxf") << "\" \"" << _fs->file ("audio.mxf") << "\"";
 
 	command (c.str ());
 
