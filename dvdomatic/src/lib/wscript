@@ -29,9 +29,9 @@ def build(bld):
 		 lut.cc
 		 make_dcp_job.cc
 		 make_mxf_job.cc
-		 opendcp_job.cc
 		 scaler.cc
 		 server.cc
+		 shell_command_job.cc
 		 thumbs_job.cc
                  tiff_decoder.cc
 	         tiff_encoder.cc

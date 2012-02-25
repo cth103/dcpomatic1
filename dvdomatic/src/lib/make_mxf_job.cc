@@ -35,7 +35,7 @@ using namespace boost;
  */
 
 MakeMXFJob::MakeMXFJob (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l, Type t)
-	: OpenDCPJob (s, o, l)
+	: ShellCommandJob (s, o, l)
 	, _type (t)
 {
 
@@ -60,6 +60,8 @@ MakeMXFJob::name () const
 void
 MakeMXFJob::run ()
 {
+	set_progress_unknown ();
+	
 	float fps = _fs->frames_per_second;
 	
 	/* XXX: experimental hack; round FPS for audio MXFs */

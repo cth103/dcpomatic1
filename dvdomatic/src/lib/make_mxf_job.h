@@ -21,7 +21,7 @@
  *  @brief A job that creates a MXF file from some data.
  */
 
-#include "opendcp_job.h"
+#include "shell_command_job.h"
 
 class FilmState;
 class Options;
@@ -29,7 +29,7 @@ class Options;
 /** @class MakeMXFJob
  *  @brief A job that creates a MXF file from some data.
  */
-class MakeMXFJob : public OpenDCPJob
+class MakeMXFJob : public ShellCommandJob
 {
 public:
 	enum Type {

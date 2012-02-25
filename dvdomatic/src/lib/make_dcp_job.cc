@@ -38,7 +38,7 @@ using namespace boost;
  *  @param l Log.
  */
 MakeDCPJob::MakeDCPJob (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
-	: OpenDCPJob (s, o, l)
+	: ShellCommandJob (s, o, l)
 {
 	
 }
@@ -55,6 +55,8 @@ void
 MakeDCPJob::run ()
 {
 	assert (!_fs->dcp_long_name.empty());
+
+	set_progress_unknown ();
 
 	string const dcp_path = _fs->dir (_fs->dcp_long_name);
 	

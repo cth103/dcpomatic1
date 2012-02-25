@@ -21,12 +21,12 @@
  *  @brief A job to create DCPs.
  */
 
-#include "opendcp_job.h"
+#include "shell_command_job.h"
 
 /** @class MakeDCPJob
  *  @brief A job to create DCPs
  */
-class MakeDCPJob : public OpenDCPJob
+class MakeDCPJob : public ShellCommandJob
 {
 public:
 	MakeDCPJob (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Log *);
