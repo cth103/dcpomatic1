@@ -1,10 +1,10 @@
 #!/bin/bash
 
-export LD_LIBRARY_PATH=build/src:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=build/src/lib:$LD_LIBRARY_PATH
 if [ "$1" == "--debug" ]; then
-    gdb --args build/tools/servomatic
+    gdb --args build/src/tools/servomatic
 elif [ "$1" == "--valgrind" ]; then
-    valgrind --tool="memcheck" build/tools/servomatic
+    valgrind --tool="memcheck" build/src/tools/servomatic
 else
-    build/tools/servomatic
+    build/src/tools/servomatic
 fi
