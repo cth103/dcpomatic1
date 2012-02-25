@@ -516,6 +516,7 @@ Film::maybe_guess_dcp_long_name ()
 	string short_name = _state.name.substr (0, 14);
 	to_upper (short_name);
 	replace_all (short_name, " ", "-");
+	replace_all (short_name, "/", "-");
 	s << short_name;
 
 	if (_state.dcp_content_type) {
