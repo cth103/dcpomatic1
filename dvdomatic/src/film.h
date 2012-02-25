@@ -17,7 +17,7 @@
 
 */
 
-/** @file  src/film.cc
+/** @file  src/film.h
  *  @brief A representation of a piece of video (with sound), including naming,
  *  the source content file, and how it should be presented in a DCP.
  */
@@ -171,7 +171,7 @@ public:
 		return _state.audio_channels;
 	}
 
-	/** @return audio sanmple rate, in Hz */
+	/** @return audio sample rate, in Hz */
 	int audio_sample_rate () const {
 		return _state.audio_sample_rate;
 	}
