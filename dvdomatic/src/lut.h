@@ -16,6 +16,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/** @file src/lut.h
+ *  @brief Look-up tables for colour conversions (from OpenDCP)
+ */
+
 #define BIT_DEPTH      12 
 #define BIT_PRECISION  16 
 #define COLOR_DEPTH    (4095)

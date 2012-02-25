@@ -24,7 +24,13 @@
 #include <string>
 #include <boost/thread/mutex.hpp>
 
-/** A very simple logging class */
+/** @class Log
+ *  @brief A very simple logging class.
+ *
+ *  This class simply accepts log messages and writes them to a file.
+ *  Its single nod to complexity is that it has a mutex to prevent
+ *  multi-thread logging from clashing.
+ */
 class Log
 {
 public:
@@ -44,5 +50,6 @@ private:
 	boost::mutex _mutex;
 	/** filename to write to */
 	std::string _file;
+	/** level above which to ignore log messages */
 	Level _level;
 };

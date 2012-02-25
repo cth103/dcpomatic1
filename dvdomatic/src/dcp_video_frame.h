@@ -28,7 +28,9 @@ class Scaler;
 class Image;
 class Log;
 
-/** Container for J2K-encoded data */
+/** @class EncodedData
+ *  @brief Container for J2K-encoded data.
+ */
 class EncodedData
 {
 public:
@@ -64,7 +66,8 @@ protected:
 	int _size;      ///< data size in bytes
 };
 
-/** EncodedData that was encoded locally; this class
+/** @class LocallyEncodedData
+ *  @brief EncodedData that was encoded locally; this class
  *  just keeps a pointer to the data, but does no memory
  *  management.
  */
@@ -79,7 +82,8 @@ public:
 	{}
 };
 
-/** EncodedData that is being read from a remote server;
+/** @class RemotelyEncodedData
+ *  @brief EncodedData that is being read from a remote server;
  *  this class allocates and manages memory for the data.
  */
 class RemotelyEncodedData : public EncodedData
@@ -89,7 +93,8 @@ public:
 	~RemotelyEncodedData ();
 };
 
-/** @brief A single frame of video destined for a DCP.
+/** @class DCPVideoFrame
+ *  @brief A single frame of video destined for a DCP.
  *
  *  Given an Image and some settings, this class knows how to encode
  *  the image to J2K either on the local host or on a remote server.

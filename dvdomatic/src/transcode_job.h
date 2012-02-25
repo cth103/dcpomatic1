@@ -17,8 +17,15 @@
 
 */
 
+/** @file src/transcode_job.h
+ *  @brief A job which transcodes from one format to another.
+ */
+
 #include "job.h"
 
+/** @class TranscodeJob
+ *  @brief A job which transcodes from one format to another.
+ */
 class TranscodeJob : public Job
 {
 public:

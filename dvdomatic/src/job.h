@@ -32,7 +32,9 @@ class Log;
 class FilmState;
 class Options;
 
-/** A parent class to represent long-running tasks which are run in their own thread */
+/** @class Job
+ *  @brief A parent class to represent long-running tasks which are run in their own thread.
+ */
 class Job
 {
 public:
@@ -77,9 +79,7 @@ protected:
 	void set_state (State);
 	void set_error (std::string e);
 
-	/** The FilmState of the Film that we are working on */
 	boost::shared_ptr<const FilmState> _fs;
-	/** Options for this operation */
 	boost::shared_ptr<const Options> _opt;
 
 	/** A log that this job can write to */

@@ -31,7 +31,9 @@ class Job;
 class Encoder;
 class FilmState;
 
-/** A class which takes a FilmState and some Options, then uses those to transcode a Film.
+/** @class Transcoder
+ *  @brief A class which takes a FilmState and some Options, then uses those to transcode a Film.
+ *
  *  A decoder is selected according to the content type, and the encoder can be specified
  *  as a parameter to the constructor.
  */

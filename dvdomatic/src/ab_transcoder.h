@@ -33,7 +33,8 @@ class Options;
 class Image;
 class Log;
 
-/** A transcoder which uses one FilmState for the left half of the screen, and a different one
+/** @class ABTranscoder
+ *  @brief A transcoder which uses one FilmState for the left half of the screen, and a different one
  *  for the right half (to facilitate A/B comparisons of settings)
  */
 class ABTranscoder

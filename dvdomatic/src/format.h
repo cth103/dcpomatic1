@@ -26,7 +26,8 @@
 #include <vector>
 #include "util.h"
 
-/** Class to describe a format (aspect ratio) that a Film should
+/** @class Format
+ *  @brief Class to describe a format (aspect ratio) that a Film should
  *  be shown in.
  */
 class Format

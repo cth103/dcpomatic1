@@ -50,7 +50,9 @@ extern void dvdomatic_setup ();
 extern void md5_data (std::string, void const *, int);
 #endif
 
-/** A helper class from reading from sockets (or indeed any file descriptor) */
+/** @class SocketReader
+ *  @brief A helper class from reading from sockets.
+ */
 class SocketReader
 {
 public:
@@ -69,7 +71,8 @@ private:
 	int _buffer_data;
 };
 
-/** Representation of the size of something */
+/** @class Size
+ *  @brief Representation of the size of something */
 struct Size
 {
 	/** Construct a zero Size */

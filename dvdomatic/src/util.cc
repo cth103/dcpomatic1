@@ -391,6 +391,7 @@ SocketReader::read_indefinite (uint8_t* data, int size)
 	memcpy (data, _buffer, size);
 }
 
+/** Call the required functions to set up DVD-o-matic's static arrays */
 void
 dvdomatic_setup ()
 {

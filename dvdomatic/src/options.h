@@ -26,7 +26,9 @@
 #include <sstream>
 #include "util.h"
 
-/** Options for a transcoding operation.
+/** @class Options
+ *  @brief Options for a transcoding operation.
+ *
  *  These are settings which may be different, in different circumstances, for
  *  the same film; ie they are options for a particular transcode operation.
  */

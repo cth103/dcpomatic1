@@ -17,4 +17,8 @@
 
 */
 
+/** @file  src/gpl.h
+ *  @brief The GPL.
+ */
+
 extern const char * gpl;

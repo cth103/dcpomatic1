@@ -27,7 +27,9 @@
 #include <string>
 #include <vector>
 
-/** Class to describe one of FFmpeg's software scalers */
+/** @class Scaler
+ *  @brief Class to describe one of FFmpeg's software scalers
+ */
 class Scaler
 {
 public:

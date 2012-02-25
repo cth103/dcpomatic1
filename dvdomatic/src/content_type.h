@@ -17,22 +17,32 @@
 
 */
 
+/** @file src/content_type.h
+ *  @brief A description of the type of content for a DCP (e.g. feature, trailer etc.)
+ */
+
 #include <string>
 #include <vector>
 
+/** @class ContentType
+ *  @brief A description of the type of content for a DCP (e.g. feature, trailer etc.)
+ */
 class ContentType
 {
 public:
 	ContentType (std::string, std::string, std::string);
 
+	/** @return user-visible `pretty' name */
 	std::string pretty_name () const {
 		return _pretty_name;
 	}
-	
+
+	/** @return name as understood by OpenDCP */
 	std::string opendcp_name () const {
 		return _opendcp_name;
 	}
 
+	/** @return name for use as part of a DCP long name */
 	std::string dcp_name () const {
 		return _dcp_name;
 	}
@@ -48,6 +58,7 @@ private:
 	std::string _opendcp_name;
 	std::string _dcp_name;
 
+	/** All available content types */
 	static std::vector<ContentType const *> _content_types;
 };
      

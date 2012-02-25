@@ -27,7 +27,9 @@
 #include <string>
 #include <vector>
 
-/** A class to describe one of FFmpeg's video or post-processing filters */
+/** @class Filter
+ *  @brief A class to describe one of FFmpeg's video or post-processing filters.
+ */
 class Filter
 {
 public:

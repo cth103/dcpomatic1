@@ -25,7 +25,9 @@
 
 class FilmState;
 
-/** A job to create thumbnails (single frames of the film spaced out throughout the film) */
+/** @class ThumbsJob
+ *  @brief A job to create thumbnails (single frames of the film spaced out throughout the film).
+ */
 class ThumbsJob : public Job
 {
 public:

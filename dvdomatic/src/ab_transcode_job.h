@@ -24,7 +24,9 @@
 #include <boost/shared_ptr.hpp>
 #include "job.h"
 
-/** Job to run a transcoder which produces output for A/B comparison of various settings.
+/** @class ABTranscodeJob
+ *  @brief Job to run a transcoder which produces output for A/B comparison of various settings.
+ *
  *  The right half of the frame will be processed using the FilmState supplied;
  *  the left half will be processed using the same state but *without* filters
  *  and with the scaler set to SWS_BICUBIC.

@@ -28,7 +28,9 @@
 
 class Server;
 
-/** A singleton class holding configuration */
+/** @class Config
+ *  @brief A singleton class holding configuration.
+ */
 class Config
 {
 public:

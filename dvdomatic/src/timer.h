@@ -29,7 +29,9 @@
 #include <map>
 #include <sys/time.h>
 
-/** A class to allow timing of a period within the caller.
+/** @class PeriodTimer
+ *  @brief A class to allow timing of a period within the caller.
+ *
  *  On destruction, it will output the time since its construction.
  */
 class PeriodTimer
@@ -46,8 +48,10 @@ private:
 	struct timeval _start;
 };
 
-/** A class to allow measurement of the amount of time a program
+/** @class StateTimer
+ *  @brief A class to allow measurement of the amount of time a program
  *  spends in one of a set of states.
+ *
  *  Once constructed, the caller can call set_state() whenever
  *  its state changes.  When StateTimer is destroyed, it will
  *  output (to cout) a summary of the time spent in each state.

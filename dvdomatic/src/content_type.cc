@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/content_type.cc
+ *  @brief A description of the type of content for a DCP (e.g. feature, trailer etc.)
+ */
+
 #include <cassert>
 #include "content_type.h"
 

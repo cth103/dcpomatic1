@@ -24,8 +24,8 @@
 
 #include <string>
 
-/** Class to describe a server to which we can send
- *  encoding work.
+/** @class Server
+ *  @brief Class to describe a server to which we can send encoding work.
  */
 class Server
 {

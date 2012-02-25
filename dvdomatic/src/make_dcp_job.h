@@ -23,7 +23,9 @@
 
 #include "opendcp_job.h"
 
-/** A job to create DCPs */
+/** @class MakeDCPJob
+ *  @brief A job to create DCPs
+ */
 class MakeDCPJob : public OpenDCPJob
 {
 public:

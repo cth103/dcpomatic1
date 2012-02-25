@@ -29,7 +29,9 @@ class Options;
 class Image;
 class Log;
 
-/** Parent class for classes which can encode video and audio frames.
+/** @class Encoder
+ *  @brief Parent class for classes which can encode video and audio frames.
+ *
  *  Video is supplied to process_video as YUV frames, and audio
  *  is supplied as uncompressed PCM in blocks of various sizes.
  *

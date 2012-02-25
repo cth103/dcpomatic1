@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/transcode_job.cc
+ *  @brief A job which transcodes from one format to another.
+ */
+
 #include <iostream>
 #include "transcode_job.h"
 #include "j2k_wav_encoder.h"

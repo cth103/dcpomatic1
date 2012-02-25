@@ -40,10 +40,13 @@ class Format;
 class ContentType;
 class Filter;
 
-/** The state of a Film.  This is separate from Film so that
- *  state can easily be copied and kept around for reference
- *  by long-running jobs.  This avoids the jobs getting confused
- *  by the user changing Film settings during their run.
+/** @class FilmState
+ *  @brief The state of a Film.
+ *
+ *  This is separate from Film so that state can easily be copied and
+ *  kept around for reference by long-running jobs.  This avoids the
+ *  jobs getting confused by the user changing Film settings during
+ *  their run.
  */
 
 class FilmState

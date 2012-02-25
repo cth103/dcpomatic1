@@ -28,7 +28,9 @@
 class FilmState;
 class Log;
 
-/** An encoder that writes TIFF files (and does nothing with audio) */
+/** @class TIFFEncoder
+ *  @brief An encoder that writes TIFF files (and does nothing with audio).
+ */
 class TIFFEncoder : public Encoder
 {
 public:

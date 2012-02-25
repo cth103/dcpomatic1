@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/gpl.cc
+ *  @brief The GPL.
+ */
+
 const char* gpl = "\n\
 DVD-o-matic comes with NO WARRANTY. It is free software, and you are \n\
 welcome to redistribute it under the terms of the GNU Public License,\n\
