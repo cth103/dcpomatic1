@@ -17,7 +17,6 @@ def build(bld):
 		 decoder.cc
                  decoder_factory.cc
 		 encoder.cc
-		 error_dialog.cc
 		 examine_content_job.cc
                  ffmpeg_decoder.cc
     	         film.cc

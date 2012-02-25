@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/filter_view.cc
+ *  @brief A widget to select FFmpeg filters.
+ */
+
 #include <iostream>
 #include "filter_view.h"
 #include "filter.h"

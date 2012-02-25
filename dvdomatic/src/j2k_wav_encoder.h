@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/j2k_wav_encoder.h
+ *  @brief An encoder which writes JPEG2000 and WAV files.
+ */
+
 #include <list>
 #include <vector>
 #include <boost/thread/condition.hpp>
@@ -29,6 +33,9 @@ class DCPVideoFrame;
 class Image;
 class Log;
 
+/** @class J2KWAVEncoder
+ *  @brief An encoder which writes JPEG2000 and WAV files.
+ */
 class J2KWAVEncoder : public Encoder
 {
 public:

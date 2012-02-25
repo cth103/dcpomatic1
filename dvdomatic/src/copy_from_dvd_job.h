@@ -23,7 +23,9 @@
 
 #include "job.h"
 
-/** A job to copy a film from a DVD using `vobcopy' */
+/** @class CopyFromDVDJob
+ *  @brief A job to copy a film from a DVD using `vobcopy'.
+ */
 class CopyFromDVDJob : public Job
 {
 public:

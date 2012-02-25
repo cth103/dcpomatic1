@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/examine_content_job.cc
+ *  @brief A class to run through content at high speed to find its length.
+ */
+
 #include "examine_content_job.h"
 #include "options.h"
 #include "film_state.h"

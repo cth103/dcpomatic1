@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/filter_dialog.cc
+ *  @brief A dialog to select FFmpeg filters.
+ */
+
 #include "filter_dialog.h"
 #include "film.h"
 

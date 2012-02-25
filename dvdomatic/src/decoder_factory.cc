@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/decoder_factory.cc
+ *  @brief A method to create an appropriate decoder for some content.
+ */
+
 #include <boost/filesystem.hpp>
 #include "ffmpeg_decoder.h"
 #include "tiff_decoder.h"
@@ -30,6 +34,7 @@ decoder_factory (
 	)
 {
 	if (filesystem::is_directory (fs->file (fs->content))) {
+		/* Assume a directory contains TIFFs */
 		return new TIFFDecoder (fs, o, j, l, minimal, ignore_length);
 	}
 

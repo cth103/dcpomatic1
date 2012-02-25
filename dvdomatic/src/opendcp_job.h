@@ -29,7 +29,9 @@
 class FilmState;
 class Log;
 
-/** A job which calls an OpenDCP command via a shell */
+/** @class OpenDCPJob
+ *  @brief A job which calls an OpenDCP command via a shell.
+ */
 class OpenDCPJob : public Job
 {
 public:

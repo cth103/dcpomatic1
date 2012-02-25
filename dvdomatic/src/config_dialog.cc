@@ -17,6 +17,10 @@
 
 */
 
+/** @file src/config_dialog.cc
+ *  @brief A dialogue to edit DVD-o-matic configuration.
+ */
+
 #include <iostream>
 #include "config_dialog.h"
 #include "util.h"

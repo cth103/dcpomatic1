@@ -27,7 +27,9 @@
 
 class Job;
 
-/** Class generating a GTK widget to show the progress of jobs */
+/** @class JobManagerView
+ *  @brief Class generating a GTK widget to show the progress of jobs.
+ */
 class JobManagerView
 {
 public:

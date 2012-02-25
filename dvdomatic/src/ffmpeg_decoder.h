@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/ffmpeg_decoder.h
+ *  @brief A decoder using FFmpeg to decode content.
+ */
+
 #include <vector>
 #include <string>
 #include <stdint.h>
@@ -41,6 +45,9 @@ class Options;
 class Image;
 class Log;
 
+/** @class FFmpegDecoder
+ *  @brief A decoder using FFmpeg to decode content.
+ */
 class FFmpegDecoder : public Decoder
 {
 public:

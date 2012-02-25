@@ -21,6 +21,10 @@
 #include <openjpeg.h>
 #include "util.h"
 
+/** @file  src/dcp_video_frame.h
+ *  @brief A single frame of video destined for a DCP.
+ */
+
 class FilmState;
 class Options;
 class Server;

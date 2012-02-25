@@ -45,6 +45,7 @@ extern std::string dependency_version_summary ();
 extern void socket_write (int, uint8_t const *, int);
 extern double seconds (struct timeval);
 extern void dvdomatic_setup ();
+extern void error_dialog (std::string);
 
 #ifdef DEBUG_HASH
 extern void md5_data (std::string, void const *, int);

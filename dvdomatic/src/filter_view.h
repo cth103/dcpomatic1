@@ -17,11 +17,18 @@
 
 */
 
+/** @file  src/filter_view.h
+ *  @brief A widget to select FFmpeg filters.
+ */
+
 #include <gtkmm.h>
 #include <vector>
 
 class Filter;
 
+/** @class FilterView
+ *  @brief A widget to select FFmpeg filters.
+ */
 class FilterView
 {
 public:

@@ -17,11 +17,22 @@
 
 */
 
+/** @file  src/job_manager.h
+ *  @brief A simple scheduler for jobs.
+ */
+
 #include <list>
 #include <boost/thread/mutex.hpp>
 
 class Job;
 
+/** @class JobManager
+ *  @brief A simple scheduler for jobs.
+ *
+ *  JobManager simply keeps a list of pending jobs, and assumes that all the jobs
+ *  are sufficiently CPU intensive that there is no point running them in parallel;
+ *  so jobs are just run one after the other.
+ */
 class JobManager
 {
 public:

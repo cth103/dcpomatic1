@@ -24,8 +24,8 @@
 #include <gtkmm.h>
 #include "film.h"
 
-/** Class generating a GTK widget to edit a film's metadata, and perform various
- *  functions.
+/** @class FilmEditor
+ *  @brief A GTK widget to edit a film's metadata, and perform various functions.
  */
 class FilmEditor
 {

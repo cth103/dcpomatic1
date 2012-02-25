@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/decoder_factory.h
+ *  @brief A method to create an appropriate decoder for some content.
+ */
+
 class Decoder;
 class FilmState;
 class Options;

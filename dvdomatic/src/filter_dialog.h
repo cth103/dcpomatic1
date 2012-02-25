@@ -17,11 +17,18 @@
 
 */
 
+/** @file  src/filter_dialog.h
+ *  @brief A dialog to select FFmpeg filters.
+ */
+
 #include <gtkmm.h>
 #include "filter_view.h"
 
 class Film;
 
+/** @class FilterDialog
+ *  @brief A dialog to select FFmpeg filters.
+ */
 class FilterDialog : public Gtk::Dialog
 {
 public:

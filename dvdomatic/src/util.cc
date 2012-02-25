@@ -401,6 +401,13 @@ dvdomatic_setup ()
 	Filter::setup_filters ();
 }
 
+void
+error_dialog (string m)
+{
+	Gtk::MessageDialog d (m, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+	d.run ();
+}
+
 #ifdef DEBUG_HASH
 void
 md5_data (string title, void const * data, int size)

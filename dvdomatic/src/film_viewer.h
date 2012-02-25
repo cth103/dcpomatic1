@@ -17,9 +17,16 @@
 
 */
 
+/** @file  src/film_viewer.h
+ *  @brief A GTK widget to view `thumbnails' of a Film.
+ */
+
 #include <gtkmm.h>
 #include "film.h"
 
+/** @class FilmViewer
+ *  @brief A GTK widget to view `thumbnails' of a Film.
+ */
 class FilmViewer
 {
 public:

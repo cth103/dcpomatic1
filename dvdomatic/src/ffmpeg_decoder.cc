@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/ffmpeg_decoder.cc
+ *  @brief A decoder using FFmpeg to decode content.
+ */
+
 #include <stdexcept>
 #include <vector>
 #include <sstream>

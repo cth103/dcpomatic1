@@ -35,7 +35,6 @@
 #include "job_manager.h"
 #include "util.h"
 #include "filter_dialog.h"
-#include "error_dialog.h"
 #include "filter.h"
 #include "copy_from_dvd_job.h"
 

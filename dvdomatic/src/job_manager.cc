@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/job_manager.cc
+ *  @brief A simple scheduler for jobs.
+ */
+
 #include <iostream>
 #include <boost/thread.hpp>
 #include "job_manager.h"

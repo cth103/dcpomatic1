@@ -17,10 +17,17 @@
 
 */
 
+/** @file  src/examine_content_job.h
+ *  @brief A class to run through content at high speed to find its length.
+ */
+
 #include "job.h"
 
 class Decoder;
 
+/** @class ExamineContentJob
+ *  @brief A class to run through content at high speed to find its length.
+ */
 class ExamineContentJob : public Job
 {
 public:

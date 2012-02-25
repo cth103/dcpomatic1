@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/j2k_wav_encoder.cc
+ *  @brief An encoder which writes JPEG2000 and WAV files.
+ */
+
 #include <sstream>
 #include <stdexcept>
 #include <iomanip>

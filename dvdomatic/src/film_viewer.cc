@@ -17,6 +17,10 @@
 
 */
 
+/** @file  src/film_viewer.cc
+ *  @brief A GTK widget to view `thumbnails' of a Film.
+ */
+
 #include <iostream>
 #include <iomanip>
 #include "film_viewer.h"
