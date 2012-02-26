@@ -40,5 +40,6 @@ void
 error_dialog (string m)
 {
 	Gtk::MessageDialog d (m, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+	d.set_title ("DVD-o-matic");
 	d.run ();
 }

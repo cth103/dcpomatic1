@@ -27,6 +27,7 @@
 #include "lib/format.h"
 #include "lib/film.h"
 #include "lib/transcode_job.h"
+#include "lib/exceptions.h"
 #include "lib/ab_transcode_job.h"
 #include "lib/thumbs_job.h"
 #include "lib/make_mxf_job.h"
@@ -427,7 +428,17 @@ FilmEditor::make_dcp_clicked ()
 
 	try {
 		_film->make_dcp ();
+	} catch (BadSettingError& e) {
+		cout << "a\n";
+		stringstream s;
+		if (e.setting() == "dcp_long_name") {
+			s << "Could not make DCP: long name is invalid (" << e.what() << ")";
+		} else {
+			s << "Bad setting for " << e.setting() << "(" << e.what() << ")";
+		}
+		error_dialog (s.str ());
 	} catch (std::exception& e) {
+		cout << "b\n";
 		stringstream s;
 		s << "Could not make DCP: " << e.what () << ".";
 		error_dialog (s.str ());
