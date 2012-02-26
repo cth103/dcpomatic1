@@ -98,7 +98,16 @@ int main (int argc, char* argv[])
 		
 		all_done = true;
 		for (list<shared_ptr<Job> >::iterator i = jobs.begin(); i != jobs.end(); ++i) {
-			cout << (*i)->name() << ": " << fixed << setprecision(1) << ((*i)->get_overall_progress() * 100) << "%             \n";
+			cout << (*i)->name() << ": ";
+
+			float const p = (*i)->get_overall_progress ();
+
+			if (p >= 0) {
+				cout << fixed << setprecision(1) << ((*i)->get_overall_progress() * 100) << "%             \n";
+			} else {
+				cout << ": running           \n";
+			}
+			
 			if (!(*i)->finished ()) {
 				all_done = false;
 			}
