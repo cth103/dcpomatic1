@@ -40,6 +40,6 @@ public:
 	int last_video_frame () const;
 
 private:
-	Decoder* _decoder;
+	boost::shared_ptr<Decoder> _decoder;
 };
 

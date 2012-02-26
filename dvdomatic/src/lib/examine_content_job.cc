@@ -32,14 +32,12 @@ using namespace boost;
 
 ExamineContentJob::ExamineContentJob (shared_ptr<const FilmState> fs, Log* l)
 	: Job (fs, shared_ptr<Options> (), l)
-	, _decoder (0)
 {
 
 }
 
 ExamineContentJob::~ExamineContentJob ()
 {
-	delete _decoder;
 }
 
 string

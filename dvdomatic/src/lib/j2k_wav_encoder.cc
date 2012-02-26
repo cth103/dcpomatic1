@@ -42,6 +42,8 @@
 using namespace std;
 using namespace boost;
 
+int const J2KWAVEncoder::_history_size = 25;
+
 J2KWAVEncoder::J2KWAVEncoder (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
 	: Encoder (s, o, l)
 	, _deinterleave_buffer_size (8192)
@@ -167,6 +169,13 @@ J2KWAVEncoder::encoder_thread (Server* server)
 
 		if (encoded) {
 			encoded->write (_opt, vf->frame ());
+			boost::mutex::scoped_lock (_history_mutex);
+			struct timeval tv;
+			gettimeofday (&tv, 0);
+			_time_history.push_front (tv);
+			if (int (_time_history.size()) > _history_size) {
+				_time_history.pop_back ();
+			}
 		} else {
 			lock.lock ();
 			_queue.push_front (vf);
@@ -269,3 +278,19 @@ J2KWAVEncoder::process_audio (uint8_t* data, int channels, int data_size)
 	}
 }
 
+/** @return an estimate of the current number of frames we are encoding per second,
+ *  or 0 if not known.
+ */
+float
+J2KWAVEncoder::current_frames_per_second () const
+{
+	boost::mutex::scoped_lock lock (_history_mutex);
+	if (int (_time_history.size()) < _history_size) {
+		return 0;
+	}
+
+	struct timeval now;
+	gettimeofday (&now, 0);
+
+	return _history_size / (seconds (now) - seconds (_time_history.back ()));
+}

@@ -47,7 +47,7 @@ using namespace boost;
  */
 
 ABTranscoder::ABTranscoder (
-	boost::shared_ptr<const FilmState> a, boost::shared_ptr<const FilmState> b, boost::shared_ptr<const Options> o, Job* j, Log* l, Encoder* e)
+	shared_ptr<const FilmState> a, shared_ptr<const FilmState> b, shared_ptr<const Options> o, Job* j, Log* l, shared_ptr<Encoder> e)
 	: _fs_a (a)
 	, _fs_b (b)
 	, _opt (o)

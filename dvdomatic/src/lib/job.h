@@ -55,6 +55,7 @@ public:
 	std::string error () const;
 
 	int elapsed_time () const;
+	virtual std::string status () const;
 
 	void set_progress_unknown ();
 	void set_progress (float);

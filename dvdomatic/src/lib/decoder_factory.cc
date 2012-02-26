@@ -28,15 +28,15 @@
 
 using namespace boost;
 
-Decoder *
+shared_ptr<Decoder>
 decoder_factory (
 	shared_ptr<const FilmState> fs, shared_ptr<const Options> o, Job* j, Log* l, bool minimal = false, bool ignore_length = false
 	)
 {
 	if (filesystem::is_directory (fs->file (fs->content))) {
 		/* Assume a directory contains TIFFs */
-		return new TIFFDecoder (fs, o, j, l, minimal, ignore_length);
+		return shared_ptr<Decoder> (new TIFFDecoder (fs, o, j, l, minimal, ignore_length));
 	}
 
-	return new FFmpegDecoder (fs, o, j, l, minimal, ignore_length);
+	return shared_ptr<Decoder> (new FFmpegDecoder (fs, o, j, l, minimal, ignore_length));
 }

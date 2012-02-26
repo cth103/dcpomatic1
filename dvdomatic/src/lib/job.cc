@@ -23,6 +23,7 @@
 
 #include <boost/thread.hpp>
 #include "job.h"
+#include "util.h"
 
 using namespace std;
 using namespace boost;
@@ -218,4 +219,24 @@ Job::set_progress_unknown ()
 {
 	boost::mutex::scoped_lock lm (_progress_mutex);
 	_progress_unknown = true;
+}
+
+string
+Job::status () const
+{
+	float const p = get_overall_progress ();
+	int const t = elapsed_time ();
+	
+	stringstream s;
+	if (!finished () && p >= 0 && t > 10) {
+		s << rint (p * 100) << "%; about " << seconds_to_approximate_hms (t / p - t) << " remaining";
+	} else if (!finished () && t <= 10) {
+		s << rint (p * 100) << "%";
+	} else if (finished_ok ()) {
+		s << "OK (ran for " << seconds_to_hms (t) << ")";
+	} else if (finished_in_error ()) {
+		s << "Error (" << error() << ")";
+	}
+
+	return s.str ();
 }

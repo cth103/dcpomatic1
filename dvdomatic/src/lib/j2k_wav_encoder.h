@@ -47,6 +47,8 @@ public:
 	void process_audio (uint8_t *, int, int);
 	void process_end ();
 
+	float current_frames_per_second () const;
+
 private:	
 
 	void encoder_thread (Server *);
@@ -58,6 +60,10 @@ private:
 	bool _process_end;
 	std::list<boost::shared_ptr<DCPVideoFrame> > _queue;
 	std::list<boost::thread *> _worker_threads;
-	boost::mutex _worker_mutex;
+	mutable boost::mutex _worker_mutex;
 	boost::condition _worker_condition;
+
+	mutable boost::mutex _history_mutex;
+	std::list<struct timeval> _time_history;
+	static int const _history_size;
 };

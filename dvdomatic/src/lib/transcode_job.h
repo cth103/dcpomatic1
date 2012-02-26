@@ -21,7 +21,10 @@
  *  @brief A job which transcodes from one format to another.
  */
 
+#include <boost/shared_ptr.hpp>
 #include "job.h"
+
+class J2KWAVEncoder;
 
 /** @class TranscodeJob
  *  @brief A job which transcodes from one format to another.
@@ -33,4 +36,8 @@ public:
 	
 	std::string name () const;
 	void run ();
+	std::string status () const;
+
+private:
+	boost::shared_ptr<J2KWAVEncoder> _encoder;
 };
