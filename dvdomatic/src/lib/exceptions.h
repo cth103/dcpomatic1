@@ -127,21 +127,23 @@ public:
 	{}
 };
 
-/** @class MissingSettingError.
- *  @brief Indicates that a Film is missing a setting that is required for some operation
+/** @class SettingError.
+ *  @brief Indicates that something is wrong with a setting.
  */
-class MissingSettingError : public StringError
+class SettingError : public StringError
 {
 public:
-	/** @param s Name of setting that was required */
-	MissingSettingError (std::string s)
-		: StringError ("missing required setting " + s)
+	/** @param s Name of setting that was required.
+	 *  @param m Message.
+	 */
+	SettingError (std::string s, std::string m)
+		: StringError (m)
 		, _setting (s)
 	{}
 
-	virtual ~MissingSettingError () throw () {}
+	virtual ~SettingError () throw () {}
 
-	/** @return name of setting that was required */
+	/** @return name of setting in question */
 	std::string setting () const {
 		return _setting;
 	}
@@ -149,7 +151,30 @@ public:
 private:
 	std::string _setting;
 };
-	
+
+/** @class MissingSettingError.
+ *  @brief Indicates that a Film is missing a setting that is required for some operation.
+ */
+class MissingSettingError : public SettingError
+{
+public:
+	/** @param s Name of setting that was required */
+	MissingSettingError (std::string s)
+		: SettingError (s, "missing required setting " + s)
+	{}
+};
+
+/** @class BadSettingError
+ *  @brief Indicates that a setting is bad in some way.
+ */
+class BadSettingError : public SettingError
+{
+public:
+	/** @param s Name of setting that is bad */
+	BadSettingError (std::string s, std::string m)
+		: SettingError (s, m)
+	{}
+};
 
 /** @class BadContentLocationError.
  *  @brief Indicates that a content location outside the Film's directory has been specified.

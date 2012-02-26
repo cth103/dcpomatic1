@@ -447,6 +447,11 @@ Film::signal_changed (Property p)
 void
 Film::make_dcp (int freq)
 {
+	string const t = dcp_long_name ();
+	if (t.find ("/") != string::npos) {
+		throw BadSettingError ("dcp_long_name", "cannot contain slashes");
+	}
+	
 	{
 		stringstream s;
 		s << "DVD-o-matic " << DVDOMATIC_VERSION << " using " << dependency_version_summary ();
@@ -513,7 +518,23 @@ Film::maybe_guess_dcp_long_name ()
 
 	stringstream s;
 
-	string short_name = _state.name.substr (0, 14);
+	/* Pick complete words from _state.name until we hit the length limit */
+	uint32_t last_space = string::npos;
+	for (uint32_t i = 0; i < 14; ++i) {
+		if (_state.name[i] == ' ') {
+			last_space = i;
+		}
+	}
+
+	string short_name;
+	if (last_space == string::npos) {
+		short_name = _state.name.substr (0, 14);
+	} else if (_state.name.length() < 14) {
+		short_name = _state.name;
+	} else {
+		short_name = _state.name.substr (0, last_space);
+	}
+	
 	to_upper (short_name);
 	replace_all (short_name, " ", "-");
 	replace_all (short_name, "/", "-");

@@ -7,9 +7,16 @@ Nice error when trying to thumbnail with no content.
 Floating point fps hoo-ha
 vobcopy into deps list
 Disallow / in DCP names
-OpenDCP doesn't report progress?! do pulsing.
 
 options summary
+
+1: L
+2: R
+3: C
+4: Lfe
+5: Ls
+6: Rs
+
 
 films-0.6: Dolby Countdown looks as though it's 3D.  THX Terminator 2 fucked
 (these on default settings)
