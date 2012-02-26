@@ -240,6 +240,37 @@ opendcp_version ()
 	return version;
 }
 
+/** @return Version of vobcopy that is on the path (and hence that we will use) */
+static string
+vobcopy_version ()
+{
+	FILE* f = popen ("vobcopy 2>&1", "r");
+	if (f == 0) {
+		throw EncodeError ("could not run vobcopy to check version");
+	}
+
+	string version = "unknown";
+	
+	while (!feof (f)) {
+		char* buf = 0;
+		size_t n = 0;
+		ssize_t const r = getline (&buf, &n, f);
+		if (r > 0) {
+			string s (buf);
+			vector<string> b;
+			split (b, s, is_any_of (" "));
+			if (b.size() >= 2 && b[0] == "Vobcopy") {
+				version = b[1];
+			}
+			free (buf);
+		}
+	}
+
+	pclose (f);
+
+	return version;
+}
+
 /** @param v Version as used by FFmpeg.
  *  @return A string representation of v.
  */
@@ -258,6 +289,7 @@ dependency_version_summary ()
 	stringstream s;
 	s << "libopenjpeg " << opj_version () << ", "
 	  << "opendcp " << opendcp_version () << ", "
+	  << "vobcopy " << vobcopy_version() << ", "
 	  << "libswresample " << ffmpeg_version_to_string (swresample_version()) << ", "
 	  << "libavcodec " << ffmpeg_version_to_string (avcodec_version()) << ", "
 	  << "libavfilter " << ffmpeg_version_to_string (avfilter_version()) << ", "
