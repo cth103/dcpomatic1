@@ -71,10 +71,17 @@ J2KWAVEncoder::J2KWAVEncoder (shared_ptr<const FilmState> s, shared_ptr<const Op
 J2KWAVEncoder::~J2KWAVEncoder ()
 {
 	delete[] _deinterleave_buffer;
+	close_sound_files ();
+}
 
+void
+J2KWAVEncoder::close_sound_files ()
+{
 	for (vector<SNDFILE*>::iterator i = _sound_files.begin(); i != _sound_files.end(); ++i) {
 		sf_close (*i);
 	}
+
+	_sound_files.clear ();
 }	
 
 void
@@ -217,6 +224,8 @@ J2KWAVEncoder::process_end ()
 		(*i)->join ();
 		delete *i;
 	}
+
+	close_sound_files ();
 
 	/* Rename .wav.tmp files to .wav */
 	for (int i = 0; i < _fs->audio_channels; ++i) {
