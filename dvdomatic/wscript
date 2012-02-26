@@ -52,10 +52,6 @@ def configure(conf):
     			      int main() { boost::filesystem::copy_file ("a", "b"); }\n
 			      """, msg = 'Checking for boost filesystem library', lib = ['boost_filesystem', 'boost_system'], uselib_store = 'BOOST_FILESYSTEM')
     conf.check_cxx(fragment = """
-    			      #include <boost/program_options.hpp>\n
-    			      int main() { boost::program_options::options_description ("foo"); }\n
-			      """, msg = 'Checking for boost program options library', lib = ['boost_program_options', 'boost_system'], uselib_store = 'BOOST_PROGRAM_OPTIONS')
-    conf.check_cxx(fragment = """
                               #define BOOST_TEST_MODULE Config test\n
     			      #include <boost/test/unit_test.hpp>\n
                               int main() {}

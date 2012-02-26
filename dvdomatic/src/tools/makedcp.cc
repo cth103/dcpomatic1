@@ -19,7 +19,7 @@
 
 #include <iostream>
 #include <iomanip>
-#include <boost/program_options.hpp>
+#include <getopt.h>
 #include "format.h"
 #include "film.h"
 #include "filter.h"
@@ -34,33 +34,51 @@
 using namespace std;
 using namespace boost;
 
-int main (int argc, char* argv[])
+static void
+help (string n)
+{
+	cerr << "Syntax: " << n << " [--help] [--deps] [--film <film>]\n";
+}
+
+int
+main (int argc, char* argv[])
 {
 	string film_dir;
-	
-	boost::program_options::options_description desc ("Allowed options");
-	desc.add_options ()
-		("help", "give help")
-		("deps", "list versions of dependencies")
-		("film", boost::program_options::value<string> (&film_dir)->required(), "film")
-		;
-	boost::program_options::positional_options_description pos;
-	pos.add ("film", 1);
 
-	boost::program_options::variables_map vm;
+	while (1) {
+		static struct option long_options[] = {
+			{ "help", no_argument, 0, 'h'},
+			{ "deps", no_argument, 0, 'd'},
+			{ "film", required_argument, 0, 'f'},
+			{ 0, 0, 0, 0 }
+		};
 
-	/* Ha ha ha! */
-	boost::program_options::parsed_options parsed = boost::program_options::command_line_parser (argc, argv).
-		options(desc).allow_unregistered().positional(pos).run();
-	
-	boost::program_options::store (parsed, vm);
-	boost::program_options::notify (vm);
+		int option_index = 0;
+		int c = getopt_long (argc, argv, "hdf:", long_options, &option_index);
 
-	dvdomatic_setup ();
+		if (c == -1) {
+			break;
+		}
 
-	if (vm.count ("deps")) {
-		cout << "makedcp using " << dependency_version_summary () << "\n";
+		switch (c) {
+		case 'h':
+			help (argv[0]);
+			exit (EXIT_SUCCESS);
+		case 'd':
+			cout << dependency_version_summary () << "\n";
+			exit (EXIT_SUCCESS);
+		case 'f':
+			film_dir = optarg;
+			break;
+		}
 	}
+
+	if (film_dir.empty ()) {
+		help (argv[0]);
+		exit (EXIT_FAILURE);
+	}
+			
+	dvdomatic_setup ();
 
 	Film* film = 0;
 	try {
@@ -98,7 +116,16 @@ int main (int argc, char* argv[])
 		
 		all_done = true;
 		for (list<shared_ptr<Job> >::iterator i = jobs.begin(); i != jobs.end(); ++i) {
-			cout << (*i)->name() << ": " << fixed << setprecision(1) << ((*i)->get_overall_progress() * 100) << "%             \n";
+			cout << (*i)->name() << ": ";
+
+			float const p = (*i)->get_overall_progress ();
+
+			if (p >= 0) {
+				cout << fixed << setprecision(1) << ((*i)->get_overall_progress() * 100) << "%             \n";
+			} else {
+				cout << ": running           \n";
+			}
+			
 			if (!(*i)->finished ()) {
 				all_done = false;
 			}

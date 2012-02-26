@@ -20,7 +20,7 @@
 #include <iostream>
 #include <iomanip>
 #include <exception>
-#include <boost/program_options.hpp>
+#include <getopt.h>
 #include "format.h"
 #include "film.h"
 #include "filter.h"
@@ -91,28 +91,51 @@ process_video (shared_ptr<Image> image, int frame)
 	cout << "\033[0;32mgood\033[0m\n";
 }
 
+static void
+help (string n)
+{
+	cerr << "Syntax: " << n << " [--help] --film <film> --server <host>\n";
+	exit (EXIT_FAILURE);
+}
+
 int
 main (int argc, char* argv[])
 {
 	string film_dir;
 	string server_host;
-	
-	boost::program_options::options_description desc ("Allowed options");
-	desc.add_options ()
-		("help", "give help")
-		("server", boost::program_options::value<string> (&server_host)->required(), "server hostname")
-		("film", boost::program_options::value<string> (&film_dir)->required(), "film")
-		;
 
-	boost::program_options::variables_map vm;
-	boost::program_options::store (boost::program_options::parse_command_line (argc, argv, desc), vm);
+	while (1) {
+		static struct option long_options[] = {
+			{ "help", no_argument, 0, 'h'},
+			{ "server", required_argument, 0, 's'},
+			{ "film", required_argument, 0, 'f'},
+			{ 0, 0, 0, 0 }
+		};
 
-	if (vm.count ("help")) {
-		cout << desc << "\n";
-		return 0;
+		int option_index = 0;
+		int c = getopt_long (argc, argv, "hs:f:", long_options, &option_index);
+
+		if (c == -1) {
+			break;
+		}
+
+		switch (c) {
+		case 'h':
+			help (argv[0]);
+			exit (EXIT_SUCCESS);
+		case 's':
+			server_host = optarg;
+			break;
+		case 'f':
+			film_dir = optarg;
+			break;
+		}
 	}
 	
-        boost::program_options::notify (vm);
+	if (server_host.empty() || film_dir.empty()) {
+		help (argv[0]);
+		exit (EXIT_FAILURE);
+	}
 
 	dvdomatic_setup ();
 
