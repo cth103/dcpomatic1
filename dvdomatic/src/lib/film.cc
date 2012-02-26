@@ -519,8 +519,8 @@ Film::maybe_guess_dcp_long_name ()
 	stringstream s;
 
 	/* Pick complete words from _state.name until we hit the length limit */
-	uint32_t last_space = string::npos;
-	for (uint32_t i = 0; i < 14; ++i) {
+	size_t last_space = string::npos;
+	for (size_t i = 0; i < 14; ++i) {
 		if (_state.name[i] == ' ') {
 			last_space = i;
 		}
