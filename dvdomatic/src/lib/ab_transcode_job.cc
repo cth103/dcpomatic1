@@ -26,12 +26,13 @@
 #include "film_state.h"
 
 using namespace std;
+using namespace boost;
 
 /** @param s FilmState to compare (with filters and/or a non-bicubic scaler).
  *  @param o Options.
  *  @Param l A log that we can write to.
  */
-ABTranscodeJob::ABTranscodeJob (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log* l)
+ABTranscodeJob::ABTranscodeJob (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
 	: Job (s, o, l)
 {
 	_fs_b.reset (new FilmState (*_fs));
@@ -53,14 +54,14 @@ ABTranscodeJob::run ()
 {
 	try {
 
-		J2KWAVEncoder e (_fs, _opt, _log);
+		shared_ptr<J2KWAVEncoder> e (new J2KWAVEncoder (_fs, _opt, _log));
 		/* _fs_b is the one with no filters */
-		ABTranscoder w (_fs_b, _fs, _opt, this, _log, &e);
+		ABTranscoder w (_fs_b, _fs, _opt, this, _log, e);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);
 
-	} catch (exception& e) {
+	} catch (std::exception& e) {
 
 		set_state (FINISHED_ERROR);
 

@@ -22,6 +22,7 @@
  */
 
 #include <iostream>
+#include <iomanip>
 #include "transcode_job.h"
 #include "j2k_wav_encoder.h"
 #include "film.h"
@@ -58,8 +59,8 @@ TranscodeJob::run ()
 
 		_log->log ("Transcode job starting");
 
-		J2KWAVEncoder e (_fs, _opt, _log);
-		Transcoder w (_fs, _opt, this, _log, &e);
+		_encoder.reset (new J2KWAVEncoder (_fs, _opt, _log));
+		Transcoder w (_fs, _opt, this, _log, _encoder);
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);
@@ -78,4 +79,21 @@ TranscodeJob::run ()
 		throw;
 
 	}
+}
+
+string
+TranscodeJob::status () const
+{
+	if (!_encoder) {
+		return "0%";
+	}
+	
+	float const fps = _encoder->current_frames_per_second ();
+	if (fps == 0) {
+		return Job::status ();
+	}
+		
+	stringstream s;
+	s << Job::status () << "; about " << fixed << setprecision (1) << fps << " frames per second.";
+	return s.str ();
 }

@@ -61,6 +61,7 @@ private:
 			add (progress);
 			add (progress_unknown);
 			add (text);
+			add (informed_of_finish);
 		}
 
 		/** Job name */
@@ -73,6 +74,8 @@ private:
 		Gtk::TreeModelColumn<int> progress_unknown;
 		/** Text to write into the progress bar */
 		Gtk::TreeModelColumn<std::string> text;
+		/** true if the job has been informed of its finish */
+		Gtk::TreeModelColumn<bool> informed_of_finish;
 	};
 
 	/** The columns for the store */

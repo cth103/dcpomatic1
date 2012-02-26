@@ -40,7 +40,15 @@ class Log;
 class ABTranscoder
 {
 public:
-	ABTranscoder (boost::shared_ptr<const FilmState> a, boost::shared_ptr<const FilmState> b, boost::shared_ptr<const Options> o, Job* j, Log* l, Encoder* e);
+	ABTranscoder (
+		boost::shared_ptr<const FilmState> a,
+		boost::shared_ptr<const FilmState> b,
+		boost::shared_ptr<const Options> o,
+		Job* j,
+		Log* l,
+		boost::shared_ptr<Encoder> e
+		);
+	
 	~ABTranscoder ();
 
 	void go ();
@@ -53,9 +61,9 @@ private:
 	boost::shared_ptr<const Options> _opt;
 	Job* _job;
 	Log* _log;
-	Encoder* _encoder;
-	Decoder* _da;
-	Decoder* _db;
+	boost::shared_ptr<Encoder> _encoder;
+	boost::shared_ptr<Decoder> _da;
+	boost::shared_ptr<Decoder> _db;
 	int _last_frame;
 	boost::shared_ptr<Image> _image;
 };

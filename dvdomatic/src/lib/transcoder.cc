@@ -40,7 +40,7 @@ using namespace boost;
  *  @param l Log that we can write to.
  *  @param e Encoder to use.
  */
-Transcoder::Transcoder (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Job* j, Log* l, Encoder* e)
+Transcoder::Transcoder (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Job* j, Log* l, shared_ptr<Encoder> e)
 	: _job (j)
 	, _encoder (e)
 	, _decoder (decoder_factory (s, o, j, l))

@@ -147,15 +147,13 @@ main (int argc, char* argv[])
 	opt->apply_crop = false;
 	opt->decode_audio = false;
 
-	Decoder* decoder = decoder_factory (film.state_copy(), opt, 0, &log_);
+	shared_ptr<Decoder> decoder = decoder_factory (film.state_copy(), opt, 0, &log_);
 	try {
 		decoder->Video.connect (sigc::ptr_fun (process_video));
 		decoder->go ();
 	} catch (std::exception& e) {
 		cerr << "Error: " << e.what() << "\n";
 	}
-
-	delete decoder;
 
 	return 0;
 }

@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include "shell_command_job.h"
+#include "log.h"
 
 using namespace std;
 using namespace boost;
@@ -43,6 +44,8 @@ ShellCommandJob::ShellCommandJob (shared_ptr<const FilmState> s, shared_ptr<cons
 void
 ShellCommandJob::command (string c)
 {
+	_log->log ("Command: " + c, Log::VERBOSE);
+	
 	int const r = system (c.c_str());
 	if (r < 0) {
 		set_state (FINISHED_ERROR);
@@ -53,4 +56,16 @@ ShellCommandJob::command (string c)
 	} else {
 		set_state (FINISHED_OK);
 	}
+}
+
+string
+ShellCommandJob::status () const
+{
+	if (!running () && !finished()) {
+		return "Waiting";
+	} else if (running ()) {
+		return "";
+	}
+
+	return Job::status ();
 }
