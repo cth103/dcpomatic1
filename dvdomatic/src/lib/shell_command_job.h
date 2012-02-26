@@ -17,8 +17,28 @@
 
 */
 
-/** @file  src/version.h
- *  @brief DVD-o-matic version.
+/** @file src/shell_command_job.h
+ *  @brief A job which calls a command via a shell.
  */
 
-#define DVDOMATIC_VERSION "0.14-pre"
+#ifndef DVDOMATIC_SHELL_COMMAND_JOB_H
+#define DVDOMATIC_SHELL_COMMAND_JOB_H
+
+#include "job.h"
+
+class FilmState;
+class Log;
+
+/** @class ShellCommandJob
+ *  @brief A job which calls a command via a shell.
+ */
+class ShellCommandJob : public Job
+{
+public:
+	ShellCommandJob (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log* l);
+
+protected:
+	void command (std::string c);
+};
+
+#endif

@@ -17,8 +17,40 @@
 
 */
 
-/** @file  src/version.h
- *  @brief DVD-o-matic version.
+/** @file src/shell_command_job.cc
+ *  @brief A job which calls a command via a shell.
  */
 
-#define DVDOMATIC_VERSION "0.14-pre"
+#include <stdio.h>
+#include "shell_command_job.h"
+
+using namespace std;
+using namespace boost;
+
+/** @param s Our FilmState.
+ *  @param o Options.
+ *  @param l Log.
+ */
+ShellCommandJob::ShellCommandJob (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Log* l)
+	: Job (s, o, l)
+{
+
+}
+
+/** Run a command via a shell.
+ *  @param c Command to run.
+ */
+void
+ShellCommandJob::command (string c)
+{
+	int const r = system (c.c_str());
+	if (r < 0) {
+		set_state (FINISHED_ERROR);
+		return;
+	} else if (WEXITSTATUS (r) != 0) {
+		set_error ("command failed");
+		set_state (FINISHED_ERROR);
+	} else {
+		set_state (FINISHED_OK);
+	}
+}
