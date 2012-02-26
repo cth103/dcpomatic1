@@ -37,6 +37,8 @@ class ShellCommandJob : public Job
 public:
 	ShellCommandJob (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log* l);
 
+	std::string status () const;
+
 protected:
 	void command (std::string c);
 };

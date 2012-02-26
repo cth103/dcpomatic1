@@ -77,6 +77,7 @@ JobManagerView::update ()
 			r[_columns.name] = (*i)->name ();
 			r[_columns.job] = *i;
 			r[_columns.progress_unknown] = -1;
+			r[_columns.informed_of_finish] = false;
 		} else {
 			r = *j;
 		}
@@ -100,17 +101,17 @@ JobManagerView::update ()
 		*/
 		
 		if ((*i)->finished_ok ()) {
-			string const c = r[_columns.text];
-			if (c != st) {
-				r[_columns.progress_unknown] = 0;
+			bool i = r[_columns.informed_of_finish];
+			if (!i) {
+				r[_columns.progress_unknown] = -1;
 				r[_columns.progress] = 100;
 				r[_columns.text] = st;
 				inform_of_finish = true;
 			}
 		} else if ((*i)->finished_in_error ()) {
-			string const c = r[_columns.text];
-			if (c != st) {
-				r[_columns.progress_unknown] = 0;
+			bool i = r[_columns.informed_of_finish];
+			if (!i) {
+				r[_columns.progress_unknown] = -1;
 				r[_columns.progress] = 100;
 				r[_columns.text] = st;
 				inform_of_finish = true;
@@ -119,6 +120,7 @@ JobManagerView::update ()
 
 		if (inform_of_finish) {
 			(*i)->emit_finished ();
+			r[_columns.informed_of_finish] = true;
 		}
 	}
 }
