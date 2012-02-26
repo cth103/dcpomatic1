@@ -73,12 +73,13 @@ using namespace boost;
  *  @param l Log to write to.
  */
 DCPVideoFrame::DCPVideoFrame (
-	shared_ptr<Image> yuv, Size out, Scaler const * s, int f, int fps, string pp, int clut, int bw, Log* l)
+	shared_ptr<Image> yuv, Size out, Scaler const * s, int f, float fps, string pp, int clut, int bw, Log* l)
 	: _input (yuv)
 	, _out_size (out)
 	, _scaler (s)
 	, _frame (f)
-	, _frames_per_second (fps)
+	  /* we round here; not sure if this is right */
+	, _frames_per_second (rint (fps))
 	, _post_process (pp)
 	, _colour_lut_index (clut)
 	, _j2k_bandwidth (bw)

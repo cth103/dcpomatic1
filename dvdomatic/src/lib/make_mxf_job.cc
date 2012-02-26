@@ -61,14 +61,10 @@ void
 MakeMXFJob::run ()
 {
 	set_progress_unknown ();
-	
-	float fps = _fs->frames_per_second;
-	
-	/* XXX: experimental hack; round FPS for audio MXFs */
-	if (_type == AUDIO) {
-		fps = rintf (fps);
-	}
 
+	/* We round for DCP: not sure if this is right */
+	float fps = rintf (_fs->frames_per_second);
+	
 	stringstream c;
 	c << "opendcp_mxf -r " << fps << " -i ";
 	switch (_type) {
