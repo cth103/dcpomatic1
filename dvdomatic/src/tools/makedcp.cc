@@ -123,7 +123,7 @@ main (int argc, char* argv[])
 			if (p >= 0) {
 				cout << (*i)->status() << "                         \n";
 			} else {
-				cout << ": running           \n";
+				cout << ": Running           \n";
 			}
 			
 			if (!(*i)->finished ()) {
