@@ -295,15 +295,18 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 	tv.tv_usec = 0;
 	
 	if (setsockopt (fd, SOL_SOCKET, SO_RCVTIMEO, (void *) &tv, sizeof (tv)) < 0) {
+		close (fd);
 		throw NetworkError ("setsockopt failed");
 	}
 
 	if (setsockopt (fd, SOL_SOCKET, SO_SNDTIMEO, (void *) &tv, sizeof (tv)) < 0) {
+		close (fd);
 		throw NetworkError ("setsockopt failed");
 	}
 	
 	struct hostent* server = gethostbyname (serv->host_name().c_str ());
 	if (server == 0) {
+		close (fd);
 		throw NetworkError ("gethostbyname failed");
 	}
 
@@ -313,6 +316,7 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 	memcpy (&server_address.sin_addr.s_addr, server->h_addr, server->h_length);
 	server_address.sin_port = htons (Config::instance()->server_port ());
 	if (connect (fd, (struct sockaddr *) &server_address, sizeof (server_address)) < 0) {
+		close (fd);
 		stringstream s;
 		s << "could not connect (" << strerror (errno) << ")";
 		throw NetworkError (s.str());
