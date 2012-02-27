@@ -106,14 +106,14 @@ ABTranscoder::go ()
 	_encoder->process_begin ();
 	
 	while (1) {
-		Decoder::PassResult a = _da->pass ();
-		Decoder::PassResult b = _db->pass ();
+		bool const a = _da->pass ();
+		bool const b = _db->pass ();
 
 		if (_job) {
 			_job->set_progress (float (_last_frame) / _da->decoding_frames ());
 		}
 		
-		if (a == Decoder::PASS_DONE && b == Decoder::PASS_DONE) {
+		if (a && b) {
 			break;
 		}
 	}

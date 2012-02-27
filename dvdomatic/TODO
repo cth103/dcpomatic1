@@ -3,6 +3,7 @@ x-thread signaller
 Restartable jobs somehow
 More logging
 Nice error when trying to thumbnail with no content.
+Destroy _buffer_src_context / _buffer_sink_context
 
 options summary
 

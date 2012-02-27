@@ -63,30 +63,28 @@ public:
 	int audio_sample_rate () const;
 	AVSampleFormat audio_sample_format () const;
 
-	PassResult do_pass ();
-
 private:
+
+	bool do_pass ();
+	PixelFormat pixel_format () const;
+	int time_base_numerator () const;
+	int time_base_denominator () const;
+	int sample_aspect_ratio_numerator () const;
+	int sample_aspect_ratio_denominator () const;
 
 	void setup_general ();
 	void setup_video ();
-	void setup_video_filters ();
 	void setup_audio ();
 
 	AVFormatContext* _format_context;
 	int _video_stream;
 	int _audio_stream;
-	AVFrame* _frame_in;
+	AVFrame* _frame;
 	
 	AVCodecContext* _video_codec_context;
 	AVCodec* _video_codec;
-	AVFilterContext* _buffer_src_context;
-	AVFilterContext* _buffer_sink_context;
-	
 	AVCodecContext* _audio_codec_context;
 	AVCodec* _audio_codec;
 
 	AVPacket _packet;
-
-	int _post_filter_width;
-	int _post_filter_height;
 };

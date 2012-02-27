@@ -65,16 +65,7 @@ public:
 	/** @return format of audio samples */
 	virtual AVSampleFormat audio_sample_format () const = 0;
 
-	/** Result of a call to pass() */
-	enum PassResult {
-		PASS_DONE,    ///< we have decoded all the input
-		PASS_NOTHING, ///< nothing new is ready after this pass
-		PASS_ERROR,   ///< error; probably temporary
-		PASS_VIDEO,   ///< a video frame is available
-		PASS_AUDIO    ///< some audio is available
-	};
-
-	PassResult pass ();
+	bool pass ();
 	void go ();
 
 	/** @return the index of the last video frame to be processed */
@@ -99,11 +90,15 @@ public:
 	
 protected:
 	/** perform a single pass at our content */
-	virtual PassResult do_pass () = 0;
+	virtual bool do_pass () = 0;
+	virtual PixelFormat pixel_format () const = 0;
+	virtual int time_base_numerator () const = 0;
+	virtual int time_base_denominator () const = 0;
+	virtual int sample_aspect_ratio_numerator () const = 0;
+	virtual int sample_aspect_ratio_denominator () const = 0;
 	
-	bool have_video_frame_ready ();
-	void emit_video (boost::shared_ptr<Image>);
-	void emit_audio (uint8_t *, int, int);
+	void process_video (AVFrame *);
+	void process_audio (uint8_t *, int, int);
 
 	/** our FilmState */
 	boost::shared_ptr<const FilmState> _fs;
@@ -123,8 +118,16 @@ protected:
 	bool _ignore_length;
 
 private:
+	void setup_video_filters ();
+	
 	/** last video frame to be processed */
 	int _video_frame;
+
+	AVFilterContext* _buffer_src_context;
+	AVFilterContext* _buffer_sink_context;
+
+	Size _post_filter_size;
+	bool _have_setup_video_filters;
 };
 
 #endif
