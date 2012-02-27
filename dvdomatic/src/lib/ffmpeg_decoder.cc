@@ -298,6 +298,7 @@ FFmpegDecoder::setup_video_filters ()
 	inputs->pad_idx = 0;
 	inputs->next = 0;
 
+	_log->log ("Using filter chain `" + filters + "'");
 	if (avfilter_graph_parse (graph, filters.c_str(), &inputs, &outputs, 0) < 0) {
 		throw DecodeError ("could not set up filter graph.");
 	}
