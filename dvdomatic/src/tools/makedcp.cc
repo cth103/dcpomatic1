@@ -121,7 +121,7 @@ main (int argc, char* argv[])
 			float const p = (*i)->get_overall_progress ();
 
 			if (p >= 0) {
-				cout << fixed << setprecision(1) << ((*i)->get_overall_progress() * 100) << "%             \n";
+				cout << (*i)->status() << "                         \n";
 			} else {
 				cout << ": running           \n";
 			}

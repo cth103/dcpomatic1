@@ -380,7 +380,7 @@ EncodedData::write (shared_ptr<const Options> opt, int frame)
 	FILE* f = fopen (tmp_j2k.c_str (), "wb");
 	
 	if (!f) {
-		throw WriteFileError (tmp_j2k);
+		throw WriteFileError (tmp_j2k, errno);
 	}
 
 	fwrite (_data, 1, _size, f);

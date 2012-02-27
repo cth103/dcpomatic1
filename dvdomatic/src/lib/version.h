@@ -21,4 +21,4 @@
  *  @brief DVD-o-matic version.
  */
 
-#define DVDOMATIC_VERSION "0.14"
+#define DVDOMATIC_VERSION "0.16-pre"

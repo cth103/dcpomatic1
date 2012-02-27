@@ -67,7 +67,7 @@ TIFFEncoder::process_video (shared_ptr<Image> image, int frame)
 	TIFFSetField (output, TIFFTAG_SAMPLESPERPIXEL, 3);
 	
 	if (TIFFWriteEncodedStrip (output, 0, scaled->data()[0], _opt->out_size.width * _opt->out_size.height * 3) == 0) {
-		throw WriteFileError (tmp_file);
+		throw WriteFileError (tmp_file, 0);
 	}
 
 	TIFFClose (output);

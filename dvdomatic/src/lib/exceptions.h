@@ -41,7 +41,7 @@ public:
 		return _what.c_str ();
 	}
 
-private:
+protected:
 	/** error message */
 	std::string _what;
 };
@@ -121,10 +121,19 @@ public:
 class WriteFileError : public FileError
 {
 public:
-	/** @param f File that we were trying to write to */
-	WriteFileError (std::string f)
-		: FileError ("could not write to file " + f, f)
-	{}
+	/** @param f File that we were trying to write to.
+	 *  @param e errno value, or 0.
+	 */
+	WriteFileError (std::string f, int e)
+		: FileError ("", f)
+	{
+		std::stringstream s;
+		s << "could not write to file " << f;
+		if (e) {
+			s << " (" << strerror (e) << ")";
+		}
+		_what = s.str ();
+	}
 };
 
 /** @class SettingError.
