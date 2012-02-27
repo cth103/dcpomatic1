@@ -126,7 +126,7 @@ Image::scale_and_convert_to_rgb (Size out_size, Scaler const * scaler) const
 {
 	assert (scaler);
 
-	shared_ptr<RGBFrameImage> rgb (new RGBFrameImage (PIX_FMT_RGB24, out_size));
+	shared_ptr<RGBFrameImage> rgb (new RGBFrameImage (out_size));
 	
 	struct SwsContext* scale_context = sws_getContext (
 		size().width, size().height, pixel_format(),
@@ -266,8 +266,8 @@ FilterBufferImage::size () const
  *  understand how avpicture_fill is supposed to be called with
  *  multi-planar images.
  */
-RGBFrameImage::RGBFrameImage (PixelFormat p, Size s)
-	: Image (p)
+RGBFrameImage::RGBFrameImage (Size s)
+	: Image (PIX_FMT_RGB24)
 	, _size (s)
 {
 	_frame = avcodec_alloc_frame ();
@@ -277,6 +277,9 @@ RGBFrameImage::RGBFrameImage (PixelFormat p, Size s)
 
 	_data = (uint8_t *) av_malloc (size().width * size().height * 3);
 	avpicture_fill ((AVPicture *) _frame, _data, PIX_FMT_RGB24, size().width, size().height);
+	_frame->width = size().width;
+	_frame->height = size().height;
+	_frame->format = PIX_FMT_RGB24;
 }
 
 RGBFrameImage::~RGBFrameImage ()

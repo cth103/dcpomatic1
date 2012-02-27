@@ -53,9 +53,14 @@ public:
 	int audio_sample_rate () const;
 	AVSampleFormat audio_sample_format () const;
 
-	PassResult do_pass ();
-
 private:
+	bool do_pass ();
+	PixelFormat pixel_format () const;
+	int time_base_numerator () const;
+	int time_base_denominator () const;
+	int sample_aspect_ratio_numerator () const;
+	int sample_aspect_ratio_denominator () const;
+	
 	std::string file_path (std::string) const;
 	std::list<std::string> _files;
 	std::list<std::string>::iterator _iter;

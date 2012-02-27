@@ -75,6 +75,7 @@ TIFFDecoder::TIFFDecoder (boost::shared_ptr<const FilmState> fs, boost::shared_p
 	_files.sort ();
 
 	_iter = _files.begin ();
+
 }
 
 int
@@ -129,18 +130,13 @@ TIFFDecoder::audio_sample_format () const
 	return AV_SAMPLE_FMT_NONE;
 }
 
-Decoder::PassResult
+bool
 TIFFDecoder::do_pass ()
 {
 	if (_iter == _files.end ()) {
-		return PASS_DONE;
+		return true;
 	}
 
-	if (!have_video_frame_ready ()) {
-		++_iter;
-		return PASS_NOTHING;
-	}
-	
 	TIFF* t = TIFFOpen (file_path (*_iter).c_str (), "r");
 	if (t == 0) {
 		throw DecodeError ("could not open TIFF file");
@@ -161,10 +157,14 @@ TIFFDecoder::do_pass ()
 		throw DecodeError ("could not read TIFF data");
 	}
 
-	shared_ptr<SimpleImage> image (new SimpleImage (PIX_FMT_RGB24, Size (width, height)));
-	image->set_line_size (0, width * 3);
+	AVFrame* frame = avcodec_alloc_frame ();
+	if (frame == 0) {
+		throw DecodeError ("could not allocate frame");
+	}
 
-	uint8_t* p = image->data()[0];
+	RGBFrameImage image (Size (width, height));
+
+	uint8_t* p = image.data()[0];
 	for (uint32_t y = 0; y < height; ++y) {
 		for (uint32_t x = 0; x < width; ++x) {
 			uint32_t const i = (height - y - 1) * width + x;
@@ -177,10 +177,10 @@ TIFFDecoder::do_pass ()
 	_TIFFfree (raster);
 	TIFFClose (t);
 
-	emit_video (image);
+	process_video (image.frame ());
 
 	++_iter;
-	return Decoder::PASS_VIDEO;
+	return false;
 }
 
 /** @param file name within our content directory
@@ -193,3 +193,37 @@ TIFFDecoder::file_path (string f) const
 	s << _fs->content << "/" << f;
 	return _fs->file (s.str ());
 }
+
+PixelFormat
+TIFFDecoder::pixel_format () const
+{
+	return PIX_FMT_RGB24;
+}
+
+int
+TIFFDecoder::time_base_numerator () const
+{
+	return rint (_fs->frames_per_second);;
+}
+
+
+int
+TIFFDecoder::time_base_denominator () const
+{
+	return 1;
+}
+
+int
+TIFFDecoder::sample_aspect_ratio_numerator () const
+{
+	/* XXX */
+	return 1;
+}
+
+int
+TIFFDecoder::sample_aspect_ratio_denominator () const
+{
+	/* XXX */
+	return 1;
+}
+

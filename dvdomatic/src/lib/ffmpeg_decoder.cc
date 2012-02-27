@@ -32,9 +32,6 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
-#include <libavfilter/avfiltergraph.h>
-#include <libavfilter/avcodec.h>
-#include <libavfilter/buffersink.h>
 #include <libpostproc/postprocess.h>
 }
 #include <sndfile.h>
@@ -59,15 +56,11 @@ FFmpegDecoder::FFmpegDecoder (boost::shared_ptr<const FilmState> s, boost::share
 	, _format_context (0)
 	, _video_stream (-1)
 	, _audio_stream (-1)
-	, _frame_in (0)
+	, _frame (0)
 	, _video_codec_context (0)
 	, _video_codec (0)
-	, _buffer_src_context (0)
-	, _buffer_sink_context (0)
 	, _audio_codec_context (0)
 	, _audio_codec (0)
-	, _post_filter_width (0)
-	, _post_filter_height (0)
 {
 	setup_general ();
 	setup_video ();
@@ -84,7 +77,7 @@ FFmpegDecoder::~FFmpegDecoder ()
 		avcodec_close (_video_codec_context);
 	}
 	
-	av_free (_frame_in);
+	av_free (_frame);
 	avformat_close_input (&_format_context);
 }	
 
@@ -118,8 +111,8 @@ FFmpegDecoder::setup_general ()
 		throw DecodeError ("could not find audio stream");
 	}
 
-	_frame_in = avcodec_alloc_frame ();
-	if (_frame_in == 0) {
+	_frame = avcodec_alloc_frame ();
+	if (_frame == 0) {
 		throw DecodeError ("could not allocate frame");
 	}
 }
@@ -137,16 +130,6 @@ FFmpegDecoder::setup_video ()
 	if (avcodec_open2 (_video_codec_context, _video_codec, 0) < 0) {
 		throw DecodeError ("could not open video decoder");
 	}
-
-	_post_filter_width = _video_codec_context->width;
-	_post_filter_height = _video_codec_context->height;
-	
-	if (_opt->apply_crop) {
-		_post_filter_width -= _fs->left_crop + _fs->right_crop;
-		_post_filter_height -= _fs->top_crop + _fs->bottom_crop;		
-	}
-
-	setup_video_filters ();
 }
 
 void
@@ -164,148 +147,37 @@ FFmpegDecoder::setup_audio ()
 	}
 }
 
-FFmpegDecoder::PassResult
+bool
 FFmpegDecoder::do_pass ()
 {
 	int r = av_read_frame (_format_context, &_packet);
 	if (r < 0) {
-		return PASS_DONE;
+		return true;
 	}
 
 	if (_packet.stream_index == _video_stream && _opt->decode_video) {
 		
 		int frame_finished;
-		if (avcodec_decode_video2 (_video_codec_context, _frame_in, &frame_finished, &_packet) < 0) {
-			av_free_packet (&_packet);
-			return PASS_ERROR;
+		if (avcodec_decode_video2 (_video_codec_context, _frame, &frame_finished, &_packet) >= 0 && frame_finished) {
+			process_video (_frame);
 		}
-		
-		if (frame_finished) {
 
-			if (!have_video_frame_ready ()) {
-				av_free_packet (&_packet);
-				return PASS_NOTHING;
-			}
-
-			if (av_vsrc_buffer_add_frame (_buffer_src_context, _frame_in, 0) < 0) {
-				throw DecodeError ("could not push buffer into filter chain.");
-			}
-
-			while (avfilter_poll_frame (_buffer_sink_context->inputs[0])) {
-				AVFilterBufferRef* filter_buffer;
-				if (av_buffersink_get_buffer_ref (_buffer_sink_context, &filter_buffer, 0) >= 0) {
-
-					/* This takes ownership of filter_buffer */
-					shared_ptr<Image> image (new FilterBufferImage (_video_codec_context->pix_fmt, filter_buffer));
-
-					emit_video (image);
-
-					av_free_packet (&_packet);
-					return PASS_VIDEO;
-				}
-			}
-		}
-		
 	} else if (_packet.stream_index == _audio_stream && _opt->decode_audio) {
 		
-		avcodec_get_frame_defaults (_frame_in);
+		avcodec_get_frame_defaults (_frame);
 		
 		int frame_finished;
-		if (avcodec_decode_audio4 (_audio_codec_context, _frame_in, &frame_finished, &_packet) < 0) {
-			av_free_packet (&_packet);
-			return PASS_ERROR;
-		}
-		
-		if (frame_finished) {
+		if (avcodec_decode_audio4 (_audio_codec_context, _frame, &frame_finished, &_packet) >= 0 && frame_finished) {
 			int const data_size = av_samples_get_buffer_size (
-				0, _audio_codec_context->channels, _frame_in->nb_samples, audio_sample_format (), 1
+				0, _audio_codec_context->channels, _frame->nb_samples, audio_sample_format (), 1
 				);
 
-			emit_audio (_frame_in->data[0], _audio_codec_context->channels, data_size);
-			av_free_packet (&_packet);
-			return PASS_AUDIO;
+			process_audio (_frame->data[0], _audio_codec_context->channels, data_size);
 		}
 	}
 	
 	av_free_packet (&_packet);
-	return PASS_NOTHING;
-}
-
-void
-FFmpegDecoder::setup_video_filters ()
-{
-	int r;
-	
-	string filters = Filter::ffmpeg_strings (_fs->filters).first;
-
-	stringstream fs;
-	if (_opt->apply_crop) {
-		fs << "crop=" << _post_filter_width << ":" << _post_filter_height << ":" << _fs->left_crop << ":" << _fs->top_crop << " ";
-	} else {
-		fs << "crop=" << _post_filter_width << ":" << _post_filter_height << ":0:0";
-	}
-	
-	if (!filters.empty ()) {
-		filters += ",";
-	}
-
-	filters += fs.str ();
-
-	avfilter_register_all ();
-	
-	AVFilterGraph* graph = avfilter_graph_alloc();
-	if (graph == 0) {
-		throw DecodeError ("Could not create filter graph.");
-	}
-	
-	AVFilter* buffer_src = avfilter_get_by_name("buffer");
-	if (buffer_src == 0) {
-		throw DecodeError ("Could not create buffer src filter");
-	}
-	
-	AVFilter* buffer_sink = avfilter_get_by_name("buffersink");
-	if (buffer_sink == 0) {
-		throw DecodeError ("Could not create buffer sink filter");
-	}
-	
-	stringstream a;
-	a << _video_codec_context->width << ":"
-	  << _video_codec_context->height << ":"
-	  << _video_codec_context->pix_fmt << ":"
-	  << _video_codec_context->time_base.num << ":"
-	  << _video_codec_context->time_base.den << ":"
-	  << _video_codec_context->sample_aspect_ratio.num << ":"
-	  << _video_codec_context->sample_aspect_ratio.den;
-
-	if ((r = avfilter_graph_create_filter (&_buffer_src_context, buffer_src, "in", a.str().c_str(), 0, graph)) < 0) {
-		throw DecodeError ("could not create buffer source");
-	}
-
-	enum PixelFormat pixel_formats[] = { _video_codec_context->pix_fmt, PIX_FMT_NONE };
-	if (avfilter_graph_create_filter(&_buffer_sink_context, buffer_sink, "out", 0, pixel_formats, graph) < 0) {
-		throw DecodeError ("could not create buffer sink.");
-	}
-
-	AVFilterInOut* outputs = avfilter_inout_alloc ();
-	outputs->name = av_strdup("in");
-	outputs->filter_ctx = _buffer_src_context;
-	outputs->pad_idx = 0;
-	outputs->next = 0;
-
-	AVFilterInOut* inputs = avfilter_inout_alloc ();
-	inputs->name = av_strdup("out");
-	inputs->filter_ctx = _buffer_sink_context;
-	inputs->pad_idx = 0;
-	inputs->next = 0;
-
-	_log->log ("Using filter chain `" + filters + "'");
-	if (avfilter_graph_parse (graph, filters.c_str(), &inputs, &outputs, 0) < 0) {
-		throw DecodeError ("could not set up filter graph.");
-	}
-
-	if (avfilter_graph_config (graph, 0) < 0) {
-		throw DecodeError ("could not configure filter graph.");
-	}
+	return false;
 }
 
 int
@@ -351,3 +223,34 @@ FFmpegDecoder::native_size () const
 {
 	return Size (_video_codec_context->width, _video_codec_context->height);
 }
+
+PixelFormat
+FFmpegDecoder::pixel_format () const
+{
+	return _video_codec_context->pix_fmt;
+}
+
+int
+FFmpegDecoder::time_base_numerator () const
+{
+	return _video_codec_context->time_base.num;
+}
+
+int
+FFmpegDecoder::time_base_denominator () const
+{
+	return _video_codec_context->time_base.den;
+}
+
+int
+FFmpegDecoder::sample_aspect_ratio_numerator () const
+{
+	return _video_codec_context->sample_aspect_ratio.num;
+}
+
+int
+FFmpegDecoder::sample_aspect_ratio_denominator () const
+{
+	return _video_codec_context->sample_aspect_ratio.den;
+}
+

@@ -124,12 +124,15 @@ private:
 class RGBFrameImage : public Image
 {
 public:
-	RGBFrameImage (PixelFormat, Size);
+	RGBFrameImage (Size);
 	~RGBFrameImage ();
 
 	uint8_t ** data () const;
 	int * line_size () const;
 	Size size () const;
+	AVFrame * frame () const {
+		return _frame;
+	}
 
 private:
 	Size _size;
