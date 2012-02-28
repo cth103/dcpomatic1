@@ -29,7 +29,7 @@
 class CopyFromDVDJob : public Job
 {
 public:
-	CopyFromDVDJob (boost::shared_ptr<FilmState>, Log *);
+	CopyFromDVDJob (boost::shared_ptr<const FilmState>, Log *);
 
 	std::string name () const;
 	void run ();
