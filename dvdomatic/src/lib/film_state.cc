@@ -176,3 +176,11 @@ FilmState::thumb_frame (int n) const
 	assert (n < int (thumbs.size ()));
 	return thumbs[n];
 }
+
+Size
+FilmState::cropped_size (Size s) const
+{
+	s.width -= left_crop + right_crop;
+	s.height -= top_crop + bottom_crop;
+	return s;
+}

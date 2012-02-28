@@ -93,6 +93,8 @@ public:
 	void write_metadata (std::ofstream &) const;
 	void read_metadata (std::string, std::string);
 
+	Size cropped_size (Size) const;
+
 	/** Complete path to directory containing the film metadata;
 	    must not be relative.
 	*/

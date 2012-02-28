@@ -22,6 +22,7 @@
  */
 
 #include <stdexcept>
+#include <sstream>
 
 /** @class StringError
  *  @brief A parent class for exceptions using messages held in a std::string
@@ -205,6 +206,14 @@ class NetworkError : public StringError
 {
 public:
 	NetworkError (std::string s)
+		: StringError (s)
+	{}
+};
+
+class PlayError : public StringError
+{
+public:
+	PlayError (std::string s)
 		: StringError (s)
 	{}
 };

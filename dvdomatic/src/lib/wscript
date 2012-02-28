@@ -29,7 +29,9 @@ def build(bld):
 		 lut.cc
 		 make_dcp_job.cc
 		 make_mxf_job.cc
+                 player.cc
 		 scaler.cc
+                 screen.cc
 		 server.cc
 		 shell_command_job.cc
 		 thumbs_job.cc

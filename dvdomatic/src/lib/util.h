@@ -93,4 +93,22 @@ struct Size
 	int height;
 };
 
+struct Position
+{
+	Position ()
+		: x (0)
+		, y (0)
+	{}
+
+	Position (int x_, int y_)
+		: x (x_)
+		, y (y_)
+	{}
+
+	int x;
+	int y;
+};
+
+extern std::string crop_string (Position, Size);
+
 #endif

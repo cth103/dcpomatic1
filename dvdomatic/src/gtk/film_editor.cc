@@ -35,6 +35,8 @@
 #include "lib/job_manager.h"
 #include "lib/filter.h"
 #include "lib/copy_from_dvd_job.h"
+#include "lib/player.h"
+#include "lib/screen.h"
 #include "filter_dialog.h"
 #include "gtk_util.h"
 #include "film_editor.h"
@@ -54,6 +56,8 @@ FilmEditor::FilmEditor (Film* f)
 	, _dcp_whole ("Whole Film")
 	, _dcp_for ("For")
 	, _dcp_ab ("A/B")
+	, _play_button ("Play")
+	, _play_ab ("A/B")
 {
 	_vbox.set_border_width (12);
 	_vbox.set_spacing (12);
@@ -98,6 +102,11 @@ FilmEditor::FilmEditor (Film* f)
 	_dcp_for.set_group (g);
 	_dcp_for_frames.set_range (24, 65536);
 	_dcp_for_frames.set_increments (24, 60 * 24);
+
+	vector<Screen const *> const scr = Screen::get_all ();
+	for (vector<Screen const *>::const_iterator i = scr.begin(); i != scr.end(); ++i) {
+		_play_screen.append_text ((*i)->name ());
+	}
 
 	/* And set their values from the Film */
 	set_film (f);
@@ -192,6 +201,7 @@ FilmEditor::FilmEditor (Film* f)
 	_copy_from_dvd_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::copy_from_dvd_clicked));
 	_examine_content_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::examine_content_clicked));
 	_make_dcp_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked));
+	_play_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::play_clicked));
 
 	HBox* h = manage (new HBox);
 	h->set_spacing (12);
@@ -208,7 +218,13 @@ FilmEditor::FilmEditor (Film* f)
 	h->pack_start (left_aligned_label ("frames"), false, false);
 	h->pack_start (_dcp_ab);
 	_vbox.pack_start (*h, false, false);
-	
+
+	h = manage (new HBox);
+	h->set_spacing (12);
+	h->pack_start (_play_button, false, false);
+	h->pack_start (_play_screen, false, false);
+	h->pack_start (_play_ab, false, false);
+	_vbox.pack_start (*h, false, false);
 }
 
 /** @return Our main widget, which contains everything else */
@@ -578,5 +594,22 @@ FilmEditor::frames_per_second_changed ()
 {
 	if (_film) {
 		_film->set_frames_per_second (_frames_per_second.get_value ());
+	}
+}
+
+void
+FilmEditor::play_clicked ()
+{
+	Screen const * s = Screen::get_from_index (_play_screen.get_active_row_number ());
+	if (_play_ab.get_active ()) {
+		shared_ptr<FilmState> left = _film->state_copy ();
+		left->filters.clear ();
+		/* This is somewhat arbitrary, but hey ho */
+		left->scaler = Scaler::get_from_id ("bicubic");
+		
+		Player* p = new Player (left, s, Player::SPLIT_LEFT);
+		p = new Player (_film->state_copy (), s, Player::SPLIT_RIGHT);
+	} else {
+		Player* p = new Player (_film->state_copy (), s, Player::SPLIT_NONE);
 	}
 }

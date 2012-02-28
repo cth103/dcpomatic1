@@ -48,6 +48,8 @@ extern "C" {
 #include "format.h"
 #include "content_type.h"
 #include "filter.h"
+#include "screen.h"
+#include "film_state.h"
 
 #ifdef DEBUG_HASH
 #include <mhash.h>
@@ -420,6 +422,15 @@ dvdomatic_setup ()
 	ContentType::setup_content_types ();
 	Scaler::setup_scalers ();
 	Filter::setup_filters ();
+	Screen::setup_screens ();
+}
+
+string
+crop_string (Position start, Size size)
+{
+	stringstream s;
+	s << "crop=" << size.width << ":" << size.height << ":" << start.x << ":" << start.y;
+	return s.str ();
 }
 
 #ifdef DEBUG_HASH
