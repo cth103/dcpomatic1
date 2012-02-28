@@ -32,18 +32,16 @@ Player::Player (shared_ptr<const FilmState> fs, Screen const * sc, Split s)
 	: _fs (fs)
 	, _screen (sc)
 	, _split (s)
-	, _thread (0)
 	, _mplayer (0)
 {
-	_thread = new boost::thread (boost::bind (&Player::run_mplayer, this));
+	run_mplayer ();
 }
 
 Player::~Player ()
 {
-	/* XXX: thread safety of pclose? */
-	pclose (_mplayer);
-	_thread->join ();
-	delete _thread;
+	if (_mplayer) {
+		pclose (_mplayer);
+	}
 }
 
 void
@@ -101,6 +99,8 @@ Player::run_mplayer ()
 	s << " \"" << _fs->file (_fs->content) << "\"";
 
 	cout << s.str() << "\n";
+
+	cout << "popen\n";
 	_mplayer = popen (s.str().c_str (), "w");
 	if (_mplayer == 0) {
 		throw PlayError ("could not popen() mplayer");

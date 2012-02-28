@@ -17,28 +17,23 @@
 
 */
 
+#include <list>
 #include <boost/shared_ptr.hpp>
 
-class FilmState;
-class Screen;
+class Player;
 
-class Player
+class PlayerManager
 {
 public:
-	enum Split {
-		SPLIT_NONE,
-		SPLIT_LEFT,
-		SPLIT_RIGHT
-	};
-	
-	Player (boost::shared_ptr<const FilmState>, Screen const *, Split);
-	~Player ();
+
+	void add (boost::shared_ptr<Player>);
+
+	static PlayerManager* instance ();
 
 private:
-	void run_mplayer ();
+	PlayerManager ();
 
-	boost::shared_ptr<const FilmState> _fs;
-	Screen const * _screen;
-	Split _split;
-	FILE* _mplayer;
+	std::list<boost::shared_ptr<Player> > _players;
+	
+	static PlayerManager* _instance;
 };

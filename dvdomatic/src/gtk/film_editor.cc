@@ -36,6 +36,7 @@
 #include "lib/filter.h"
 #include "lib/copy_from_dvd_job.h"
 #include "lib/player.h"
+#include "lib/player_manager.h"
 #include "lib/screen.h"
 #include "filter_dialog.h"
 #include "gtk_util.h"
@@ -601,15 +602,16 @@ void
 FilmEditor::play_clicked ()
 {
 	Screen const * s = Screen::get_from_index (_play_screen.get_active_row_number ());
+	PlayerManager* pm = PlayerManager::instance ();
 	if (_play_ab.get_active ()) {
 		shared_ptr<FilmState> left = _film->state_copy ();
 		left->filters.clear ();
 		/* This is somewhat arbitrary, but hey ho */
 		left->scaler = Scaler::get_from_id ("bicubic");
 		
-		Player* p = new Player (left, s, Player::SPLIT_LEFT);
-		p = new Player (_film->state_copy (), s, Player::SPLIT_RIGHT);
+		pm->add (shared_ptr<Player> (new Player (left, s, Player::SPLIT_LEFT)));
+		pm->add (shared_ptr<Player> (new Player (_film->state_copy (), s, Player::SPLIT_RIGHT)));
 	} else {
-		Player* p = new Player (_film->state_copy (), s, Player::SPLIT_NONE);
+		pm->add (shared_ptr<Player> (new Player (_film->state_copy (), s, Player::SPLIT_NONE)));
 	}
 }

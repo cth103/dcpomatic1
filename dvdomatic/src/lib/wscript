@@ -30,6 +30,7 @@ def build(bld):
 		 make_dcp_job.cc
 		 make_mxf_job.cc
                  player.cc
+                 player_manager.cc
 		 scaler.cc
                  screen.cc
 		 server.cc
