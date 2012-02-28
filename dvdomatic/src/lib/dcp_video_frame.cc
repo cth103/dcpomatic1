@@ -147,10 +147,13 @@ DCPVideoFrame::~DCPVideoFrame ()
 shared_ptr<EncodedData>
 DCPVideoFrame::encode_locally ()
 {
-	shared_ptr<Image> prepared = _input->scale_and_convert_to_rgb (_out_size, _scaler);
+	shared_ptr<Image> prepared = _input;
+	
 	if (!_post_process.empty ()) {
 		prepared = prepared->post_process (_post_process);
 	}
+	
+	prepared = prepared->scale_and_convert_to_rgb (_out_size, _scaler);
 
 	create_openjpeg_container ();
 
