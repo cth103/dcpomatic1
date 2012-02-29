@@ -43,31 +43,26 @@ PlayerManager::instance ()
 }
 
 void
-PlayerManager::setup (shared_ptr<const FilmState> fs, Screen const * sc, bool s)
+PlayerManager::setup (shared_ptr<const FilmState> fs, Screen const * sc)
 {
 	_players.clear ();
-	
-	if (s) {
-		_players.push_back (shared_ptr<Player> (new Player (fs, sc, Player::SPLIT_LEFT, fifo_name ())));
-		_players.push_back (shared_ptr<Player> (new Player (fs, sc, Player::SPLIT_RIGHT, fifo_name ())));
-	} else {
-		_players.push_back (shared_ptr<Player> (new Player (fs, sc, Player::SPLIT_NONE, fifo_name ())));
-	}
+	_players.push_back (shared_ptr<Player> (new Player (fs, sc, Player::SPLIT_NONE)));
 }
 
-string
-PlayerManager::fifo_name () const
+void
+PlayerManager::setup (shared_ptr<const FilmState> fs_a, shared_ptr<const FilmState> fs_b, Screen const * sc)
 {
-	stringstream p;
-	p << "/tmp/dvdomatic." << getpid () << "." << _players.size();
-	return p.str ();
+	_players.clear ();
+
+	_players.push_back (shared_ptr<Player> (new Player (fs_a, sc, Player::SPLIT_LEFT)));
+	_players.push_back (shared_ptr<Player> (new Player (fs_b, sc, Player::SPLIT_RIGHT)));
 }
 
 void
 PlayerManager::play ()
 {
 	for (list<shared_ptr<Player> >::iterator i = _players.begin(); i != _players.end(); ++i) {
-		(*i)->play ();
+		(*i)->command ("pause");
 	}
 }
 
@@ -75,6 +70,6 @@ void
 PlayerManager::stop ()
 {
 	for (list<shared_ptr<Player> >::iterator i = _players.begin(); i != _players.end(); ++i) {
-		(*i)->stop ();
+		(*i)->command ("pause");
 	}
 }

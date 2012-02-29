@@ -29,7 +29,8 @@ class PlayerManager
 {
 public:
 
-	void setup (boost::shared_ptr<const FilmState>, Screen const *, bool);
+	void setup (boost::shared_ptr<const FilmState>, Screen const *);
+	void setup (boost::shared_ptr<const FilmState>, boost::shared_ptr<const FilmState>, Screen const *);
 	void play ();
 	void stop ();
 
@@ -37,7 +38,6 @@ public:
 
 private:
 	PlayerManager ();
-	std::string fifo_name () const;
 
 	std::list<boost::shared_ptr<Player> > _players;
 	

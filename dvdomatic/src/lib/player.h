@@ -33,30 +33,17 @@ public:
 		SPLIT_LEFT,
 		SPLIT_RIGHT
 	};
-	
-	Player (boost::shared_ptr<const FilmState>, Screen const *, Split, std::string);
+		
+	Player (boost::shared_ptr<const FilmState>, Screen const *, Split);
 	~Player ();
 
-	void play ();
-	void stop ();
-
-private:
-	void run_mplayer ();
 	void command (std::string);
-
-	enum State {
-		NOT_STARTED,
-		PLAYING,
-		PAUSED
-	};
-
-	boost::shared_ptr<const FilmState> _fs;
-	Screen const * _screen;
-	Split _split;
-	FILE* _mplayer;
-	std::string _fifo_file;
-	int _fifo;
-	State _state;
+	
+private:
+	int _mplayer_stdin[2];
+	int _mplayer_stdout[2];
+	int _mplayer_stderr[2];
+	pid_t _mplayer_pid;
 };
 
 #endif

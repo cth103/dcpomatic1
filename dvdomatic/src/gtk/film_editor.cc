@@ -635,7 +635,18 @@ void
 FilmEditor::setup_player_manager ()
 {
 	/* XXX: state_copy ... */
-	PlayerManager::instance()->setup (
-		_film->state_copy(), Screen::get_from_index (_play_screen.get_active_row_number ()), _play_ab.get_active ()
-		);
+
+	if (_play_ab.get_active ()) {
+		shared_ptr<FilmState> fs_a = _film->state_copy ();
+		fs_a->filters.clear ();
+		/* This is somewhat arbitrary, but hey ho */
+		fs_a->scaler = Scaler::get_from_id ("bicubic");
+		PlayerManager::instance()->setup (
+			fs_a, _film->state_copy(), Screen::get_from_index (_play_screen.get_active_row_number ())
+			);
+	} else {
+		PlayerManager::instance()->setup (
+			_film->state_copy(), Screen::get_from_index (_play_screen.get_active_row_number ())
+			);
+	}
 }
