@@ -18,6 +18,9 @@
 */
 
 #include <sstream>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <boost/thread.hpp>
 #include "player.h"
 #include "film_state.h"
@@ -28,13 +31,16 @@
 using namespace std;
 using namespace boost;
 
-Player::Player (shared_ptr<const FilmState> fs, Screen const * sc, Split s)
+Player::Player (shared_ptr<const FilmState> fs, Screen const * sc, Split s, string f)
 	: _fs (fs)
 	, _screen (sc)
 	, _split (s)
 	, _mplayer (0)
+	, _fifo_file (f)
+	, _fifo (0)
+	, _state (NOT_STARTED)
 {
-	run_mplayer ();
+	
 }
 
 Player::~Player ()
@@ -42,15 +48,23 @@ Player::~Player ()
 	if (_mplayer) {
 		pclose (_mplayer);
 	}
+
+	if (_fifo) {
+		close (_fifo);
+	}
+
+	unlink (_fifo_file.c_str ());
 }
 
 void
 Player::run_mplayer ()
 {
+	mkfifo (_fifo_file.c_str(), 0600);
+
 	stringstream s;
 	s << "mplayer ";
 
-	s << "-vo x11 -noaspect -ao pulse -noautosub -nosub -vo x11 -noborder ";
+	s << "-vo x11 -noaspect -ao pulse -noautosub -nosub -vo x11 -noborder -slave -input file=" << _fifo_file << " ";
 	s << "-sws " << _fs->scaler->mplayer_id () << " ";
 
 	stringstream vf;
@@ -100,9 +114,51 @@ Player::run_mplayer ()
 
 	cout << s.str() << "\n";
 
-	cout << "popen\n";
-	_mplayer = popen (s.str().c_str (), "w");
+	_mplayer = popen (s.str().c_str (), "r");
 	if (_mplayer == 0) {
-		throw PlayError ("could not popen() mplayer");
+		stringstream s;
+		s << "could not popen() mplayer " << strerror (errno);
+		throw PlayError (s.str ());
 	}
+
+	_fifo = open (_fifo_file.c_str(), O_WRONLY);
+	if (_fifo == -1) {
+		throw PlayError ("could not open FIFO to mplayer");
+	}
+}
+
+void
+Player::stop ()
+{
+	switch (_state) {
+	case PLAYING:
+		command ("pause");
+		_state = PAUSED;
+		break;
+	}
+}
+
+void
+Player::play ()
+{
+	switch (_state) {
+	case NOT_STARTED:
+		run_mplayer ();
+		_state = PLAYING;
+		break;
+	case PAUSED:
+		command ("pause");
+		_state = PLAYING;
+		break;
+	default:
+		break;
+	}
+}
+
+void
+Player::command (string c)
+{
+	char buf[64];
+	snprintf (buf, sizeof (buf), "%s\n", c.c_str ());
+	write (_fifo, buf, strlen (buf));
 }

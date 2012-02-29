@@ -17,6 +17,9 @@
 
 */
 
+#ifndef DVDOMATIC_PLAYER_H
+#define DVDOMATIC_PLAYER_H
+
 #include <boost/shared_ptr.hpp>
 
 class FilmState;
@@ -31,14 +34,29 @@ public:
 		SPLIT_RIGHT
 	};
 	
-	Player (boost::shared_ptr<const FilmState>, Screen const *, Split);
+	Player (boost::shared_ptr<const FilmState>, Screen const *, Split, std::string);
 	~Player ();
+
+	void play ();
+	void stop ();
 
 private:
 	void run_mplayer ();
+	void command (std::string);
+
+	enum State {
+		NOT_STARTED,
+		PLAYING,
+		PAUSED
+	};
 
 	boost::shared_ptr<const FilmState> _fs;
 	Screen const * _screen;
 	Split _split;
 	FILE* _mplayer;
+	std::string _fifo_file;
+	int _fifo;
+	State _state;
 };
+
+#endif

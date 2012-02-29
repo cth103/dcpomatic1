@@ -19,19 +19,25 @@
 
 #include <list>
 #include <boost/shared_ptr.hpp>
+#include "player.h"
 
 class Player;
+class FilmState;
+class Screen;
 
 class PlayerManager
 {
 public:
 
-	void add (boost::shared_ptr<Player>);
+	void setup (boost::shared_ptr<const FilmState>, Screen const *, bool);
+	void play ();
+	void stop ();
 
 	static PlayerManager* instance ();
 
 private:
 	PlayerManager ();
+	std::string fifo_name () const;
 
 	std::list<boost::shared_ptr<Player> > _players;
 	

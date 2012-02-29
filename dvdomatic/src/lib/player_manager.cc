@@ -18,6 +18,9 @@
 */
 
 #include "player_manager.h"
+#include "player.h"
+#include "film_state.h"
+#include "screen.h"
 
 using namespace std;
 using namespace boost;
@@ -40,7 +43,38 @@ PlayerManager::instance ()
 }
 
 void
-PlayerManager::add (shared_ptr<Player> p)
+PlayerManager::setup (shared_ptr<const FilmState> fs, Screen const * sc, bool s)
 {
-	_players.push_back (p);
+	_players.clear ();
+	
+	if (s) {
+		_players.push_back (shared_ptr<Player> (new Player (fs, sc, Player::SPLIT_LEFT, fifo_name ())));
+		_players.push_back (shared_ptr<Player> (new Player (fs, sc, Player::SPLIT_RIGHT, fifo_name ())));
+	} else {
+		_players.push_back (shared_ptr<Player> (new Player (fs, sc, Player::SPLIT_NONE, fifo_name ())));
+	}
+}
+
+string
+PlayerManager::fifo_name () const
+{
+	stringstream p;
+	p << "/tmp/dvdomatic." << getpid () << "." << _players.size();
+	return p.str ();
+}
+
+void
+PlayerManager::play ()
+{
+	for (list<shared_ptr<Player> >::iterator i = _players.begin(); i != _players.end(); ++i) {
+		(*i)->play ();
+	}
+}
+
+void
+PlayerManager::stop ()
+{
+	for (list<shared_ptr<Player> >::iterator i = _players.begin(); i != _players.end(); ++i) {
+		(*i)->stop ();
+	}
 }

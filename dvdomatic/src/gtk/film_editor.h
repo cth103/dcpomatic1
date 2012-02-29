@@ -63,8 +63,10 @@ private:
 	void examine_content_clicked ();
 	void make_dcp_clicked ();
 	void play_clicked ();
+	void stop_clicked ();
 
 	void set_things_sensitive (bool);
+	void setup_player_manager ();
 
 	/** The film we are editing */
 	Film* _film;
@@ -125,6 +127,7 @@ private:
 	Gtk::CheckButton _dcp_ab;
 	/** Button to play the content */
 	Gtk::Button _play_button;
+	Gtk::Button _stop_button;
 	Gtk::ComboBoxText _play_screen;
 	Gtk::CheckButton _play_ab;
 };
