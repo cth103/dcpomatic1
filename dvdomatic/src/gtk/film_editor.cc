@@ -234,6 +234,7 @@ FilmEditor::FilmEditor (Film* f)
 	h->pack_start (_stop_button, false, false);
 	h->pack_start (_play_screen, false, false);
 	h->pack_start (_play_ab, false, false);
+	h->pack_start (_play_position, true, true);
 	_vbox.pack_start (*h, false, false);
 }
 
@@ -455,7 +456,6 @@ FilmEditor::make_dcp_clicked ()
 	try {
 		_film->make_dcp ();
 	} catch (BadSettingError& e) {
-		cout << "a\n";
 		stringstream s;
 		if (e.setting() == "dcp_long_name") {
 			s << "Could not make DCP: long name is invalid (" << e.what() << ")";
@@ -464,7 +464,6 @@ FilmEditor::make_dcp_clicked ()
 		}
 		error_dialog (s.str ());
 	} catch (std::exception& e) {
-		cout << "b\n";
 		stringstream s;
 		s << "Could not make DCP: " << e.what () << ".";
 		error_dialog (s.str ());
@@ -613,16 +612,14 @@ void
 FilmEditor::play_clicked ()
 {
 	PlayerManager::instance()->play ();
+	Glib::signal_timeout().connect (sigc::bind_return (sigc::mem_fun (*this, &FilmEditor::update_play_position), true), 250);
+}
 
-#if 0	
-	if (_play_ab.get_active ()) {
-		shared_ptr<FilmState> left = _film->state_copy ();
-		left->filters.clear ();
-		/* This is somewhat arbitrary, but hey ho */
-		left->scaler = Scaler::get_from_id ("bicubic");
-		pm->play ();
-	}
-#endif	
+void
+FilmEditor::update_play_position ()
+{
+	float const p = PlayerManager::instance()->get_position ();
+	_play_position.set_text (seconds_to_hms (p));
 }
 
 void

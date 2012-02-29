@@ -38,6 +38,7 @@ public:
 	~Player ();
 
 	void command (std::string);
+	std::string command_with_reply (std::string, std::string);
 	
 private:
 	int _mplayer_stdin[2];

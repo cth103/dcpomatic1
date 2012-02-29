@@ -34,6 +34,8 @@ public:
 	void play ();
 	void stop ();
 
+	float get_position () const;
+
 	static PlayerManager* instance ();
 
 private:

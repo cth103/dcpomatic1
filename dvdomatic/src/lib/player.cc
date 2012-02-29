@@ -22,6 +22,7 @@
 #include <sys/stat.h>
 #include <signal.h>
 #include <fcntl.h>
+#include <poll.h>
 #include <boost/thread.hpp>
 #include <boost/algorithm/string.hpp>
 #include "player.h"
@@ -155,3 +156,37 @@ Player::command (string c)
 	write (_mplayer_stdin[1], buf, strlen (buf));
 }
 
+string
+Player::command_with_reply (string c, string t)
+{
+	command (c);
+
+	struct pollfd pfd[1];
+	pfd[0].fd = _mplayer_stdout[0];
+	pfd[0].events = POLLIN;
+	poll (pfd, 1, 50);
+
+	if ((pfd[0].revents & POLLIN) == 0) {
+		return "";
+	}
+	
+	char buf[64];
+	int r = read (_mplayer_stdout[0], buf, sizeof (buf));
+	if (r < 0) {
+		return "";
+	}
+
+	vector<string> b;
+	string s (buf);
+	trim (s);
+	split (b, s, is_any_of ("="));
+	if (b.size() < 2) {
+		return "";
+	}
+
+	if (b[0] == t) {
+		return b[1];
+	}
+
+	return "";
+}
