@@ -106,3 +106,22 @@ BOOST_AUTO_TEST_CASE (format_test)
 	BOOST_CHECK_EQUAL (f->ratio_as_integer(), 239);
 }
 
+BOOST_AUTO_TEST_CASE (util_test)
+{
+	string t = "Hello this is a string \"with quotes\" and indeed without them";
+	vector<string> b = split_at_spaces_considering_quotes (t);
+	vector<string>::iterator i = b.begin ();
+	BOOST_CHECK_EQUAL (*i++, "Hello");
+	BOOST_CHECK_EQUAL (*i++, "this");
+	BOOST_CHECK_EQUAL (*i++, "is");
+	BOOST_CHECK_EQUAL (*i++, "a");
+	BOOST_CHECK_EQUAL (*i++, "string");
+	BOOST_CHECK_EQUAL (*i++, "with quotes");
+	BOOST_CHECK_EQUAL (*i++, "and");
+	BOOST_CHECK_EQUAL (*i++, "indeed");
+	BOOST_CHECK_EQUAL (*i++, "without");
+	BOOST_CHECK_EQUAL (*i++, "them");
+}
+
+	
+		

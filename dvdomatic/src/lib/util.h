@@ -26,6 +26,7 @@
 #define DVDOMATIC_UTIL_H
 
 #include <string>
+#include <vector>
 #include <boost/shared_ptr.hpp>
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -43,6 +44,7 @@ extern std::string dependency_version_summary ();
 extern void socket_write (int, uint8_t const *, int);
 extern double seconds (struct timeval);
 extern void dvdomatic_setup ();
+extern std::vector<std::string> split_at_spaces_considering_quotes (std::string);
 
 #ifdef DEBUG_HASH
 extern void md5_data (std::string, void const *, int);

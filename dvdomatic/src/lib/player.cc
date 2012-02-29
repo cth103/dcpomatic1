@@ -50,17 +50,16 @@ Player::Player (shared_ptr<const FilmState> fs, Screen const * screen, Split spl
 	
 	int const p = fork ();
 	if (p < 0) {
-		cerr << "**** could not fork for mplayer\n";
 		throw PlayError ("could not fork for mplayer");
 	} else if (p == 0) {
 		close (_mplayer_stdin[1]);
 		dup2 (_mplayer_stdin[0], STDIN_FILENO);
 		
-		close (_mplayer_stdout[0]);
-		dup2 (_mplayer_stdout[1], STDOUT_FILENO);
+//		close (_mplayer_stdout[0]);
+//		dup2 (_mplayer_stdout[1], STDOUT_FILENO);
 		
-		close (_mplayer_stderr[0]);
-		dup2 (_mplayer_stderr[1], STDERR_FILENO);
+//		close (_mplayer_stderr[0]);
+//		dup2 (_mplayer_stderr[1], STDERR_FILENO);
 
 		char* p[] = { strdup ("TERM=xterm"), strdup ("DISPLAY=:0"), strdup ("HOME=/home/carl"), strdup ("LOGNAME=/home/carl/fucker.log"), 0 };
 		environ = p;
@@ -68,7 +67,7 @@ Player::Player (shared_ptr<const FilmState> fs, Screen const * screen, Split spl
 		stringstream s;
 		s << "/usr/local/bin/mplayer";
 
-		s << " -vo x11 -noaspect -nosound -noautosub -nosub -vo x11 -noborder -slave -quiet"; // -idle
+		s << " -vo x11 -noaspect -nosound -noautosub -nosub -vo x11 -noborder -slave -quiet -idle";
 		s << " -sws " << fs->scaler->mplayer_id ();
 
 		stringstream vf;
@@ -114,13 +113,12 @@ Player::Player (shared_ptr<const FilmState> fs, Screen const * screen, Split spl
 		}
 		
 		s << " -vf " << vf.str();
-		s << " " << fs->file (fs->content);
+		s << " \"" << fs->file (fs->content) << "\" ";
 
 		string cmd (s.str ());
 		cout << cmd << "\n";
 
-		vector<string> b;
-		boost::split (b, cmd, is_any_of (" "));
+		vector<string> b = split_at_spaces_considering_quotes (cmd);
 		
 		char** cl = new char*[b.size() + 1];
 		for (vector<string>::size_type i = 0; i < b.size(); ++i) {
@@ -131,7 +129,6 @@ Player::Player (shared_ptr<const FilmState> fs, Screen const * screen, Split spl
 		execv (cl[0], cl);
 
 		stringstream e;
-		cerr << "**** exec of mplayer failed " << strerror (errno) << "\n";
 		e << "exec of mplayer failed " << strerror (errno);
 		throw PlayError (e.str ());
 		

@@ -445,6 +445,27 @@ crop_string (Position start, Size size)
 	return s.str ();
 }
 
+vector<string>
+split_at_spaces_considering_quotes (string s)
+{
+	vector<string> out;
+	bool in_quotes = false;
+	string c;
+	for (string::size_type i = 0; i < s.length(); ++i) {
+		if (s[i] == ' ' && !in_quotes) {
+			out.push_back (c);
+			c = "";
+		} else if (s[i] == '"') {
+			in_quotes = !in_quotes;
+		} else {
+			c += s[i];
+		}
+	}
+
+	out.push_back (c);
+	return out;
+}
+
 #ifdef DEBUG_HASH
 void
 md5_data (string title, void const * data, int size)
