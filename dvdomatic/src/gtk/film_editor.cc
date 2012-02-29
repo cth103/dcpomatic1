@@ -647,6 +647,7 @@ FilmEditor::update_play_position ()
 void
 FilmEditor::stop_clicked ()
 {
+	stop_updating_play_position ();
 	PlayerManager::instance()->stop ();
 }
 
