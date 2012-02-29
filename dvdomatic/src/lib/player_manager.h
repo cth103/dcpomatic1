@@ -36,6 +36,8 @@ public:
 
 	float get_position () const;
 
+	void child_exited (pid_t);
+
 	static PlayerManager* instance ();
 
 private:

@@ -27,6 +27,7 @@
 #include <iostream>
 #include <execinfo.h>
 #include <cxxabi.h>
+#include <signal.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <boost/algorithm/string.hpp>
@@ -50,6 +51,7 @@ extern "C" {
 #include "filter.h"
 #include "screen.h"
 #include "film_state.h"
+#include "player_manager.h"
 
 #ifdef DEBUG_HASH
 #include <mhash.h>
@@ -414,7 +416,13 @@ SocketReader::read_indefinite (uint8_t* data, int size)
 	memcpy (data, _buffer, size);
 }
 
-/** Call the required functions to set up DVD-o-matic's static arrays */
+void
+sigchld_handler (int, siginfo_t* info, void *)
+{
+	PlayerManager::instance()->child_exited (info->si_pid);
+}
+
+/** Call the required functions to set up DVD-o-matic's static arrays, etc. */
 void
 dvdomatic_setup ()
 {
@@ -423,6 +431,11 @@ dvdomatic_setup ()
 	Scaler::setup_scalers ();
 	Filter::setup_filters ();
 	Screen::setup_screens ();
+
+	struct sigaction sa;
+	sa.sa_flags = SA_SIGINFO;
+	sa.sa_sigaction = sigchld_handler;
+	sigaction (SIGCHLD, &sa, 0);
 }
 
 string

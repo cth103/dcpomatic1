@@ -39,6 +39,9 @@ public:
 
 	void command (std::string);
 	std::string command_with_reply (std::string, std::string);
+	pid_t mplayer_pid () const {
+		return _mplayer_pid;
+	}
 	
 private:
 	int _mplayer_stdin[2];

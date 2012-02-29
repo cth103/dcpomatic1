@@ -83,3 +83,18 @@ PlayerManager::get_position () const
 	
 	return atof (_players.front()->command_with_reply ("get_time_pos", "ANS_TIME_POSITION").c_str());
 }
+
+void
+PlayerManager::child_exited (pid_t pid)
+{
+	list<shared_ptr<Player> >::iterator i = _players.begin();
+	while (i != _players.end() && (*i)->mplayer_pid() != pid) {
+		++i;
+	}
+	
+	if (i == _players.end()) {
+		return;
+	}
+
+	_players.erase (i);
+}
