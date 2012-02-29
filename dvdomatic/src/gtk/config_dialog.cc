@@ -22,20 +22,25 @@
  */
 
 #include <iostream>
+#include <boost/lexical_cast.hpp>
 #include "lib/config.h"
 #include "lib/server.h"
+#include "lib/screen.h"
+#include "lib/format.h"
 #include "config_dialog.h"
 #include "gtk_util.h"
 
 using namespace std;
+using namespace boost;
 
 ConfigDialog::ConfigDialog ()
 	: Gtk::Dialog ("DVD-o-matic Configuration")
 	, _servers (2, true)
-	, _add_server ("Add")
+	, _add_server ("Add server")
+	, _add_screen ("Add screen")
 {
 	Gtk::Table* t = manage (new Gtk::Table);
-	t->set_row_spacings (6);
+	t->set_row_spacings (12);
 	t->set_col_spacings (6);
 	t->set_border_width (6);
 
@@ -56,15 +61,29 @@ ConfigDialog::ConfigDialog ()
 
 	_servers.set_column_title (0, "Host name");
 	_servers.set_column_title (1, "Threads");
-	list<Server*> servers = Config::instance()->servers ();
-	for (list<Server*>::iterator i = servers.begin(); i != servers.end(); ++i) {
+	vector<Server*> servers = Config::instance()->servers ();
+	for (vector<Server*>::iterator i = servers.begin(); i != servers.end(); ++i) {
 		int const r = _servers.append_text ((*i)->host_name ());
-		stringstream s;
-		s << (*i)->threads ();
-		_servers.set_text (r, 1, s.str ());
+		_servers.set_text (r, 1, lexical_cast<string> ((*i)->threads ()));
 	}
 
 	_add_server.signal_clicked().connect (sigc::mem_fun (*this, &ConfigDialog::add_server_clicked));
+
+	_screens_store = Gtk::TreeStore::create (_screens_columns);
+	vector<Screen*> screens = Config::instance()->screens ();
+	for (vector<Screen*>::iterator i = screens.begin(); i != screens.end(); ++i) {
+		add_screen_to_store (*i);
+	}
+
+	_screens_view.set_model (_screens_store);
+	_screens_view.append_column_editable ("Screen", _screens_columns._name);
+	_screens_view.append_column ("Format", _screens_columns._format_name);
+	_screens_view.append_column_editable ("x", _screens_columns._x);
+	_screens_view.append_column_editable ("y", _screens_columns._y);
+	_screens_view.append_column_editable ("Width", _screens_columns._width);
+	_screens_view.append_column_editable ("Height", _screens_columns._height);
+
+	_add_screen.signal_clicked().connect (sigc::mem_fun (*this, &ConfigDialog::add_screen_clicked));
 
 	int n = 0;
 	t->attach (left_aligned_label ("Threads to use for encoding on this host"), 0, 1, n, n + 1);
@@ -81,6 +100,12 @@ ConfigDialog::ConfigDialog ()
 	t->attach (_servers, 1, 2, n, n + 1);
 	Gtk::VBox* b = manage (new Gtk::VBox);
 	b->pack_start (_add_server, false, false);
+	t->attach (*b, 2, 3, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("Screens"), 0, 1, n, n + 1);
+	t->attach (_screens_view, 1, 2, n, n + 1);
+	b = manage (new Gtk::VBox);
+	b->pack_start (_add_screen, false, false);
 	t->attach (*b, 2, 3, n, n + 1);
 	++n;
 
@@ -113,14 +138,39 @@ ConfigDialog::j2k_bandwidth_changed ()
 void
 ConfigDialog::on_response (int r)
 {
-	list<Server*> servers;
-	
+	vector<Server*> servers;
 	for (size_t i = 0; i < _servers.size(); ++i) {
 		servers.push_back (new Server (_servers.get_text (i, 0), atoi (_servers.get_text (i, 1).c_str ())));
 	}
-
 	Config::instance()->set_servers (servers);
 
+	vector<Screen*> screens;
+
+	Gtk::TreeModel::Children c = _screens_store->children ();
+	for (Gtk::TreeModel::Children::iterator i = c.begin(); i != c.end(); ++i) {
+
+		Gtk::TreeModel::Row r = *i;
+		Screen* s = new Screen (r[_screens_columns._name]);
+
+		Gtk::TreeModel::Children cc = r.children ();
+		for (Gtk::TreeModel::Children::iterator j = cc.begin(); j != cc.end(); ++j) {
+			Gtk::TreeModel::Row r = *j;
+			string const x_ = r[_screens_columns._x];
+			string const y_ = r[_screens_columns._y];
+			string const width_ = r[_screens_columns._width];
+			string const height_ = r[_screens_columns._height];
+			s->add_geometry (
+				Format::get_from_nickname (r[_screens_columns._format_nickname]),
+				Position (lexical_cast<int> (x_), lexical_cast<int> (y_)),
+				Size (lexical_cast<int> (width_), lexical_cast<int> (height_))
+				);
+		}
+
+		screens.push_back (s);
+	}
+	
+	Config::instance()->set_screens (screens);
+	
 	Gtk::Dialog::on_response (r);
 }
 
@@ -129,4 +179,36 @@ ConfigDialog::add_server_clicked ()
 {
 	int const r = _servers.append_text ("localhost");
 	_servers.set_text (r, 1, "1");
+}
+
+void
+ConfigDialog::add_screen_to_store (Screen* s)
+{
+	Gtk::TreeModel::iterator i = _screens_store->append ();
+	Gtk::TreeModel::Row r = *i;
+	r[_screens_columns._name] = s->name ();
+
+	Screen::GeometryMap geoms = s->geometries ();
+	for (Screen::GeometryMap::const_iterator j = geoms.begin(); j != geoms.end(); ++j) {
+		i = _screens_store->append (r.children ());
+		Gtk::TreeModel::Row c = *i;
+		c[_screens_columns._format_name] = j->first->name ();
+		c[_screens_columns._format_nickname] = j->first->nickname ();
+		c[_screens_columns._x] = lexical_cast<string> (j->second.position.x);
+		c[_screens_columns._y] = lexical_cast<string> (j->second.position.y);
+		c[_screens_columns._width] = lexical_cast<string> (j->second.size.width);
+		c[_screens_columns._height] = lexical_cast<string> (j->second.size.height);
+	}
+}
+
+void
+ConfigDialog::add_screen_clicked ()
+{
+	Screen s ("New Screen");
+	vector<Format const *> f = Format::get_all ();
+	for (vector<Format const *>::iterator i = f.begin(); i != f.end(); ++i) {
+		s.add_geometry (*i, Position (0, 0), Size (2048, 1080));
+	}
+	
+	add_screen_to_store (&s);
 }

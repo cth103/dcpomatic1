@@ -38,6 +38,7 @@
 #include "lib/player.h"
 #include "lib/player_manager.h"
 #include "lib/screen.h"
+#include "lib/config.h"
 #include "filter_dialog.h"
 #include "gtk_util.h"
 #include "film_editor.h"
@@ -105,8 +106,8 @@ FilmEditor::FilmEditor (Film* f)
 	_dcp_for_frames.set_range (24, 65536);
 	_dcp_for_frames.set_increments (24, 60 * 24);
 
-	vector<Screen const *> const scr = Screen::get_all ();
-	for (vector<Screen const *>::const_iterator i = scr.begin(); i != scr.end(); ++i) {
+	vector<Screen *> const scr = Config::instance()->screens ();
+	for (vector<Screen *>::const_iterator i = scr.begin(); i != scr.end(); ++i) {
 		_play_screen.append_text ((*i)->name ());
 	}
 	
@@ -653,19 +654,28 @@ void
 FilmEditor::setup_player_manager ()
 {
 	stop_updating_play_position ();
-	
+
+	vector<Screen *> screens = Config::instance()->screens ();
+	if (screens.empty ()) {
+		return;
+	}
+
+	Screen* screen = 0;
+	if (_play_screen.get_active_row_number() >= int (screens.size ())) {
+		_play_screen.set_active (0);
+		screen = screens.front ();
+	} else {
+		screen = screens[_play_screen.get_active_row_number()];
+	}
+       
 	if (_play_ab.get_active ()) {
 		shared_ptr<FilmState> fs_a = _film->state_copy ();
 		fs_a->filters.clear ();
 		/* This is somewhat arbitrary, but hey ho */
 		fs_a->scaler = Scaler::get_from_id ("bicubic");
-		PlayerManager::instance()->setup (
-			fs_a, _film->state_copy(), Screen::get_from_index (_play_screen.get_active_row_number ())
-			);
+		PlayerManager::instance()->setup (fs_a, _film->state_copy(), screen);
 	} else {
-		PlayerManager::instance()->setup (
-			_film->state_copy(), Screen::get_from_index (_play_screen.get_active_row_number ())
-			);
+		PlayerManager::instance()->setup (_film->state_copy(), screen);
 	}
 }
 

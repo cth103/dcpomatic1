@@ -24,9 +24,10 @@
 #ifndef DVDOMATIC_CONFIG_H
 #define DVDOMATIC_CONFIG_H
 
-#include <list>
+#include <vector>
 
 class Server;
+class Screen;
 
 /** @class Config
  *  @brief A singleton class holding configuration.
@@ -60,9 +61,13 @@ public:
 	}
 
 	/** @return J2K encoding servers to use */
-	std::list<Server*> servers () const {
+	std::vector<Server*> servers () const {
 		return _servers;
 	}
+
+	std::vector<Screen*> screens () const {
+		return _screens;
+	}      
 
 	/** @param n New number of local encoding threads */
 	void set_num_local_encoding_threads (int n) {
@@ -85,8 +90,12 @@ public:
 	}
 
 	/** @param s New list of servers */
-	void set_servers (std::list<Server*> s) {
+	void set_servers (std::vector<Server*> s) {
 		_servers = s;
+	}
+
+	void set_screens (std::vector<Screen*> s) {
+		_screens = s;
 	}
 
 	void write () const;
@@ -109,7 +118,10 @@ private:
 	int _j2k_bandwidth;
 
 	/** J2K encoding servers to use */
-	std::list<Server *> _servers;
+	std::vector<Server *> _servers;
+
+	/** Screen definitions */
+	std::vector<Screen *> _screens;
 
 	/** Singleton instance, or 0 */
 	static Config* _instance;

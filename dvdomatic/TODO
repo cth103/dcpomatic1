@@ -8,6 +8,8 @@ Don't start later jobs when one breaks.
 Compute time remaining based on more recent information.
 Start frame later than ... error?
 Normalise enum case
+shared_ptr for Screen
+Use lexical_cast more
 
 options summary
 

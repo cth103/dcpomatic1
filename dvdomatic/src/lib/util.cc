@@ -430,7 +430,6 @@ dvdomatic_setup ()
 	ContentType::setup_content_types ();
 	Scaler::setup_scalers ();
 	Filter::setup_filters ();
-	Screen::setup_screens ();
 
 	struct sigaction sa;
 	sa.sa_flags = SA_SIGINFO;

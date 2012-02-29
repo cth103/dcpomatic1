@@ -22,6 +22,7 @@
 #include <fstream>
 #include "config.h"
 #include "server.h"
+#include "screen.h"
 
 using namespace std;
 
@@ -63,6 +64,8 @@ Config::Config ()
 			_j2k_bandwidth = atoi (v.c_str ());
 		} else if (k == "server") {
 			_servers.push_back (Server::create_from_metadata (v));
+		} else if (k == "screen") {
+			_screens.push_back (Screen::create_from_metadata (v));
 		}
 	}
 }
@@ -97,7 +100,11 @@ Config::write () const
 	  << "colour_lut_index " << _colour_lut_index << "\n"
 	  << "j2k_bandwidth " << _j2k_bandwidth << "\n";
 
-	for (list<Server*>::const_iterator i = _servers.begin(); i != _servers.end(); ++i) {
+	for (vector<Server*>::const_iterator i = _servers.begin(); i != _servers.end(); ++i) {
 		f << "server " << (*i)->get_as_metadata () << "\n";
+	}
+
+	for (vector<Screen*>::const_iterator i = _screens.begin(); i != _screens.end(); ++i) {
+		f << "screen " << (*i)->get_as_metadata () << "\n";
 	}
 }
