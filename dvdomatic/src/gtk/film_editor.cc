@@ -434,6 +434,19 @@ FilmEditor::film_changed (Film::Property p)
 		_scaler.set_active (Scaler::get_as_index (_film->scaler ()));
 		break;
 	}
+
+	if (
+		p == Film::FilmFormat ||
+		p == Film::LeftCrop ||
+		p == Film::RightCrop ||
+		p == Film::TopCrop ||
+		p == Film::BottomCrop ||
+		p == Film::Filters ||
+		p == Film::FilmScaler
+		) {
+		
+		setup_player_manager ();
+	}
 }
 
 /** Called when the format widget has been changed */
@@ -493,8 +506,6 @@ void
 FilmEditor::set_film (Film* f)
 {
 	_film = f;
-
-	setup_player_manager ();
 
 	set_things_sensitive (_film != 0);
 
@@ -612,13 +623,16 @@ void
 FilmEditor::play_clicked ()
 {
 	PlayerManager::instance()->play ();
-	Glib::signal_timeout().connect (sigc::bind_return (sigc::mem_fun (*this, &FilmEditor::update_play_position), true), 250);
+	_update_play_position_connection = Glib::signal_timeout().connect (
+		sigc::bind_return (sigc::mem_fun (*this, &FilmEditor::update_play_position), true), 250
+		);
 }
 
 void
 FilmEditor::update_play_position ()
 {
 	float const p = PlayerManager::instance()->get_position ();
+	cout << "PP " << p << "\n";
 	_play_position.set_text (seconds_to_hms (p));
 }
 
@@ -631,8 +645,8 @@ FilmEditor::stop_clicked ()
 void
 FilmEditor::setup_player_manager ()
 {
-	/* XXX: state_copy ... */
-
+	stop_updating_play_position ();
+	
 	if (_play_ab.get_active ()) {
 		shared_ptr<FilmState> fs_a = _film->state_copy ();
 		fs_a->filters.clear ();
@@ -646,4 +660,11 @@ FilmEditor::setup_player_manager ()
 			_film->state_copy(), Screen::get_from_index (_play_screen.get_active_row_number ())
 			);
 	}
+}
+
+void
+FilmEditor::stop_updating_play_position ()
+{
+	_update_play_position_connection.disconnect ();
+	_play_position.set_text ("");
 }

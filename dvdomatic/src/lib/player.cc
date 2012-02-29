@@ -165,28 +165,35 @@ Player::command_with_reply (string c, string t)
 	pfd[0].fd = _mplayer_stdout[0];
 	pfd[0].events = POLLIN;
 	poll (pfd, 1, 50);
-
+	
 	if ((pfd[0].revents & POLLIN) == 0) {
 		return "";
 	}
-	
-	char buf[64];
+
+	/* XXX: this may not be enough; should probably be looping */
+	char buf[2048];
 	int r = read (_mplayer_stdout[0], buf, sizeof (buf));
 	if (r < 0) {
 		return "";
 	}
 
-	vector<string> b;
-	string s (buf);
-	trim (s);
-	split (b, s, is_any_of ("="));
-	if (b.size() < 2) {
-		return "";
-	}
+	stringstream s (buf);
+	while (s.good ()) {
+		string line;
+		getline (s, line);
 
-	if (b[0] == t) {
-		return b[1];
+		vector<string> b;
+		string s (buf);
+		trim (line);
+		split (b, line, is_any_of ("="));
+		if (b.size() < 2) {
+			return "";
+		}
+		
+		if (b[0] == t) {
+			return b[1];
+		}
 	}
-
+		
 	return "";
 }

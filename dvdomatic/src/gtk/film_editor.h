@@ -68,6 +68,7 @@ private:
 	void set_things_sensitive (bool);
 	void setup_player_manager ();
 	void update_play_position ();
+	void stop_updating_play_position ();
 
 	/** The film we are editing */
 	Film* _film;
@@ -132,4 +133,6 @@ private:
 	Gtk::ComboBoxText _play_screen;
 	Gtk::CheckButton _play_ab;
 	Gtk::Label _play_position;
+
+	sigc::connection _update_play_position_connection;
 };
