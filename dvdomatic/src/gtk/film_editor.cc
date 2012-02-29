@@ -632,8 +632,15 @@ void
 FilmEditor::update_play_position ()
 {
 	float const p = PlayerManager::instance()->get_position ();
-	cout << "PP " << p << "\n";
-	_play_position.set_text (seconds_to_hms (p));
+
+	if (_film->frames_per_second() > 0 && _film->length() > 0) {
+		float const r = _film->length() / _film->frames_per_second() - p;
+		stringstream s;
+		s << seconds_to_hms (p) << " (" << seconds_to_hms (r) << " remaining)";
+		_play_position.set_text (s.str ());
+	} else {
+		_play_position.set_text (seconds_to_hms (p));
+	}
 }
 
 void

@@ -62,7 +62,9 @@ Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const 
 	, _buffer_sink_context (0)
 	, _have_setup_video_filters (false)
 {
-
+	if (_opt->decode_video_frequency != 0 && _fs->length == 0) {
+		throw DecodeError ("cannot do a partial decode if length == 0");
+	}
 }
 
 /** Start decoding */

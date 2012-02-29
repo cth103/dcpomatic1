@@ -80,7 +80,7 @@ PlayerManager::get_position () const
 	if (_players.empty ()) {
 		return 0;
 	}
-	
+
 	return atof (_players.front()->command_with_reply ("get_time_pos", "ANS_TIME_POSITION").c_str());
 }
 
