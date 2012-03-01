@@ -63,7 +63,7 @@ string
 Screen::get_as_metadata () const
 {
 	stringstream s;
-	s << _name;
+	s << "\"" << _name << "\"";
 
 	for (GeometryMap::const_iterator i = _geometries.begin(); i != _geometries.end(); ++i) {
 		s << " " << i->first->nickname()
@@ -77,8 +77,7 @@ Screen::get_as_metadata () const
 Screen *
 Screen::create_from_metadata (string v)
 {
-	vector<string> b;
-	split (b, v, is_any_of (" "));
+	vector<string> b = split_at_spaces_considering_quotes (v);
 
 	if (b.size() < 1) {
 		return 0;
