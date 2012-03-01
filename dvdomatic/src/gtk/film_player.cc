@@ -25,11 +25,13 @@
 #include "gtk_util.h"
 
 using namespace std;
+using namespace boost;
 
 FilmPlayer::FilmPlayer (Film const * f)
 	: _play ("Play")
 	, _pause ("Pause")
 	, _stop ("Stop")
+	, _ab ("A/B")
 {
 	set_film (f);
 
@@ -44,13 +46,14 @@ FilmPlayer::FilmPlayer (Film const * f)
 
 	_status.set_use_markup (true);
 
-	_table.set_row_spacings (12);
+	_table.set_row_spacings (4);
 	_table.set_col_spacings (12);
 
 	_table.attach (_play, 0, 1, 0, 1);
 	_table.attach (_pause, 0, 1, 1, 2);
 	_table.attach (_stop, 0, 1, 2, 3);
 	_table.attach (_screen, 1, 2, 0, 1);
+	_table.attach (_ab, 1, 2, 1, 2);
 	_table.attach (_status, 0, 2, 3, 4);
 
 	_play.signal_clicked().connect (sigc::mem_fun (*this, &FilmPlayer::play_clicked));
@@ -108,7 +111,15 @@ FilmPlayer::play_clicked ()
 	switch (p->state ()) {
 	case PlayerManager::QUIESCENT:
 		_last_play_fs = _film->state_copy ();
-		p->setup (_last_play_fs, screen ());
+		if (_ab.get_active ()) {
+			shared_ptr<FilmState> fs_a = _film->state_copy ();
+			fs_a->filters.clear ();
+			/* This is somewhat arbitrary, but hey ho */
+			fs_a->scaler = Scaler::get_from_id ("bicubic");
+			p->setup (fs_a, _last_play_fs, screen ());
+		} else {
+			p->setup (_last_play_fs, screen ());
+		}
 		p->pause_or_unpause ();
 		break;
 	case PlayerManager::PLAYING:

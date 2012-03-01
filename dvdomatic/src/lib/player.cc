@@ -157,6 +157,7 @@ string
 Player::command_with_reply (string c, string t)
 {
 	command (c);
+	cout << "=> " << c << "\n";
 
 	struct pollfd pfd[1];
 	pfd[0].fd = _mplayer_stdout[0];
@@ -164,6 +165,7 @@ Player::command_with_reply (string c, string t)
 	poll (pfd, 1, 50);
 	
 	if ((pfd[0].revents & POLLIN) == 0) {
+		cout << "<= poll no\n";
 		return "";
 	}
 
@@ -171,6 +173,7 @@ Player::command_with_reply (string c, string t)
 	char buf[2048];
 	int r = read (_mplayer_stdout[0], buf, sizeof (buf));
 	if (r < 0) {
+		cout << "<= read error\n";
 		return "";
 	}
 
@@ -185,13 +188,18 @@ Player::command_with_reply (string c, string t)
 		cout << "LINE: " << line << "\n";
 		split (b, line, is_any_of ("="));
 		if (b.size() < 2) {
+			cout << "(cont " << b.size() << ")\n";
 			continue;
 		}
+
+		cout << "(b[0]=" << b[0] << ")\n";
 		
 		if (b[0] == t) {
+			cout << "<= " << b[1] << "\n";
 			return b[1];
 		}
 	}
 		
+	cout << "<= nowt\n";
 	return "";
 }

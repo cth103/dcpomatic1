@@ -49,5 +49,6 @@ private:
 	Gtk::Button _pause;
 	Gtk::Button _stop;
 	Gtk::Label _status;
+	Gtk::CheckButton _ab;
 	Gtk::ComboBoxText _screen;
 };
