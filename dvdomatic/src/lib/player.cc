@@ -34,7 +34,7 @@
 using namespace std;
 using namespace boost;
 
-Player::Player (shared_ptr<const FilmState> fs, Screen const * screen, Split split)
+Player::Player (shared_ptr<const FilmState> fs, shared_ptr<const Screen> screen, Split split)
 	: _stdout_reader_should_run (true)
 	, _position (0)
 	, _paused (false)

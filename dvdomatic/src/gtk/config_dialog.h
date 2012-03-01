@@ -42,7 +42,7 @@ private:
 	void add_server_clicked ();
 	void add_screen_clicked ();
 
-	void add_screen_to_store (Screen *);
+	void add_screen_to_store (boost::shared_ptr<Screen>);
 
 	struct ScreensModelColumns : public Gtk::TreeModelColumnRecord
 	{

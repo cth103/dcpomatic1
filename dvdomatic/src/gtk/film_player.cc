@@ -36,8 +36,8 @@ FilmPlayer::FilmPlayer (Film const * f)
 {
 	set_film (f);
 
-	vector<Screen *> const scr = Config::instance()->screens ();
-	for (vector<Screen *>::const_iterator i = scr.begin(); i != scr.end(); ++i) {
+	vector<shared_ptr<Screen> > const scr = Config::instance()->screens ();
+	for (vector<shared_ptr<Screen> >::const_iterator i = scr.begin(); i != scr.end(); ++i) {
 		_screen.append_text ((*i)->name ());
 	}
 	
@@ -165,12 +165,12 @@ FilmPlayer::stop_clicked ()
 	PlayerManager::instance()->stop ();
 }
 
-Screen *
+shared_ptr<Screen>
 FilmPlayer::screen () const
 {
-	vector<Screen *> const s = Config::instance()->screens ();
+	vector<shared_ptr<Screen> > const s = Config::instance()->screens ();
 	if (s.empty ()) {
-		return 0;
+		return shared_ptr<Screen> ();
 	}
 			 
 	int const r = _screen.get_active_row_number ();

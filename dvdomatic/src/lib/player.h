@@ -36,7 +36,7 @@ public:
 		SPLIT_RIGHT
 	};
 		
-	Player (boost::shared_ptr<const FilmState>, Screen const *, Split);
+	Player (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Screen>, Split);
 	~Player ();
 
 	void command (std::string);

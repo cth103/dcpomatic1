@@ -70,8 +70,8 @@ ConfigDialog::ConfigDialog ()
 	_add_server.signal_clicked().connect (sigc::mem_fun (*this, &ConfigDialog::add_server_clicked));
 
 	_screens_store = Gtk::TreeStore::create (_screens_columns);
-	vector<Screen*> screens = Config::instance()->screens ();
-	for (vector<Screen*>::iterator i = screens.begin(); i != screens.end(); ++i) {
+	vector<shared_ptr<Screen> > screens = Config::instance()->screens ();
+	for (vector<shared_ptr<Screen> >::iterator i = screens.begin(); i != screens.end(); ++i) {
 		add_screen_to_store (*i);
 	}
 
@@ -144,13 +144,13 @@ ConfigDialog::on_response (int r)
 	}
 	Config::instance()->set_servers (servers);
 
-	vector<Screen*> screens;
+	vector<shared_ptr<Screen> > screens;
 
 	Gtk::TreeModel::Children c = _screens_store->children ();
 	for (Gtk::TreeModel::Children::iterator i = c.begin(); i != c.end(); ++i) {
 
 		Gtk::TreeModel::Row r = *i;
-		Screen* s = new Screen (r[_screens_columns._name]);
+		shared_ptr<Screen> s (new Screen (r[_screens_columns._name]));
 
 		Gtk::TreeModel::Children cc = r.children ();
 		for (Gtk::TreeModel::Children::iterator j = cc.begin(); j != cc.end(); ++j) {
@@ -182,7 +182,7 @@ ConfigDialog::add_server_clicked ()
 }
 
 void
-ConfigDialog::add_screen_to_store (Screen* s)
+ConfigDialog::add_screen_to_store (shared_ptr<Screen> s)
 {
 	Gtk::TreeModel::iterator i = _screens_store->append ();
 	Gtk::TreeModel::Row r = *i;
@@ -204,11 +204,11 @@ ConfigDialog::add_screen_to_store (Screen* s)
 void
 ConfigDialog::add_screen_clicked ()
 {
-	Screen s ("New Screen");
+	shared_ptr<Screen> s (new Screen ("New Screen"));
 	vector<Format const *> f = Format::all ();
 	for (vector<Format const *>::iterator i = f.begin(); i != f.end(); ++i) {
-		s.add_geometry (*i, Position (0, 0), Size (2048, 1080));
+		s->add_geometry (*i, Position (0, 0), Size (2048, 1080));
 	}
 	
-	add_screen_to_store (&s);
+	add_screen_to_store (s);
 }

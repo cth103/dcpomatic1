@@ -54,7 +54,7 @@ public:
 	Size size (Format const *) const;
 
 	std::string as_metadata () const;
-	static Screen * create_from_metadata (std::string);
+	static boost::shared_ptr<Screen> create_from_metadata (std::string);
 
 private:
 	std::string _name;

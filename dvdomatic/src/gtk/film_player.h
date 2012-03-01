@@ -39,7 +39,7 @@ private:
 	std::string format_position (double);
 	
 	void set_button_states ();
-	Screen * screen () const;
+	boost::shared_ptr<Screen> screen () const;
 	void set_status ();
 	void update ();
 	

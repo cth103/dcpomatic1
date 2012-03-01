@@ -74,16 +74,16 @@ Screen::as_metadata () const
 	return s.str ();
 }
 
-Screen *
+shared_ptr<Screen>
 Screen::create_from_metadata (string v)
 {
 	vector<string> b = split_at_spaces_considering_quotes (v);
 
 	if (b.size() < 1) {
-		return 0;
+		return shared_ptr<Screen> ();
 	}
 
-	Screen* s = new Screen (b[0]);
+	shared_ptr<Screen> s (new Screen (b[0]));
 
 	vector<string>::size_type i = 1;
 	while (b.size() > i) {

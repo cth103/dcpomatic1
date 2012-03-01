@@ -29,8 +29,8 @@ class PlayerManager
 {
 public:
 
-	void setup (boost::shared_ptr<const FilmState>, Screen const *);
-	void setup (boost::shared_ptr<const FilmState>, boost::shared_ptr<const FilmState>, Screen const *);
+	void setup (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Screen>);
+	void setup (boost::shared_ptr<const FilmState>, boost::shared_ptr<const FilmState>, boost::shared_ptr<const Screen>);
 	void pause_or_unpause ();
 	void stop ();
 

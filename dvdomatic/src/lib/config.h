@@ -25,6 +25,7 @@
 #define DVDOMATIC_CONFIG_H
 
 #include <vector>
+#include <boost/shared_ptr.hpp>
 
 class Server;
 class Screen;
@@ -65,7 +66,7 @@ public:
 		return _servers;
 	}
 
-	std::vector<Screen*> screens () const {
+	std::vector<boost::shared_ptr<Screen> > screens () const {
 		return _screens;
 	}      
 
@@ -94,7 +95,7 @@ public:
 		_servers = s;
 	}
 
-	void set_screens (std::vector<Screen*> s) {
+	void set_screens (std::vector<boost::shared_ptr<Screen> > s) {
 		_screens = s;
 	}
 
@@ -121,7 +122,7 @@ private:
 	std::vector<Server *> _servers;
 
 	/** Screen definitions */
-	std::vector<Screen *> _screens;
+	std::vector<boost::shared_ptr<Screen> > _screens;
 
 	/** Singleton instance, or 0 */
 	static Config* _instance;

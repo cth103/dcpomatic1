@@ -25,6 +25,7 @@
 #include "screen.h"
 
 using namespace std;
+using namespace boost;
 
 Config* Config::_instance = 0;
 
@@ -104,7 +105,7 @@ Config::write () const
 		f << "server " << (*i)->as_metadata () << "\n";
 	}
 
-	for (vector<Screen*>::const_iterator i = _screens.begin(); i != _screens.end(); ++i) {
+	for (vector<shared_ptr<Screen> >::const_iterator i = _screens.begin(); i != _screens.end(); ++i) {
 		f << "screen " << (*i)->as_metadata () << "\n";
 	}
 }

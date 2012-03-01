@@ -43,14 +43,14 @@ PlayerManager::instance ()
 }
 
 void
-PlayerManager::setup (shared_ptr<const FilmState> fs, Screen const * sc)
+PlayerManager::setup (shared_ptr<const FilmState> fs, shared_ptr<const Screen> sc)
 {
 	_players.clear ();
 	_players.push_back (shared_ptr<Player> (new Player (fs, sc, Player::SPLIT_NONE)));
 }
 
 void
-PlayerManager::setup (shared_ptr<const FilmState> fs_a, shared_ptr<const FilmState> fs_b, Screen const * sc)
+PlayerManager::setup (shared_ptr<const FilmState> fs_a, shared_ptr<const FilmState> fs_b, shared_ptr<const Screen> sc)
 {
 	_players.clear ();
 
