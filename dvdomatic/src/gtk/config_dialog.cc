@@ -35,9 +35,10 @@ using namespace boost;
 
 ConfigDialog::ConfigDialog ()
 	: Gtk::Dialog ("DVD-o-matic Configuration")
-	, _servers (2, true)
-	, _add_server ("Add server")
-	, _add_screen ("Add screen")
+	, _add_server ("Add Server")
+	, _remove_server ("Remove Server")
+	, _add_screen ("Add Screen")
+	, _remove_screen ("Remove Screen")
 {
 	Gtk::Table* t = manage (new Gtk::Table);
 	t->set_row_spacings (12);
@@ -59,16 +60,22 @@ ConfigDialog::ConfigDialog ()
 	_j2k_bandwidth.set_value (Config::instance()->j2k_bandwidth() / 1e6);
 	_j2k_bandwidth.signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::j2k_bandwidth_changed));
 
-	_servers.set_column_title (0, "Host name");
-	_servers.set_column_title (1, "Threads");
+	_servers_store = Gtk::ListStore::create (_servers_columns);
 	vector<Server*> servers = Config::instance()->servers ();
 	for (vector<Server*>::iterator i = servers.begin(); i != servers.end(); ++i) {
-		int const r = _servers.append_text ((*i)->host_name ());
-		_servers.set_text (r, 1, lexical_cast<string> ((*i)->threads ()));
+		add_server_to_store (*i);
 	}
+	
+	_servers_view.set_model (_servers_store);
+	_servers_view.append_column_editable ("Host Name", _servers_columns._host_name);
+	_servers_view.append_column_editable ("Threads", _servers_columns._threads);
 
 	_add_server.signal_clicked().connect (sigc::mem_fun (*this, &ConfigDialog::add_server_clicked));
+	_remove_server.signal_clicked().connect (sigc::mem_fun (*this, &ConfigDialog::remove_server_clicked));
 
+	_servers_view.get_selection()->signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::server_selection_changed));
+	server_selection_changed ();
+	
 	_screens_store = Gtk::TreeStore::create (_screens_columns);
 	vector<shared_ptr<Screen> > screens = Config::instance()->screens ();
 	for (vector<shared_ptr<Screen> >::iterator i = screens.begin(); i != screens.end(); ++i) {
@@ -84,6 +91,10 @@ ConfigDialog::ConfigDialog ()
 	_screens_view.append_column_editable ("Height", _screens_columns._height);
 
 	_add_screen.signal_clicked().connect (sigc::mem_fun (*this, &ConfigDialog::add_screen_clicked));
+	_remove_screen.signal_clicked().connect (sigc::mem_fun (*this, &ConfigDialog::remove_screen_clicked));
+
+	_screens_view.get_selection()->signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::screen_selection_changed));
+	screen_selection_changed ();
 
 	int n = 0;
 	t->attach (left_aligned_label ("Threads to use for encoding on this host"), 0, 1, n, n + 1);
@@ -97,15 +108,17 @@ ConfigDialog::ConfigDialog ()
 	t->attach (left_aligned_label ("MBps"), 2, 3, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Servers"), 0, 1, n, n + 1);
-	t->attach (_servers, 1, 2, n, n + 1);
+	t->attach (_servers_view, 1, 2, n, n + 1);
 	Gtk::VBox* b = manage (new Gtk::VBox);
 	b->pack_start (_add_server, false, false);
+	b->pack_start (_remove_server, false, false);
 	t->attach (*b, 2, 3, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Screens"), 0, 1, n, n + 1);
 	t->attach (_screens_view, 1, 2, n, n + 1);
 	b = manage (new Gtk::VBox);
 	b->pack_start (_add_screen, false, false);
+	b->pack_start (_remove_screen, false, false);
 	t->attach (*b, 2, 3, n, n + 1);
 	++n;
 
@@ -139,14 +152,19 @@ void
 ConfigDialog::on_response (int r)
 {
 	vector<Server*> servers;
-	for (size_t i = 0; i < _servers.size(); ++i) {
-		servers.push_back (new Server (_servers.get_text (i, 0), atoi (_servers.get_text (i, 1).c_str ())));
+	
+	Gtk::TreeModel::Children c = _servers_store->children ();
+	for (Gtk::TreeModel::Children::iterator i = c.begin(); i != c.end(); ++i) {
+		Gtk::TreeModel::Row r = *i;
+		Server* s = new Server (r[_servers_columns._host_name], r[_servers_columns._threads]);
+		servers.push_back (s);
 	}
+
 	Config::instance()->set_servers (servers);
 
 	vector<shared_ptr<Screen> > screens;
 
-	Gtk::TreeModel::Children c = _screens_store->children ();
+	c = _screens_store->children ();
 	for (Gtk::TreeModel::Children::iterator i = c.begin(); i != c.end(); ++i) {
 
 		Gtk::TreeModel::Row r = *i;
@@ -175,11 +193,37 @@ ConfigDialog::on_response (int r)
 }
 
 void
+ConfigDialog::add_server_to_store (Server* s)
+{
+	Gtk::TreeModel::iterator i = _servers_store->append ();
+	Gtk::TreeModel::Row r = *i;
+	r[_servers_columns._host_name] = s->host_name ();
+	r[_servers_columns._threads] = s->threads ();
+}
+
+void
 ConfigDialog::add_server_clicked ()
 {
-	int const r = _servers.append_text ("localhost");
-	_servers.set_text (r, 1, "1");
+	Server s ("localhost", 1);
+	add_server_to_store (&s);
 }
+
+void
+ConfigDialog::remove_server_clicked ()
+{
+	Gtk::TreeModel::iterator i = _servers_view.get_selection()->get_selected ();
+	if (i) {
+		_servers_store->erase (i);
+	}
+}
+
+void
+ConfigDialog::server_selection_changed ()
+{
+	Gtk::TreeModel::iterator i = _servers_view.get_selection()->get_selected ();
+	_remove_server.set_sensitive (i);
+}
+	
 
 void
 ConfigDialog::add_screen_to_store (shared_ptr<Screen> s)
@@ -212,3 +256,20 @@ ConfigDialog::add_screen_clicked ()
 	
 	add_screen_to_store (s);
 }
+
+void
+ConfigDialog::remove_screen_clicked ()
+{
+	Gtk::TreeModel::iterator i = _screens_view.get_selection()->get_selected ();
+	if (i) {
+		_screens_store->erase (i);
+	}
+}
+
+void
+ConfigDialog::screen_selection_changed ()
+{
+	Gtk::TreeModel::iterator i = _screens_view.get_selection()->get_selected ();
+	_remove_screen.set_sensitive (i);
+}
+	

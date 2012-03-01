@@ -24,6 +24,7 @@
 #include <gtkmm.h>
 
 class Screen;
+class Server;
 
 /** @class ConfigDialog
  *  @brief A dialogue to edit DVD-o-matic configuration.
@@ -40,9 +41,25 @@ private:
 	void colour_lut_changed ();
 	void j2k_bandwidth_changed ();
 	void add_server_clicked ();
+	void remove_server_clicked ();
+	void server_selection_changed ();
 	void add_screen_clicked ();
+	void remove_screen_clicked ();
+	void screen_selection_changed ();
 
 	void add_screen_to_store (boost::shared_ptr<Screen>);
+	void add_server_to_store (Server *);
+
+	struct ServersModelColumns : public Gtk::TreeModelColumnRecord
+	{
+		ServersModelColumns () {
+			add (_host_name);
+			add (_threads);
+		}
+
+		Gtk::TreeModelColumn<std::string> _host_name;
+		Gtk::TreeModelColumn<int> _threads;
+	};
 
 	struct ScreensModelColumns : public Gtk::TreeModelColumnRecord
 	{
@@ -68,11 +85,15 @@ private:
 	Gtk::SpinButton _num_local_encoding_threads;
 	Gtk::ComboBoxText _colour_lut;
 	Gtk::SpinButton _j2k_bandwidth;
-	Gtk::ListViewText _servers;
+	ServersModelColumns _servers_columns;
+	Glib::RefPtr<Gtk::ListStore> _servers_store;
+	Gtk::TreeView _servers_view;
 	Gtk::Button _add_server;
+	Gtk::Button _remove_server;
 	ScreensModelColumns _screens_columns;
 	Glib::RefPtr<Gtk::TreeStore> _screens_store;
 	Gtk::TreeView _screens_view;
 	Gtk::Button _add_screen;
+	Gtk::Button _remove_screen;
 };
 
