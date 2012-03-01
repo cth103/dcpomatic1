@@ -333,49 +333,49 @@ FilmEditor::film_changed (Film::Property p)
 	stringstream s;
 		
 	switch (p) {
-	case Film::Content:
+	case Film::CONTENT:
 		_content.set_filename (_film->content ());
 		break;
-	case Film::FilmFormat:
+	case Film::FORMAT:
 		_format.set_active (Format::as_index (_film->format ()));
 		break;
-	case Film::LeftCrop:
+	case Film::LEFT_CROP:
 		_left_crop.set_value (_film->left_crop ());
 		break;
-	case Film::RightCrop:
+	case Film::RIGHT_CROP:
 		_right_crop.set_value (_film->right_crop ());
 		break;
-	case Film::TopCrop:
+	case Film::TOP_CROP:
 		_top_crop.set_value (_film->top_crop ());
 		break;
-	case Film::BottomCrop:
+	case Film::BOTTOM_CROP:
 		_bottom_crop.set_value (_film->bottom_crop ());
 		break;
-	case Film::Filters:
+	case Film::FILTERS:
 	{
 		pair<string, string> p = Filter::ffmpeg_strings (_film->filters ());
 		_filters.set_text (p.first + " " + p.second);
 		break;
 	}
-	case Film::Name:
+	case Film::NAME:
 		_name.set_text (_film->name ());
 		break;
-	case Film::FramesPerSecond:
+	case Film::FRAMES_PER_SECOND:
 		_frames_per_second.set_value (_film->frames_per_second ());
 		break;
-	case Film::AudioChannels:
+	case Film::AUDIO_CHANNELS:
 		s << _film->audio_channels ();
 		_audio_channels.set_text (s.str ());
 		break;
-	case Film::AudioSampleRate:
+	case Film::AUDIO_SAMPLE_RATE:
 		s << _film->audio_sample_rate ();
 		_audio_sample_rate.set_text (s.str ());
 		break;
-	case Film::FilmSize:
+	case Film::SIZE:
 		s << _film->size().width << " x " << _film->size().height;
 		_original_size.set_text (s.str ());
 		break;
-	case Film::Length:
+	case Film::LENGTH:
 		if (_film->frames_per_second() > 0) {
 			s << _film->length() << " frames; " << seconds_to_hms (_film->length() / _film->frames_per_second());
 		} else {
@@ -383,18 +383,18 @@ FilmEditor::film_changed (Film::Property p)
 		}
 		_length.set_text (s.str ());
 		break;
-	case Film::DCPLongName:
+	case Film::DCP_LONG_NAME:
 		_dcp_long_name.set_text (_film->dcp_long_name ());
 		break;
-	case Film::GuessDCPLongName:
+	case Film::GUESS_DCP_LONG_NAME:
 		_guess_dcp_long_name.set_active (_film->guess_dcp_long_name ());
 		break;
-	case Film::DCPContentType:
+	case Film::DCP_CONTENT_TYPE:
 		_dcp_content_type.set_active (ContentType::as_index (_film->dcp_content_type ()));
 		break;
-	case Film::Thumbs:
+	case Film::THUMBS:
 		break;
-	case Film::DCPFrames:
+	case Film::DCP_FRAMES:
 		if (_film->dcp_frames() == 0) {
 			_dcp_whole.set_active (true);
 		} else {
@@ -402,10 +402,10 @@ FilmEditor::film_changed (Film::Property p)
 			_dcp_for_frames.set_value (_film->dcp_frames ());
 		}
 		break;
-	case Film::DCPAB:
+	case Film::DCP_AB:
 		_dcp_ab.set_active (_film->dcp_ab ());
 		break;
-	case Film::FilmScaler:
+	case Film::SCALER:
 		_scaler.set_active (Scaler::as_index (_film->scaler ()));
 		break;
 	}
@@ -481,25 +481,25 @@ FilmEditor::set_film (Film* f)
 		_directory.set_text ("");
 	}
 	
-	film_changed (Film::Name);
-	film_changed (Film::Content);
-	film_changed (Film::DCPLongName);
-	film_changed (Film::GuessDCPLongName);
-	film_changed (Film::DCPContentType);
-	film_changed (Film::FilmFormat);
-	film_changed (Film::LeftCrop);
-	film_changed (Film::RightCrop);
-	film_changed (Film::TopCrop);
-	film_changed (Film::BottomCrop);
-	film_changed (Film::Filters);
-	film_changed (Film::DCPFrames);
-	film_changed (Film::DCPAB);
-	film_changed (Film::FilmSize);
-	film_changed (Film::Length);
-	film_changed (Film::FramesPerSecond);
-	film_changed (Film::AudioChannels);
-	film_changed (Film::AudioSampleRate);
-	film_changed (Film::FilmScaler);
+	film_changed (Film::NAME);
+	film_changed (Film::CONTENT);
+	film_changed (Film::DCP_LONG_NAME);
+	film_changed (Film::GUESS_DCP_LONG_NAME);
+	film_changed (Film::DCP_CONTENT_TYPE);
+	film_changed (Film::FORMAT);
+	film_changed (Film::LEFT_CROP);
+	film_changed (Film::RIGHT_CROP);
+	film_changed (Film::TOP_CROP);
+	film_changed (Film::BOTTOM_CROP);
+	film_changed (Film::FILTERS);
+	film_changed (Film::DCP_FRAMES);
+	film_changed (Film::DCP_AB);
+	film_changed (Film::SIZE);
+	film_changed (Film::LENGTH);
+	film_changed (Film::FRAMES_PER_SECOND);
+	film_changed (Film::AUDIO_CHANNELS);
+	film_changed (Film::AUDIO_SAMPLE_RATE);
+	film_changed (Film::SCALER);
 }
 
 /** Updates the sensitivity of lots of widgets to a given value.
