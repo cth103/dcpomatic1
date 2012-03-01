@@ -35,6 +35,9 @@ using namespace std;
 using namespace boost;
 
 Player::Player (shared_ptr<const FilmState> fs, Screen const * screen, Split split)
+	: _stdout_reader_should_run (true)
+	, _position (0)
+	, _paused (false)
 {
 	if (pipe (_mplayer_stdin) < 0) {
 		throw PlayError ("could not create pipe");
@@ -135,11 +138,17 @@ Player::Player (shared_ptr<const FilmState> fs, Screen const * screen, Split spl
 	} else {
 		_mplayer_pid = p;
 		command ("pause");
+
+		_stdout_reader = new boost::thread (boost::bind (&Player::stdout_reader, this));
 	}
 }
 
 Player::~Player ()
 {
+	_stdout_reader_should_run = false;
+	_stdout_reader->join ();
+	delete _stdout_reader;
+	
 	close (_mplayer_stdin[0]);
 	close (_mplayer_stdout[1]);
 	kill (_mplayer_pid, SIGTERM);
@@ -153,53 +162,65 @@ Player::command (string c)
 	write (_mplayer_stdin[1], buf, strlen (buf));
 }
 
-string
-Player::command_with_reply (string c, string t)
+void
+Player::stdout_reader ()
 {
-	command (c);
-	cout << "=> " << c << "\n";
+	while (_stdout_reader_should_run) {
+		char buf[1024];
+		int r = read (_mplayer_stdout[0], buf, sizeof (buf));
+		if (r > 0) {
+			stringstream s (buf);
+			while (s.good ()) {
+				string line;
+				getline (s, line);
 
-	struct pollfd pfd[1];
-	pfd[0].fd = _mplayer_stdout[0];
-	pfd[0].events = POLLIN;
-	poll (pfd, 1, 50);
-	
-	if ((pfd[0].revents & POLLIN) == 0) {
-		cout << "<= poll no\n";
-		return "";
-	}
+				vector<string> b;
+				split (b, line, is_any_of ("="));
+				if (b.size() < 2) {
+					continue;
+				}
 
-	/* XXX: this may not be enough; should probably be looping */
-	char buf[2048];
-	int r = read (_mplayer_stdout[0], buf, sizeof (buf));
-	if (r < 0) {
-		cout << "<= read error\n";
-		return "";
-	}
-
-	stringstream s (buf);
-	while (s.good ()) {
-		string line;
-		getline (s, line);
-
-		vector<string> b;
-		string s (buf);
-		trim (line);
-		cout << "LINE: " << line << "\n";
-		split (b, line, is_any_of ("="));
-		if (b.size() < 2) {
-			cout << "(cont " << b.size() << ")\n";
-			continue;
+				if (b[0] == "ANS_time_pos") {
+					set_position (atof (b[1].c_str ()));
+				} else if (b[0] == "ANS_pause") {
+					set_paused (b[1] == "yes");
+				}
+			}
 		}
 
-		cout << "(b[0]=" << b[0] << ")\n";
-		
-		if (b[0] == t) {
-			cout << "<= " << b[1] << "\n";
-			return b[1];
-		}
+		usleep (5e5);
+
+		snprintf (buf, sizeof (buf), "pausing_keep_force get_property time_pos\npausing_keep_force get_property pause\n");
+		write (_mplayer_stdin[1], buf, strlen (buf));
 	}
-		
-	cout << "<= nowt\n";
-	return "";
+}
+
+void
+Player::set_position (float p)
+{
+	/* XXX: could be an atomic */
+	boost::mutex::scoped_lock (_state_lock);
+	_position = p;
+}
+
+void
+Player::set_paused (bool p)
+{
+	/* XXX: could be an atomic */
+	boost::mutex::scoped_lock (_state_lock);
+	_paused = p;
+}
+
+float
+Player::position () const
+{
+	boost::mutex::scoped_lock (_state_lock);
+	return _position;
+}
+
+bool
+Player::paused () const
+{
+	boost::mutex::scoped_lock (_state_lock);
+	return _paused;
 }

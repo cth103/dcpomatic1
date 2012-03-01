@@ -21,6 +21,8 @@
 #define DVDOMATIC_PLAYER_H
 
 #include <boost/shared_ptr.hpp>
+#include <boost/thread.hpp>
+#include <boost/thread/mutex.hpp>
 
 class FilmState;
 class Screen;
@@ -38,16 +40,31 @@ public:
 	~Player ();
 
 	void command (std::string);
-	std::string command_with_reply (std::string, std::string);
+
+	float position () const;
+	bool paused () const;
+	
 	pid_t mplayer_pid () const {
 		return _mplayer_pid;
 	}
-	
+
 private:
+	void stdout_reader ();
+	void set_position (float);
+	void set_paused (bool);
+	
 	int _mplayer_stdin[2];
 	int _mplayer_stdout[2];
 	int _mplayer_stderr[2];
 	pid_t _mplayer_pid;
+
+	boost::thread* _stdout_reader;
+	/* XXX: should probably be atomically accessed */
+	bool _stdout_reader_should_run;
+
+	mutable boost::mutex _state_mutex;
+	float _position;
+	bool _paused;
 };
 
 #endif

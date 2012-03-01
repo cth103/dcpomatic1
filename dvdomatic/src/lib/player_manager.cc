@@ -73,7 +73,7 @@ PlayerManager::position () const
 		return 0;
 	}
 
-	return atof (_players.front()->command_with_reply ("pausing_keep_force get_property time_pos", "ANS_time_pos").c_str());
+	return _players.front()->position ();
 }
 
 void
@@ -98,7 +98,7 @@ PlayerManager::state () const
 		return QUIESCENT;
 	}
 
-	if (_players.front()->command_with_reply ("pausing_keep_force get_property pause", "ANS_pause") == "yes") {
+	if (_players.front()->paused ()) {
 		return PAUSED;
 	}
 
