@@ -64,7 +64,7 @@ Player::Player (shared_ptr<const FilmState> fs, Screen const * screen, Split spl
 		close (_mplayer_stderr[0]);
 		dup2 (_mplayer_stderr[1], STDERR_FILENO);
 
-		char* p[] = { strdup ("TERM=xterm"), strdup ("DISPLAY=:0"), strdup ("HOME=/home/carl"), strdup ("LOGNAME=/home/carl/fucker.log"), 0 };
+		char* p[] = { strdup ("TERM=xterm"), strdup ("DISPLAY=:0"), 0 };
 		environ = p;
 
 		stringstream s;
