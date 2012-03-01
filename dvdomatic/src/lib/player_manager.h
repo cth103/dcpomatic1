@@ -35,6 +35,7 @@ public:
 	void stop ();
 
 	float position () const;
+	void set_position (float);
 
 	enum State {
 		QUIESCENT,

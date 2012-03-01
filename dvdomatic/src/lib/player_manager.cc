@@ -66,6 +66,16 @@ PlayerManager::pause_or_unpause ()
 	}
 }
 
+void
+PlayerManager::set_position (float p)
+{
+	stringstream s;
+	s << "pausing_keep_force seek " << p << " 2";
+	for (list<shared_ptr<Player> >::iterator i = _players.begin(); i != _players.end(); ++i) {
+		(*i)->command (s.str ());
+	}
+}
+
 float
 PlayerManager::position () const
 {

@@ -32,6 +32,7 @@ FilmPlayer::FilmPlayer (Film const * f)
 	, _pause ("Pause")
 	, _stop ("Stop")
 	, _ab ("A/B")
+	, _ignore_position_changed (false)
 {
 	set_film (f);
 
@@ -46,6 +47,8 @@ FilmPlayer::FilmPlayer (Film const * f)
 
 	_status.set_use_markup (true);
 
+	_position.set_digits (0);
+
 	_table.set_row_spacings (4);
 	_table.set_col_spacings (12);
 
@@ -54,11 +57,14 @@ FilmPlayer::FilmPlayer (Film const * f)
 	_table.attach (_stop, 0, 1, 2, 3);
 	_table.attach (_screen, 1, 2, 0, 1);
 	_table.attach (_ab, 1, 2, 1, 2);
-	_table.attach (_status, 0, 2, 3, 4);
+	_table.attach (_position, 0, 2, 3, 4);
+	_table.attach (_status, 0, 2, 4, 5);
 
 	_play.signal_clicked().connect (sigc::mem_fun (*this, &FilmPlayer::play_clicked));
 	_pause.signal_clicked().connect (sigc::mem_fun (*this, &FilmPlayer::pause_clicked));
 	_stop.signal_clicked().connect (sigc::mem_fun (*this, &FilmPlayer::stop_clicked));
+	_position.signal_value_changed().connect (sigc::mem_fun (*this, &FilmPlayer::position_changed));
+	_position.signal_format_value().connect (sigc::mem_fun (*this, &FilmPlayer::format_position));
 
 	set_button_states ();
 	Glib::signal_timeout().connect (sigc::bind_return (sigc::mem_fun (*this, &FilmPlayer::update), true), 1000);
@@ -68,6 +74,10 @@ void
 FilmPlayer::set_film (Film const * f)
 {
 	_film = f;
+
+	if (_film->length() != 0 && _film->frames_per_second() != 0) {
+		_position.set_range (0, _film->length() / _film->frames_per_second());
+	}
 }
 
 Gtk::Widget &
@@ -87,18 +97,21 @@ FilmPlayer::set_button_states ()
 		_pause.set_sensitive (false);
 		_stop.set_sensitive (false);
 		_screen.set_sensitive (true);
+		_position.set_sensitive (false);
 		break;
 	case PlayerManager::PLAYING:
 		_play.set_sensitive (false);
 		_pause.set_sensitive (true);
 		_stop.set_sensitive (true);
 		_screen.set_sensitive (false);
+		_position.set_sensitive (true);
 		break;
 	case PlayerManager::PAUSED:
 		_play.set_sensitive (true);
 		_pause.set_sensitive (false);
 		_stop.set_sensitive (true);
 		_screen.set_sensitive (false);
+		_position.set_sensitive (false);
 		break;
 	}
 }
@@ -193,45 +206,36 @@ FilmPlayer::set_status ()
 		break;
 	}
 
+	_ignore_position_changed = true;
+	
 	if (s != PlayerManager::QUIESCENT) {
 		float const p = PlayerManager::instance()->position ();
-		m << " " << seconds_to_hms (p);
 		if (_last_play_fs->frames_per_second != 0 && _last_play_fs->length != 0) {
 			m << " <i>(" << seconds_to_hms (_last_play_fs->length / _last_play_fs->frames_per_second - p) << " remaining)</i>";
 		}
+
+		_position.set_value (p);
+	} else {
+		_position.set_value (0);
 	}
 
+	_ignore_position_changed = false;
+	
 	_status.set_markup (m.str ());
 }
 
-#if 0
 void
-FilmEditor::setup_player_manager ()
+FilmPlayer::position_changed ()
 {
-	stop_updating_play_position ();
-
-	vector<Screen *> screens = Config::instance()->screens ();
-	if (screens.empty ()) {
+	if (_ignore_position_changed) {
 		return;
 	}
 
-	Screen* screen = 0;
-	if (_play_screen.get_active_row_number() >= int (screens.size ())) {
-		_play_screen.set_active (0);
-		screen = screens.front ();
-	} else {
-		screen = screens[_play_screen.get_active_row_number()];
-	}
-       
-	if (_play_ab.get_active ()) {
-		shared_ptr<FilmState> fs_a = _film->state_copy ();
-		fs_a->filters.clear ();
-		/* This is somewhat arbitrary, but hey ho */
-		fs_a->scaler = Scaler::get_from_id ("bicubic");
-		PlayerManager::instance()->setup (fs_a, _film->state_copy(), screen);
-	} else {
-		PlayerManager::instance()->setup (_film->state_copy(), screen);
-	}
+	PlayerManager::instance()->set_position (_position.get_value ());
 }
-#endif
 
+string
+FilmPlayer::format_position (double v)
+{
+	return seconds_to_hms (v);
+}

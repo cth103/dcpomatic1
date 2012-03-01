@@ -35,6 +35,8 @@ private:
 	void play_clicked ();
 	void pause_clicked ();
 	void stop_clicked ();
+	void position_changed ();
+	std::string format_position (double);
 	
 	void set_button_states ();
 	Screen * screen () const;
@@ -51,4 +53,6 @@ private:
 	Gtk::Label _status;
 	Gtk::CheckButton _ab;
 	Gtk::ComboBoxText _screen;
+	Gtk::HScale _position;
+	bool _ignore_position_changed;
 };
