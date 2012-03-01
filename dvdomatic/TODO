@@ -12,6 +12,7 @@ shared_ptr for Screen
 Use lexical_cast more
 Spaces in screen names
 Reset screens dropdown when changing them in config
+get_ gone
 
 options summary
 

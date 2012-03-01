@@ -32,7 +32,7 @@ class FilmViewer
 public:
 	FilmViewer (Film *);
 
-	Gtk::Widget& get_widget () {
+	Gtk::Widget& widget () {
 		return _vbox;
 	}
 

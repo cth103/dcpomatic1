@@ -17,41 +17,33 @@
 
 */
 
-#include <list>
-#include <boost/shared_ptr.hpp>
-#include "player.h"
+#include <gtkmm.h>
 
-class Player;
-class FilmState;
+class Film;
 class Screen;
 
-class PlayerManager
+class FilmPlayer
 {
 public:
-
-	void setup (boost::shared_ptr<const FilmState>, Screen const *);
-	void setup (boost::shared_ptr<const FilmState>, boost::shared_ptr<const FilmState>, Screen const *);
-	void pause_or_unpause ();
-	void stop ();
-
-	float get_position () const;
-
-	enum State {
-		QUIESCENT,
-		PLAYING,
-		PAUSED
-	};
-
-	State state () const;
-
-	void child_exited (pid_t);
-
-	static PlayerManager* instance ();
+	FilmPlayer (Film const *);
+	
+	Gtk::Widget& widget ();
+	
+	void set_film (Film const *);
 
 private:
-	PlayerManager ();
-
-	std::list<boost::shared_ptr<Player> > _players;
+	void play_clicked ();
+	void pause_clicked ();
+	void stop_clicked ();
 	
-	static PlayerManager* _instance;
+	void set_button_states ();
+	Screen * screen () const;
+	
+	Film const * _film;
+
+	Gtk::Table _table;
+	Gtk::Button _play;
+	Gtk::Button _pause;
+	Gtk::Button _stop;
+	Gtk::ComboBoxText _screen;
 };

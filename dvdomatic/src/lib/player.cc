@@ -55,11 +55,11 @@ Player::Player (shared_ptr<const FilmState> fs, Screen const * screen, Split spl
 		close (_mplayer_stdin[1]);
 		dup2 (_mplayer_stdin[0], STDIN_FILENO);
 		
-//		close (_mplayer_stdout[0]);
-//		dup2 (_mplayer_stdout[1], STDOUT_FILENO);
+		close (_mplayer_stdout[0]);
+		dup2 (_mplayer_stdout[1], STDOUT_FILENO);
 		
-//		close (_mplayer_stderr[0]);
-//		dup2 (_mplayer_stderr[1], STDERR_FILENO);
+		close (_mplayer_stderr[0]);
+		dup2 (_mplayer_stderr[1], STDERR_FILENO);
 
 		char* p[] = { strdup ("TERM=xterm"), strdup ("DISPLAY=:0"), strdup ("HOME=/home/carl"), strdup ("LOGNAME=/home/carl/fucker.log"), 0 };
 		environ = p;
@@ -67,7 +67,7 @@ Player::Player (shared_ptr<const FilmState> fs, Screen const * screen, Split spl
 		stringstream s;
 		s << "/usr/local/bin/mplayer";
 
-		s << " -vo x11 -noaspect -nosound -noautosub -nosub -vo x11 -noborder -slave -quiet -idle";
+		s << " -vo x11 -noaspect -nosound -noautosub -nosub -vo x11 -noborder -slave -quiet";
 		s << " -sws " << fs->scaler->mplayer_id ();
 
 		stringstream vf;

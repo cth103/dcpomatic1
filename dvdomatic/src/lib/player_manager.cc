@@ -59,15 +59,7 @@ PlayerManager::setup (shared_ptr<const FilmState> fs_a, shared_ptr<const FilmSta
 }
 
 void
-PlayerManager::play ()
-{
-	for (list<shared_ptr<Player> >::iterator i = _players.begin(); i != _players.end(); ++i) {
-		(*i)->command ("pause");
-	}
-}
-
-void
-PlayerManager::stop ()
+PlayerManager::pause_or_unpause ()
 {
 	for (list<shared_ptr<Player> >::iterator i = _players.begin(); i != _players.end(); ++i) {
 		(*i)->command ("pause");
@@ -81,7 +73,7 @@ PlayerManager::get_position () const
 		return 0;
 	}
 
-	return atof (_players.front()->command_with_reply ("get_time_pos", "ANS_TIME_POSITION").c_str());
+	return atof (_players.front()->command_with_reply ("pausing_keep_force get_property time_pos", "ANS_time_pos").c_str());
 }
 
 void
@@ -97,4 +89,24 @@ PlayerManager::child_exited (pid_t pid)
 	}
 
 	_players.erase (i);
+}
+
+PlayerManager::State
+PlayerManager::state () const
+{
+	if (_players.empty ()) {
+		return QUIESCENT;
+	}
+
+	if (_players.front()->command_with_reply ("pausing_keep_force get_property pause", "ANS_pause") == "yes") {
+		return PAUSED;
+	}
+
+	return PLAYING;
+}
+
+void
+PlayerManager::stop ()
+{
+	_players.clear ();
 }

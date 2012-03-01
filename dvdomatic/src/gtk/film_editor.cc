@@ -35,8 +35,6 @@
 #include "lib/job_manager.h"
 #include "lib/filter.h"
 #include "lib/copy_from_dvd_job.h"
-#include "lib/player.h"
-#include "lib/player_manager.h"
 #include "lib/screen.h"
 #include "lib/config.h"
 #include "filter_dialog.h"
@@ -58,9 +56,6 @@ FilmEditor::FilmEditor (Film* f)
 	, _dcp_whole ("Whole Film")
 	, _dcp_for ("For")
 	, _dcp_ab ("A/B")
-	, _play_button ("Play")
-	, _stop_button ("Stop")
-	, _play_ab ("A/B")
 {
 	_vbox.set_border_width (12);
 	_vbox.set_spacing (12);
@@ -105,15 +100,6 @@ FilmEditor::FilmEditor (Film* f)
 	_dcp_for.set_group (g);
 	_dcp_for_frames.set_range (24, 65536);
 	_dcp_for_frames.set_increments (24, 60 * 24);
-
-	vector<Screen *> const scr = Config::instance()->screens ();
-	for (vector<Screen *>::const_iterator i = scr.begin(); i != scr.end(); ++i) {
-		_play_screen.append_text ((*i)->name ());
-	}
-	
-	if (!scr.empty ()) {
-		_play_screen.set_active (0);
-	}
 
 	/* And set their values from the Film */
 	set_film (f);
@@ -167,17 +153,18 @@ FilmEditor::FilmEditor (Film* f)
 	t->attach (left_aligned_label ("Content Type"), 0, 1, n, n + 1);
 	t->attach (_dcp_content_type, 1, 2, n, n + 1);
 	++n;
-	t->attach (left_aligned_label ("Left Crop"), 0, 1, n, n + 1);
-	t->attach (_left_crop, 1, 2, n, n + 1);
-	++n;
-	t->attach (left_aligned_label ("Right Crop"), 0, 1, n, n + 1);
-	t->attach (_right_crop, 1, 2, n, n + 1);
-	++n;
-	t->attach (left_aligned_label ("Top Crop"), 0, 1, n, n + 1);
-	t->attach (_top_crop, 1, 2, n, n + 1);
-	++n;
-	t->attach (left_aligned_label ("Bottom Crop"), 0, 1, n, n + 1);
-	t->attach (_bottom_crop, 1, 2, n, n + 1);
+	t->attach (left_aligned_label ("Crop"), 0, 1, n, n + 1);
+	HBox* c = manage (new HBox);
+	c->set_spacing (4);
+	c->pack_start (left_aligned_label ("L"), false, false);
+	c->pack_start (_left_crop, true, true);
+	c->pack_start (left_aligned_label ("R"), false, false);
+	c->pack_start (_right_crop, true, true);
+	c->pack_start (left_aligned_label ("T"), false, false);
+	c->pack_start (_top_crop, true, true);
+	c->pack_start (left_aligned_label ("B"), false, false);
+	c->pack_start (_bottom_crop, true, true);
+	t->attach (*c, 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Filters"), 0, 1, n, n + 1);
 	HBox* fb = manage (new HBox);
@@ -208,10 +195,6 @@ FilmEditor::FilmEditor (Film* f)
 	_copy_from_dvd_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::copy_from_dvd_clicked));
 	_examine_content_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::examine_content_clicked));
 	_make_dcp_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked));
-	_play_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::play_clicked));
-	_stop_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::stop_clicked));
-	_play_screen.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::setup_player_manager));
-	_play_ab.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::setup_player_manager));
 
 	HBox* h = manage (new HBox);
 	h->set_spacing (12);
@@ -228,20 +211,11 @@ FilmEditor::FilmEditor (Film* f)
 	h->pack_start (left_aligned_label ("frames"), false, false);
 	h->pack_start (_dcp_ab);
 	_vbox.pack_start (*h, false, false);
-
-	h = manage (new HBox);
-	h->set_spacing (12);
-	h->pack_start (_play_button, false, false);
-	h->pack_start (_stop_button, false, false);
-	h->pack_start (_play_screen, false, false);
-	h->pack_start (_play_ab, false, false);
-	h->pack_start (_play_position, true, true);
-	_vbox.pack_start (*h, false, false);
 }
 
 /** @return Our main widget, which contains everything else */
 Widget&
-FilmEditor::get_widget ()
+FilmEditor::widget ()
 {
 	return _vbox;
 }
@@ -435,19 +409,6 @@ FilmEditor::film_changed (Film::Property p)
 		_scaler.set_active (Scaler::get_as_index (_film->scaler ()));
 		break;
 	}
-
-	if (
-		p == Film::FilmFormat ||
-		p == Film::LeftCrop ||
-		p == Film::RightCrop ||
-		p == Film::TopCrop ||
-		p == Film::BottomCrop ||
-		p == Film::Filters ||
-		p == Film::FilmScaler
-		) {
-		
-		setup_player_manager ();
-	}
 }
 
 /** Called when the format widget has been changed */
@@ -618,71 +579,4 @@ FilmEditor::frames_per_second_changed ()
 	if (_film) {
 		_film->set_frames_per_second (_frames_per_second.get_value ());
 	}
-}
-
-void
-FilmEditor::play_clicked ()
-{
-	PlayerManager::instance()->play ();
-	_update_play_position_connection = Glib::signal_timeout().connect (
-		sigc::bind_return (sigc::mem_fun (*this, &FilmEditor::update_play_position), true), 250
-		);
-}
-
-void
-FilmEditor::update_play_position ()
-{
-	float const p = PlayerManager::instance()->get_position ();
-
-	if (_film->frames_per_second() > 0 && _film->length() > 0) {
-		float const r = _film->length() / _film->frames_per_second() - p;
-		stringstream s;
-		s << seconds_to_hms (p) << " (" << seconds_to_hms (r) << " remaining)";
-		_play_position.set_text (s.str ());
-	} else {
-		_play_position.set_text (seconds_to_hms (p));
-	}
-}
-
-void
-FilmEditor::stop_clicked ()
-{
-	stop_updating_play_position ();
-	PlayerManager::instance()->stop ();
-}
-
-void
-FilmEditor::setup_player_manager ()
-{
-	stop_updating_play_position ();
-
-	vector<Screen *> screens = Config::instance()->screens ();
-	if (screens.empty ()) {
-		return;
-	}
-
-	Screen* screen = 0;
-	if (_play_screen.get_active_row_number() >= int (screens.size ())) {
-		_play_screen.set_active (0);
-		screen = screens.front ();
-	} else {
-		screen = screens[_play_screen.get_active_row_number()];
-	}
-       
-	if (_play_ab.get_active ()) {
-		shared_ptr<FilmState> fs_a = _film->state_copy ();
-		fs_a->filters.clear ();
-		/* This is somewhat arbitrary, but hey ho */
-		fs_a->scaler = Scaler::get_from_id ("bicubic");
-		PlayerManager::instance()->setup (fs_a, _film->state_copy(), screen);
-	} else {
-		PlayerManager::instance()->setup (_film->state_copy(), screen);
-	}
-}
-
-void
-FilmEditor::stop_updating_play_position ()
-{
-	_update_play_position_connection.disconnect ();
-	_play_position.set_text ("");
 }

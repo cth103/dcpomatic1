@@ -33,7 +33,7 @@ class FilmEditor
 public:
 	FilmEditor (Film *);
 
-	Gtk::Widget& get_widget ();
+	Gtk::Widget& widget ();
 
 	void set_film (Film *);
 
@@ -62,13 +62,8 @@ private:
 	void copy_from_dvd_clicked ();
 	void examine_content_clicked ();
 	void make_dcp_clicked ();
-	void play_clicked ();
-	void stop_clicked ();
 
 	void set_things_sensitive (bool);
-	void setup_player_manager ();
-	void update_play_position ();
-	void stop_updating_play_position ();
 
 	/** The film we are editing */
 	Film* _film;
@@ -127,12 +122,4 @@ private:
 	Gtk::SpinButton _dcp_for_frames;
 	/** Selector to generate an A/B comparison DCP */
 	Gtk::CheckButton _dcp_ab;
-	/** Button to play the content */
-	Gtk::Button _play_button;
-	Gtk::Button _stop_button;
-	Gtk::ComboBoxText _play_screen;
-	Gtk::CheckButton _play_ab;
-	Gtk::Label _play_position;
-
-	sigc::connection _update_play_position_connection;
 };

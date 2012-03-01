@@ -46,7 +46,7 @@ FilterView::FilterView (vector<Filter const *> const & active)
 }
 
 Gtk::Widget &
-FilterView::get_widget ()
+FilterView::widget ()
 {
 	return _box;
 }

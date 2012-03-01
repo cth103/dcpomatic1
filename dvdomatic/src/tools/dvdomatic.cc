@@ -21,6 +21,7 @@
 #include <boost/filesystem.hpp>
 #include "gtk/film_viewer.h"
 #include "gtk/film_editor.h"
+#include "gtk/film_player.h"
 #include "gtk/job_manager_view.h"
 #include "gtk/config_dialog.h"
 #include "gtk/gpl.h"
@@ -37,6 +38,7 @@ using namespace std;
 static Gtk::Window* window = 0;
 static FilmViewer* film_viewer = 0;
 static FilmEditor* film_editor = 0;
+static FilmPlayer* film_player = 0;
 static Film* film = 0;
 
 class FilmChangedDialog : public Gtk::MessageDialog
@@ -217,6 +219,7 @@ main (int argc, char* argv[])
 	
 	film_viewer = new FilmViewer (film);
 	film_editor = new FilmEditor (film);
+	film_player = new FilmPlayer (film);
 	JobManagerView jobs_view;
 
 	window->set_title ("DVD-o-matic");
@@ -226,14 +229,19 @@ main (int argc, char* argv[])
 	Gtk::MenuBar menu_bar;
 	vbox.pack_start (menu_bar, false, false);
 	setup_menu (menu_bar);
-	
+
 	Gtk::HBox hbox;
 	hbox.set_spacing (12);
-	hbox.pack_start (film_editor->get_widget (), false, false);
+
+	Gtk::VBox left_vbox;
+	left_vbox.set_spacing (12);
+	left_vbox.pack_start (film_editor->widget (), false, false);
+	left_vbox.pack_start (film_player->widget (), false, false);
+	hbox.pack_start (left_vbox, false, false);
 
 	Gtk::VBox right_vbox;
-	right_vbox.pack_start (film_viewer->get_widget (), true, true);
-	right_vbox.pack_start (jobs_view.get_widget(), false, false);
+	right_vbox.pack_start (film_viewer->widget (), true, true);
+	right_vbox.pack_start (jobs_view.widget(), false, false);
 	hbox.pack_start (right_vbox, true, true);
 	
 	vbox.pack_start (hbox, true, true);
