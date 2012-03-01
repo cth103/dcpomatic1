@@ -182,9 +182,10 @@ Player::command_with_reply (string c, string t)
 		vector<string> b;
 		string s (buf);
 		trim (line);
+		cout << "LINE: " << line << "\n";
 		split (b, line, is_any_of ("="));
 		if (b.size() < 2) {
-			return "";
+			continue;
 		}
 		
 		if (b[0] == t) {

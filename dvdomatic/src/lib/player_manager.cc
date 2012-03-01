@@ -67,7 +67,7 @@ PlayerManager::pause_or_unpause ()
 }
 
 float
-PlayerManager::get_position () const
+PlayerManager::position () const
 {
 	if (_players.empty ()) {
 		return 0;

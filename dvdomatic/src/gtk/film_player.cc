@@ -42,17 +42,20 @@ FilmPlayer::FilmPlayer (Film const * f)
 		_screen.set_active (0);
 	}
 
+	_status.set_use_markup (true);
+
 	_table.attach (_play, 0, 1, 0, 1);
 	_table.attach (_pause, 0, 1, 1, 2);
 	_table.attach (_stop, 0, 1, 2, 3);
-	_table.attach (_screen, 1, 2, 1, 2);
+	_table.attach (_screen, 1, 2, 0, 1);
+	_table.attach (_status, 0, 2, 3, 4);
 
 	_play.signal_clicked().connect (sigc::mem_fun (*this, &FilmPlayer::play_clicked));
 	_pause.signal_clicked().connect (sigc::mem_fun (*this, &FilmPlayer::pause_clicked));
 	_stop.signal_clicked().connect (sigc::mem_fun (*this, &FilmPlayer::stop_clicked));
 
 	set_button_states ();
-	Glib::signal_timeout().connect (sigc::bind_return (sigc::mem_fun (*this, &FilmPlayer::set_button_states), true), 1000);
+	Glib::signal_timeout().connect (sigc::bind_return (sigc::mem_fun (*this, &FilmPlayer::update), true), 1000);
 }
 
 void
@@ -101,7 +104,8 @@ FilmPlayer::play_clicked ()
 
 	switch (p->state ()) {
 	case PlayerManager::QUIESCENT:
-		p->setup (_film->state_copy(), screen ());
+		_last_play_fs = _film->state_copy ();
+		p->setup (_last_play_fs, screen ());
 		p->pause_or_unpause ();
 		break;
 	case PlayerManager::PLAYING:
@@ -150,6 +154,42 @@ FilmPlayer::screen () const
 	return s[r];
 }
 
+void
+FilmPlayer::update ()
+{
+	set_button_states ();
+	set_status ();
+}
+
+void
+FilmPlayer::set_status ()
+{
+	PlayerManager::State s = PlayerManager::instance()->state ();
+
+	stringstream m;
+	switch (s) {
+	case PlayerManager::QUIESCENT:
+		m << "Idle";
+		break;
+	case PlayerManager::PLAYING:
+		m << "<span foreground=\"red\" weight=\"bold\">PLAYING</span>";
+		break;
+	case PlayerManager::PAUSED:
+		m << "<b>Paused</b>";
+		break;
+	}
+
+	if (s != PlayerManager::QUIESCENT) {
+		float const p = PlayerManager::instance()->position ();
+		m << " " << seconds_to_hms (p);
+		if (_last_play_fs->frames_per_second != 0 && _last_play_fs->length != 0) {
+			m << " <i>(" << seconds_to_hms (_last_play_fs->length / _last_play_fs->frames_per_second - p) << " remain)</i>";
+		}
+	}
+
+	_status.set_markup (m.str ());
+}
+
 #if 0
 void
 FilmEditor::setup_player_manager ()
@@ -180,3 +220,4 @@ FilmEditor::setup_player_manager ()
 	}
 }
 #endif
+

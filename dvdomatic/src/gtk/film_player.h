@@ -38,12 +38,16 @@ private:
 	
 	void set_button_states ();
 	Screen * screen () const;
+	void set_status ();
+	void update ();
 	
 	Film const * _film;
+	boost::shared_ptr<const FilmState> _last_play_fs;
 
 	Gtk::Table _table;
 	Gtk::Button _play;
 	Gtk::Button _pause;
 	Gtk::Button _stop;
+	Gtk::Label _status;
 	Gtk::ComboBoxText _screen;
 };
