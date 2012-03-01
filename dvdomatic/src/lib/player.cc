@@ -70,7 +70,7 @@ Player::Player (shared_ptr<const FilmState> fs, Screen const * screen, Split spl
 		stringstream s;
 		s << "/usr/local/bin/mplayer";
 
-		s << " -vo x11 -noaspect -nosound -noautosub -nosub -vo x11 -noborder -slave -quiet";
+		s << " -vo x11 -noaspect -nosound -noautosub -nosub -vo x11 -noborder -slave -quiet -input nodefault-bindings:conf=/dev/null";
 		s << " -sws " << fs->scaler->mplayer_id ();
 
 		stringstream vf;
