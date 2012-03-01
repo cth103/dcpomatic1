@@ -8,7 +8,6 @@ Don't start later jobs when one breaks.
 Compute time remaining based on more recent information.
 Start frame later than ... error?
 Use lexical_cast more
-Reset screens dropdown when changing them in config
 
 options summary
 

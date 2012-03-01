@@ -42,6 +42,7 @@ private:
 	boost::shared_ptr<Screen> screen () const;
 	void set_status ();
 	void update ();
+	void update_screens ();
 	
 	Film const * _film;
 	boost::shared_ptr<const FilmState> _last_play_fs;

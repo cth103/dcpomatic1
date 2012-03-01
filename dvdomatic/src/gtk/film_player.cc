@@ -68,6 +68,8 @@ FilmPlayer::FilmPlayer (Film const * f)
 
 	set_button_states ();
 	Glib::signal_timeout().connect (sigc::bind_return (sigc::mem_fun (*this, &FilmPlayer::update), true), 1000);
+
+	Config::instance()->Changed.connect (sigc::mem_fun (*this, &FilmPlayer::update_screens));
 }
 
 void
@@ -238,4 +240,27 @@ string
 FilmPlayer::format_position (double v)
 {
 	return seconds_to_hms (v);
+}
+
+void
+FilmPlayer::update_screens ()
+{
+	string const c = _screen.get_active_text ();
+	
+	_screen.clear ();
+	
+	vector<shared_ptr<Screen> > const scr = Config::instance()->screens ();
+	bool have_last_active_text = false;
+	for (vector<shared_ptr<Screen> >::const_iterator i = scr.begin(); i != scr.end(); ++i) {
+		_screen.append_text ((*i)->name ());
+		if ((*i)->name() == c) {
+			have_last_active_text = true;
+		}
+	}
+
+	if (have_last_active_text) {
+		_screen.set_active_text (c);
+	} else if (!scr.empty ()) {
+		_screen.set_active (0);
+	}
 }

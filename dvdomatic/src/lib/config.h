@@ -26,6 +26,7 @@
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include <sigc++/signal.h>
 
 class Server;
 class Screen;
@@ -73,33 +74,41 @@ public:
 	/** @param n New number of local encoding threads */
 	void set_num_local_encoding_threads (int n) {
 		_num_local_encoding_threads = n;
+		Changed ();
 	}
 
 	/** @param p New server port */
 	void set_sever_port (int p) {
 		_server_port = p;
+		Changed ();
 	}
 
 	/** @param i New colour LUT index */
 	void set_colour_lut_index (int i) {
 		_colour_lut_index = i;
+		Changed ();
 	}
 
 	/** @param b New J2K bandwidth */
 	void set_j2k_bandwidth (int b) {
 		_j2k_bandwidth = b;
+		Changed ();
 	}
 
 	/** @param s New list of servers */
 	void set_servers (std::vector<Server*> s) {
 		_servers = s;
+		Changed ();
 	}
 
 	void set_screens (std::vector<boost::shared_ptr<Screen> > s) {
 		_screens = s;
+		Changed ();
 	}
 
 	void write () const;
+
+	sigc::signal0<void> Changed;
 
 	static Config* instance ();
 

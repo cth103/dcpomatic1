@@ -69,6 +69,8 @@ Config::Config ()
 			_screens.push_back (Screen::create_from_metadata (v));
 		}
 	}
+
+	Changed ();
 }
 
 /** @return Filename to write configuration to */
