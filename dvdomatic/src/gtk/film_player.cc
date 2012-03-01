@@ -44,6 +44,9 @@ FilmPlayer::FilmPlayer (Film const * f)
 
 	_status.set_use_markup (true);
 
+	_table.set_row_spacings (12);
+	_table.set_col_spacings (12);
+
 	_table.attach (_play, 0, 1, 0, 1);
 	_table.attach (_pause, 0, 1, 1, 2);
 	_table.attach (_stop, 0, 1, 2, 3);
@@ -183,7 +186,7 @@ FilmPlayer::set_status ()
 		float const p = PlayerManager::instance()->position ();
 		m << " " << seconds_to_hms (p);
 		if (_last_play_fs->frames_per_second != 0 && _last_play_fs->length != 0) {
-			m << " <i>(" << seconds_to_hms (_last_play_fs->length / _last_play_fs->frames_per_second - p) << " remain)</i>";
+			m << " <i>(" << seconds_to_hms (_last_play_fs->length / _last_play_fs->frames_per_second - p) << " remaining)</i>";
 		}
 	}
 
