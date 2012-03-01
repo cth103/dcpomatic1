@@ -53,7 +53,7 @@ public:
 	Position position (Format const *) const;
 	Size size (Format const *) const;
 
-	std::string get_as_metadata () const;
+	std::string as_metadata () const;
 	static Screen * create_from_metadata (std::string);
 
 private:

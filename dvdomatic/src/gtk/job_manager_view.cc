@@ -86,7 +86,7 @@ JobManagerView::update ()
 		string const st = (*i)->status ();
 
 		if (!(*i)->finished ()) {
-			float const p = (*i)->get_overall_progress ();
+			float const p = (*i)->overall_progress ();
 			if (p >= 0) {
 				r[_columns.text] = st;
 				r[_columns.progress] = p * 100;

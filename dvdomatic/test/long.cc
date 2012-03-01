@@ -84,14 +84,14 @@ BOOST_AUTO_TEST_CASE (make_dcp_test)
 	f.write_metadata ();
 	boost::filesystem::copy_file ("test/zombie.mpeg", "build/test/film/zombie.mpeg");
 	f.set_content ("zombie.mpeg");
-	f.set_dcp_content_type (ContentType::get_from_pretty_name ("Test"));
+	f.set_dcp_content_type (ContentType::from_pretty_name ("Test"));
 	f.set_dcp_long_name (dcp_name);
 
 	BOOST_CHECK_EQUAL (f.audio_channels(), 2);
 	BOOST_CHECK_EQUAL (f.audio_sample_rate(), 48000);
 	BOOST_CHECK_EQUAL (audio_sample_format_to_string (f.audio_sample_format()), "S16");
 	
-	f.set_format (Format::get_from_nickname ("Flat"));
+	f.set_format (Format::from_nickname ("Flat"));
 
 	f.make_dcp (5);
 

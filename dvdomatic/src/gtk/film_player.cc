@@ -128,7 +128,7 @@ FilmPlayer::play_clicked ()
 			shared_ptr<FilmState> fs_a = _film->state_copy ();
 			fs_a->filters.clear ();
 			/* This is somewhat arbitrary, but hey ho */
-			fs_a->scaler = Scaler::get_from_id ("bicubic");
+			fs_a->scaler = Scaler::from_id ("bicubic");
 			p->setup (fs_a, _last_play_fs, screen ());
 		} else {
 			p->setup (_last_play_fs, screen ());

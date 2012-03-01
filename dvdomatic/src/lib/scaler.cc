@@ -48,12 +48,12 @@ Scaler::Scaler (int f, int m, string i, string n)
 
 /** @return All available scalers */
 vector<Scaler const *>
-Scaler::get_all ()
+Scaler::all ()
 {
 	return _scalers;
 }
 
-/** Set up the static _scalers vector; must be called before get_from_*
+/** Set up the static _scalers vector; must be called before from_*
  *  methods are used.
  */
 void
@@ -74,7 +74,7 @@ Scaler::setup_scalers ()
  *  @return Corresponding scaler, or 0.
  */
 Scaler const *
-Scaler::get_from_id (string id)
+Scaler::from_id (string id)
 {
 	vector<Scaler const *>::iterator i = _scalers.begin ();
 	while (i != _scalers.end() && (*i)->id() != id) {
@@ -92,7 +92,7 @@ Scaler::get_from_id (string id)
  *  @return Index of the scaler with the list, or -1.
  */
 int
-Scaler::get_as_index (Scaler const * s)
+Scaler::as_index (Scaler const * s)
 {
 	vector<Scaler*>::size_type i = 0;
 	while (i < _scalers.size() && _scalers[i] != s) {
@@ -106,11 +106,11 @@ Scaler::get_as_index (Scaler const * s)
 	return i;
 }
 
-/** @param i An index returned from get_as_index().
+/** @param i An index returned from as_index().
  *  @return Corresponding scaler.
  */
 Scaler const *
-Scaler::get_from_index (int i)
+Scaler::from_index (int i)
 {
 	assert (i <= int(_scalers.size ()));
 	return _scalers[i];

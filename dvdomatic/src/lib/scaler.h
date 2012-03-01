@@ -55,11 +55,11 @@ public:
 		return _name;
 	}
 	
-	static std::vector<Scaler const *> get_all ();
+	static std::vector<Scaler const *> all ();
 	static void setup_scalers ();
-	static Scaler const * get_from_id (std::string id);
-	static Scaler const * get_from_index (int);
-	static int get_as_index (Scaler const *);
+	static Scaler const * from_id (std::string id);
+	static Scaler const * from_index (int);
+	static int as_index (Scaler const *);
 
 private:
 

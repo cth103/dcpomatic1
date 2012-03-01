@@ -118,7 +118,7 @@ main (int argc, char* argv[])
 		for (list<shared_ptr<Job> >::iterator i = jobs.begin(); i != jobs.end(); ++i) {
 			cout << (*i)->name() << ": ";
 
-			float const p = (*i)->get_overall_progress ();
+			float const p = (*i)->overall_progress ();
 
 			if (p >= 0) {
 				cout << (*i)->status() << "                         \n";

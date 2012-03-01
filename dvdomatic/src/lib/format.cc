@@ -67,7 +67,7 @@ Format::name () const
 
 /** @return Identifier for this format as metadata for a Film's metadata file */
 string
-Format::get_as_metadata () const
+Format::as_metadata () const
 {
 	stringstream s;
 	s << _ratio;
@@ -88,7 +88,7 @@ Format::setup_formats ()
  *  @return Matching Format, or 0.
  */
 Format const *
-Format::get_from_ratio (int r)
+Format::from_ratio (int r)
 {
 	vector<Format const *>::iterator i = _formats.begin ();
 	while (i != _formats.end() && (*i)->ratio_as_integer() != r) {
@@ -106,7 +106,7 @@ Format::get_from_ratio (int r)
  *  @return Matching Format, or 0.
  */
 Format const *
-Format::get_from_nickname (string n)
+Format::from_nickname (string n)
 {
 	vector<Format const *>::iterator i = _formats.begin ();
 	while (i != _formats.end() && (*i)->nickname() != n) {
@@ -120,20 +120,20 @@ Format::get_from_nickname (string n)
 	return *i;
 }
 
-/** @param m Metadata, as returned from get_as_metadata().
+/** @param m Metadata, as returned from as_metadata().
  *  @return Matching Format, or 0.
  */
 Format const *
-Format::get_from_metadata (string m)
+Format::from_metadata (string m)
 {
-	return get_from_ratio (atoi (m.c_str ()));
+	return from_ratio (atoi (m.c_str ()));
 }
 
 /** @param f A Format.
  *  @return Index of f within our static list, or -1.
  */
 int
-Format::get_as_index (Format const * f)
+Format::as_index (Format const * f)
 {
 	vector<Format*>::size_type i = 0;
 	while (i < _formats.size() && _formats[i] != f) {
@@ -147,11 +147,11 @@ Format::get_as_index (Format const * f)
 	return i;
 }
 
-/** @param i An index returned from get_as_index().
+/** @param i An index returned from as_index().
  *  @return Corresponding Format.
  */
 Format const *
-Format::get_from_index (int i)
+Format::from_index (int i)
 {
 	assert (i <= int(_formats.size ()));
 	return _formats[i];
@@ -159,7 +159,7 @@ Format::get_from_index (int i)
 
 /** @return All available formats */
 vector<Format const *>
-Format::get_all ()
+Format::all ()
 {
 	return _formats;
 }

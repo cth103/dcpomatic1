@@ -61,7 +61,7 @@ public:
 		, right_crop (0)
 		, top_crop (0)
 		, bottom_crop (0)
-		, scaler (Scaler::get_from_id ("bicubic"))
+		, scaler (Scaler::from_id ("bicubic"))
 		, dcp_frames (0)
 		, dcp_ab (false)
 		, length (0)

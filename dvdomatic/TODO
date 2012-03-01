@@ -11,7 +11,6 @@ Normalise enum case
 shared_ptr for Screen
 Use lexical_cast more
 Reset screens dropdown when changing them in config
-get_ gone
 
 options summary
 

@@ -60,7 +60,7 @@ Screen::size (Format const * f) const
 }
 
 string
-Screen::get_as_metadata () const
+Screen::as_metadata () const
 {
 	stringstream s;
 	s << "\"" << _name << "\"";
@@ -89,7 +89,7 @@ Screen::create_from_metadata (string v)
 	while (b.size() > i) {
 		if (b.size() >= (i + 5)) {
 			s->add_geometry (
-				Format::get_from_nickname (b[i].c_str()),
+				Format::from_nickname (b[i].c_str()),
 				Position (atoi (b[i+1].c_str()), atoi (b[i+2].c_str())),
 				Size (atoi (b[i+3].c_str()), atoi (b[i+4].c_str()))
 				);

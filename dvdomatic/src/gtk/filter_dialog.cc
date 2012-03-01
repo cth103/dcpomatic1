@@ -42,5 +42,5 @@ FilterDialog::FilterDialog (Film* f)
 void
 FilterDialog::active_changed ()
 {
-	_film->set_filters (_filters.get_active ());
+	_film->set_filters (_filters.active ());
 }

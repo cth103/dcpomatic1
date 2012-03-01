@@ -91,7 +91,7 @@ process (int fd)
 	  >> j2k_bandwidth;
 	
 	PixelFormat pixel_format = (PixelFormat) pixel_format_int;
-	Scaler const * scaler = Scaler::get_from_id (scaler_id);
+	Scaler const * scaler = Scaler::from_id (scaler_id);
 	if (post_process == "none") {
 		post_process = "";
 	}

@@ -72,7 +72,7 @@ FilmEditor::FilmEditor (Film* f)
 	_bottom_crop.set_increments (1, 16);
 	_filters.set_alignment (0, 0.5);
 
-	vector<Format const *> fmt = Format::get_all ();
+	vector<Format const *> fmt = Format::all ();
 	for (vector<Format const *>::iterator i = fmt.begin(); i != fmt.end(); ++i) {
 		_format.append_text ((*i)->name ());
 	}
@@ -81,12 +81,12 @@ FilmEditor::FilmEditor (Film* f)
 	_frames_per_second.set_digits (2);
 	_frames_per_second.set_range (0, 60);
 
-	vector<ContentType const *> const ct = ContentType::get_all ();
+	vector<ContentType const *> const ct = ContentType::all ();
 	for (vector<ContentType const *>::const_iterator i = ct.begin(); i != ct.end(); ++i) {
 		_dcp_content_type.append_text ((*i)->pretty_name ());
 	}
 
-	vector<Scaler const *> const sc = Scaler::get_all ();
+	vector<Scaler const *> const sc = Scaler::all ();
 	for (vector<Scaler const *>::const_iterator i = sc.begin(); i != sc.end(); ++i) {
 		_scaler.append_text ((*i)->name ());
 	}
@@ -337,7 +337,7 @@ FilmEditor::film_changed (Film::Property p)
 		_content.set_filename (_film->content ());
 		break;
 	case Film::FilmFormat:
-		_format.set_active (Format::get_as_index (_film->format ()));
+		_format.set_active (Format::as_index (_film->format ()));
 		break;
 	case Film::LeftCrop:
 		_left_crop.set_value (_film->left_crop ());
@@ -390,7 +390,7 @@ FilmEditor::film_changed (Film::Property p)
 		_guess_dcp_long_name.set_active (_film->guess_dcp_long_name ());
 		break;
 	case Film::DCPContentType:
-		_dcp_content_type.set_active (ContentType::get_as_index (_film->dcp_content_type ()));
+		_dcp_content_type.set_active (ContentType::as_index (_film->dcp_content_type ()));
 		break;
 	case Film::Thumbs:
 		break;
@@ -406,7 +406,7 @@ FilmEditor::film_changed (Film::Property p)
 		_dcp_ab.set_active (_film->dcp_ab ());
 		break;
 	case Film::FilmScaler:
-		_scaler.set_active (Scaler::get_as_index (_film->scaler ()));
+		_scaler.set_active (Scaler::as_index (_film->scaler ()));
 		break;
 	}
 }
@@ -416,7 +416,7 @@ void
 FilmEditor::format_changed ()
 {
 	if (_film) {
-		_film->set_format (Format::get_from_index (_format.get_active_row_number ()));
+		_film->set_format (Format::from_index (_format.get_active_row_number ()));
 	}
 }
 
@@ -450,7 +450,7 @@ void
 FilmEditor::dcp_content_type_changed ()
 {
 	if (_film) {
-		_film->set_dcp_content_type (ContentType::get_from_index (_dcp_content_type.get_active_row_number ()));
+		_film->set_dcp_content_type (ContentType::from_index (_dcp_content_type.get_active_row_number ()));
 	}
 }
 
@@ -568,7 +568,7 @@ void
 FilmEditor::scaler_changed ()
 {
 	if (_film) {
-		_film->set_scaler (Scaler::get_from_index (_scaler.get_active_row_number ()));
+		_film->set_scaler (Scaler::from_index (_scaler.get_active_row_number ()));
 	}
 }
 

@@ -55,8 +55,8 @@ public:
 		return _pp;
 	}
 	
-	static std::vector<Filter const *> get_all ();
-	static Filter const * get_from_id (std::string);
+	static std::vector<Filter const *> all ();
+	static Filter const * from_id (std::string);
 	static void setup_filters ();
 	static std::pair<std::string, std::string> ffmpeg_strings (std::vector<Filter const *> const &);
 

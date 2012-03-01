@@ -35,7 +35,7 @@ public:
 	FilterView (std::vector<Filter const *> const &);
 
 	Gtk::Widget & widget ();
-	std::vector<Filter const *> get_active () const;
+	std::vector<Filter const *> active () const;
 
 	sigc::signal0<void> ActiveChanged;
 

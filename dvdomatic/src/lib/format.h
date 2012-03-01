@@ -67,14 +67,14 @@ public:
 		return _dcp_name;
 	}
 
-	std::string get_as_metadata () const;
+	std::string as_metadata () const;
 
-	static Format const * get_from_ratio (int);
-	static Format const * get_from_nickname (std::string n);
-	static Format const * get_from_metadata (std::string m);
-	static Format const * get_from_index (int i);
-	static int get_as_index (Format const * f);
-	static std::vector<Format const *> get_all ();
+	static Format const * from_ratio (int);
+	static Format const * from_nickname (std::string n);
+	static Format const * from_metadata (std::string m);
+	static Format const * from_index (int i);
+	static int as_index (Format const * f);
+	static std::vector<Format const *> all ();
 	static void setup_formats ();
 	
 private:

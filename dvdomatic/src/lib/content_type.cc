@@ -52,7 +52,7 @@ ContentType::setup_content_types ()
 }
 
 ContentType const *
-ContentType::get_from_pretty_name (string n)
+ContentType::from_pretty_name (string n)
 {
 	for (vector<ContentType const *>::const_iterator i = _content_types.begin(); i != _content_types.end(); ++i) {
 		if ((*i)->pretty_name() == n) {
@@ -64,14 +64,14 @@ ContentType::get_from_pretty_name (string n)
 }
 
 ContentType const *
-ContentType::get_from_index (int n)
+ContentType::from_index (int n)
 {
 	assert (n < int (_content_types.size ()));
 	return _content_types[n];
 }
 
 int
-ContentType::get_as_index (ContentType const * c)
+ContentType::as_index (ContentType const * c)
 {
 	vector<ContentType*>::size_type i = 0;
 	while (i < _content_types.size() && _content_types[i] != c) {
@@ -86,7 +86,7 @@ ContentType::get_as_index (ContentType const * c)
 }
 
 vector<ContentType const *>
-ContentType::get_all ()
+ContentType::all ()
 {
 	return _content_types;
 }
