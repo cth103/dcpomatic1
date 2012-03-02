@@ -35,6 +35,10 @@ public:
 		return _name;
 	}
 
+	void set_name (std::string n) {
+		_name = n;
+	}
+
 	struct Geometry {
 		Geometry () {}
 

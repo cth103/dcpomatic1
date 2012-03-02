@@ -33,6 +33,7 @@ static Gtk::ComboBoxText* format_combo = 0;
 static Format const * format = 0;
 static Gtk::ComboBoxText* screen_combo = 0;
 static shared_ptr<Screen> screen;
+static Gtk::Entry* screen_name = 0;
 static Gtk::SpinButton* x_position = 0;
 static Gtk::SpinButton* y_position = 0;
 static Gtk::SpinButton* width = 0;
@@ -40,7 +41,14 @@ static Gtk::Button* calculate_width = 0;
 static Gtk::SpinButton* height = 0;
 static Gtk::Button* calculate_height = 0;
 static Gtk::Button* save = 0;
-static bool dimensions_dirty = false;
+static bool screen_dirty = false;
+
+enum GeometryPart {
+	GEOMETRY_PART_X,
+	GEOMETRY_PART_Y,
+	GEOMETRY_PART_WIDTH,
+	GEOMETRY_PART_HEIGHT
+};
 
 void
 update_sensitivity ()
@@ -54,7 +62,8 @@ update_sensitivity ()
 	height->set_sensitive (dims);
 	calculate_height->set_sensitive (dims);
 
-	save->set_sensitive (dimensions_dirty);
+	screen_name->set_sensitive (screen);
+	save->set_sensitive (screen_dirty);
 }
 
 void
@@ -84,18 +93,30 @@ update_entries ()
 	width->set_value (s.width);
 	height->set_value (s.height);
 
-	dimensions_dirty = false;
 	update_sensitivity ();
 }
 
 void
 screen_changed ()
 {
+	if (screen_combo->get_active_row_number() < 0) {
+		return;
+	}
+
 	vector<shared_ptr<Screen> > screens = Config::instance()->screens ();
+	
+	if (screens[screen_combo->get_active_row_number()] == screen) {
+		return;
+	}
+	
 	screen = screens[screen_combo->get_active_row_number()];
 
 	update_entries ();
 	update_alignment ();
+
+	screen_name->set_text (screen->name ());
+
+	screen_dirty = false;
 	update_sensitivity ();
 }
 
@@ -103,6 +124,11 @@ void
 format_changed ()
 {
 	vector<Format const *> formats = Format::all ();
+	
+	if (formats[format_combo->get_active_row_number()] == format) {
+		return;
+	}
+	
 	format = formats[format_combo->get_active_row_number()];
 	
 	update_entries ();
@@ -111,8 +137,24 @@ format_changed ()
 }
 
 void
-dimensions_changed ()
+geometry_changed (GeometryPart p)
 {
+	if (p == GEOMETRY_PART_X && screen->position(format).x == x_position->get_value_as_int()) {
+		return;
+	}
+
+	if (p == GEOMETRY_PART_Y && screen->position(format).y == y_position->get_value_as_int()) {
+		return;
+	}
+
+	if (p == GEOMETRY_PART_WIDTH && screen->size(format).width == width->get_value_as_int()) {
+		return;
+	}
+
+	if (p == GEOMETRY_PART_HEIGHT && screen->size(format).height == height->get_value_as_int()) {
+		return;
+	}
+	
 	screen->set_geometry (
 		format,
 		Position (x_position->get_value_as_int(), y_position->get_value_as_int()),
@@ -121,7 +163,7 @@ dimensions_changed ()
 
 	update_alignment ();
 
-	dimensions_dirty = true;
+	screen_dirty = true;
 	update_sensitivity ();
 }
 
@@ -129,7 +171,7 @@ void
 save_clicked ()
 {
 	Config::instance()->write ();
-	dimensions_dirty = false;
+	screen_dirty = false;
 	update_sensitivity ();
 }
 
@@ -145,6 +187,30 @@ calculate_height_clicked ()
 	height->set_value (width->get_value_as_int() / format->ratio_as_float ());
 }
 
+void
+update_screen_combo ()
+{
+	screen_combo->clear ();
+	
+	vector<shared_ptr<Screen> > screens = Config::instance()->screens ();
+	for (vector<shared_ptr<Screen> >::iterator i = screens.begin(); i != screens.end(); ++i) {
+		screen_combo->append_text ((*i)->name ());
+	}
+}
+
+void
+screen_name_changed ()
+{
+	screen->set_name (screen_name->get_text ());
+
+	int const r = screen_combo->get_active_row_number ();
+	update_screen_combo ();
+	screen_combo->set_active (r);
+
+	screen_dirty = true;
+	update_sensitivity ();
+}
+
 int
 main (int argc, char* argv[])
 {
@@ -155,12 +221,11 @@ main (int argc, char* argv[])
 	Gtk::Dialog dialog ("Align-o-matic");
 
 	screen_combo = new Gtk::ComboBoxText;
-	vector<shared_ptr<Screen> > screens = Config::instance()->screens ();
-	for (vector<shared_ptr<Screen> >::iterator i = screens.begin(); i != screens.end(); ++i) {
-		screen_combo->append_text ((*i)->name ());
-	}
-
+	update_screen_combo ();
 	screen_combo->signal_changed().connect (sigc::ptr_fun (&screen_changed));
+
+	screen_name = new Gtk::Entry ();
+	screen_name->signal_changed().connect (sigc::ptr_fun (&screen_name_changed));
 	
 	format_combo = new Gtk::ComboBoxText;
 	vector<Format const *> formats = Format::all ();
@@ -174,19 +239,19 @@ main (int argc, char* argv[])
 	save->signal_clicked().connect (sigc::ptr_fun (&save_clicked));
 
 	x_position = new Gtk::SpinButton ();
-	x_position->signal_value_changed().connect (sigc::ptr_fun (&dimensions_changed));
+	x_position->signal_value_changed().connect (sigc::bind (ptr_fun (&geometry_changed), GEOMETRY_PART_X));
 	x_position->set_range (0, 2048);
 	x_position->set_increments (1, 16);
 	y_position = new Gtk::SpinButton ();
-	y_position->signal_value_changed().connect (sigc::ptr_fun (&dimensions_changed));
+	y_position->signal_value_changed().connect (sigc::bind (sigc::ptr_fun (&geometry_changed), GEOMETRY_PART_Y));
 	y_position->set_range (0, 1080);
 	y_position->set_increments (1, 16);
 	width = new Gtk::SpinButton ();
-	width->signal_value_changed().connect (sigc::ptr_fun (&dimensions_changed));
+	width->signal_value_changed().connect (sigc::bind (sigc::ptr_fun (&geometry_changed), GEOMETRY_PART_WIDTH));
 	width->set_range (0, 2048);
 	width->set_increments (1, 16);
 	height = new Gtk::SpinButton ();
-	height->signal_value_changed().connect (sigc::ptr_fun (&dimensions_changed));
+	height->signal_value_changed().connect (sigc::bind (sigc::ptr_fun (&geometry_changed), GEOMETRY_PART_HEIGHT));
 	height->set_range (0, 1080);
 	height->set_increments (1, 16);
 
@@ -203,6 +268,9 @@ main (int argc, char* argv[])
 	int n = 0;
 	table.attach (left_aligned_label ("Screen"), 0, 1, n, n + 1);
 	table.attach (*screen_combo, 1, 2, n, n + 1);
+	++n;
+	table.attach (left_aligned_label ("Screen Name"), 0, 1, n, n + 1);
+	table.attach (*screen_name, 1, 2, n, n + 1);
 	++n;
 	table.attach (left_aligned_label ("Format"), 0, 1, n, n + 1);
 	table.attach (*format_combo, 1, 2, n, n + 1);
