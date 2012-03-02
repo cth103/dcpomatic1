@@ -36,7 +36,7 @@ public:
 	JobManagerView ();
 
 	/** @return Our main widget, which contains everything else */
-	Gtk::Widget& get_widget () {
+	Gtk::Widget& widget () {
 		return _scroller;
 	}
 

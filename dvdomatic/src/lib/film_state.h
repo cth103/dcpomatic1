@@ -61,7 +61,7 @@ public:
 		, right_crop (0)
 		, top_crop (0)
 		, bottom_crop (0)
-		, scaler (Scaler::get_from_id ("bicubic"))
+		, scaler (Scaler::from_id ("bicubic"))
 		, dcp_frames (0)
 		, dcp_ab (false)
 		, length (0)
@@ -92,6 +92,8 @@ public:
 	
 	void write_metadata (std::ofstream &) const;
 	void read_metadata (std::string, std::string);
+
+	Size cropped_size (Size) const;
 
 	/** Complete path to directory containing the film metadata;
 	    must not be relative.

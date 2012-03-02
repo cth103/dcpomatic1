@@ -31,7 +31,7 @@ FilterView::FilterView (vector<Filter const *> const & active)
 {
 	_box.set_spacing (4);
 	
-	vector<Filter const *> filters = Filter::get_all ();
+	vector<Filter const *> filters = Filter::all ();
 
 	for (vector<Filter const *>::iterator i = filters.begin(); i != filters.end(); ++i) {
 		Gtk::CheckButton* b = Gtk::manage (new Gtk::CheckButton ((*i)->name()));
@@ -46,7 +46,7 @@ FilterView::FilterView (vector<Filter const *> const & active)
 }
 
 Gtk::Widget &
-FilterView::get_widget ()
+FilterView::widget ()
 {
 	return _box;
 }
@@ -59,7 +59,7 @@ FilterView::filter_toggled (Filter const * f)
 }
 
 vector<Filter const*>
-FilterView::get_active () const
+FilterView::active () const
 {
 	vector<Filter const *> active;
 	for (map<Filter const *, bool>::const_iterator i = _filters.begin(); i != _filters.end(); ++i) {

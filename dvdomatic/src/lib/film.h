@@ -201,26 +201,26 @@ public:
 	void make_dcp (int freq = 0);
 
 	enum Property {
-		Name,
-		Content,
-		DCPLongName,
-		GuessDCPLongName,
-		DCPContentType,
-		FilmFormat,
-		LeftCrop,
-		RightCrop,
-		TopCrop,
-		BottomCrop,
-		Filters,
-		FilmScaler,
-		DCPFrames,
-		DCPAB,
-		Thumbs,
-		FilmSize,
-		Length,
-		FramesPerSecond,
-		AudioChannels,
-		AudioSampleRate
+		NAME,
+		CONTENT,
+		DCP_LONG_NAME,
+		GUESS_DCP_LONG_NAME,
+		DCP_CONTENT_TYPE,
+		FORMAT,
+		LEFT_CROP,
+		RIGHT_CROP,
+		TOP_CROP,
+		BOTTOM_CROP,
+		FILTERS,
+		SCALER,
+		DCP_FRAMES,
+		DCP_AB,
+		THUMBS,
+		SIZE,
+		LENGTH,
+		FRAMES_PER_SECOND,
+		AUDIO_CHANNELS,
+		AUDIO_SAMPLE_RATE
 	};
 
 	boost::shared_ptr<FilmState> state_copy () const;

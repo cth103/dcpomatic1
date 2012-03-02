@@ -31,7 +31,7 @@
 using namespace std;
 using namespace boost;
 
-/** Create a server from a string of metadata returned from get_as_metadata().
+/** Create a server from a string of metadata returned from as_metadata().
  *  @param v Metadata.
  *  @return Server, or 0.
  */
@@ -50,7 +50,7 @@ Server::create_from_metadata (string v)
 
 /** @return Description of this server as text */
 string
-Server::get_as_metadata () const
+Server::as_metadata () const
 {
 	stringstream s;
 	s << _host_name << " " << _threads;

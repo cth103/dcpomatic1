@@ -35,6 +35,8 @@
 #include "lib/job_manager.h"
 #include "lib/filter.h"
 #include "lib/copy_from_dvd_job.h"
+#include "lib/screen.h"
+#include "lib/config.h"
 #include "filter_dialog.h"
 #include "gtk_util.h"
 #include "film_editor.h"
@@ -70,7 +72,7 @@ FilmEditor::FilmEditor (Film* f)
 	_bottom_crop.set_increments (1, 16);
 	_filters.set_alignment (0, 0.5);
 
-	vector<Format const *> fmt = Format::get_all ();
+	vector<Format const *> fmt = Format::all ();
 	for (vector<Format const *>::iterator i = fmt.begin(); i != fmt.end(); ++i) {
 		_format.append_text ((*i)->name ());
 	}
@@ -79,12 +81,12 @@ FilmEditor::FilmEditor (Film* f)
 	_frames_per_second.set_digits (2);
 	_frames_per_second.set_range (0, 60);
 
-	vector<ContentType const *> const ct = ContentType::get_all ();
+	vector<ContentType const *> const ct = ContentType::all ();
 	for (vector<ContentType const *>::const_iterator i = ct.begin(); i != ct.end(); ++i) {
 		_dcp_content_type.append_text ((*i)->pretty_name ());
 	}
 
-	vector<Scaler const *> const sc = Scaler::get_all ();
+	vector<Scaler const *> const sc = Scaler::all ();
 	for (vector<Scaler const *>::const_iterator i = sc.begin(); i != sc.end(); ++i) {
 		_scaler.append_text ((*i)->name ());
 	}
@@ -151,17 +153,18 @@ FilmEditor::FilmEditor (Film* f)
 	t->attach (left_aligned_label ("Content Type"), 0, 1, n, n + 1);
 	t->attach (_dcp_content_type, 1, 2, n, n + 1);
 	++n;
-	t->attach (left_aligned_label ("Left Crop"), 0, 1, n, n + 1);
-	t->attach (_left_crop, 1, 2, n, n + 1);
-	++n;
-	t->attach (left_aligned_label ("Right Crop"), 0, 1, n, n + 1);
-	t->attach (_right_crop, 1, 2, n, n + 1);
-	++n;
-	t->attach (left_aligned_label ("Top Crop"), 0, 1, n, n + 1);
-	t->attach (_top_crop, 1, 2, n, n + 1);
-	++n;
-	t->attach (left_aligned_label ("Bottom Crop"), 0, 1, n, n + 1);
-	t->attach (_bottom_crop, 1, 2, n, n + 1);
+	t->attach (left_aligned_label ("Crop"), 0, 1, n, n + 1);
+	HBox* c = manage (new HBox);
+	c->set_spacing (4);
+	c->pack_start (left_aligned_label ("L"), false, false);
+	c->pack_start (_left_crop, true, true);
+	c->pack_start (left_aligned_label ("R"), false, false);
+	c->pack_start (_right_crop, true, true);
+	c->pack_start (left_aligned_label ("T"), false, false);
+	c->pack_start (_top_crop, true, true);
+	c->pack_start (left_aligned_label ("B"), false, false);
+	c->pack_start (_bottom_crop, true, true);
+	t->attach (*c, 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Filters"), 0, 1, n, n + 1);
 	HBox* fb = manage (new HBox);
@@ -208,12 +211,11 @@ FilmEditor::FilmEditor (Film* f)
 	h->pack_start (left_aligned_label ("frames"), false, false);
 	h->pack_start (_dcp_ab);
 	_vbox.pack_start (*h, false, false);
-	
 }
 
 /** @return Our main widget, which contains everything else */
 Widget&
-FilmEditor::get_widget ()
+FilmEditor::widget ()
 {
 	return _vbox;
 }
@@ -331,49 +333,49 @@ FilmEditor::film_changed (Film::Property p)
 	stringstream s;
 		
 	switch (p) {
-	case Film::Content:
+	case Film::CONTENT:
 		_content.set_filename (_film->content ());
 		break;
-	case Film::FilmFormat:
-		_format.set_active (Format::get_as_index (_film->format ()));
+	case Film::FORMAT:
+		_format.set_active (Format::as_index (_film->format ()));
 		break;
-	case Film::LeftCrop:
+	case Film::LEFT_CROP:
 		_left_crop.set_value (_film->left_crop ());
 		break;
-	case Film::RightCrop:
+	case Film::RIGHT_CROP:
 		_right_crop.set_value (_film->right_crop ());
 		break;
-	case Film::TopCrop:
+	case Film::TOP_CROP:
 		_top_crop.set_value (_film->top_crop ());
 		break;
-	case Film::BottomCrop:
+	case Film::BOTTOM_CROP:
 		_bottom_crop.set_value (_film->bottom_crop ());
 		break;
-	case Film::Filters:
+	case Film::FILTERS:
 	{
 		pair<string, string> p = Filter::ffmpeg_strings (_film->filters ());
 		_filters.set_text (p.first + " " + p.second);
 		break;
 	}
-	case Film::Name:
+	case Film::NAME:
 		_name.set_text (_film->name ());
 		break;
-	case Film::FramesPerSecond:
+	case Film::FRAMES_PER_SECOND:
 		_frames_per_second.set_value (_film->frames_per_second ());
 		break;
-	case Film::AudioChannels:
+	case Film::AUDIO_CHANNELS:
 		s << _film->audio_channels ();
 		_audio_channels.set_text (s.str ());
 		break;
-	case Film::AudioSampleRate:
+	case Film::AUDIO_SAMPLE_RATE:
 		s << _film->audio_sample_rate ();
 		_audio_sample_rate.set_text (s.str ());
 		break;
-	case Film::FilmSize:
+	case Film::SIZE:
 		s << _film->size().width << " x " << _film->size().height;
 		_original_size.set_text (s.str ());
 		break;
-	case Film::Length:
+	case Film::LENGTH:
 		if (_film->frames_per_second() > 0) {
 			s << _film->length() << " frames; " << seconds_to_hms (_film->length() / _film->frames_per_second());
 		} else {
@@ -381,18 +383,18 @@ FilmEditor::film_changed (Film::Property p)
 		}
 		_length.set_text (s.str ());
 		break;
-	case Film::DCPLongName:
+	case Film::DCP_LONG_NAME:
 		_dcp_long_name.set_text (_film->dcp_long_name ());
 		break;
-	case Film::GuessDCPLongName:
+	case Film::GUESS_DCP_LONG_NAME:
 		_guess_dcp_long_name.set_active (_film->guess_dcp_long_name ());
 		break;
-	case Film::DCPContentType:
-		_dcp_content_type.set_active (ContentType::get_as_index (_film->dcp_content_type ()));
+	case Film::DCP_CONTENT_TYPE:
+		_dcp_content_type.set_active (ContentType::as_index (_film->dcp_content_type ()));
 		break;
-	case Film::Thumbs:
+	case Film::THUMBS:
 		break;
-	case Film::DCPFrames:
+	case Film::DCP_FRAMES:
 		if (_film->dcp_frames() == 0) {
 			_dcp_whole.set_active (true);
 		} else {
@@ -400,11 +402,11 @@ FilmEditor::film_changed (Film::Property p)
 			_dcp_for_frames.set_value (_film->dcp_frames ());
 		}
 		break;
-	case Film::DCPAB:
+	case Film::DCP_AB:
 		_dcp_ab.set_active (_film->dcp_ab ());
 		break;
-	case Film::FilmScaler:
-		_scaler.set_active (Scaler::get_as_index (_film->scaler ()));
+	case Film::SCALER:
+		_scaler.set_active (Scaler::as_index (_film->scaler ()));
 		break;
 	}
 }
@@ -414,7 +416,7 @@ void
 FilmEditor::format_changed ()
 {
 	if (_film) {
-		_film->set_format (Format::get_from_index (_format.get_active_row_number ()));
+		_film->set_format (Format::from_index (_format.get_active_row_number ()));
 	}
 }
 
@@ -429,7 +431,6 @@ FilmEditor::make_dcp_clicked ()
 	try {
 		_film->make_dcp ();
 	} catch (BadSettingError& e) {
-		cout << "a\n";
 		stringstream s;
 		if (e.setting() == "dcp_long_name") {
 			s << "Could not make DCP: long name is invalid (" << e.what() << ")";
@@ -438,7 +439,6 @@ FilmEditor::make_dcp_clicked ()
 		}
 		error_dialog (s.str ());
 	} catch (std::exception& e) {
-		cout << "b\n";
 		stringstream s;
 		s << "Could not make DCP: " << e.what () << ".";
 		error_dialog (s.str ());
@@ -450,7 +450,7 @@ void
 FilmEditor::dcp_content_type_changed ()
 {
 	if (_film) {
-		_film->set_dcp_content_type (ContentType::get_from_index (_dcp_content_type.get_active_row_number ()));
+		_film->set_dcp_content_type (ContentType::from_index (_dcp_content_type.get_active_row_number ()));
 	}
 }
 
@@ -481,25 +481,25 @@ FilmEditor::set_film (Film* f)
 		_directory.set_text ("");
 	}
 	
-	film_changed (Film::Name);
-	film_changed (Film::Content);
-	film_changed (Film::DCPLongName);
-	film_changed (Film::GuessDCPLongName);
-	film_changed (Film::DCPContentType);
-	film_changed (Film::FilmFormat);
-	film_changed (Film::LeftCrop);
-	film_changed (Film::RightCrop);
-	film_changed (Film::TopCrop);
-	film_changed (Film::BottomCrop);
-	film_changed (Film::Filters);
-	film_changed (Film::DCPFrames);
-	film_changed (Film::DCPAB);
-	film_changed (Film::FilmSize);
-	film_changed (Film::Length);
-	film_changed (Film::FramesPerSecond);
-	film_changed (Film::AudioChannels);
-	film_changed (Film::AudioSampleRate);
-	film_changed (Film::FilmScaler);
+	film_changed (Film::NAME);
+	film_changed (Film::CONTENT);
+	film_changed (Film::DCP_LONG_NAME);
+	film_changed (Film::GUESS_DCP_LONG_NAME);
+	film_changed (Film::DCP_CONTENT_TYPE);
+	film_changed (Film::FORMAT);
+	film_changed (Film::LEFT_CROP);
+	film_changed (Film::RIGHT_CROP);
+	film_changed (Film::TOP_CROP);
+	film_changed (Film::BOTTOM_CROP);
+	film_changed (Film::FILTERS);
+	film_changed (Film::DCP_FRAMES);
+	film_changed (Film::DCP_AB);
+	film_changed (Film::SIZE);
+	film_changed (Film::LENGTH);
+	film_changed (Film::FRAMES_PER_SECOND);
+	film_changed (Film::AUDIO_CHANNELS);
+	film_changed (Film::AUDIO_SAMPLE_RATE);
+	film_changed (Film::SCALER);
 }
 
 /** Updates the sensitivity of lots of widgets to a given value.
@@ -568,7 +568,7 @@ void
 FilmEditor::scaler_changed ()
 {
 	if (_film) {
-		_film->set_scaler (Scaler::get_from_index (_scaler.get_active_row_number ()));
+		_film->set_scaler (Scaler::from_index (_scaler.get_active_row_number ()));
 	}
 }
 

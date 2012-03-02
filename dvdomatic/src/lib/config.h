@@ -24,9 +24,12 @@
 #ifndef DVDOMATIC_CONFIG_H
 #define DVDOMATIC_CONFIG_H
 
-#include <list>
+#include <vector>
+#include <boost/shared_ptr.hpp>
+#include <sigc++/signal.h>
 
 class Server;
+class Screen;
 
 /** @class Config
  *  @brief A singleton class holding configuration.
@@ -60,42 +63,58 @@ public:
 	}
 
 	/** @return J2K encoding servers to use */
-	std::list<Server*> servers () const {
+	std::vector<Server*> servers () const {
 		return _servers;
 	}
+
+	std::vector<boost::shared_ptr<Screen> > screens () const {
+		return _screens;
+	}      
 
 	/** @param n New number of local encoding threads */
 	void set_num_local_encoding_threads (int n) {
 		_num_local_encoding_threads = n;
+		Changed ();
 	}
 
 	/** @param p New server port */
 	void set_sever_port (int p) {
 		_server_port = p;
+		Changed ();
 	}
 
 	/** @param i New colour LUT index */
 	void set_colour_lut_index (int i) {
 		_colour_lut_index = i;
+		Changed ();
 	}
 
 	/** @param b New J2K bandwidth */
 	void set_j2k_bandwidth (int b) {
 		_j2k_bandwidth = b;
+		Changed ();
 	}
 
 	/** @param s New list of servers */
-	void set_servers (std::list<Server*> s) {
+	void set_servers (std::vector<Server*> s) {
 		_servers = s;
+		Changed ();
+	}
+
+	void set_screens (std::vector<boost::shared_ptr<Screen> > s) {
+		_screens = s;
+		Changed ();
 	}
 
 	void write () const;
+
+	sigc::signal0<void> Changed;
 
 	static Config* instance ();
 
 private:
 	Config ();
-	std::string get_file () const;
+	std::string file () const;
 
 	/** number of threads to use for J2K encoding on the local machine */
 	int _num_local_encoding_threads;
@@ -109,7 +128,10 @@ private:
 	int _j2k_bandwidth;
 
 	/** J2K encoding servers to use */
-	std::list<Server *> _servers;
+	std::vector<Server *> _servers;
+
+	/** Screen definitions */
+	std::vector<boost::shared_ptr<Screen> > _screens;
 
 	/** Singleton instance, or 0 */
 	static Config* _instance;

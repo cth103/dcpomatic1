@@ -153,7 +153,7 @@ void
 Film::set_name (string n)
 {
 	_state.name = n;
-	signal_changed (Name);
+	signal_changed (NAME);
 }
 
 /** Set the content file for this film.
@@ -197,12 +197,12 @@ Film::set_content (string c)
 
 	_state.content = f;
 	
-	signal_changed (FilmSize);
-	signal_changed (Length);
-	signal_changed (FramesPerSecond);
-	signal_changed (AudioChannels);
-	signal_changed (AudioSampleRate);
-	signal_changed (Content);
+	signal_changed (SIZE);
+	signal_changed (LENGTH);
+	signal_changed (FRAMES_PER_SECOND);
+	signal_changed (AUDIO_CHANNELS);
+	signal_changed (AUDIO_SAMPLE_RATE);
+	signal_changed (CONTENT);
 }
 
 /** Set the format that this Film should be shown in */
@@ -210,7 +210,7 @@ void
 Film::set_format (Format const * f)
 {
 	_state.format = f;
-	signal_changed (FilmFormat);
+	signal_changed (FORMAT);
 }
 
 /** Set the `long name' to use when generating the DCP
@@ -220,7 +220,7 @@ void
 Film::set_dcp_long_name (string n)
 {
 	_state.dcp_long_name = n;
-	signal_changed (DCPLongName);
+	signal_changed (DCP_LONG_NAME);
 }
 
 /** Set the type to specify the DCP as having
@@ -230,7 +230,7 @@ void
 Film::set_dcp_content_type (ContentType const * t)
 {
 	_state.dcp_content_type = t;
-	signal_changed (DCPContentType);
+	signal_changed (DCP_CONTENT_TYPE);
 }
 
 /** Set the number of pixels by which to crop the left of the source video */
@@ -242,7 +242,7 @@ Film::set_left_crop (int c)
 	}
 	
 	_state.left_crop = c;
-	signal_changed (LeftCrop);
+	signal_changed (LEFT_CROP);
 }
 
 /** Set the number of pixels by which to crop the right of the source video */
@@ -254,7 +254,7 @@ Film::set_right_crop (int c)
 	}
 
 	_state.right_crop = c;
-	signal_changed (RightCrop);
+	signal_changed (RIGHT_CROP);
 }
 
 /** Set the number of pixels by which to crop the top of the source video */
@@ -266,7 +266,7 @@ Film::set_top_crop (int c)
 	}
 	
 	_state.top_crop = c;
-	signal_changed (TopCrop);
+	signal_changed (TOP_CROP);
 }
 
 /** Set the number of pixels by which to crop the bottom of the source video */
@@ -278,7 +278,7 @@ Film::set_bottom_crop (int c)
 	}
 	
 	_state.bottom_crop = c;
-	signal_changed (BottomCrop);
+	signal_changed (BOTTOM_CROP);
 }
 
 /** Set the filters to apply to the image when generating thumbnails
@@ -288,7 +288,7 @@ void
 Film::set_filters (vector<Filter const *> const & f)
 {
 	_state.filters = f;
-	signal_changed (Filters);
+	signal_changed (FILTERS);
 }
 
 /** Set the number of frames to put in any generated DCP (from
@@ -299,7 +299,7 @@ void
 Film::set_dcp_frames (int n)
 {
 	_state.dcp_frames = n;
-	signal_changed (DCPFrames);
+	signal_changed (DCP_FRAMES);
 }
 
 /** Set whether or not to generate a A/B comparison DCP.
@@ -311,7 +311,7 @@ void
 Film::set_dcp_ab (bool a)
 {
 	_state.dcp_ab = a;
-	signal_changed (DCPAB);
+	signal_changed (DCP_AB);
 }
 
 /** @return path of metadata file */
@@ -369,7 +369,7 @@ Film::update_thumbs_post_gui ()
 	sort (_state.thumbs.begin(), _state.thumbs.end());
 	
 	write_metadata ();
-	signal_changed (Thumbs);
+	signal_changed (THUMBS);
 }
 
 /** @return the number of thumbnail images that we have */
@@ -434,7 +434,7 @@ Film::signal_changed (Property p)
 {
 	_dirty = true;
 
-	if (p == Name || p == DCPContentType || p == FilmFormat || p == AudioChannels) {
+	if (p == NAME || p == DCP_CONTENT_TYPE || p == FORMAT || p == AUDIO_CHANNELS) {
 		maybe_guess_dcp_long_name ();
 	}
 	
@@ -504,7 +504,7 @@ Film::set_guess_dcp_long_name (bool g)
 {
 	_state.guess_dcp_long_name = g;
 	maybe_guess_dcp_long_name ();
-	signal_changed (GuessDCPLongName);
+	signal_changed (GUESS_DCP_LONG_NAME);
 }
 
 void
@@ -613,7 +613,7 @@ void
 Film::examine_content_post_gui ()
 {
 	_state.length = _examine_content_job->last_video_frame ();
-	signal_changed (Length);
+	signal_changed (LENGTH);
 	
 	_examine_content_job.reset ();
 }
@@ -622,12 +622,12 @@ void
 Film::set_scaler (Scaler const * s)
 {
 	_state.scaler = s;
-	signal_changed (FilmScaler);
+	signal_changed (SCALER);
 }
 
 void
 Film::set_frames_per_second (float f)
 {
 	_state.frames_per_second = f;
-	signal_changed (FramesPerSecond);
+	signal_changed (FRAMES_PER_SECOND);
 }

@@ -22,8 +22,10 @@
 #include <fstream>
 #include "config.h"
 #include "server.h"
+#include "screen.h"
 
 using namespace std;
+using namespace boost;
 
 Config* Config::_instance = 0;
 
@@ -34,7 +36,7 @@ Config::Config ()
 	, _colour_lut_index (0)
 	, _j2k_bandwidth (250000000)
 {
-	ifstream f (get_file().c_str ());
+	ifstream f (file().c_str ());
 	string line;
 	while (getline (f, line)) {
 		if (line.empty ()) {
@@ -63,13 +65,17 @@ Config::Config ()
 			_j2k_bandwidth = atoi (v.c_str ());
 		} else if (k == "server") {
 			_servers.push_back (Server::create_from_metadata (v));
+		} else if (k == "screen") {
+			_screens.push_back (Screen::create_from_metadata (v));
 		}
 	}
+
+	Changed ();
 }
 
 /** @return Filename to write configuration to */
 string
-Config::get_file () const
+Config::file () const
 {
 	stringstream s;
 	s << getenv ("HOME") << "/.dvdomatic";
@@ -91,13 +97,17 @@ Config::instance ()
 void
 Config::write () const
 {
-	ofstream f (get_file().c_str ());
+	ofstream f (file().c_str ());
 	f << "num_local_encoding_threads " << _num_local_encoding_threads << "\n"
 	  << "server_port " << _server_port << "\n"
 	  << "colour_lut_index " << _colour_lut_index << "\n"
 	  << "j2k_bandwidth " << _j2k_bandwidth << "\n";
 
-	for (list<Server*>::const_iterator i = _servers.begin(); i != _servers.end(); ++i) {
-		f << "server " << (*i)->get_as_metadata () << "\n";
+	for (vector<Server*>::const_iterator i = _servers.begin(); i != _servers.end(); ++i) {
+		f << "server " << (*i)->as_metadata () << "\n";
+	}
+
+	for (vector<shared_ptr<Screen> >::const_iterator i = _screens.begin(); i != _screens.end(); ++i) {
+		f << "screen " << (*i)->as_metadata () << "\n";
 	}
 }

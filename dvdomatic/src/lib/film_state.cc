@@ -53,7 +53,7 @@ FilmState::write_metadata (ofstream& f) const
 	}
 	f << "frames_per_second " << frames_per_second << "\n";
 	if (format) {
-		f << "format " << format->get_as_metadata () << "\n";
+		f << "format " << format->as_metadata () << "\n";
 	}
 	f << "left_crop " << left_crop << "\n";
 	f << "right_crop " << right_crop << "\n";
@@ -97,11 +97,11 @@ FilmState::read_metadata (string k, string v)
 	} else if (k == "guess_dcp_long_name") {
 		guess_dcp_long_name = (v == "1");
 	} else if (k == "dcp_content_type") {
-		dcp_content_type = ContentType::get_from_pretty_name (v);
+		dcp_content_type = ContentType::from_pretty_name (v);
 	} else if (k == "frames_per_second") {
 		frames_per_second = atof (v.c_str ());
 	} else if (k == "format") {
-		format = Format::get_from_metadata (v);
+		format = Format::from_metadata (v);
 	} else if (k == "left_crop") {
 		left_crop = atoi (v.c_str ());
 	} else if (k == "right_crop") {
@@ -111,9 +111,9 @@ FilmState::read_metadata (string k, string v)
 	} else if (k == "bottom_crop") {
 		bottom_crop = atoi (v.c_str ());
 	} else if (k == "filter") {
-		filters.push_back (Filter::get_from_id (v));
+		filters.push_back (Filter::from_id (v));
 	} else if (k == "scaler") {
-		scaler = Scaler::get_from_id (v);
+		scaler = Scaler::from_id (v);
 	} else if (k == "dcp_frames") {
 		dcp_frames = atoi (v.c_str ());
 	} else if (k == "dcp_ab") {
@@ -175,4 +175,12 @@ FilmState::thumb_frame (int n) const
 {
 	assert (n < int (thumbs.size ()));
 	return thumbs[n];
+}
+
+Size
+FilmState::cropped_size (Size s) const
+{
+	s.width -= left_crop + right_crop;
+	s.height -= top_crop + bottom_crop;
+	return s;
 }

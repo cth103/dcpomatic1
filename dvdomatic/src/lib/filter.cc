@@ -43,13 +43,13 @@ Filter::Filter (string i, string n, string v, string p)
 
 /** @return All available filters */
 vector<Filter const *>
-Filter::get_all ()
+Filter::all ()
 {
 	return _filters;
 }
 
 
-/** Set up the static _filters vector; must be called before get_from_*
+/** Set up the static _filters vector; must be called before from_*
  *  methods are used.
  */
 void
@@ -115,7 +115,7 @@ Filter::ffmpeg_strings (vector<Filter const *> const & filters)
  *  @return Corresponding Filter, or 0.
  */
 Filter const *
-Filter::get_from_id (string d)
+Filter::from_id (string d)
 {
 	vector<Filter const *>::iterator i = _filters.begin ();
 	while (i != _filters.end() && (*i)->id() != d) {

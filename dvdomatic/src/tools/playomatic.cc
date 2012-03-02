@@ -17,31 +17,43 @@
 
 */
 
-/** @file  src/filter_view.h
- *  @brief A widget to select FFmpeg filters.
- */
+#include "lib/util.h"
+#include "gtk/film_player.h"
+#include "gtk/film_list.h"
 
-#include <gtkmm.h>
-#include <vector>
+static FilmPlayer* film_player = 0;
 
-class Filter;
-
-/** @class FilterView
- *  @brief A widget to select FFmpeg filters.
- */
-class FilterView
+void
+film_changed (Film const * f)
 {
-public:
-	FilterView (std::vector<Filter const *> const &);
+	film_player->set_film (f);
+}
 
-	Gtk::Widget & widget ();
-	std::vector<Filter const *> active () const;
+int
+main (int argc, char* argv[])
+{
+	dvdomatic_setup ();
+	
+	Gtk::Main kit (argc, argv);
 
-	sigc::signal0<void> ActiveChanged;
+	Gtk::Window* window = new Gtk::Window ();
 
-private:
-	void filter_toggled (Filter const *);
+	FilmList* film_list = new FilmList ("/home/carl/Video");
+	film_player = new FilmPlayer ();
 
-	Gtk::VBox _box;
-	std::map<Filter const *, bool> _filters;
-};
+	Gtk::HBox hbox;
+	hbox.pack_start (film_list->widget(), true, true);
+	hbox.pack_start (film_player->widget(), true, true);
+
+	film_list->SelectionChanged.connect (sigc::ptr_fun (&film_changed));
+	
+	window->set_title ("Play-o-matic");
+	window->add (hbox);
+	window->show_all ();
+	
+	window->maximize ();
+	Gtk::Main::run (*window);
+
+	return 0;
+}
+

@@ -33,11 +33,16 @@
 class Scaler
 {
 public:
-	Scaler (int f, std::string i, std::string n);
+	Scaler (int f, int m, std::string i, std::string n);
 
 	/** @return id used for calls to FFmpeg's pp_postprocess */
 	int ffmpeg_id () const {
 		return _ffmpeg_id;
+	}
+
+	/** @return number to use on an mplayer command line */
+	int mplayer_id () const {
+		return _mplayer_id;
 	}
 
 	/** @return id for our use */
@@ -50,16 +55,17 @@ public:
 		return _name;
 	}
 	
-	static std::vector<Scaler const *> get_all ();
+	static std::vector<Scaler const *> all ();
 	static void setup_scalers ();
-	static Scaler const * get_from_id (std::string id);
-	static Scaler const * get_from_index (int);
-	static int get_as_index (Scaler const *);
+	static Scaler const * from_id (std::string id);
+	static Scaler const * from_index (int);
+	static int as_index (Scaler const *);
 
 private:
 
 	/** id used for calls to FFmpeg's pp_postprocess */
 	int _ffmpeg_id;
+	int _mplayer_id;
 	/** id for our use */
 	std::string _id;
 	/** user-visible name for this scaler */

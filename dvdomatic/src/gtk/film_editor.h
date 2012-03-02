@@ -33,7 +33,7 @@ class FilmEditor
 public:
 	FilmEditor (Film *);
 
-	Gtk::Widget& get_widget ();
+	Gtk::Widget& widget ();
 
 	void set_film (Film *);
 

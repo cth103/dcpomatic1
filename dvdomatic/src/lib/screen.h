@@ -17,31 +17,52 @@
 
 */
 
-/** @file  src/filter_view.h
- *  @brief A widget to select FFmpeg filters.
- */
-
-#include <gtkmm.h>
+#include <string>
 #include <vector>
+#include <map>
+#include "util.h"
 
-class Filter;
+class Format;
 
-/** @class FilterView
- *  @brief A widget to select FFmpeg filters.
- */
-class FilterView
+class Screen
 {
 public:
-	FilterView (std::vector<Filter const *> const &);
+	Screen (std::string);
 
-	Gtk::Widget & widget ();
-	std::vector<Filter const *> active () const;
+	void set_geometry (Format const *, Position, Size);
 
-	sigc::signal0<void> ActiveChanged;
+	std::string name () const {
+		return _name;
+	}
+
+	void set_name (std::string n) {
+		_name = n;
+	}
+
+	struct Geometry {
+		Geometry () {}
+
+		Geometry (Position p, Size s)
+			: position (p)
+			, size (s)
+		{}
+		
+		Position position;
+		Size size;
+	};
+
+	typedef std::map<Format const *, Geometry> GeometryMap;
+	GeometryMap geometries () const {
+		return _geometries;
+	}
+
+	Position position (Format const *) const;
+	Size size (Format const *) const;
+
+	std::string as_metadata () const;
+	static boost::shared_ptr<Screen> create_from_metadata (std::string);
 
 private:
-	void filter_toggled (Filter const *);
-
-	Gtk::VBox _box;
-	std::map<Filter const *, bool> _filters;
+	std::string _name;
+	GeometryMap _geometries;
 };

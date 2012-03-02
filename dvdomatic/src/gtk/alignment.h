@@ -17,31 +17,19 @@
 
 */
 
-/** @file  src/filter_view.h
- *  @brief A widget to select FFmpeg filters.
- */
-
 #include <gtkmm.h>
-#include <vector>
+#include <string>
+#include "lib/util.h"
 
-class Filter;
+class AlignmentWidget;
 
-/** @class FilterView
- *  @brief A widget to select FFmpeg filters.
- */
-class FilterView
+class Alignment : public Gtk::Window
 {
 public:
-	FilterView (std::vector<Filter const *> const &);
+	Alignment (Position, Size);
 
-	Gtk::Widget & widget ();
-	std::vector<Filter const *> active () const;
-
-	sigc::signal0<void> ActiveChanged;
+	void set_text_line (int, std::string);
 
 private:
-	void filter_toggled (Filter const *);
-
-	Gtk::VBox _box;
-	std::map<Filter const *, bool> _filters;
+	AlignmentWidget* _widget;
 };

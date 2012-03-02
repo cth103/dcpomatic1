@@ -3,10 +3,13 @@ def build(bld):
     obj.name   = 'libdvdomatic-gtk'
     obj.includes = [ '..' ]
     obj.export_includes = ['.']
-    obj.uselib = 'GLIB GTKMM'
+    obj.uselib = 'GLIB GTKMM CAIROMM'
     obj.source = """
+                 alignment.cc
 		 config_dialog.cc
 		 film_editor.cc
+                 film_list.cc
+                 film_player.cc
 		 film_viewer.cc
 		 filter_dialog.cc
 		 filter_view.cc

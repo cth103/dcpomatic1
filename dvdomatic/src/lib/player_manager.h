@@ -17,31 +17,42 @@
 
 */
 
-/** @file  src/filter_view.h
- *  @brief A widget to select FFmpeg filters.
- */
+#include <list>
+#include <boost/shared_ptr.hpp>
+#include "player.h"
 
-#include <gtkmm.h>
-#include <vector>
+class Player;
+class FilmState;
+class Screen;
 
-class Filter;
-
-/** @class FilterView
- *  @brief A widget to select FFmpeg filters.
- */
-class FilterView
+class PlayerManager
 {
 public:
-	FilterView (std::vector<Filter const *> const &);
 
-	Gtk::Widget & widget ();
-	std::vector<Filter const *> active () const;
+	void setup (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Screen>);
+	void setup (boost::shared_ptr<const FilmState>, boost::shared_ptr<const FilmState>, boost::shared_ptr<const Screen>);
+	void pause_or_unpause ();
+	void stop ();
 
-	sigc::signal0<void> ActiveChanged;
+	float position () const;
+	void set_position (float);
+
+	enum State {
+		QUIESCENT,
+		PLAYING,
+		PAUSED
+	};
+
+	State state () const;
+
+	void child_exited (pid_t);
+
+	static PlayerManager* instance ();
 
 private:
-	void filter_toggled (Filter const *);
+	PlayerManager ();
 
-	Gtk::VBox _box;
-	std::map<Filter const *, bool> _filters;
+	std::list<boost::shared_ptr<Player> > _players;
+	
+	static PlayerManager* _instance;
 };

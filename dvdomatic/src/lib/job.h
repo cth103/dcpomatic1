@@ -61,7 +61,7 @@ public:
 	void set_progress (float);
 	void ascend ();
 	void descend (float);
-	float get_overall_progress () const;
+	float overall_progress () const;
 
 	void emit_finished ();
 

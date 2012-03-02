@@ -112,9 +112,9 @@ FilmViewer::format_position_slider_value (double v) const
 void
 FilmViewer::film_changed (Film::Property p)
 {
-	if (p == Film::LeftCrop || p == Film::RightCrop || p == Film::TopCrop || p == Film::BottomCrop) {
+	if (p == Film::LEFT_CROP || p == Film::RIGHT_CROP || p == Film::TOP_CROP || p == Film::BOTTOM_CROP) {
 		reload_current_thumbnail ();
-	} else if (p == Film::Thumbs) {
+	} else if (p == Film::THUMBS) {
 		if (_film && _film->num_thumbs() > 0) {
 			_position_slider.set_range (0, _film->num_thumbs () - 1);
 		} else {
@@ -124,7 +124,7 @@ FilmViewer::film_changed (Film::Property p)
 		
 		_position_slider.set_value (0);
 		reload_current_thumbnail ();
-	} else if (p == Film::FilmFormat) {
+	} else if (p == Film::FORMAT) {
 		reload_current_thumbnail ();
 	}
 }
@@ -143,7 +143,7 @@ FilmViewer::set_film (Film* f)
 
 	_film->Changed.connect (sigc::mem_fun (*this, &FilmViewer::film_changed));
 
-	film_changed (Film::Thumbs);
+	film_changed (Film::THUMBS);
 }
 
 pair<int, int>

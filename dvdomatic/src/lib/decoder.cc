@@ -62,7 +62,9 @@ Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const 
 	, _buffer_sink_context (0)
 	, _have_setup_video_filters (false)
 {
-
+	if (_opt->decode_video_frequency != 0 && _fs->length == 0) {
+		throw DecodeError ("cannot do a partial decode if length == 0");
+	}
 }
 
 /** Start decoding */
@@ -153,23 +155,14 @@ Decoder::process_video (AVFrame* frame)
 void
 Decoder::setup_video_filters ()
 {
-	int r;
-
-	_post_filter_size = native_size ();
+	stringstream fs;
 	if (_opt->apply_crop) {
-		_post_filter_size.width -= _fs->left_crop + _fs->right_crop;
-		_post_filter_size.height -= _fs->top_crop + _fs->bottom_crop;
+		fs << crop_string (Position (_fs->left_crop, _fs->top_crop), _fs->cropped_size (native_size ()));
+	} else {
+		fs << crop_string (Position (0, 0), native_size ());
 	}
 	
 	string filters = Filter::ffmpeg_strings (_fs->filters).first;
-
-	stringstream fs;
-	if (_opt->apply_crop) {
-		fs << "crop=" << _post_filter_size.width << ":" << _post_filter_size.height << ":" << _fs->left_crop << ":" << _fs->top_crop << " ";
-	} else {
-		fs << "crop=" << _post_filter_size.width << ":" << _post_filter_size.height << ":0:0";
-	}
-	
 	if (!filters.empty ()) {
 		filters += ",";
 	}
@@ -202,6 +195,7 @@ Decoder::setup_video_filters ()
 	  << sample_aspect_ratio_numerator() << ":"
 	  << sample_aspect_ratio_denominator();
 
+	int r;
 	if ((r = avfilter_graph_create_filter (&_buffer_src_context, buffer_src, "in", a.str().c_str(), 0, graph)) < 0) {
 		throw DecodeError ("could not create buffer source");
 	}

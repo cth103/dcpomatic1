@@ -205,9 +205,9 @@ J2KWAVEncoder::process_begin ()
 		_worker_threads.push_back (new boost::thread (boost::bind (&J2KWAVEncoder::encoder_thread, this, (Server *) 0)));
 	}
 
-	list<Server*> servers = Config::instance()->servers ();
+	vector<Server*> servers = Config::instance()->servers ();
 
-	for (list<Server*>::iterator i = servers.begin(); i != servers.end(); ++i) {
+	for (vector<Server*>::iterator i = servers.begin(); i != servers.end(); ++i) {
 		for (int j = 0; j < (*i)->threads (); ++j) {
 			_worker_threads.push_back (new boost::thread (boost::bind (&J2KWAVEncoder::encoder_thread, this, *i)));
 		}

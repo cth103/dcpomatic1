@@ -62,6 +62,7 @@ ThumbsJob::run ()
 	} catch (std::exception& e) {
 
 		set_progress (1);
+		set_error (e.what ());
 		set_state (FINISHED_ERROR);
 	}
 }

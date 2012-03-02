@@ -147,7 +147,7 @@ Job::set_progress (float p)
 
 /** @return fractional overall progress, or -1 if not known */
 float
-Job::get_overall_progress () const
+Job::overall_progress () const
 {
 	boost::mutex::scoped_lock lm (_progress_mutex);
 	if (_progress_unknown) {
@@ -224,7 +224,7 @@ Job::set_progress_unknown ()
 string
 Job::status () const
 {
-	float const p = get_overall_progress ();
+	float const p = overall_progress ();
 	int const t = elapsed_time ();
 	
 	stringstream s;

@@ -29,7 +29,7 @@ FilterDialog::FilterDialog (Film* f)
 	, _filters (f->filters ())
 	, _film (f)
 {
-	get_vbox()->pack_start (_filters.get_widget ());
+	get_vbox()->pack_start (_filters.widget ());
 
 	_filters.ActiveChanged.connect (sigc::mem_fun (*this, &FilterDialog::active_changed));
 
@@ -42,5 +42,5 @@ FilterDialog::FilterDialog (Film* f)
 void
 FilterDialog::active_changed ()
 {
-	_film->set_filters (_filters.get_active ());
+	_film->set_filters (_filters.active ());
 }

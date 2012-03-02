@@ -17,31 +17,25 @@
 
 */
 
-/** @file  src/filter_view.h
- *  @brief A widget to select FFmpeg filters.
- */
-
-#include <gtkmm.h>
+#include <string>
 #include <vector>
+#include <gtkmm.h>
 
-class Filter;
+class Film;
 
-/** @class FilterView
- *  @brief A widget to select FFmpeg filters.
- */
-class FilterView
+class FilmList
 {
 public:
-	FilterView (std::vector<Filter const *> const &);
+	FilmList (std::string);
+	
+	Gtk::Widget& widget ();
 
-	Gtk::Widget & widget ();
-	std::vector<Filter const *> active () const;
-
-	sigc::signal0<void> ActiveChanged;
+	sigc::signal<void, Film const *> SelectionChanged;
 
 private:
-	void filter_toggled (Filter const *);
+	void selection_changed ();
 
-	Gtk::VBox _box;
-	std::map<Filter const *, bool> _filters;
+	std::string _directory;
+	std::vector<Film const *> _films;
+	Gtk::ListViewText _list;
 };

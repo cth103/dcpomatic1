@@ -126,7 +126,6 @@ private:
 	AVFilterContext* _buffer_src_context;
 	AVFilterContext* _buffer_sink_context;
 
-	Size _post_filter_size;
 	bool _have_setup_video_filters;
 };
 

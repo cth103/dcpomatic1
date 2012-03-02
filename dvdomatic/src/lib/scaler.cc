@@ -33,11 +33,13 @@ using namespace std;
 vector<Scaler const *> Scaler::_scalers;
 
 /** @param f FFmpeg id.
+ *  @param m mplayer command line id.
  *  @param i Our id.
  *  @param n User-visible name.
  */
-Scaler::Scaler (int f, string i, string n)
+Scaler::Scaler (int f, int m, string i, string n)
 	: _ffmpeg_id (f)
+	, _mplayer_id (m)
 	, _id (i)
 	, _name (n)
 {
@@ -46,33 +48,33 @@ Scaler::Scaler (int f, string i, string n)
 
 /** @return All available scalers */
 vector<Scaler const *>
-Scaler::get_all ()
+Scaler::all ()
 {
 	return _scalers;
 }
 
-/** Set up the static _scalers vector; must be called before get_from_*
+/** Set up the static _scalers vector; must be called before from_*
  *  methods are used.
  */
 void
 Scaler::setup_scalers ()
 {
-	_scalers.push_back (new Scaler (SWS_BICUBIC, "bicubic", "Bicubic"));
-	_scalers.push_back (new Scaler (SWS_X, "x", "X"));
-	_scalers.push_back (new Scaler (SWS_AREA, "area", "Area"));
-	_scalers.push_back (new Scaler (SWS_GAUSS, "gauss", "Gaussian"));
-	_scalers.push_back (new Scaler (SWS_LANCZOS, "lanczos", "Lanczos"));
-	_scalers.push_back (new Scaler (SWS_SINC, "sinc", "Sinc"));
-	_scalers.push_back (new Scaler (SWS_SPLINE, "spline", "Spline"));
-	_scalers.push_back (new Scaler (SWS_BILINEAR, "bilinear", "Bilinear"));
-	_scalers.push_back (new Scaler (SWS_FAST_BILINEAR, "fastbilinear", "Fast Bilinear"));
+	_scalers.push_back (new Scaler (SWS_BICUBIC, 2, "bicubic", "Bicubic"));
+	_scalers.push_back (new Scaler (SWS_X, 3, "x", "X"));
+	_scalers.push_back (new Scaler (SWS_AREA, 5, "area", "Area"));
+	_scalers.push_back (new Scaler (SWS_GAUSS, 7, "gauss", "Gaussian"));
+	_scalers.push_back (new Scaler (SWS_LANCZOS, 9, "lanczos", "Lanczos"));
+	_scalers.push_back (new Scaler (SWS_SINC, 8, "sinc", "Sinc"));
+	_scalers.push_back (new Scaler (SWS_SPLINE, 10, "spline", "Spline"));
+	_scalers.push_back (new Scaler (SWS_BILINEAR, 1, "bilinear", "Bilinear"));
+	_scalers.push_back (new Scaler (SWS_FAST_BILINEAR, 0, "fastbilinear", "Fast Bilinear"));
 }
 
 /** @param id One of our ids.
  *  @return Corresponding scaler, or 0.
  */
 Scaler const *
-Scaler::get_from_id (string id)
+Scaler::from_id (string id)
 {
 	vector<Scaler const *>::iterator i = _scalers.begin ();
 	while (i != _scalers.end() && (*i)->id() != id) {
@@ -90,7 +92,7 @@ Scaler::get_from_id (string id)
  *  @return Index of the scaler with the list, or -1.
  */
 int
-Scaler::get_as_index (Scaler const * s)
+Scaler::as_index (Scaler const * s)
 {
 	vector<Scaler*>::size_type i = 0;
 	while (i < _scalers.size() && _scalers[i] != s) {
@@ -104,11 +106,11 @@ Scaler::get_as_index (Scaler const * s)
 	return i;
 }
 
-/** @param i An index returned from get_as_index().
+/** @param i An index returned from as_index().
  *  @return Corresponding scaler.
  */
 Scaler const *
-Scaler::get_from_index (int i)
+Scaler::from_index (int i)
 {
 	assert (i <= int(_scalers.size ()));
 	return _scalers[i];

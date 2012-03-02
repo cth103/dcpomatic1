@@ -38,7 +38,7 @@ ABTranscodeJob::ABTranscodeJob (shared_ptr<const FilmState> s, shared_ptr<const 
 	_fs_b.reset (new FilmState (*_fs));
 	_fs_b->filters.clear ();
 	/* This is somewhat arbitrary, but hey ho */
-	_fs_b->scaler = Scaler::get_from_id ("bicubic");
+	_fs_b->scaler = Scaler::from_id ("bicubic");
 }
 
 string

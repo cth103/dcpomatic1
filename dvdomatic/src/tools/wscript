@@ -8,7 +8,7 @@ def build(bld):
         obj.target = t
 
     if not bld.env.DISABLE_GUI:
-        for t in ['dvdomatic']:
+        for t in ['dvdomatic', 'playomatic', 'alignomatic']:
             obj = bld(features = 'cxx cxxprogram')
             obj.uselib = 'BOOST_THREAD GTKMM BOOST_PROGRAM_OPTIONS'
             obj.includes = ['..']

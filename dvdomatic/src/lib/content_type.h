@@ -47,10 +47,10 @@ public:
 		return _dcp_name;
 	}
 
-	static ContentType const * get_from_pretty_name (std::string);
-	static ContentType const * get_from_index (int);
-	static int get_as_index (ContentType const *);
-	static std::vector<ContentType const *> get_all ();
+	static ContentType const * from_pretty_name (std::string);
+	static ContentType const * from_index (int);
+	static int as_index (ContentType const *);
+	static std::vector<ContentType const *> all ();
 	static void setup_content_types ();
 
 private:
