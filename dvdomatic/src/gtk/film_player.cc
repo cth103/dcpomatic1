@@ -77,7 +77,7 @@ FilmPlayer::set_film (Film const * f)
 {
 	_film = f;
 
-	if (_film->length() != 0 && _film->frames_per_second() != 0) {
+	if (_film && _film->length() != 0 && _film->frames_per_second() != 0) {
 		_position.set_range (0, _film->length() / _film->frames_per_second());
 	}
 }
@@ -91,6 +91,16 @@ FilmPlayer::widget ()
 void
 FilmPlayer::set_button_states ()
 {
+	if (_film == 0) {
+		_play.set_sensitive (false);
+		_pause.set_sensitive (false);
+		_stop.set_sensitive (false);
+		_screen.set_sensitive (false);
+		_position.set_sensitive (false);
+		_ab.set_sensitive (false);
+		return;
+	}
+	
 	PlayerManager::State s = PlayerManager::instance()->state ();
 
 	switch (s) {
@@ -100,6 +110,7 @@ FilmPlayer::set_button_states ()
 		_stop.set_sensitive (false);
 		_screen.set_sensitive (true);
 		_position.set_sensitive (false);
+		_ab.set_sensitive (true);
 		break;
 	case PlayerManager::PLAYING:
 		_play.set_sensitive (false);
@@ -107,6 +118,7 @@ FilmPlayer::set_button_states ()
 		_stop.set_sensitive (true);
 		_screen.set_sensitive (false);
 		_position.set_sensitive (true);
+		_ab.set_sensitive (false);
 		break;
 	case PlayerManager::PAUSED:
 		_play.set_sensitive (true);
@@ -114,6 +126,7 @@ FilmPlayer::set_button_states ()
 		_stop.set_sensitive (true);
 		_screen.set_sensitive (false);
 		_position.set_sensitive (false);
+		_ab.set_sensitive (false);
 		break;
 	}
 }

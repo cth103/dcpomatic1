@@ -17,44 +17,43 @@
 
 */
 
-#include <gtkmm.h>
+#include "lib/util.h"
+#include "gtk/film_player.h"
+#include "gtk/film_list.h"
 
-class Film;
-class Screen;
-class FilmState;
+static FilmPlayer* film_player = 0;
 
-class FilmPlayer
+void
+film_changed (Film const * f)
 {
-public:
-	FilmPlayer (Film const * f = 0);
-	
-	Gtk::Widget& widget ();
-	
-	void set_film (Film const *);
+	film_player->set_film (f);
+}
 
-private:
-	void play_clicked ();
-	void pause_clicked ();
-	void stop_clicked ();
-	void position_changed ();
-	std::string format_position (double);
+int
+main (int argc, char* argv[])
+{
+	dvdomatic_setup ();
 	
-	void set_button_states ();
-	boost::shared_ptr<Screen> screen () const;
-	void set_status ();
-	void update ();
-	void update_screens ();
-	
-	Film const * _film;
-	boost::shared_ptr<const FilmState> _last_play_fs;
+	Gtk::Main kit (argc, argv);
 
-	Gtk::Table _table;
-	Gtk::Button _play;
-	Gtk::Button _pause;
-	Gtk::Button _stop;
-	Gtk::Label _status;
-	Gtk::CheckButton _ab;
-	Gtk::ComboBoxText _screen;
-	Gtk::HScale _position;
-	bool _ignore_position_changed;
-};
+	Gtk::Window* window = new Gtk::Window ();
+
+	FilmList* film_list = new FilmList ("/home/carl/Video");
+	film_player = new FilmPlayer ();
+
+	Gtk::HBox hbox;
+	hbox.pack_start (film_list->widget(), true, true);
+	hbox.pack_start (film_player->widget(), true, true);
+
+	film_list->SelectionChanged.connect (sigc::ptr_fun (&film_changed));
+	
+	window->set_title ("Play-o-matic");
+	window->add (hbox);
+	window->show_all ();
+	
+	window->maximize ();
+	Gtk::Main::run (*window);
+
+	return 0;
+}
+

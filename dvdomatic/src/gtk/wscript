@@ -7,6 +7,7 @@ def build(bld):
     obj.source = """
 		 config_dialog.cc
 		 film_editor.cc
+                 film_list.cc
                  film_player.cc
 		 film_viewer.cc
 		 filter_dialog.cc

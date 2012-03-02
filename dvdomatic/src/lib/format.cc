@@ -81,7 +81,6 @@ Format::setup_formats ()
 	_formats.push_back (new Format (185, Size (1998, 1080), "Flat", "F"));
 	_formats.push_back (new Format (239, Size (2048, 858), "Scope", "S"));
 	_formats.push_back (new Format (137, Size (1480, 1080), "Academy", "133"));
-	_formats.push_back (new Format (185, Size (200, 100), "Test", "F"));
 }
 
 /** @param r Ratio multiplied by 100.

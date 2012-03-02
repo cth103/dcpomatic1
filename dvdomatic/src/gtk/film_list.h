@@ -17,44 +17,25 @@
 
 */
 
+#include <string>
+#include <vector>
 #include <gtkmm.h>
 
 class Film;
-class Screen;
-class FilmState;
 
-class FilmPlayer
+class FilmList
 {
 public:
-	FilmPlayer (Film const * f = 0);
+	FilmList (std::string);
 	
 	Gtk::Widget& widget ();
-	
-	void set_film (Film const *);
+
+	sigc::signal<void, Film const *> SelectionChanged;
 
 private:
-	void play_clicked ();
-	void pause_clicked ();
-	void stop_clicked ();
-	void position_changed ();
-	std::string format_position (double);
-	
-	void set_button_states ();
-	boost::shared_ptr<Screen> screen () const;
-	void set_status ();
-	void update ();
-	void update_screens ();
-	
-	Film const * _film;
-	boost::shared_ptr<const FilmState> _last_play_fs;
+	void selection_changed ();
 
-	Gtk::Table _table;
-	Gtk::Button _play;
-	Gtk::Button _pause;
-	Gtk::Button _stop;
-	Gtk::Label _status;
-	Gtk::CheckButton _ab;
-	Gtk::ComboBoxText _screen;
-	Gtk::HScale _position;
-	bool _ignore_position_changed;
+	std::string _directory;
+	std::vector<Film const *> _films;
+	Gtk::ListViewText _list;
 };
