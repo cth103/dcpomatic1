@@ -433,6 +433,7 @@ dvdomatic_setup ()
 
 	struct sigaction sa;
 	sa.sa_flags = SA_SIGINFO;
+	sigemptyset (&sa.sa_mask);
 	sa.sa_sigaction = sigchld_handler;
 	sigaction (SIGCHLD, &sa, 0);
 }
