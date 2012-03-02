@@ -28,7 +28,10 @@ using namespace boost;
 Screen::Screen (string n)
 	: _name (n)
 {
-
+	vector<Format const *> f = Format::all ();
+	for (vector<Format const *>::iterator i = f.begin(); i != f.end(); ++i) {
+		set_geometry (*i, Position (0, 0), Size (2048, 1080));
+	}
 }
 
 void

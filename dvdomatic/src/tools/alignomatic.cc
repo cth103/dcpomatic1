@@ -33,6 +33,7 @@ static Gtk::ComboBoxText* format_combo = 0;
 static Format const * format = 0;
 static Gtk::ComboBoxText* screen_combo = 0;
 static shared_ptr<Screen> screen;
+static Gtk::Button* add_screen = 0;
 static Gtk::Entry* screen_name = 0;
 static Gtk::SpinButton* x_position = 0;
 static Gtk::SpinButton* y_position = 0;
@@ -211,6 +212,17 @@ screen_name_changed ()
 	update_sensitivity ();
 }
 
+void
+add_screen_clicked ()
+{
+	shared_ptr<Screen> s (new Screen ("New Screen"));
+	vector<shared_ptr<Screen> > screens = Config::instance()->screens ();
+	screens.push_back (s);
+	Config::instance()->set_screens (screens);
+	update_screen_combo ();
+	screen_combo->set_active (screens.size() - 1);
+}
+
 int
 main (int argc, char* argv[])
 {
@@ -220,14 +232,17 @@ main (int argc, char* argv[])
 	
 	Gtk::Dialog dialog ("Align-o-matic");
 
-	screen_combo = new Gtk::ComboBoxText;
+	screen_combo = Gtk::manage (new Gtk::ComboBoxText);
 	update_screen_combo ();
 	screen_combo->signal_changed().connect (sigc::ptr_fun (&screen_changed));
 
-	screen_name = new Gtk::Entry ();
+	add_screen = Gtk::manage (new Gtk::Button ("Add"));
+	add_screen->signal_clicked().connect (sigc::ptr_fun (&add_screen_clicked));
+	
+	screen_name = Gtk::manage (new Gtk::Entry ());
 	screen_name->signal_changed().connect (sigc::ptr_fun (&screen_name_changed));
 	
-	format_combo = new Gtk::ComboBoxText;
+	format_combo = Gtk::manage (new Gtk::ComboBoxText);
 	vector<Format const *> formats = Format::all ();
 	for (vector<Format const *>::iterator i = formats.begin(); i != formats.end(); ++i) {
 		format_combo->append_text ((*i)->name ());
@@ -235,29 +250,29 @@ main (int argc, char* argv[])
 
 	format_combo->signal_changed().connect (sigc::ptr_fun (&format_changed));
 
-	save = new Gtk::Button ("Save");
+	save = Gtk::manage (new Gtk::Button ("Save"));
 	save->signal_clicked().connect (sigc::ptr_fun (&save_clicked));
 
-	x_position = new Gtk::SpinButton ();
+	x_position = Gtk::manage (new Gtk::SpinButton ());
 	x_position->signal_value_changed().connect (sigc::bind (ptr_fun (&geometry_changed), GEOMETRY_PART_X));
 	x_position->set_range (0, 2048);
 	x_position->set_increments (1, 16);
-	y_position = new Gtk::SpinButton ();
+	y_position = Gtk::manage (new Gtk::SpinButton ());
 	y_position->signal_value_changed().connect (sigc::bind (sigc::ptr_fun (&geometry_changed), GEOMETRY_PART_Y));
 	y_position->set_range (0, 1080);
 	y_position->set_increments (1, 16);
-	width = new Gtk::SpinButton ();
+	width = Gtk::manage (new Gtk::SpinButton ());
 	width->signal_value_changed().connect (sigc::bind (sigc::ptr_fun (&geometry_changed), GEOMETRY_PART_WIDTH));
 	width->set_range (0, 2048);
 	width->set_increments (1, 16);
-	height = new Gtk::SpinButton ();
+	height = Gtk::manage (new Gtk::SpinButton ());
 	height->signal_value_changed().connect (sigc::bind (sigc::ptr_fun (&geometry_changed), GEOMETRY_PART_HEIGHT));
 	height->set_range (0, 1080);
 	height->set_increments (1, 16);
 
-	calculate_width = new Gtk::Button ("Calculate");
+	calculate_width = Gtk::manage (new Gtk::Button ("Calculate"));
 	calculate_width->signal_clicked().connect (sigc::ptr_fun (&calculate_width_clicked));
-	calculate_height = new Gtk::Button ("Calculate");
+	calculate_height = Gtk::manage (new Gtk::Button ("Calculate"));
 	calculate_height->signal_clicked().connect (sigc::ptr_fun (&calculate_height_clicked));
 
 	Gtk::Table table;
@@ -268,6 +283,7 @@ main (int argc, char* argv[])
 	int n = 0;
 	table.attach (left_aligned_label ("Screen"), 0, 1, n, n + 1);
 	table.attach (*screen_combo, 1, 2, n, n + 1);
+	table.attach (*add_screen, 2, 3, n, n + 1);
 	++n;
 	table.attach (left_aligned_label ("Screen Name"), 0, 1, n, n + 1);
 	table.attach (*screen_name, 1, 2, n, n + 1);

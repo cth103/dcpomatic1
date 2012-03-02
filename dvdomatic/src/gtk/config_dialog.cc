@@ -249,11 +249,6 @@ void
 ConfigDialog::add_screen_clicked ()
 {
 	shared_ptr<Screen> s (new Screen ("New Screen"));
-	vector<Format const *> f = Format::all ();
-	for (vector<Format const *>::iterator i = f.begin(); i != f.end(); ++i) {
-		s->set_geometry (*i, Position (0, 0), Size (2048, 1080));
-	}
-	
 	add_screen_to_store (s);
 }
 

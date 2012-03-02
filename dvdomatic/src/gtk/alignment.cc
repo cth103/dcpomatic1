@@ -150,7 +150,7 @@ private:
 
 Alignment::Alignment (Position p, Size s)
 {
-	_widget = new AlignmentWidget;
+	_widget = Gtk::manage (new AlignmentWidget);
 	add (*_widget);
 	show_all ();
 	
@@ -158,11 +158,6 @@ Alignment::Alignment (Position p, Size s)
 	set_resizable (false);
 	set_size_request (s.width, s.height);
 	move (p.x, p.y);
-}
-
-Alignment::~Alignment ()
-{
-	delete _widget;
 }
 
 void

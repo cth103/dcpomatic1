@@ -27,7 +27,6 @@ class Alignment : public Gtk::Window
 {
 public:
 	Alignment (Position, Size);
-	~Alignment ();
 
 	void set_text_line (int, std::string);
 
