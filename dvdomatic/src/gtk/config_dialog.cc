@@ -177,7 +177,7 @@ ConfigDialog::on_response (int r)
 			string const y_ = r[_screens_columns._y];
 			string const width_ = r[_screens_columns._width];
 			string const height_ = r[_screens_columns._height];
-			s->add_geometry (
+			s->set_geometry (
 				Format::from_nickname (r[_screens_columns._format_nickname]),
 				Position (lexical_cast<int> (x_), lexical_cast<int> (y_)),
 				Size (lexical_cast<int> (width_), lexical_cast<int> (height_))
@@ -251,7 +251,7 @@ ConfigDialog::add_screen_clicked ()
 	shared_ptr<Screen> s (new Screen ("New Screen"));
 	vector<Format const *> f = Format::all ();
 	for (vector<Format const *>::iterator i = f.begin(); i != f.end(); ++i) {
-		s->add_geometry (*i, Position (0, 0), Size (2048, 1080));
+		s->set_geometry (*i, Position (0, 0), Size (2048, 1080));
 	}
 	
 	add_screen_to_store (s);

@@ -32,9 +32,9 @@ Screen::Screen (string n)
 }
 
 void
-Screen::add_geometry (Format const * f, Position p, Size s)
+Screen::set_geometry (Format const * f, Position p, Size s)
 {
-	_geometries.insert (make_pair (f, Geometry (p, s)));
+	_geometries[f] = Geometry (p, s);
 }
 
 Position
@@ -88,7 +88,7 @@ Screen::create_from_metadata (string v)
 	vector<string>::size_type i = 1;
 	while (b.size() > i) {
 		if (b.size() >= (i + 5)) {
-			s->add_geometry (
+			s->set_geometry (
 				Format::from_nickname (b[i].c_str()),
 				Position (atoi (b[i+1].c_str()), atoi (b[i+2].c_str())),
 				Size (atoi (b[i+3].c_str()), atoi (b[i+4].c_str()))

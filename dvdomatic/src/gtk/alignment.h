@@ -17,48 +17,20 @@
 
 */
 
+#include <gtkmm.h>
 #include <string>
-#include <vector>
-#include <map>
-#include "util.h"
+#include "lib/util.h"
 
-class Format;
+class AlignmentWidget;
 
-class Screen
+class Alignment : public Gtk::Window
 {
 public:
-	Screen (std::string);
+	Alignment (Position, Size);
+	~Alignment ();
 
-	void set_geometry (Format const *, Position, Size);
-
-	std::string name () const {
-		return _name;
-	}
-
-	struct Geometry {
-		Geometry () {}
-
-		Geometry (Position p, Size s)
-			: position (p)
-			, size (s)
-		{}
-		
-		Position position;
-		Size size;
-	};
-
-	typedef std::map<Format const *, Geometry> GeometryMap;
-	GeometryMap geometries () const {
-		return _geometries;
-	}
-
-	Position position (Format const *) const;
-	Size size (Format const *) const;
-
-	std::string as_metadata () const;
-	static boost::shared_ptr<Screen> create_from_metadata (std::string);
+	void set_text_line (int, std::string);
 
 private:
-	std::string _name;
-	GeometryMap _geometries;
+	AlignmentWidget* _widget;
 };
