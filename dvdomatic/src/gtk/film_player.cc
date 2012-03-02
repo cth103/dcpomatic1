@@ -49,16 +49,25 @@ FilmPlayer::FilmPlayer (Film const * f)
 
 	_position.set_digits (0);
 
-	_table.set_row_spacings (4);
-	_table.set_col_spacings (12);
+	_main_vbox.set_spacing (12);
 
-	_table.attach (_play, 0, 1, 0, 1);
-	_table.attach (_pause, 0, 1, 1, 2);
-	_table.attach (_stop, 0, 1, 2, 3);
-	_table.attach (_screen, 1, 2, 0, 1);
-	_table.attach (_ab, 1, 2, 1, 2);
-	_table.attach (_position, 0, 2, 3, 4);
-	_table.attach (_status, 0, 2, 4, 5);
+	Gtk::VBox* l = manage (new Gtk::VBox);
+	l->pack_start (_play);
+	l->pack_start (_pause);
+	l->pack_start (_stop);
+
+	Gtk::VBox* r = manage (new Gtk::VBox);
+	r->pack_start (_screen, false, false);
+	r->pack_start (_ab, false, false);
+	r->pack_start (*manage (new Gtk::Label ("")), true, true);
+
+	Gtk::HBox* t = manage (new Gtk::HBox);
+	t->pack_start (*l, true, true);
+	t->pack_start (*r, false, false);
+
+	_main_vbox.pack_start (*t, true, true);
+	_main_vbox.pack_start (_position, false, false);
+	_main_vbox.pack_start (_status, false, false);
 
 	_play.signal_clicked().connect (sigc::mem_fun (*this, &FilmPlayer::play_clicked));
 	_pause.signal_clicked().connect (sigc::mem_fun (*this, &FilmPlayer::pause_clicked));
@@ -85,7 +94,7 @@ FilmPlayer::set_film (Film const * f)
 Gtk::Widget &
 FilmPlayer::widget ()
 {
-	return _table;
+	return _main_vbox;
 }
 
 void
