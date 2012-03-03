@@ -51,7 +51,7 @@ FilmPlayer::FilmPlayer (Film const * f)
 
 	_main_vbox.set_spacing (12);
 
-	Gtk::VBox* l = manage (new Gtk::VBox);
+	Gtk::HBox* l = manage (new Gtk::HBox);
 	l->pack_start (_play);
 	l->pack_start (_pause);
 	l->pack_start (_stop);
