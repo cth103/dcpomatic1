@@ -4,7 +4,7 @@
 #stuff places.
 DESTDIR = 
 CC     ?= gcc
-#PREFIX += /usr/local
+PREFIX += /usr/local
 #BINDIR = ${PREFIX}/bin
 #MANDIR = ${PREFIX}/man
 PREFIX += /usr/local
@@ -12,8 +12,8 @@ BINDIR = ${PREFIX}/bin
 MANDIR = ${PREFIX}/man
 DOCDIR = ${PREFIX}/share/doc/vobcopy
 LFS    = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
-CFLAGS += -I/usr/local//include
-LDFLAGS += -ldvdread -L/usr/local//lib
+CFLAGS += -I/usr//include
+LDFLAGS += -ldvdread -L/usr//lib64
 
 #This specifies the conversion from .c to .o 
 .c.o:
