@@ -2239,7 +2239,11 @@ int progressUpdate(int starttime, int cur, int tot, int force)
 	  barChar = tot / barLen;
 	  percentComplete = (float)((float)cur / (float)tot * 100.0);
 	  percentLeft = 100 - percentComplete;
-	  numChars = cur / barChar;
+	  if (barChar > 0) {
+		  numChars = cur / barChar;
+	  } else {
+		  numChars = 0;
+	  }
 
 /* 	   guess remaining time */
 	  timeSoFar = curtime - starttime;
