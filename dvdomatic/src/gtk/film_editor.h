@@ -105,10 +105,8 @@ private:
 	Gtk::Label _original_size;
 	/** The Film's length */
 	Gtk::Label _length;
-	/** The Film's audio channels */
-	Gtk::Label _audio_channels;
-	/** The Film's audio sample rate */
-	Gtk::Label _audio_sample_rate;
+	/** The Film's audio details */
+	Gtk::Label _audio;
 
 	/** Button to start an examination of the Film's content */
 	Gtk::Button _examine_content_button;

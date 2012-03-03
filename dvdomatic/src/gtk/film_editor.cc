@@ -24,6 +24,7 @@
 #include <iostream>
 #include <gtkmm.h>
 #include <boost/thread.hpp>
+#include <boost/filesystem.hpp>
 #include "lib/format.h"
 #include "lib/film.h"
 #include "lib/transcode_job.h"
@@ -93,8 +94,7 @@ FilmEditor::FilmEditor (Film* f)
 	
 	_original_size.set_alignment (0, 0.5);
 	_length.set_alignment (0, 0.5);
-	_audio_channels.set_alignment (0, 0.5);
-	_audio_sample_rate.set_alignment (0, 0.5);
+	_audio.set_alignment (0, 0.5);
 
 	Gtk::RadioButtonGroup g = _dcp_whole.get_group ();
 	_dcp_for.set_group (g);
@@ -182,12 +182,8 @@ FilmEditor::FilmEditor (Film* f)
 	t->attach (left_aligned_label ("Length"), 0, 1, n, n + 1);
 	t->attach (_length, 1, 2, n, n + 1);
 	++n;
-	t->attach (left_aligned_label ("Audio Channels"), 0, 1, n, n + 1);
-	t->attach (_audio_channels, 1, 2, n, n + 1);
-	++n;
-	t->attach (left_aligned_label ("Audio Sample Rate"), 0, 1, n, n + 1);
-	t->attach (_audio_sample_rate, 1, 2, n, n + 1);
-	++n;
+	t->attach (left_aligned_label ("Audio"), 0, 1, n, n + 1);
+	t->attach (_audio, 1, 2, n, n + 1);
 
 	t->show_all ();
 	_vbox.pack_start (*t, false, false);
@@ -364,12 +360,9 @@ FilmEditor::film_changed (Film::Property p)
 		_frames_per_second.set_value (_film->frames_per_second ());
 		break;
 	case Film::AUDIO_CHANNELS:
-		s << _film->audio_channels ();
-		_audio_channels.set_text (s.str ());
-		break;
 	case Film::AUDIO_SAMPLE_RATE:
-		s << _film->audio_sample_rate ();
-		_audio_sample_rate.set_text (s.str ());
+		s << _film->audio_channels () << " channels, " << _film->audio_sample_rate() << "Hz";
+		_audio.set_text (s.str ());
 		break;
 	case Film::SIZE:
 		s << _film->size().width << " x " << _film->size().height;
