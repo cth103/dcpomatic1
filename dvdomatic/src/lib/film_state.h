@@ -27,8 +27,6 @@
 #ifndef DVDOMATIC_FILM_STATE_H
 #define DVDOMATIC_FILM_STATE_H
 
-#include <sstream>
-#include <boost/filesystem.hpp>
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libswscale/swscale.h>
@@ -70,22 +68,10 @@ public:
 		, audio_sample_format (AV_SAMPLE_FMT_NONE)
 	{}
 
-	/** Given a file name, return its full path within the Film's directory */
-	std::string file (std::string f) const {
-		std::stringstream s;
-		s << directory << "/" << f;
-		return s.str ();
-	}
-
-	/** Given a directory name, return its full path within the Film's directory.
-	 *  The directory (and its parents) will be created if they do not exist.
-	 */
-	std::string dir (std::string d) const {
-		std::stringstream s;
-		s << directory << "/" << d;
-		boost::filesystem::create_directories (s.str ());
-		return s.str ();
-	}
+	std::string file (std::string f) const;
+	std::string dir (std::string d) const;
+	
+	bool content_is_dvd () const;
 
 	std::string thumb_file (int) const;
 	int thumb_frame (int) const;

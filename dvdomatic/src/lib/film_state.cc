@@ -27,6 +27,8 @@
 #include <fstream>
 #include <string>
 #include <iomanip>
+#include <sstream>
+#include <boost/filesystem.hpp>
 #include "film_state.h"
 #include "scaler.h"
 #include "filter.h"
@@ -183,4 +185,25 @@ FilmState::cropped_size (Size s) const
 	s.width -= left_crop + right_crop;
 	s.height -= top_crop + bottom_crop;
 	return s;
+}
+
+/** Given a directory name, return its full path within the Film's directory.
+ *  The directory (and its parents) will be created if they do not exist.
+ */
+string
+FilmState::dir (string d) const
+{
+	stringstream s;
+	s << directory << "/" << d;
+	filesystem::create_directories (s.str ());
+	return s.str ();
+}
+
+/** Given a file or directory name, return its full path within the Film's directory */
+string
+FilmState::file (string f) const
+{
+	stringstream s;
+	s << directory << "/" << f;
+	return s.str ();
 }
