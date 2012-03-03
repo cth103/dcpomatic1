@@ -217,3 +217,11 @@ public:
 		: StringError (s)
 	{}
 };
+
+class DVDError : public StringError
+{
+public:
+	DVDError (std::string s)
+		: StringError (s)
+	{}
+};

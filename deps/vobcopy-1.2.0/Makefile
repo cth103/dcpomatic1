@@ -12,7 +12,7 @@ BINDIR = ${PREFIX}/bin
 MANDIR = ${PREFIX}/man
 DOCDIR = ${PREFIX}/share/doc/vobcopy
 LFS    = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
-CFLAGS += -I/usr//include
+CFLAGS += -I/usr//include -g
 LDFLAGS += -ldvdread -L/usr//lib64
 
 #This specifies the conversion from .c to .o 

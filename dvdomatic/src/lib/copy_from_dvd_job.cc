@@ -23,8 +23,10 @@
 
 #include <stdio.h>
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
 #include "copy_from_dvd_job.h"
 #include "film_state.h"
+#include "dvd.h"
 
 using namespace std;
 using namespace boost;
@@ -50,8 +52,30 @@ CopyFromDVDJob::run ()
 	/* Remove any old DVD rips */
 	filesystem::remove_all (_fs->dir ("dvd"));
 
+	string const dvd = find_dvd ();
+	if (dvd.empty ()) {
+		set_error ("could not find DVD");
+		set_state (FINISHED_ERROR);
+	}
+
+	vector<uint64_t> const t = dvd_titles (dvd);
+	if (t.empty ()) {
+		set_error ("no titles found on DVD");
+		set_state (FINISHED_ERROR);
+	}
+
+	int longest_title = 0;
+	uint64_t longest_size = 0;
+	for (vector<int>::size_type i = 0; i < t.size(); ++i) {
+		cout << i << " " << t[i] << "\n";
+		if (longest_size < t[i]) {
+			longest_size = t[i];
+			longest_title = i;
+		}
+	}
+
 	stringstream c;
-	c << "vobcopy -l -o " << _fs->dir ("dvd") << " 2>&1";
+	c << "vobcopy -n " << longest_title << " -l -o \"" << _fs->dir ("dvd") << "\" 2>&1";
 
 	FILE* f = popen (c.str().c_str(), "r");
 	if (f == 0) {
@@ -64,8 +88,8 @@ CopyFromDVDJob::run ()
 		char buf[256];
 		if (fscanf (f, "%s", buf)) {
 			string s (buf);
-			if (!s.empty () && s[0] == '(') {
-				set_progress (atoi (s.substr(1).c_str()) / 100.0);
+			if (!s.empty () && s[s.length() - 1] == '%') {
+				set_progress (atof (s.substr(0, s.length() - 1).c_str()) / 100.0);
 			}
 		}
 	}

@@ -27,6 +27,7 @@
 #include "job_manager.h"
 #include "util.h"
 #include "exceptions.h"
+#include "dvd.h"
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE dvdomatic_test
 #include <boost/test/unit_test.hpp>
@@ -123,5 +124,11 @@ BOOST_AUTO_TEST_CASE (util_test)
 	BOOST_CHECK_EQUAL (*i++, "them");
 }
 
-	
-		
+BOOST_AUTO_TEST_CASE (dvd_test)
+{
+	vector<uint64_t> const t = dvd_titles ("test/dvd");
+	BOOST_CHECK_EQUAL (t.size(), 4);
+	BOOST_CHECK_EQUAL (t[1], 0);
+	BOOST_CHECK_EQUAL (t[2], 14);
+	BOOST_CHECK_EQUAL (t[3], 7);
+}
