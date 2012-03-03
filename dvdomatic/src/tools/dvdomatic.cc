@@ -34,6 +34,7 @@
 #include "lib/scaler.h"
 
 using namespace std;
+using namespace boost;
 
 static Gtk::Window* window = 0;
 static FilmViewer* film_viewer = 0;
@@ -94,6 +95,7 @@ file_new ()
 			return;
 		}
 		film = new Film (c.get_filename ());
+		film->set_name (filesystem::path (c.get_filename().c_str()).filename().string());
 		film_viewer->set_film (film);
 		film_editor->set_film (film);
 	}
@@ -243,7 +245,7 @@ main (int argc, char* argv[])
 	right_vbox.pack_start (film_viewer->widget (), true, true);
 	right_vbox.pack_start (jobs_view.widget(), false, false);
 	hbox.pack_start (right_vbox, true, true);
-	
+
 	vbox.pack_start (hbox, true, true);
 
 	window->add (vbox);
