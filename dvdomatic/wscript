@@ -51,7 +51,7 @@ def configure(conf):
     conf.check_cxx(fragment = """
     			      #include <boost/filesystem.hpp>\n
     			      int main() { boost::filesystem::copy_file ("a", "b"); }\n
-			      """, msg = 'Checking for boost filesystem library', lib = ['boost_filesystem', 'boost_system'], uselib_store = 'BOOST_FILESYSTEM')
+			      """, msg = 'Checking for boost filesystem library', libpath = '/usr/local/lib', lib = ['boost_filesystem', 'boost_system'], uselib_store = 'BOOST_FILESYSTEM')
     conf.check_cxx(fragment = """
                               #define BOOST_TEST_MODULE Config test\n
     			      #include <boost/test/unit_test.hpp>\n

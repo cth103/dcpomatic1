@@ -29,7 +29,7 @@ class AlignmentWidget : public Gtk::DrawingArea
 public:
 	void set_text_line (int n, string t)
 	{
-		if (_text.size() < (n + 1)) {
+		if (int(_text.size()) < (n + 1)) {
 			_text.resize (n + 1);
 		}
 		
