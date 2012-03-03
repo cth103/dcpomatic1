@@ -404,12 +404,6 @@ and potentially fatal."  - Thanks Leigh!*/
               stdout_flag = TRUE;
               force_flag = TRUE;
             }
-	  for( i=0; i< strlen(provided_dvd_name);i++ )
-	    {
-	      if( provided_dvd_name[i] == ' ')
-		provided_dvd_name[i] = '_';
-	    }
-
           break;
 
         case'v': /*verbosity level, can be called multiple times*/
