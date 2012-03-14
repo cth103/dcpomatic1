@@ -62,6 +62,7 @@ public:
 		, scaler (Scaler::from_id ("bicubic"))
 		, dcp_frames (0)
 		, dcp_ab (false)
+		, audio_gain (0)
 		, length (0)
 		, audio_channels (0)
 		, audio_sample_rate (0)
@@ -118,6 +119,8 @@ public:
 	    has the specified filters and post-processing.
 	*/
 	bool dcp_ab;
+	/** Gain to apply to audio in dB */
+	float audio_gain;
 
 	/* Data which is cached to speed things up */
 

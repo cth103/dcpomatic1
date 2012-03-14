@@ -67,6 +67,7 @@ FilmState::write_metadata (ofstream& f) const
 	f << "scaler " << scaler->id () << "\n";
 	f << "dcp_frames " << dcp_frames << "\n";
 	f << "dcp_ab " << (dcp_ab ? "1" : "0") << "\n";
+	f << "audio_gain " << audio_gain << "\n";
 
 	/* Cached stuff; this is information about our content; we could
 	   look it up each time, but that's slow.
@@ -120,6 +121,8 @@ FilmState::read_metadata (string k, string v)
 		dcp_frames = atoi (v.c_str ());
 	} else if (k == "dcp_ab") {
 		dcp_ab = (v == "1");
+	} else if (k == "audio_gain") {
+		audio_gain = atof (v.c_str ());
 	}
 	
 	/* Cached stuff */

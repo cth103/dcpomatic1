@@ -314,6 +314,13 @@ Film::set_dcp_ab (bool a)
 	signal_changed (DCP_AB);
 }
 
+void
+Film::set_audio_gain (float g)
+{
+	_state.audio_gain = g;
+	signal_changed (AUDIO_GAIN);
+}
+
 /** @return path of metadata file */
 string
 Film::metadata_file () const

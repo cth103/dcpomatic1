@@ -72,6 +72,8 @@ FilmEditor::FilmEditor (Film* f)
 	_bottom_crop.set_range (0, 1024);
 	_bottom_crop.set_increments (1, 16);
 	_filters.set_alignment (0, 0.5);
+	_audio_gain.set_range (-60, 60);
+	_audio_gain.set_increments (1, 3);
 
 	vector<Format const *> fmt = Format::all ();
 	for (vector<Format const *>::iterator i = fmt.begin(); i != fmt.end(); ++i) {
@@ -121,6 +123,7 @@ FilmEditor::FilmEditor (Film* f)
 	_dcp_for.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::dcp_frames_changed));
 	_dcp_for_frames.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_frames_changed));
 	_dcp_ab.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::dcp_ab_toggled));
+	_audio_gain.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::audio_gain_changed));
 
 	/* Set up the table */
 
@@ -175,6 +178,10 @@ FilmEditor::FilmEditor (Film* f)
 	++n;
 	t->attach (left_aligned_label ("Scaler"), 0, 1, n, n + 1);
 	t->attach (_scaler, 1, 2, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("Audio Gain"), 0, 1, n, n + 1);
+	t->attach (_audio_gain, 1, 2, n, n + 1);
+	t->attach (left_aligned_label ("dB"), 2, 3, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Original Size"), 0, 1, n, n + 1);
 	t->attach (_original_size, 1, 2, n, n + 1);
@@ -401,6 +408,9 @@ FilmEditor::film_changed (Film::Property p)
 	case Film::SCALER:
 		_scaler.set_active (Scaler::as_index (_film->scaler ()));
 		break;
+	case Film::AUDIO_GAIN:
+		_audio_gain.set_value (_film->audio_gain ());
+		break;
 	}
 }
 
@@ -571,5 +581,13 @@ FilmEditor::frames_per_second_changed ()
 {
 	if (_film) {
 		_film->set_frames_per_second (_frames_per_second.get_value ());
+	}
+}
+
+void
+FilmEditor::audio_gain_changed ()
+{
+	if (_film) {
+		_film->set_audio_gain (_audio_gain.get_value ());
 	}
 }

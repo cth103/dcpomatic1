@@ -8,6 +8,7 @@ Don't start later jobs when one breaks.
 Compute time remaining based on more recent information.
 Start frame later than ... error?
 Use lexical_cast more
+Do deps better
 
 options summary
 
