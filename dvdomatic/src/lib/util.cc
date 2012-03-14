@@ -248,7 +248,7 @@ opendcp_version ()
 static string
 vobcopy_version ()
 {
-	FILE* f = popen ("vobcopy 2>&1", "r");
+	FILE* f = popen ("vobcopy -V 2>&1", "r");
 	if (f == 0) {
 		throw EncodeError ("could not run vobcopy to check version");
 	}
