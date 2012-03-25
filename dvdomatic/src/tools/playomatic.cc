@@ -21,6 +21,8 @@
 #include "gtk/film_player.h"
 #include "gtk/film_list.h"
 
+using namespace std;
+
 static FilmPlayer* film_player = 0;
 
 void
@@ -33,12 +35,17 @@ int
 main (int argc, char* argv[])
 {
 	dvdomatic_setup ();
-	
+
 	Gtk::Main kit (argc, argv);
+
+	if (argc != 2) {
+		cerr << "Syntax: " << argv[0] << " <directory>\n";
+		exit (EXIT_FAILURE);
+	}
 
 	Gtk::Window* window = new Gtk::Window ();
 
-	FilmList* film_list = new FilmList ("/home/carl/Video");
+	FilmList* film_list = new FilmList (argv[1]);
 	film_player = new FilmPlayer ();
 
 	Gtk::HBox hbox;
