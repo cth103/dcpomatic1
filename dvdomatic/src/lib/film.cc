@@ -521,20 +521,19 @@ Film::maybe_guess_dcp_long_name ()
 		return;
 	}
 
-	stringstream s;
-
+	string short_name;
 	if (_state.name.length() < 14) {
 		short_name = _state.name;
 	} else {
+		string::size_type last_space = string::npos;
+		
 		/* Pick complete words from _state.name until we hit the length limit */
-		size_t n = min (_state.name.length(), 14);
 		for (size_t i = 0; i < 14; ++i) {
 			if (_state.name[i] == ' ') {
 				last_space = i;
 			}
 		}
 
-		string short_name;
 		if (last_space == string::npos) {
 			short_name = _state.name.substr (0, 14);
 		} else {
@@ -545,6 +544,7 @@ Film::maybe_guess_dcp_long_name ()
 	to_upper (short_name);
 	replace_all (short_name, " ", "-");
 	replace_all (short_name, "/", "-");
+	stringstream s;
 	s << short_name;
 
 	if (_state.dcp_content_type) {
