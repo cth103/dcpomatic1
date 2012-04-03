@@ -152,7 +152,7 @@ Format::as_index (Format const * f)
 Format const *
 Format::from_index (int i)
 {
-	assert (i <= int(_formats.size ()));
+	assert (i >= 0 && i < int(_formats.size ()));
 	return _formats[i];
 }
 

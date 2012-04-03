@@ -419,7 +419,10 @@ void
 FilmEditor::format_changed ()
 {
 	if (_film) {
-		_film->set_format (Format::from_index (_format.get_active_row_number ()));
+		int const n = _format.get_active_row_number ();
+		if (n >= 0) {
+			_film->set_format (Format::from_index (n));
+		}
 	}
 }
 
@@ -453,7 +456,10 @@ void
 FilmEditor::dcp_content_type_changed ()
 {
 	if (_film) {
-		_film->set_dcp_content_type (ContentType::from_index (_dcp_content_type.get_active_row_number ()));
+		int const n = _dcp_content_type.get_active_row_number ();
+		if (n >= 0) {
+			_film->set_dcp_content_type (ContentType::from_index (n));
+		}
 	}
 }
 
@@ -571,7 +577,10 @@ void
 FilmEditor::scaler_changed ()
 {
 	if (_film) {
-		_film->set_scaler (Scaler::from_index (_scaler.get_active_row_number ()));
+		int const n = _scaler.get_active_row_number ();
+		if (n >= 0) {
+			_film->set_scaler (Scaler::from_index (n));
+		}
 	}
 }
 

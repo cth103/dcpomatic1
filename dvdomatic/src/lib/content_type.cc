@@ -66,7 +66,7 @@ ContentType::from_pretty_name (string n)
 ContentType const *
 ContentType::from_index (int n)
 {
-	assert (n < int (_content_types.size ()));
+	assert (n >= 0 && n < int (_content_types.size ()));
 	return _content_types[n];
 }
 
