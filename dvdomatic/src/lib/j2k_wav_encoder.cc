@@ -176,7 +176,7 @@ J2KWAVEncoder::encoder_thread (Server* server)
 
 		if (encoded) {
 			encoded->write (_opt, vf->frame ());
-			boost::mutex::scoped_lock (_history_mutex);
+			boost::mutex::scoped_lock lock (_history_mutex);
 			struct timeval tv;
 			gettimeofday (&tv, 0);
 			_time_history.push_front (tv);
