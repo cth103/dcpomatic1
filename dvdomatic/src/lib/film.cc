@@ -523,21 +523,23 @@ Film::maybe_guess_dcp_long_name ()
 
 	stringstream s;
 
-	/* Pick complete words from _state.name until we hit the length limit */
-	size_t last_space = string::npos;
-	for (size_t i = 0; i < 14; ++i) {
-		if (_state.name[i] == ' ') {
-			last_space = i;
-		}
-	}
-
-	string short_name;
-	if (last_space == string::npos) {
-		short_name = _state.name.substr (0, 14);
-	} else if (_state.name.length() < 14) {
+	if (_state.name.length() < 14) {
 		short_name = _state.name;
 	} else {
-		short_name = _state.name.substr (0, last_space);
+		/* Pick complete words from _state.name until we hit the length limit */
+		size_t n = min (_state.name.length(), 14);
+		for (size_t i = 0; i < 14; ++i) {
+			if (_state.name[i] == ' ') {
+				last_space = i;
+			}
+		}
+
+		string short_name;
+		if (last_space == string::npos) {
+			short_name = _state.name.substr (0, 14);
+		} else {
+			short_name = _state.name.substr (0, last_space);
+		}
 	}
 	
 	to_upper (short_name);
