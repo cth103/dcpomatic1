@@ -115,6 +115,28 @@ Decoder::pass ()
 void
 Decoder::process_audio (uint8_t* data, int channels, int size)
 {
+	if (_fs->audio_gain != 0) {
+		float const linear_gain = pow (10, _fs->audio_gain / 20);
+		uint8_t* p = data;
+		int const samples = size / 2;
+		switch (_fs->audio_sample_format) {
+		case AV_SAMPLE_FMT_S16:
+			for (int i = 0; i < samples; ++i) {
+				/* XXX: assumes little-endian; also we should probably be dithering here */
+				int const ou = p[0] | (p[1] << 8);
+				int const os = ou >= 0x8000 ? (- 0x10000 + ou) : ou;
+				int const gs = int (os * linear_gain);
+				int const gu = gs > 0 ? gs : (0x10000 + gs);
+				p[0] = gu & 0xff;
+				p[1] = (gu & 0xff00) >> 8;
+				p += 2;
+			}
+			break;
+		default:
+			assert (false);
+		}
+	}
+	
 	Audio (data, channels, size);
 }
 
