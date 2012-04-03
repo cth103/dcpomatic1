@@ -199,7 +199,7 @@ void
 Player::set_position (float p)
 {
 	/* XXX: could be an atomic */
-	boost::mutex::scoped_lock (_state_lock);
+	boost::mutex::scoped_lock lm (_state_mutex);
 	_position = p;
 }
 
@@ -207,20 +207,20 @@ void
 Player::set_paused (bool p)
 {
 	/* XXX: could be an atomic */
-	boost::mutex::scoped_lock (_state_lock);
+	boost::mutex::scoped_lock lm (_state_mutex);
 	_paused = p;
 }
 
 float
 Player::position () const
 {
-	boost::mutex::scoped_lock (_state_lock);
+	boost::mutex::scoped_lock lm (_state_mutex);
 	return _position;
 }
 
 bool
 Player::paused () const
 {
-	boost::mutex::scoped_lock (_state_lock);
+	boost::mutex::scoped_lock lm (_state_mutex);
 	return _paused;
 }
