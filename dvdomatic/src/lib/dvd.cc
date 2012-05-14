@@ -34,6 +34,7 @@ find_dvd ()
 		vector<string> b;
 		split (b, s, is_any_of (" "));
 		if (b.size() >= 3 && b[2] == "udf") {
+			replace_all (b[1], "\\040", " ");
 			return b[1];
 		}
 	}
