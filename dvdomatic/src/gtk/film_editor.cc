@@ -509,6 +509,7 @@ FilmEditor::set_film (Film* f)
 	film_changed (Film::AUDIO_CHANNELS);
 	film_changed (Film::AUDIO_SAMPLE_RATE);
 	film_changed (Film::SCALER);
+	film_changed (Film::AUDIO_GAIN);
 }
 
 /** Updates the sensitivity of lots of widgets to a given value.
