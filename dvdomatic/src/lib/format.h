@@ -47,9 +47,12 @@ public:
 		return _ratio / 100.0;
 	}
 
-	/** @return size in pixels of the DCI specified size for this ratio */
-	Size dci_size () const {
-		return _dci_size;
+	/** @return size in pixels of the images that we should
+	 *  put in a DCP for this ratio.  This size will not correspond
+	 *  to the ratio when we are doing things like 16:9 in a Flat frame.
+	 */
+	Size dcp_size () const {
+		return _dcp_size;
 	}
 
 	/** @return Full name to present to the user */
@@ -69,6 +72,8 @@ public:
 
 	std::string as_metadata () const;
 
+	int dcp_padding () const;
+
 	static Format const * from_ratio (int);
 	static Format const * from_nickname (std::string n);
 	static Format const * from_metadata (std::string m);
@@ -81,8 +86,11 @@ private:
 
 	/** Ratio expressed as the actual ratio multiplied by 100 */
 	int _ratio;
-	/** size in pixels of the DCI specified size for this ratio */
-	Size _dci_size;
+	/** Size in pixels of the images that we should
+	 *  put in a DCP for this ratio.  This size will not correspond
+	 *  to the ratio when we are doing things like 16:9 in a Flat frame.
+	 */
+	Size _dcp_size;
 	/** nickname (e.g. Flat, Scope) */
 	std::string _nickname;
 	/** text to use for this format as part of a DCP name (e.g. F, S) */

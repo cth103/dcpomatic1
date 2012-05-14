@@ -483,12 +483,17 @@ Film::make_dcp (int freq)
 		throw MissingSettingError ("content type");
 	}
 
+	if (dcp_long_name().empty()) {
+		throw MissingSettingError ("long name");
+	}
+
 	shared_ptr<const FilmState> fs = state_copy ();
 	shared_ptr<Options> o (new Options (j2k_dir(), ".j2c", _state.dir ("wavs")));
-	o->out_size = format()->dci_size ();
+	o->out_size = format()->dcp_size ();
 	o->num_frames = dcp_frames ();
 	o->decode_video_frequency = freq;
-	
+	o->padding = format()->dcp_padding ();
+
 	if (_state.dcp_ab) {
 		JobManager::instance()->add (shared_ptr<Job> (new ABTranscodeJob (fs, o, log ())));
 	} else {

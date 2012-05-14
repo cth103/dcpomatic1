@@ -178,10 +178,20 @@ void
 Decoder::setup_video_filters ()
 {
 	stringstream fs;
+	Size size_after_crop;
+	
 	if (_opt->apply_crop) {
-		fs << crop_string (Position (_fs->left_crop, _fs->top_crop), _fs->cropped_size (native_size ()));
+		size_after_crop = _fs->cropped_size (native_size ());
+		fs << crop_string (Position (_fs->left_crop, _fs->top_crop), size_after_crop);
 	} else {
-		fs << crop_string (Position (0, 0), native_size ());
+		size_after_crop = native_size ();
+		fs << crop_string (Position (0, 0), size_after_crop);
+	}
+
+	if (_opt->padding) {
+		int scaled_padding = floor (float(_opt->padding) * size_after_crop.width / _opt->out_size.width);
+		fs << ",pad=" << (size_after_crop.width + (scaled_padding * 2)) << ":" << size_after_crop.height << ":" << scaled_padding << ":0:black";
+		cout << "scaled padding " << scaled_padding << "\n";
 	}
 	
 	string filters = Filter::ffmpeg_strings (_fs->filters).first;

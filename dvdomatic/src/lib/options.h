@@ -37,7 +37,8 @@ class Options
 public:
 
 	Options (std::string f, std::string e, std::string m)
-		: apply_crop (true)
+		: padding (0)
+		, apply_crop (true)
 		, num_frames (0)
 		, decode_video (true)
 		, decode_video_frequency (0)
@@ -89,6 +90,7 @@ public:
 	}
 
 	Size out_size;              ///< size of output images
+	int padding;                ///< number of pixels of padding (in terms of the output size) each side of the image
 	bool apply_crop;            ///< true to apply cropping
 	int num_frames;             ///< number of video frames to decode, or 0 for all
 	bool decode_video;          ///< true to decode video, otherwise false

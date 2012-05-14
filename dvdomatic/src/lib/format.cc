@@ -34,13 +34,13 @@ using namespace std;
 vector<Format const *> Format::_formats;
 
 /** @param r Ratio multiplied by 100 (e.g. 185)
- *  @param dci Size (in pixels) of the DCI specification (e.g. 1998x1080)
+ *  @param dcp Size (in pixels) of the images that we should put in a DCP.
  *  @param n Nick name (e.g. Flat)
  *  @param d Text to use as part of a DCP name (e.g. F)
  */
-Format::Format (int r, Size dci, string n, string d)
+Format::Format (int r, Size dcp, string n, string d)
 	: _ratio (r)
-	, _dci_size (dci)
+	, _dcp_size (dcp)
 	, _nickname (n)
 	, _dcp_name (d)
 {
@@ -78,9 +78,10 @@ Format::as_metadata () const
 void
 Format::setup_formats ()
 {
+	_formats.push_back (new Format (137, Size (1480, 1080), "Academy", "133"));
+	_formats.push_back (new Format (178, Size (1998, 1080), "16:9", "F"));
 	_formats.push_back (new Format (185, Size (1998, 1080), "Flat", "F"));
 	_formats.push_back (new Format (239, Size (2048, 858), "Scope", "S"));
-	_formats.push_back (new Format (137, Size (1480, 1080), "Academy", "133"));
 }
 
 /** @param r Ratio multiplied by 100.
@@ -161,4 +162,10 @@ vector<Format const *>
 Format::all ()
 {
 	return _formats;
+}
+
+int
+Format::dcp_padding () const
+{
+	return floor ((_dcp_size.width - (_dcp_size.height * _ratio / 100.0)) / 2.0);
 }
