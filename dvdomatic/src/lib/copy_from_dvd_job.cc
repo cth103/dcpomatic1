@@ -67,7 +67,6 @@ CopyFromDVDJob::run ()
 	int longest_title = 0;
 	uint64_t longest_size = 0;
 	for (vector<int>::size_type i = 0; i < t.size(); ++i) {
-		cout << i << " " << t[i] << "\n";
 		if (longest_size < t[i]) {
 			longest_size = t[i];
 			longest_title = i;

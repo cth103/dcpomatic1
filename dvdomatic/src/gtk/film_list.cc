@@ -30,7 +30,7 @@ FilmList::FilmList (string d)
 {
 	for (filesystem::directory_iterator i = filesystem::directory_iterator (_directory); i != filesystem::directory_iterator(); ++i) {
 		if (is_directory (*i)) {
-			filesystem::path m = *i / "metadata";
+			filesystem::path m = filesystem::path (*i) / filesystem::path ("metadata");
 			if (is_regular_file (m)) {
 				Film* f = new Film (i->path().string());
 				_films.push_back (f);

@@ -119,7 +119,6 @@ Player::Player (shared_ptr<const FilmState> fs, shared_ptr<const Screen> screen,
 		s << " \"" << fs->file (fs->content) << "\" ";
 
 		string cmd (s.str ());
-		cout << cmd << "\n";
 
 		vector<string> b = split_at_spaces_considering_quotes (cmd);
 		

@@ -191,7 +191,6 @@ Decoder::setup_video_filters ()
 	if (_opt->padding) {
 		int scaled_padding = floor (float(_opt->padding) * size_after_crop.width / _opt->out_size.width);
 		fs << ",pad=" << (size_after_crop.width + (scaled_padding * 2)) << ":" << size_after_crop.height << ":" << scaled_padding << ":0:black";
-		cout << "scaled padding " << scaled_padding << "\n";
 	}
 	
 	string filters = Filter::ffmpeg_strings (_fs->filters).first;

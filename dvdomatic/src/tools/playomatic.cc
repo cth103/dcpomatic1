@@ -17,6 +17,7 @@
 
 */
 
+#include <iostream>
 #include "lib/util.h"
 #include "gtk/film_player.h"
 #include "gtk/film_list.h"

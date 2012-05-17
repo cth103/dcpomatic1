@@ -95,7 +95,7 @@ file_new ()
 			return;
 		}
 		film = new Film (c.get_filename ());
-		film->set_name (filesystem::path (c.get_filename().c_str()).filename().string());
+		film->set_name (filesystem::path (c.get_filename().c_str()).filename());
 		film_viewer->set_film (film);
 		film_editor->set_film (film);
 	}
