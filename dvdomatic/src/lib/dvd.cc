@@ -51,7 +51,11 @@ dvd_titles (string dvd)
 	vector<uint64_t> sizes;
 	
 	for (filesystem::directory_iterator i = filesystem::directory_iterator (video); i != filesystem::directory_iterator(); ++i) {
+#if BOOST_FILESYSTEM_VERSION == 3		
+		string const n = filesystem::path(*i).filename().generic_string();
+#else		
 		string const n = filesystem::path(*i).filename();
+#endif
 		if (starts_with (n, "VTS_") && ends_with (n, ".VOB")) {
 			uint64_t const size = filesystem::file_size (filesystem::path (*i));
 			vector<string> p;

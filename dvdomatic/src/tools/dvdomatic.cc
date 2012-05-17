@@ -95,7 +95,11 @@ file_new ()
 			return;
 		}
 		film = new Film (c.get_filename ());
+#if BOOST_FILESYSTEM_VERSION == 3		
+		film->set_name (filesystem::path (c.get_filename().c_str()).filename().generic_string());
+#else		
 		film->set_name (filesystem::path (c.get_filename().c_str()).filename());
+#endif		
 		film_viewer->set_film (film);
 		film_editor->set_film (film);
 	}
