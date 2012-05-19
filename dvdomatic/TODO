@@ -19,6 +19,34 @@ options summary
 5: Ls
 6: Rs
 
+City Screen
+
+Screen 1: "1.37" masking preset, projector only has DCI 133 preset.
+
+With 1480x1080 alignment in DCI 133: bottom you see purple, yellow; top purple; left and right no lines
+With 1480x1080 alignment in DCI Flat: outside masks, but you see bottom purple, yellow; left/right all; top purple
+
+
+Screen 2: no real masking preset, projector has DCI 133 and DCI 137
+
+1480x1080, DCI 133
+L yellow purple
+R none
+B purple
+T none
+1480x1080, DCI 137
+L all
+R all but blue
+T purple
+B purple
+
+
+Screen 3: projector has DCI 1.38
+
+1480x1080
+L, R, T none
+B purple + yellow
+
 
 films-0.6: Dolby Countdown looks as though it's 3D.  THX Terminator 2 fucked
 (these on default settings)
