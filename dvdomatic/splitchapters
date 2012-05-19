@@ -5,9 +5,16 @@ import sys
 import tempfile
 from xml.dom.minidom import parse
 
-if len(sys.argv) < 3:
-    print 'Syntax: %s <DVD-image> <combined-vob>' % sys.argv[0]
+if len(sys.argv) < 2:
+    print 'Syntax: %s [<DVD-image>] <combined-vob>' % sys.argv[0]
     sys.exit(1)
+
+if len(sys.argv) == 2:
+    dvd_image = None
+    combined_vob = sys.argv[1]
+elif len(sys.argv) == 3:
+    dvd_image = sys.argv[1]
+    combined_vob = sys.argv[2]
 
 def get_string(e):
     return " ".join(t.nodeValue for t in e.childNodes if t.nodeType == t.TEXT_NODE)
@@ -20,7 +27,10 @@ def s_to_hms(s):
     return '%d:%d:%f' % (h, m, s)
 
 xml = tempfile.NamedTemporaryFile(delete = True)
-os.system('lsdvd -Ox -c %s > %s' % (sys.argv[1], xml.name))
+if dvd_image is not None:
+    os.system('lsdvd -Ox -c %s > %s' % (dvd_image, xml.name))
+else:
+    os.system('lsdvd -Ox -c > %s' % xml.name)
 
 mpgsplit = ''
 
@@ -30,5 +40,7 @@ for t in dom.getElementsByTagName('track'):
     for c in t.getElementsByTagName('chapter'):
         index = int(get_string(c.getElementsByTagName('ix')[0]))
         length = float(get_string(c.getElementsByTagName('length')[0]))
-        print 'ffmpeg -i %s -vcodec copy -acodec copy -ss %s -t %s %d.mpg' % (sys.argv[2], s_to_hms(now + 1), s_to_hms(length), index)
+        c = 'ffmpeg -i "%s" -vcodec copy -acodec copy -ss %s -t %s %d.mpg' % (combined_vob, s_to_hms(now + 1), s_to_hms(length), index)
+        print c
+        os.system(c)
         now += length
