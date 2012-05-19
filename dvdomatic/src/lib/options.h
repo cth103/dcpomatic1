@@ -90,6 +90,7 @@ public:
 	}
 
 	Size out_size;              ///< size of output images
+	float ratio;                ///< ratio of the wanted output image (not considering padding)
 	int padding;                ///< number of pixels of padding (in terms of the output size) each side of the image
 	bool apply_crop;            ///< true to apply cropping
 	int num_frames;             ///< number of video frames to decode, or 0 for all

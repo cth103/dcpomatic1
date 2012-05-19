@@ -188,11 +188,19 @@ Decoder::setup_video_filters ()
 		fs << crop_string (Position (0, 0), size_after_crop);
 	}
 
+	/* Now we have an image which is size_after_crop, and this image is that stuff that we want to end
+	   up at _opt->ratio on screen.  Outside this image we may want some padding, given by _opt->padding
+	   in terms of the output pixels.
+
+	   We will scale horizontally by _opt->ratio * _opt->out_size.height / size_after_crop.width,
+	   so we use this factor to convert _opt->padding to padding that we should apply here (before scale).
+	*/
+
 	if (_opt->padding) {
-		int scaled_padding = floor (float(_opt->padding) * size_after_crop.width / _opt->out_size.width);
+		int scaled_padding = floor (float(_opt->padding) * size_after_crop.width / (_opt->ratio * _opt->out_size.height));
 		fs << ",pad=" << (size_after_crop.width + (scaled_padding * 2)) << ":" << size_after_crop.height << ":" << scaled_padding << ":0:black";
 	}
-	
+
 	string filters = Filter::ffmpeg_strings (_fs->filters).first;
 	if (!filters.empty ()) {
 		filters += ",";

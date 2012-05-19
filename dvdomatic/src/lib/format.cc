@@ -69,15 +69,14 @@ Format::name () const
 string
 Format::as_metadata () const
 {
-	stringstream s;
-	s << _ratio;
-	return s.str ();
+	return _nickname;
 }
 
 /** Fill our _formats vector with all available formats */
 void
 Format::setup_formats ()
 {
+	_formats.push_back (new Format (133, Size (1998, 1080), "4:3 within Flat", "F"));
 	_formats.push_back (new Format (137, Size (1480, 1080), "Academy", "133"));
 	_formats.push_back (new Format (178, Size (1998, 1080), "16:9", "F"));
 	_formats.push_back (new Format (185, Size (1998, 1080), "Flat", "F"));
@@ -126,7 +125,7 @@ Format::from_nickname (string n)
 Format const *
 Format::from_metadata (string m)
 {
-	return from_ratio (atoi (m.c_str ()));
+	return from_nickname (m);
 }
 
 /** @param f A Format.

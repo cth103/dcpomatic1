@@ -493,6 +493,7 @@ Film::make_dcp (int freq)
 	o->num_frames = dcp_frames ();
 	o->decode_video_frequency = freq;
 	o->padding = format()->dcp_padding ();
+	o->ratio = format()->ratio_as_float ();
 
 	if (_state.dcp_ab) {
 		JobManager::instance()->add (shared_ptr<Job> (new ABTranscodeJob (fs, o, log ())));
