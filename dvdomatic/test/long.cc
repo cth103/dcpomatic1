@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE (make_dcp_test)
 	
 	f.set_format (Format::from_nickname ("Flat"));
 
-	f.make_dcp (5);
+	f.make_dcp (true, 5);
 
 	while (JobManager::instance()->work_to_do ()) {
 		sleep (1);

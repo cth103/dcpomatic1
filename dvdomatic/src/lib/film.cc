@@ -448,9 +448,11 @@ Film::signal_changed (Property p)
 	Changed (p);
 }
 
-/** Add suitable Jobs to the JobManager to create a DCP for this Film */
+/** Add suitable Jobs to the JobManager to create a DCP for this Film.
+ *  @param true to transcode, false to use the WAV and J2K files that are already there.
+ */
 void
-Film::make_dcp (int freq)
+Film::make_dcp (bool transcode, int freq)
 {
 	string const t = dcp_long_name ();
 	if (t.find ("/") != string::npos) {
@@ -495,10 +497,12 @@ Film::make_dcp (int freq)
 	o->padding = format()->dcp_padding ();
 	o->ratio = format()->ratio_as_float ();
 
-	if (_state.dcp_ab) {
-		JobManager::instance()->add (shared_ptr<Job> (new ABTranscodeJob (fs, o, log ())));
-	} else {
-		JobManager::instance()->add (shared_ptr<Job> (new TranscodeJob (fs, o, log ())));
+	if (transcode) {
+		if (_state.dcp_ab) {
+			JobManager::instance()->add (shared_ptr<Job> (new ABTranscodeJob (fs, o, log ())));
+		} else {
+			JobManager::instance()->add (shared_ptr<Job> (new TranscodeJob (fs, o, log ())));
+		}
 	}
 	
 	JobManager::instance()->add (shared_ptr<Job> (new MakeMXFJob (fs, o, log (), MakeMXFJob::VIDEO)));

@@ -54,6 +54,7 @@ FilmEditor::FilmEditor (Film* f)
 	, _guess_dcp_long_name ("Guess")
 	, _examine_content_button ("Examine Content")
 	, _make_dcp_button ("Make DCP")
+	, _make_dcp_from_existing_button ("Make DCP from existing transcode")
 	, _dcp_whole ("Whole Film")
 	, _dcp_for ("For")
 	, _dcp_ab ("A/B")
@@ -197,12 +198,14 @@ FilmEditor::FilmEditor (Film* f)
 
 	_copy_from_dvd_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::copy_from_dvd_clicked));
 	_examine_content_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::examine_content_clicked));
-	_make_dcp_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked));
+	_make_dcp_from_existing_button.signal_clicked().connect (sigc::bind (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked), false));
+	_make_dcp_button.signal_clicked().connect (sigc::bind (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked), true));
 
 	HBox* h = manage (new HBox);
 	h->set_spacing (12);
 	h->pack_start (_examine_content_button, false, false);
 	h->pack_start (_copy_from_dvd_button, false, false);
+	h->pack_start (_make_dcp_from_existing_button, false, false);
 	_vbox.pack_start (*h, false, false);
 	
 	h = manage (new HBox);
@@ -428,14 +431,14 @@ FilmEditor::format_changed ()
 
 /** Called when the `Make DCP' button has been clicked */
 void
-FilmEditor::make_dcp_clicked ()
+FilmEditor::make_dcp_clicked (bool transcode)
 {
 	if (!_film) {
 		return;
 	}
 
 	try {
-		_film->make_dcp ();
+		_film->make_dcp (transcode);
 	} catch (BadSettingError& e) {
 		stringstream s;
 		if (e.setting() == "dcp_long_name") {

@@ -62,7 +62,7 @@ private:
 	void edit_filters_clicked ();
 	void copy_from_dvd_clicked ();
 	void examine_content_clicked ();
-	void make_dcp_clicked ();
+	void make_dcp_clicked (bool);
 
 	void set_things_sensitive (bool);
 
@@ -115,6 +115,8 @@ private:
 	Gtk::Button _examine_content_button;
 	/** Button to start making a DCP */
 	Gtk::Button _make_dcp_button;
+	/** Button to start making a DCP from existing J2K and WAV files */
+	Gtk::Button _make_dcp_from_existing_button;
 	/** Selector to make a DCP of the whole Film */
 	Gtk::RadioButton _dcp_whole;
 	/** Selector to make a DCP for part of the Film */
