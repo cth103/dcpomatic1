@@ -646,3 +646,15 @@ Film::set_frames_per_second (float f)
 	_state.frames_per_second = f;
 	signal_changed (FRAMES_PER_SECOND);
 }
+
+/** @return full paths to any audio files that this Film has */
+vector<string>
+Film::audio_files () const
+{
+	vector<string> f;
+	for (filesystem::directory_iterator i = filesystem::directory_iterator (_state.dir("wavs")); i != filesystem::directory_iterator(); ++i) {
+		f.push_back (i->path().string ());
+	}
+
+	return f;
+}

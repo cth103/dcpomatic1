@@ -1,7 +1,7 @@
 def build(bld):
-    for t in ['makedcp', 'servomatic', 'servomatictest']:
+    for t in ['makedcp', 'servomatic', 'servomatictest', 'fixlengths']:
         obj = bld(features = 'cxx cxxprogram')
-    	obj.uselib = 'BOOST_THREAD BOOST_PROGRAM_OPTIONS'
+    	obj.uselib = 'BOOST_THREAD'
 	obj.includes = ['..']
         obj.use    = ['libdvdomatic']
         obj.source = '%s.cc' % t
@@ -10,7 +10,7 @@ def build(bld):
     if not bld.env.DISABLE_GUI:
         for t in ['dvdomatic', 'playomatic', 'alignomatic']:
             obj = bld(features = 'cxx cxxprogram')
-            obj.uselib = 'BOOST_THREAD GTKMM BOOST_PROGRAM_OPTIONS'
+            obj.uselib = 'BOOST_THREAD GTKMM'
             obj.includes = ['..']
             obj.use    = ['libdvdomatic', 'libdvdomatic-gtk']
             obj.source = '%s.cc' % t

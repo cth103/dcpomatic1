@@ -188,6 +188,8 @@ public:
 	
 	std::string j2k_dir () const;
 
+	std::vector<std::string> audio_files () const;
+
 	void update_thumbs_pre_gui ();
 	void update_thumbs_post_gui ();
 	int num_thumbs () const;
