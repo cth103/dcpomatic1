@@ -18,6 +18,7 @@
 */
 
 #include <stdexcept>
+#include <iostream>
 #include <iomanip>
 #include <getopt.h>
 #include <sndfile.h>

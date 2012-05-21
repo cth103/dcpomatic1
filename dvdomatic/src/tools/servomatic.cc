@@ -116,6 +116,11 @@ process (int fd)
 	shared_ptr<EncodedData> encoded = dcp_video_frame.encode_locally ();
 	encoded->send (fd);
 
+#ifdef DEBUG_HASH
+	encoded->hash ("Encoded image (as made by server and as sent back)");
+#endif		
+
+	
 	return frame;
 }
 
@@ -147,12 +152,6 @@ worker_thread ()
 		close (fd);
 		
 		lock.lock ();
-
-#ifdef DEBUG_HASH
-		if (frame >= 0) {
-			dcp_video_frame.encoded()->hash ("Encoded image (as made by server and as sent back)");
-		}
-#endif		
 
 		if (frame >= 0) {
 			struct timeval end;
