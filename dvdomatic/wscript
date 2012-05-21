@@ -1,3 +1,6 @@
+APPNAME = 'dvdomatic'
+VERSION = '0.19pre'
+
 def options(opt):
     opt.load('compiler_cxx')
     opt.add_option('--debug-hash', action='store_true', default = False, help = 'print hashes of data at various points')
@@ -73,3 +76,6 @@ def build(bld):
     for r in ['22x22', '32x32', '48x48', '64x64', '128x128']:
         bld.install_files('${PREFIX}/share/icons/hicolor/%s/apps' % r, 'icons/%s/dvdomatic.png' % r)
 
+
+def dist(ctx):
+    ctx.excl = 'TODO core *~'
