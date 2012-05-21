@@ -29,7 +29,6 @@
 #include "lib/format.h"
 #include "lib/config.h"
 #include "lib/filter.h"
-#include "lib/version.h"
 #include "lib/util.h"
 #include "lib/scaler.h"
 

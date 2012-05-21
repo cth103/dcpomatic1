@@ -42,7 +42,6 @@
 #include "log.h"
 #include "options.h"
 #include "exceptions.h"
-#include "version.h"
 #include "examine_content_job.h"
 #include "scaler.h"
 #include "decoder_factory.h"
