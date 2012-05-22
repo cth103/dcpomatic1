@@ -4,7 +4,7 @@ dcp_long_name sheila
 guess_dcp_long_name 0
 dcp_content_type Short
 frames_per_second 0
-format 185
+format Flat
 left_crop 1
 right_crop 2
 top_crop 3
@@ -14,6 +14,7 @@ filter unsharp
 scaler bicubic
 dcp_frames 42
 dcp_ab 1
+audio_gain 0
 width 0
 height 0
 length 0
