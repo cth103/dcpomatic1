@@ -164,7 +164,7 @@ help_about ()
 	authors.push_back ("Paul Davis");
 	d.set_authors (authors);
 
-	d.set_website ("http://carlh.net/dvdomatic");
+	d.set_website ("http://carlh.net/software/dvdomatic");
 	d.set_license (gpl);
 	
 	d.run ();
