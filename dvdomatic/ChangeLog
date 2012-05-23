@@ -1,5 +1,7 @@
 2012-05-22  Carl Hetherington  <cth@carlh.net>
 
+	* src/tools/dvdomatic.cc: fix website address.
+
 	* test: fix up a few test bits.
 
 	* README: very brief introduction to a few things.
