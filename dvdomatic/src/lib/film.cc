@@ -320,6 +320,13 @@ Film::set_audio_gain (float g)
 	signal_changed (AUDIO_GAIN);
 }
 
+void
+Film::set_audio_delay (int d)
+{
+	_state.audio_delay = d;
+	signal_changed (AUDIO_DELAY);
+}
+
 /** @return path of metadata file */
 string
 Film::metadata_file () const

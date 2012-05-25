@@ -246,13 +246,13 @@ J2KWAVEncoder::process_end ()
 }
 
 void
-J2KWAVEncoder::process_audio (uint8_t* data, int channels, int data_size)
+J2KWAVEncoder::process_audio (uint8_t* data, int data_size)
 {
 	/* Size of a sample in bytes */
 	int const sample_size = 2;
 	
 	/* XXX: we are assuming that sample_size is right, the _deinterleave_buffer_size is a multiple
-	   of the sample size and that data_size is a multiple of channels * sample_size.
+	   of the sample size and that data_size is a multiple of _fs->audio_channels * sample_size.
 	*/
 	
 	/* XXX: this code is very tricksy and it must be possible to make it simpler ... */
@@ -263,12 +263,12 @@ J2KWAVEncoder::process_audio (uint8_t* data, int channels, int data_size)
 	int position = 0;
 	while (remaining > 0) {
 		/* How many bytes of the deinterleaved data to do this time */
-		int this_time = min (remaining / channels, _deinterleave_buffer_size);
-		for (int i = 0; i < channels; ++i) {
+		int this_time = min (remaining / _fs->audio_channels, _deinterleave_buffer_size);
+		for (int i = 0; i < _fs->audio_channels; ++i) {
 			for (int j = 0; j < this_time; j += sample_size) {
 				for (int k = 0; k < sample_size; ++k) {
 					int const to = j + k;
-					int const from = position + (i * sample_size) + (j * channels) + k;
+					int const from = position + (i * sample_size) + (j * _fs->audio_channels) + k;
 					_deinterleave_buffer[to] = data[from];
 				}
 			}
@@ -283,7 +283,7 @@ J2KWAVEncoder::process_audio (uint8_t* data, int channels, int data_size)
 		}
 		
 		position += this_time;
-		remaining -= this_time * channels;
+		remaining -= this_time * _fs->audio_channels;
 	}
 }
 

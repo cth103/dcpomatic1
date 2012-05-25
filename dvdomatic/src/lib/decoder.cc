@@ -38,6 +38,7 @@ extern "C" {
 #include "log.h"
 #include "decoder.h"
 #include "filter.h"
+#include "delay_line.h"
 
 using namespace std;
 using namespace boost;
@@ -61,10 +62,16 @@ Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const 
 	, _buffer_src_context (0)
 	, _buffer_sink_context (0)
 	, _have_setup_video_filters (false)
+	, _delay_line (0)
 {
 	if (_opt->decode_video_frequency != 0 && _fs->length == 0) {
 		throw DecodeError ("cannot do a partial decode if length == 0");
 	}
+}
+
+Decoder::~Decoder ()
+{
+	delete _delay_line;
 }
 
 /** Start decoding */
@@ -74,13 +81,25 @@ Decoder::go ()
 	if (_job && _ignore_length) {
 		_job->set_progress_unknown ();
 	}
+
+	int const delay_in_bytes = _fs->audio_delay * _fs->audio_sample_rate * _fs->audio_channels * 2 / 1000;
+	cout << "delaying by " << delay_in_bytes << "\n";
+	delete _delay_line;
+	_delay_line = new DelayLine (delay_in_bytes);
 	
 	while (pass () == false) {
 		if (_job && !_ignore_length) {
 			_job->set_progress (float (_video_frame) / decoding_frames ());
 		}
 	}
+
+	if (delay_in_bytes < 0) {
+		uint8_t remainder[-delay_in_bytes];
+		_delay_line->get_remaining (remainder);
+		Audio (remainder, delay_in_bytes);
+	}
 }
+
 /** @return Number of frames that we will be decoding */
 int
 Decoder::decoding_frames () const
@@ -136,8 +155,9 @@ Decoder::process_audio (uint8_t* data, int channels, int size)
 			assert (false);
 		}
 	}
-	
-	Audio (data, channels, size);
+
+	int available = _delay_line->feed (data, size);
+	Audio (data, available);
 }
 
 /** Called by subclasses to tell the world that some video data is ready.

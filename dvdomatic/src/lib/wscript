@@ -14,6 +14,7 @@ def build(bld):
 		 dcp_video_frame.cc
 		 decoder.cc
                  decoder_factory.cc
+                 delay_line.cc
                  dvd.cc
 		 encoder.cc
 		 examine_content_job.cc

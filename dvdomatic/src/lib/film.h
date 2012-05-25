@@ -121,6 +121,10 @@ public:
 		return _state.audio_gain;
 	}
 
+	int audio_delay () const {
+		return _state.audio_delay;
+	}
+	
 	void set_filters (std::vector<Filter const *> const &);
 
 	void set_scaler (Scaler const *);
@@ -155,6 +159,7 @@ public:
 	void set_guess_dcp_long_name (bool);
 	void set_dcp_content_type (ContentType const *);
 	void set_audio_gain (float);
+	void set_audio_delay (int);
 
 	/** @return size, in pixels, of the source (ignoring cropping) */
 	Size size () const {
@@ -223,6 +228,7 @@ public:
 		DCP_FRAMES,
 		DCP_AB,
 		AUDIO_GAIN,
+		AUDIO_DELAY,
 		THUMBS,
 		SIZE,
 		LENGTH,

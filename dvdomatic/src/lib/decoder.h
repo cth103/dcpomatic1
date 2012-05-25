@@ -36,6 +36,7 @@ class FilmState;
 class Options;
 class Image;
 class Log;
+class DelayLine;
 
 /** @class Decoder.
  *  @brief Parent class for decoders of content.
@@ -48,7 +49,7 @@ class Decoder
 {
 public:
 	Decoder (boost::shared_ptr<const FilmState>, boost::shared_ptr<const Options>, Job *, Log *, bool, bool);
-	virtual ~Decoder () {}
+	virtual ~Decoder ();
 
 	/* Methods to query our input video */
 
@@ -83,10 +84,9 @@ public:
 
 	/** Emitted when some audio data is ready.
 	 *  First parameter is the interleaved sample data, format is given in the FilmState.
-	 *  Second parameter is the number of channels in the data.
-	 *  Third parameter is the size of the data.
+	 *  Second parameter is the size of the data.
 	 */
-	sigc::signal<void, uint8_t *, int, int> Audio;
+	sigc::signal<void, uint8_t *, int> Audio;
 	
 protected:
 	/** perform a single pass at our content */
@@ -127,6 +127,7 @@ private:
 	AVFilterContext* _buffer_sink_context;
 
 	bool _have_setup_video_filters;
+	DelayLine* _delay_line;
 };
 
 #endif

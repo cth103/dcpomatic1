@@ -17,27 +17,17 @@
 
 */
 
-/** @file src/tiff_encoder.h
- *  @brief An encoder that writes TIFF files (and does nothing with audio).
- */
-
-#include <string>
-#include <sndfile.h>
-#include "encoder.h"
-
-class FilmState;
-class Log;
-
-/** @class TIFFEncoder
- *  @brief An encoder that writes TIFF files (and does nothing with audio).
- */
-class TIFFEncoder : public Encoder
+class DelayLine
 {
 public:
-	TIFFEncoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const Options> o, Log* l);
+	DelayLine (int);
+	~DelayLine ();
+	
+	int feed (uint8_t *, int);
+	void get_remaining (uint8_t *);
 
-	void process_begin () {}
-	void process_video (boost::shared_ptr<Image>, int);
-	void process_audio (uint8_t *, int) {}
-	void process_end () {}
+private:
+	int _delay; ///< delay in bytes, +ve to move data later
+	uint8_t* _buffer; ///< buffer for +ve delays, or 0
+	int _negative_delay_remaining; ///< number of bytes of negative delay that remain to emit
 };

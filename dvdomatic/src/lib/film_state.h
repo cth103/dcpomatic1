@@ -63,6 +63,7 @@ public:
 		, dcp_frames (0)
 		, dcp_ab (false)
 		, audio_gain (0)
+		, audio_delay (0)
 		, length (0)
 		, audio_channels (0)
 		, audio_sample_rate (0)
@@ -121,6 +122,8 @@ public:
 	bool dcp_ab;
 	/** Gain to apply to audio in dB */
 	float audio_gain;
+	/** Delay to apply to audio (positive moves audio later) in milliseconds */
+	int audio_delay;
 
 	/* Data which is cached to speed things up */
 

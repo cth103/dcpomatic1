@@ -75,6 +75,8 @@ FilmEditor::FilmEditor (Film* f)
 	_filters.set_alignment (0, 0.5);
 	_audio_gain.set_range (-60, 60);
 	_audio_gain.set_increments (1, 3);
+	_audio_delay.set_range (-1000, 1000);
+	_audio_delay.set_increments (1, 20);
 
 	vector<Format const *> fmt = Format::all ();
 	for (vector<Format const *>::iterator i = fmt.begin(); i != fmt.end(); ++i) {
@@ -125,6 +127,7 @@ FilmEditor::FilmEditor (Film* f)
 	_dcp_for_frames.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_frames_changed));
 	_dcp_ab.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::dcp_ab_toggled));
 	_audio_gain.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::audio_gain_changed));
+	_audio_delay.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::audio_delay_changed));
 
 	/* Set up the table */
 
@@ -183,6 +186,10 @@ FilmEditor::FilmEditor (Film* f)
 	t->attach (left_aligned_label ("Audio Gain"), 0, 1, n, n + 1);
 	t->attach (_audio_gain, 1, 2, n, n + 1);
 	t->attach (left_aligned_label ("dB"), 2, 3, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("Audio Delay"), 0, 1, n, n + 1);
+	t->attach (_audio_delay, 1, 2, n, n + 1);
+	t->attach (left_aligned_label ("ms"), 2, 3, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Original Size"), 0, 1, n, n + 1);
 	t->attach (_original_size, 1, 2, n, n + 1);
@@ -414,6 +421,9 @@ FilmEditor::film_changed (Film::Property p)
 	case Film::AUDIO_GAIN:
 		_audio_gain.set_value (_film->audio_gain ());
 		break;
+	case Film::AUDIO_DELAY:
+		_audio_delay.set_value (_film->audio_delay ());
+		break;
 	}
 }
 
@@ -513,6 +523,7 @@ FilmEditor::set_film (Film* f)
 	film_changed (Film::AUDIO_SAMPLE_RATE);
 	film_changed (Film::SCALER);
 	film_changed (Film::AUDIO_GAIN);
+	film_changed (Film::AUDIO_DELAY);
 }
 
 /** Updates the sensitivity of lots of widgets to a given value.
@@ -602,5 +613,14 @@ FilmEditor::audio_gain_changed ()
 {
 	if (_film) {
 		_film->set_audio_gain (_audio_gain.get_value ());
+	}
+}
+
+void
+FilmEditor::audio_delay_changed ()
+{
+	if (_film) {
+		cout << "AD now " << _audio_delay.get_value() << "\n";
+		_film->set_audio_delay (_audio_delay.get_value ());
 	}
 }

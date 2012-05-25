@@ -54,6 +54,7 @@ private:
 	void dcp_ab_toggled ();
 	void scaler_changed ();
 	void audio_gain_changed ();
+	void audio_delay_changed ();
 
 	/* Handle changes to the model */
 	void film_changed (Film::Property);
@@ -98,6 +99,8 @@ private:
 	Gtk::ComboBoxText _scaler;
 	/** The Film's audio gain */
 	Gtk::SpinButton _audio_gain;
+	/** The Film's audio delay */
+	Gtk::SpinButton _audio_delay;
 	/** The Film's DCP long name */
 	Gtk::Entry _dcp_long_name;
 	/** Button to choose whether to guess the contents of _dcp_long_name */

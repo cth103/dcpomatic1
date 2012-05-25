@@ -54,10 +54,9 @@ public:
 
 	/** Called with some audio data.
 	 *  @param d Data.
-	 *  @param c Number of channels in the data.
 	 *  @param s Size of data (in bytes)
 	 */
-	virtual void process_audio (uint8_t* d, int c, int s) = 0;
+	virtual void process_audio (uint8_t* d, int s) = 0;
 
 	/** Called when a processing run has finished */
 	virtual void process_end () = 0;
