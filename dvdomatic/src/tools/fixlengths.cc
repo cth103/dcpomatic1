@@ -34,15 +34,33 @@ help (string n)
 	cerr << "Syntax: " << n << " [--help] [--chop-audio-start] --film <film>\n";
 }
 
+void
+sox (vector<string> const & audio_files, string const & process)
+{
+	for (vector<string>::const_iterator i = audio_files.begin(); i != audio_files.end(); ++i) {
+		stringstream cmd;
+		cmd << "sox \"" << *i << "\" -t wav \"" << *i << ".tmp\" " << process;
+		cout << "> " << cmd.str() << "\n";
+		int r = ::system (cmd.str().c_str());
+		if (r == -1 || WEXITSTATUS (r) != 0) {
+			cerr << "fixlengths: call to sox failed.\n";
+			exit (EXIT_FAILURE);
+		}
+		filesystem::rename (*i + ".tmp", *i);
+	}
+}
+
 int main (int argc, char* argv[])
 {
 	string film_dir;
 	bool chop_audio_start = false;
+	bool pad_audio_end = false;
 	
 	while (1) {
 		static struct option long_options[] = {
 			{ "help", no_argument, 0, 'h' },
 			{ "chop-audio-start", no_argument, 0, 'c' },
+			{ "pad-audio-end", no_argument, 0, 'p' },
 			{ "film", required_argument, 0, 'f' },
 			{ 0, 0, 0, 0 }
 		};
@@ -60,6 +78,9 @@ int main (int argc, char* argv[])
 			exit (EXIT_SUCCESS);
 		case 'c':
 			chop_audio_start = true;
+			break;
+		case 'p':
+			pad_audio_end = true;
 			break;
 		case 'f':
 			film_dir = optarg;
@@ -140,27 +161,36 @@ int main (int argc, char* argv[])
 		cout << setprecision (3);
 		cout << "Audio " << (audio_length - video_length) << "s longer than video.\n";
 
-		float const delta = audio_length - video_length;
-		int const delta_samples = delta * audio_sample_rate;
-
 		if (chop_audio_start) {
 			cout << "Chopping difference off the start of the audio.\n";
 
-			for (vector<string>::iterator i = audio_files.begin(); i != audio_files.end(); ++i) {
-				stringstream sox;
-				sox << "sox \"" << *i << "\" -t wav \"" << *i << ".tmp\" trim " << delta_samples << "s";
-				cout << "> " << sox.str() << "\n";
-				int r = ::system (sox.str().c_str());
-				if (r == -1 || WEXITSTATUS (r) != 0) {
-					cerr << argv[0] << ": call to sox failed.\n";
-					exit (EXIT_FAILURE);
-				}
-				filesystem::rename (*i + ".tmp", *i);
-			}
+			float const delta = audio_length - video_length;
+			int const delta_samples = delta * audio_sample_rate;
+			stringstream s;
+			s << "trim " << delta_samples << "s";
+			sox (audio_files, s.str ());
+			
 		} else {
 			cout << "Re-run with --chop-audio-start, perhaps.\n";
 		}
+
+	} else if (audio_length < video_length) {
+		cout << setprecision (3);
+		cout << "Audio " << (video_length - audio_length) << "s shorter than video.\n";
+
+		if (pad_audio_end) {
+
+			float const delta = video_length - audio_length;
+			int const delta_samples = delta * audio_sample_rate;
+			stringstream s;
+			s << "pad 0 " << delta_samples << "s";
+			sox (audio_files, s.str ());
+		
+		} else {
+			cout << "Re-run with --pad-audio-end, perhaps.\n";
+		}
 	}
+	
 
 	return 0;
 }
