@@ -1,6 +1,10 @@
-2012-05-22  Carl Hetherington  <cth@carlh.net>
+2012-05-25  Carl Hetherington  <cth@carlh.net>
+
+	* Add option to delay audio with respect to video.
 
 	* src/tools/fixlengths.cc: add a few more options.
+
+2012-05-22  Carl Hetherington  <cth@carlh.net>
 
 	* test: fix up a few test bits.
 

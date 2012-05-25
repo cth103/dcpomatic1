@@ -20,6 +20,7 @@
 #include <stdint.h>
 #include <cstring>
 #include <algorithm>
+#include <iostream>
 #include "delay_line.h"
 
 using namespace std;
@@ -46,7 +47,7 @@ int
 DelayLine::feed (uint8_t* data, int size)
 {
 	int available = size;
-	
+
 	if (_delay > 0) {
 		
 		/* Copy the input data */

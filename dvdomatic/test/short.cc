@@ -28,6 +28,7 @@
 #include "util.h"
 #include "exceptions.h"
 #include "dvd.h"
+#include "delay_line.h"
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE dvdomatic_test
 #include <boost/test/unit_test.hpp>
@@ -131,4 +132,91 @@ BOOST_AUTO_TEST_CASE (dvd_test)
 	BOOST_CHECK_EQUAL (t[1], 0);
 	BOOST_CHECK_EQUAL (t[2], 14);
 	BOOST_CHECK_EQUAL (t[3], 7);
+}
+
+void
+do_positive_delay_line_test (int delay_length, int block_length)
+{
+	DelayLine d (delay_length);
+	uint8_t data[block_length];
+
+	int in = 0;
+	int out = 0;
+	int returned = 0;
+	int zeros = 0;
+	
+	for (int i = 0; i < 64; ++i) {
+		for (int j = 0; j < block_length; ++j) {
+			data[j] = in;
+			++in;
+		}
+
+		int const a = d.feed (data, block_length);
+		returned += a;
+
+		for (int j = 0; j < a; ++j) {
+			if (zeros < delay_length) {
+				BOOST_CHECK_EQUAL (data[j], 0);
+				++zeros;
+			} else {
+				BOOST_CHECK_EQUAL (data[j], out & 0xff);
+				++out;
+			}
+		}
+	}
+
+	BOOST_CHECK_EQUAL (returned, 64 * block_length);
+}
+
+void
+do_negative_delay_line_test (int delay_length, int block_length)
+{
+	DelayLine d (delay_length);
+	uint8_t data[block_length];
+
+	int in = 0;
+	int out = -delay_length;
+	int returned = 0;
+	
+	for (int i = 0; i < 256; ++i) {
+		for (int j = 0; j < block_length; ++j) {
+			data[j] = in;
+			++in;
+		}
+
+		int const a = d.feed (data, block_length);
+		returned += a;
+
+		for (int j = 0; j < a; ++j) {
+			BOOST_CHECK_EQUAL (data[j], out & 0xff);
+			++out;
+		}
+	}
+
+	uint8_t remainder[-delay_length];
+	d.get_remaining (remainder);
+	returned += -delay_length;
+
+	for (int i = 0; i < -delay_length; ++i) {
+		BOOST_CHECK_EQUAL (remainder[i], 0);
+		++out;
+	}
+
+	BOOST_CHECK_EQUAL (returned, 256 * block_length);
+	
+}
+
+BOOST_AUTO_TEST_CASE (delay_line_test)
+{
+	do_positive_delay_line_test (64, 128);
+	do_positive_delay_line_test (128, 64);
+	do_positive_delay_line_test (3, 512);
+	do_positive_delay_line_test (512, 3);
+
+	do_positive_delay_line_test (0, 64);
+
+	do_negative_delay_line_test (-64, 128);
+	do_negative_delay_line_test (-128, 64);
+	do_negative_delay_line_test (-3, 512);
+	do_negative_delay_line_test (-512, 3);
 }

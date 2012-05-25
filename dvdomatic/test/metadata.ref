@@ -15,6 +15,7 @@ scaler bicubic
 dcp_frames 42
 dcp_ab 1
 audio_gain 0
+audio_delay 0
 width 0
 height 0
 length 0
