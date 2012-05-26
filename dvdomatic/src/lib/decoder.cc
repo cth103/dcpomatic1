@@ -83,7 +83,6 @@ Decoder::go ()
 	}
 
 	int const delay_in_bytes = _fs->audio_delay * _fs->audio_sample_rate * _fs->audio_channels * 2 / 1000;
-	cout << "delaying by " << delay_in_bytes << "\n";
 	delete _delay_line;
 	_delay_line = new DelayLine (delay_in_bytes);
 	
