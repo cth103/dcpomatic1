@@ -1,5 +1,9 @@
 2012-05-26  Carl Hetherington  <cth@carlh.net>
 
+	* Fix crash on attempting to use a non-existant filter.
+
+2012-05-26  Carl Hetherington  <cth@carlh.net>
+
 	* Version 0.23 released.
 
 2012-05-28  Carl Hetherington  <cth@carlh.net>
