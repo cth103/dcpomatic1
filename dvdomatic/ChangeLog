@@ -6,6 +6,8 @@
 
 	* Allow configuration of the reference scalers and filters in A/B mode.
 
+	* Fix identification of formats in metadata.
+
 2012-05-26  Carl Hetherington  <cth@carlh.net>
 
 	* Version 0.23 released.
