@@ -3,6 +3,8 @@
 	* src/lib/player_manager.cc: possible fix to crash when stopping
 	playback.
 
+	* Fix crash in A/B mode.
+
 2012-05-25  Carl Hetherington  <cth@carlh.net>
 
 	* Add option to delay audio with respect to video.
