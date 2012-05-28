@@ -5,6 +5,10 @@
 
 	* Fix crash in A/B mode.
 
+2012-05-26  Carl Hetherington  <cth@carlh.net>
+
+	* Version 0.21 released.
+
 2012-05-25  Carl Hetherington  <cth@carlh.net>
 
 	* Add option to delay audio with respect to video.

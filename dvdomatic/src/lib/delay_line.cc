@@ -25,15 +25,22 @@
 
 using namespace std;
 
+/** Construct a DelayLine delaying by some number of bytes.
+ *  @param d Number of bytes to delay by; +ve moves data later.
+ */
 DelayLine::DelayLine (int d)
 	: _delay (d)
 	, _buffer (0)
 	, _negative_delay_remaining (0)
 {
 	if (d > 0) {
+		/* We need a buffer to keep some data in */
 		_buffer = new uint8_t[d];
 		memset (_buffer, 0, d);
 	} else if (d < 0) {
+		/* We can do -ve delays just by chopping off
+		   the start, so no buffer needed.
+		*/
 		_negative_delay_remaining = -d;
 	}
 }
@@ -75,6 +82,10 @@ DelayLine::feed (uint8_t* data, int size)
 
 	} else if (_delay < 0) {
 
+		/* Chop the initial data off until _negative_delay_remaining
+		   is zero, then just pass data.
+		*/
+
 		int const to_do = min (size, _negative_delay_remaining);
 		available = size - to_do;
 		memmove (data, data + to_do, available);
@@ -85,6 +96,13 @@ DelayLine::feed (uint8_t* data, int size)
 	return available;
 }
 
+/** With -ve delays, the DelayLine will have data to give after
+ *  all input data has been passed to ::feed().
+ *  Call this method after passing all input data.
+ *
+ *  @param buffer Pointer to buffer of _delay bytes in length,
+ *  which will be filled with remaining data.
+ */
 void
 DelayLine::get_remaining (uint8_t* buffer)
 {

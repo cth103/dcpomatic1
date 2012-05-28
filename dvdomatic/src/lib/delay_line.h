@@ -17,6 +17,9 @@
 
 */
 
+/** A class which can be fed a stream of bytes and which can
+ *  delay them by a positive or negative amount.
+ */
 class DelayLine
 {
 public:
