@@ -66,7 +66,9 @@ public:
 	/** @return format of audio samples */
 	virtual AVSampleFormat audio_sample_format () const = 0;
 
+	void process_begin ();
 	bool pass ();
+	void process_end ();
 	void go ();
 
 	/** @return the index of the last video frame to be processed */
@@ -128,6 +130,7 @@ private:
 
 	bool _have_setup_video_filters;
 	DelayLine* _delay_line;
+	int _delay_in_bytes;
 };
 
 #endif

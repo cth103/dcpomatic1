@@ -104,6 +104,8 @@ void
 ABTranscoder::go ()
 {
 	_encoder->process_begin ();
+	_da->process_begin ();
+	_db->process_begin ();
 	
 	while (1) {
 		bool const a = _da->pass ();
@@ -119,5 +121,7 @@ ABTranscoder::go ()
 	}
 
 	_encoder->process_end ();
+	_da->process_end ();
+	_db->process_end ();
 }
 			    
