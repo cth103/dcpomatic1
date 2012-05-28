@@ -4,6 +4,8 @@
 
 	* src/lib/filter.cc: Fix typo in filter name.
 
+	* Allow configuration of the reference scalers and filters in A/B mode.
+
 2012-05-26  Carl Hetherington  <cth@carlh.net>
 
 	* Version 0.23 released.

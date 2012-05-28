@@ -27,14 +27,18 @@
 #include "lib/server.h"
 #include "lib/screen.h"
 #include "lib/format.h"
+#include "lib/scaler.h"
+#include "lib/filter.h"
 #include "config_dialog.h"
 #include "gtk_util.h"
+#include "filter_dialog.h"
 
 using namespace std;
 using namespace boost;
 
 ConfigDialog::ConfigDialog ()
 	: Gtk::Dialog ("DVD-o-matic Configuration")
+	, _reference_filters_button ("Edit...")
 	, _add_server ("Add Server")
 	, _remove_server ("Remove Server")
 	, _add_screen ("Add Screen")
@@ -59,6 +63,18 @@ ConfigDialog::ConfigDialog ()
 	_j2k_bandwidth.set_increments (10, 50);
 	_j2k_bandwidth.set_value (Config::instance()->j2k_bandwidth() / 1e6);
 	_j2k_bandwidth.signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::j2k_bandwidth_changed));
+
+	vector<Scaler const *> const sc = Scaler::all ();
+	for (vector<Scaler const *>::const_iterator i = sc.begin(); i != sc.end(); ++i) {
+		_reference_scaler.append_text ((*i)->name ());
+	}
+	_reference_scaler.set_active (Scaler::as_index (Config::instance()->reference_scaler ()));
+	_reference_scaler.signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::reference_scaler_changed));
+
+	_reference_filters.set_alignment (0, 0.5);
+	pair<string, string> p = Filter::ffmpeg_strings (Config::instance()->reference_filters ());
+	_reference_filters.set_text (p.first + " " + p.second);
+	_reference_filters_button.signal_clicked().connect (sigc::mem_fun (*this, &ConfigDialog::edit_reference_filters_clicked));
 
 	_servers_store = Gtk::ListStore::create (_servers_columns);
 	vector<Server*> servers = Config::instance()->servers ();
@@ -106,6 +122,16 @@ ConfigDialog::ConfigDialog ()
 	t->attach (left_aligned_label ("JPEG2000 bandwidth"), 0, 1, n, n + 1);
 	t->attach (_j2k_bandwidth, 1, 2, n, n + 1);
 	t->attach (left_aligned_label ("MBps"), 2, 3, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("Reference scaler for A/B"), 0, 1, n, n + 1);
+	t->attach (_reference_scaler, 1, 2, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("Reference filters for A/B"), 0, 1, n, n + 1);
+	Gtk::HBox* fb = Gtk::manage (new Gtk::HBox);
+	fb->set_spacing (4);
+	fb->pack_start (_reference_filters, true, true);
+	fb->pack_start (_reference_filters_button, false, false);
+	t->attach (*fb, 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Servers"), 0, 1, n, n + 1);
 	t->attach (_servers_view, 1, 2, n, n + 1);
@@ -268,3 +294,28 @@ ConfigDialog::screen_selection_changed ()
 	_remove_screen.set_sensitive (i);
 }
 	
+
+void
+ConfigDialog::reference_scaler_changed ()
+{
+	int const n = _reference_scaler.get_active_row_number ();
+	if (n >= 0) {
+		Config::instance()->set_reference_scaler (Scaler::from_index (n));
+	}
+}
+
+void
+ConfigDialog::edit_reference_filters_clicked ()
+{
+	FilterDialog d (Config::instance()->reference_filters ());
+	d.ActiveChanged.connect (sigc::mem_fun (*this, &ConfigDialog::reference_filters_changed));
+	d.run ();
+}
+
+void
+ConfigDialog::reference_filters_changed (vector<Filter const *> f)
+{
+	Config::instance()->set_reference_filters (f);
+	pair<string, string> p = Filter::ffmpeg_strings (Config::instance()->reference_filters ());
+	_reference_filters.set_text (p.first + " " + p.second);
+}
