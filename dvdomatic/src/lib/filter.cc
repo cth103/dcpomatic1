@@ -69,7 +69,7 @@ Filter::setup_filters ()
 	_filters.push_back (new Filter ("ppci", "Cubic interpolating deinterlacer", "", "ci"));
 	_filters.push_back (new Filter ("ppmd", "Median deinterlacer", "", "md"));
 	_filters.push_back (new Filter ("ppfd", "FFMPEG deinterlacer", "", "fd"));
-	_filters.push_back (new Filter ("ppfd", "FIR low-pass deinterlacer", "", "l5"));
+	_filters.push_back (new Filter ("ppl5", "FIR low-pass deinterlacer", "", "l5"));
 	_filters.push_back (new Filter ("mcdeint", "Motion compensating deinterlacer", "mcdeint", ""));
 	_filters.push_back (new Filter ("kerndeint", "Kernel deinterlacer", "kerndeint", ""));
 	_filters.push_back (new Filter ("pptn", "Temporal noise reducer", "", "tn"));
