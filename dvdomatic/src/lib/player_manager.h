@@ -52,6 +52,7 @@ public:
 private:
 	PlayerManager ();
 
+	mutable boost::mutex _players_mutex;
 	std::list<boost::shared_ptr<Player> > _players;
 	
 	static PlayerManager* _instance;

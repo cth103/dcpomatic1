@@ -45,6 +45,8 @@ PlayerManager::instance ()
 void
 PlayerManager::setup (shared_ptr<const FilmState> fs, shared_ptr<const Screen> sc)
 {
+	boost::mutex::scoped_lock lm (_players_mutex);
+	
 	_players.clear ();
 	_players.push_back (shared_ptr<Player> (new Player (fs, sc, Player::SPLIT_NONE)));
 }
@@ -52,6 +54,8 @@ PlayerManager::setup (shared_ptr<const FilmState> fs, shared_ptr<const Screen> s
 void
 PlayerManager::setup (shared_ptr<const FilmState> fs_a, shared_ptr<const FilmState> fs_b, shared_ptr<const Screen> sc)
 {
+	boost::mutex::scoped_lock lm (_players_mutex);
+	
 	_players.clear ();
 
 	_players.push_back (shared_ptr<Player> (new Player (fs_a, sc, Player::SPLIT_LEFT)));
@@ -61,6 +65,8 @@ PlayerManager::setup (shared_ptr<const FilmState> fs_a, shared_ptr<const FilmSta
 void
 PlayerManager::pause_or_unpause ()
 {
+	boost::mutex::scoped_lock lm (_players_mutex);
+	
 	for (list<shared_ptr<Player> >::iterator i = _players.begin(); i != _players.end(); ++i) {
 		(*i)->command ("pause");
 	}
@@ -69,6 +75,8 @@ PlayerManager::pause_or_unpause ()
 void
 PlayerManager::set_position (float p)
 {
+	boost::mutex::scoped_lock lm (_players_mutex);
+	
 	stringstream s;
 	s << "pausing_keep_force seek " << p << " 2";
 	for (list<shared_ptr<Player> >::iterator i = _players.begin(); i != _players.end(); ++i) {
@@ -79,6 +87,8 @@ PlayerManager::set_position (float p)
 float
 PlayerManager::position () const
 {
+	boost::mutex::scoped_lock lm (_players_mutex);
+	
 	if (_players.empty ()) {
 		return 0;
 	}
@@ -89,6 +99,8 @@ PlayerManager::position () const
 void
 PlayerManager::child_exited (pid_t pid)
 {
+	boost::mutex::scoped_lock lm (_players_mutex);
+	
 	list<shared_ptr<Player> >::iterator i = _players.begin();
 	while (i != _players.end() && (*i)->mplayer_pid() != pid) {
 		++i;
@@ -104,6 +116,8 @@ PlayerManager::child_exited (pid_t pid)
 PlayerManager::State
 PlayerManager::state () const
 {
+	boost::mutex::scoped_lock lm (_players_mutex);
+
 	if (_players.empty ()) {
 		return QUIESCENT;
 	}
@@ -118,5 +132,6 @@ PlayerManager::state () const
 void
 PlayerManager::stop ()
 {
+	boost::mutex::scoped_lock lm (_players_mutex);
 	_players.clear ();
 }
