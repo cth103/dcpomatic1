@@ -187,5 +187,5 @@ Format::all ()
 int
 Format::dcp_padding () const
 {
-	return floor ((_dcp_size.width - (_dcp_size.height * _ratio / 100.0)) / 2.0);
+	return rint ((_dcp_size.width - (_dcp_size.height * _ratio / 100.0)) / 2.0);
 }
