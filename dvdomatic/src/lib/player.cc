@@ -39,6 +39,8 @@ Player::Player (shared_ptr<const FilmState> fs, shared_ptr<const Screen> screen,
 	, _position (0)
 	, _paused (false)
 {
+	assert (fs->format);
+	
 	if (pipe (_mplayer_stdin) < 0) {
 		throw PlayError ("could not create pipe");
 	}
@@ -70,7 +72,7 @@ Player::Player (shared_ptr<const FilmState> fs, shared_ptr<const Screen> screen,
 		stringstream s;
 		s << "/usr/local/bin/mplayer";
 
-		s << " -vo x11 -noaspect -nosound -noautosub -nosub -vo x11 -noborder -slave -quiet -input nodefault-bindings:conf=/dev/null";
+		s << " -vo x11 -noaspect -noautosub -nosub -vo x11 -noborder -slave -quiet -input nodefault-bindings:conf=/dev/null";
 		s << " -sws " << fs->scaler->mplayer_id ();
 
 		stringstream vf;
