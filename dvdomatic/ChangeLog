@@ -1,3 +1,9 @@
+2012-06-10  Carl Hetherington  <cth@carlh.net>
+
+	* Fix up bad padding setup when there isn't any.
+
+	* Restore sound to playomatic; add assert for bad format.
+
 2012-05-26  Carl Hetherington  <cth@carlh.net>
 
 	* Fix crash on attempting to use a non-existant filter.
