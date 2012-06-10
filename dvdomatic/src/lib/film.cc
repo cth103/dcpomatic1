@@ -45,6 +45,7 @@
 #include "examine_content_job.h"
 #include "scaler.h"
 #include "decoder_factory.h"
+#include "config.h"
 
 using namespace std;
 using namespace boost;
@@ -435,7 +436,8 @@ Film::j2k_dir () const
 
 	/* Similarly for the A/B case */
 	if (dcp_ab()) {
-		s << "/ab";
+		pair<string, string> fa = Filter::ffmpeg_strings (Config::instance()->reference_filters());
+		s << "/ab_" << Config::instance()->reference_scaler()->id() << "_" << fa.first << "_" << fa.second;
 	}
 	
 	return _state.dir (s.str ());

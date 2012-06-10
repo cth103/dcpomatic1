@@ -556,7 +556,8 @@ FilmEditor::set_things_sensitive (bool s)
 void
 FilmEditor::edit_filters_clicked ()
 {
-	FilterDialog d (_film);
+	FilterDialog d (_film->filters ());
+	d.ActiveChanged.connect (sigc::mem_fun (*_film, &Film::set_filters));
 	d.run ();
 }
 

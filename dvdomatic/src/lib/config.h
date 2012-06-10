@@ -30,6 +30,8 @@
 
 class Server;
 class Screen;
+class Scaler;
+class Filter;
 
 /** @class Config
  *  @brief A singleton class holding configuration.
@@ -69,7 +71,15 @@ public:
 
 	std::vector<boost::shared_ptr<Screen> > screens () const {
 		return _screens;
-	}      
+	}
+
+	Scaler const * reference_scaler () const {
+		return _reference_scaler;
+	}
+
+	std::vector<Filter const *> reference_filters () const {
+		return _reference_filters;
+	}
 
 	/** @param n New number of local encoding threads */
 	void set_num_local_encoding_threads (int n) {
@@ -106,6 +116,16 @@ public:
 		Changed ();
 	}
 
+	void set_reference_scaler (Scaler const * s) {
+		_reference_scaler = s;
+		Changed ();
+	}
+	
+	void set_reference_filters (std::vector<Filter const *> const & f) {
+		_reference_filters = f;
+		Changed ();
+	}
+
 	void write () const;
 
 	sigc::signal0<void> Changed;
@@ -132,6 +152,12 @@ private:
 
 	/** Screen definitions */
 	std::vector<boost::shared_ptr<Screen> > _screens;
+
+	/** Scaler to use for the "A" part of A/B comparisons */
+	Scaler const * _reference_scaler;
+
+	/** Filters to use for the "A" part of A/B comparisons */
+	std::vector<Filter const *> _reference_filters;
 
 	/** Singleton instance, or 0 */
 	static Config* _instance;

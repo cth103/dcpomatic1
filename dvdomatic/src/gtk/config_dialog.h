@@ -46,6 +46,9 @@ private:
 	void add_screen_clicked ();
 	void remove_screen_clicked ();
 	void screen_selection_changed ();
+	void reference_scaler_changed ();
+	void edit_reference_filters_clicked ();
+	void reference_filters_changed (std::vector<Filter const *>);
 
 	void add_screen_to_store (boost::shared_ptr<Screen>);
 	void add_server_to_store (Server *);
@@ -85,6 +88,9 @@ private:
 	Gtk::SpinButton _num_local_encoding_threads;
 	Gtk::ComboBoxText _colour_lut;
 	Gtk::SpinButton _j2k_bandwidth;
+	Gtk::ComboBoxText _reference_scaler;
+	Gtk::Label _reference_filters;
+	Gtk::Button _reference_filters_button;
 	ServersModelColumns _servers_columns;
 	Glib::RefPtr<Gtk::ListStore> _servers_store;
 	Gtk::TreeView _servers_view;

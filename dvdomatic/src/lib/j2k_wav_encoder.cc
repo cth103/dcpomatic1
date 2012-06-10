@@ -72,8 +72,23 @@ J2KWAVEncoder::J2KWAVEncoder (shared_ptr<const FilmState> s, shared_ptr<const Op
 
 J2KWAVEncoder::~J2KWAVEncoder ()
 {
+	terminate_worker_threads ();
 	delete[] _deinterleave_buffer;
 	close_sound_files ();
+}
+
+void
+J2KWAVEncoder::terminate_worker_threads ()
+{
+	boost::mutex::scoped_lock lock (_worker_mutex);
+	_process_end = true;
+	_worker_condition.notify_all ();
+	lock.unlock ();
+
+	for (list<boost::thread *>::iterator i = _worker_threads.begin(); i != _worker_threads.end(); ++i) {
+		(*i)->join ();
+		delete *i;
+	}
 }
 
 void
@@ -224,16 +239,10 @@ J2KWAVEncoder::process_end ()
 		_worker_condition.notify_all ();
 		_worker_condition.wait (lock);
 	}
-	
-	_process_end = true;
-	_worker_condition.notify_all ();
+
 	lock.unlock ();
-
-	for (list<boost::thread *>::iterator i = _worker_threads.begin(); i != _worker_threads.end(); ++i) {
-		(*i)->join ();
-		delete *i;
-	}
-
+	
+	terminate_worker_threads ();
 	close_sound_files ();
 
 	/* Rename .wav.tmp files to .wav */

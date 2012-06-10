@@ -69,7 +69,7 @@ Screen::as_metadata () const
 	s << "\"" << _name << "\"";
 
 	for (GeometryMap::const_iterator i = _geometries.begin(); i != _geometries.end(); ++i) {
-		s << " " << i->first->nickname()
+		s << " " << i->first->as_metadata()
 		  << " " << i->second.position.x << " " << i->second.position.y
 		  << " " << i->second.size.width << " " << i->second.size.height;
 	}
@@ -92,7 +92,7 @@ Screen::create_from_metadata (string v)
 	while (b.size() > i) {
 		if (b.size() >= (i + 5)) {
 			s->set_geometry (
-				Format::from_nickname (b[i].c_str()),
+				Format::from_metadata (b[i].c_str()),
 				Position (atoi (b[i+1].c_str()), atoi (b[i+2].c_str())),
 				Size (atoi (b[i+3].c_str()), atoi (b[i+4].c_str()))
 				);

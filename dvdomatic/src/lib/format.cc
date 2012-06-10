@@ -35,12 +35,14 @@ vector<Format const *> Format::_formats;
 
 /** @param r Ratio multiplied by 100 (e.g. 185)
  *  @param dcp Size (in pixels) of the images that we should put in a DCP.
+ *  @param id ID (e.g. 185)
  *  @param n Nick name (e.g. Flat)
  *  @param d Text to use as part of a DCP name (e.g. F)
  */
-Format::Format (int r, Size dcp, string n, string d)
+Format::Format (int r, Size dcp, string id, string n, string d)
 	: _ratio (r)
 	, _dcp_size (dcp)
+	, _id (id)
 	, _nickname (n)
 	, _dcp_name (d)
 {
@@ -69,18 +71,18 @@ Format::name () const
 string
 Format::as_metadata () const
 {
-	return _nickname;
+	return _id;
 }
 
 /** Fill our _formats vector with all available formats */
 void
 Format::setup_formats ()
 {
-	_formats.push_back (new Format (133, Size (1998, 1080), "4:3 within Flat", "F"));
-	_formats.push_back (new Format (137, Size (1480, 1080), "Academy", "133"));
-	_formats.push_back (new Format (178, Size (1998, 1080), "16:9", "F"));
-	_formats.push_back (new Format (185, Size (1998, 1080), "Flat", "F"));
-	_formats.push_back (new Format (239, Size (2048, 858), "Scope", "S"));
+	_formats.push_back (new Format (133, Size (1998, 1080), "133-in-flat", "4:3 within Flat", "F"));
+	_formats.push_back (new Format (137, Size (1480, 1080), "137", "Academy", "133"));
+	_formats.push_back (new Format (178, Size (1998, 1080), "178-in-flat", "16:9", "F"));
+	_formats.push_back (new Format (185, Size (1998, 1080), "185", "Flat", "F"));
+	_formats.push_back (new Format (239, Size (2048, 858), "239", "Scope", "S"));
 }
 
 /** @param r Ratio multiplied by 100.
@@ -119,13 +121,32 @@ Format::from_nickname (string n)
 	return *i;
 }
 
+/** @param i Id.
+ *  @return Matching Format, or 0.
+ */
+Format const *
+Format::from_id (string i)
+{
+	vector<Format const *>::iterator j = _formats.begin ();
+	while (j != _formats.end() && (*j)->id() != i) {
+		++j;
+	}
+
+	if (j == _formats.end ()) {
+		return 0;
+	}
+
+	return *j;
+}
+
+
 /** @param m Metadata, as returned from as_metadata().
  *  @return Matching Format, or 0.
  */
 Format const *
 Format::from_metadata (string m)
 {
-	return from_nickname (m);
+	return from_id (m);
 }
 
 /** @param f A Format.

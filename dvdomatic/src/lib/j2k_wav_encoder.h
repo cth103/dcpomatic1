@@ -53,6 +53,7 @@ private:
 
 	void encoder_thread (Server *);
 	void close_sound_files ();
+	void terminate_worker_threads ();
 
 	std::vector<SNDFILE*> _sound_files;
 	int _deinterleave_buffer_size;

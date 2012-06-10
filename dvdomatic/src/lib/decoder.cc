@@ -63,6 +63,7 @@ Decoder::Decoder (boost::shared_ptr<const FilmState> s, boost::shared_ptr<const 
 	, _buffer_sink_context (0)
 	, _have_setup_video_filters (false)
 	, _delay_line (0)
+	, _delay_in_bytes (0)
 {
 	if (_opt->decode_video_frequency != 0 && _fs->length == 0) {
 		throw DecodeError ("cannot do a partial decode if length == 0");
@@ -74,30 +75,42 @@ Decoder::~Decoder ()
 	delete _delay_line;
 }
 
+void
+Decoder::process_begin ()
+{
+	/* This assumes 2 bytes per sample */
+	_delay_in_bytes = _fs->audio_delay * _fs->audio_sample_rate * _fs->audio_channels * 2 / 1000;
+	delete _delay_line;
+	_delay_line = new DelayLine (_delay_in_bytes);
+}
+
+void
+Decoder::process_end ()
+{
+	if (_delay_in_bytes < 0) {
+		uint8_t remainder[-_delay_in_bytes];
+		_delay_line->get_remaining (remainder);
+		Audio (remainder, _delay_in_bytes);
+	}
+}
+
 /** Start decoding */
 void
 Decoder::go ()
 {
+	process_begin ();
+
 	if (_job && _ignore_length) {
 		_job->set_progress_unknown ();
 	}
 
-	/* This assumes 2 bytes per sample */
-	int const delay_in_bytes = _fs->audio_delay * _fs->audio_sample_rate * _fs->audio_channels * 2 / 1000;
-	delete _delay_line;
-	_delay_line = new DelayLine (delay_in_bytes);
-	
 	while (pass () == false) {
 		if (_job && !_ignore_length) {
 			_job->set_progress (float (_video_frame) / decoding_frames ());
 		}
 	}
 
-	if (delay_in_bytes < 0) {
-		uint8_t remainder[-delay_in_bytes];
-		_delay_line->get_remaining (remainder);
-		Audio (remainder, delay_in_bytes);
-	}
+	process_end ();
 }
 
 /** @return Number of frames that we will be decoding */

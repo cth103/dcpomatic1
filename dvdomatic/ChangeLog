@@ -1,5 +1,26 @@
 2012-05-26  Carl Hetherington  <cth@carlh.net>
 
+	* Fix crash on attempting to use a non-existant filter.
+
+	* src/lib/filter.cc: Fix typo in filter name.
+
+	* Allow configuration of the reference scalers and filters in A/B mode.
+
+	* Fix identification of formats in metadata.
+
+2012-05-26  Carl Hetherington  <cth@carlh.net>
+
+	* Version 0.23 released.
+
+2012-05-28  Carl Hetherington  <cth@carlh.net>
+
+	* src/lib/player_manager.cc: possible fix to crash when stopping
+	playback.
+
+	* Fix crash in A/B mode.
+
+2012-05-26  Carl Hetherington  <cth@carlh.net>
+
 	* Version 0.21 released.
 
 2012-05-25  Carl Hetherington  <cth@carlh.net>

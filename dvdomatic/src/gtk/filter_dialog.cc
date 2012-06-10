@@ -24,10 +24,11 @@
 #include "lib/film.h"
 #include "filter_dialog.h"
 
-FilterDialog::FilterDialog (Film* f)
+using namespace std;
+
+FilterDialog::FilterDialog (vector<Filter const *> const & f)
 	: Gtk::Dialog ("Filters")
-	, _filters (f->filters ())
-	, _film (f)
+	, _filters (f)
 {
 	get_vbox()->pack_start (_filters.widget ());
 
@@ -42,5 +43,5 @@ FilterDialog::FilterDialog (Film* f)
 void
 FilterDialog::active_changed ()
 {
-	_film->set_filters (_filters.active ());
+	ActiveChanged (_filters.active ());
 }

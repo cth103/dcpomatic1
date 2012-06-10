@@ -22,8 +22,10 @@
 #include "j2k_wav_encoder.h"
 #include "film.h"
 #include "format.h"
+#include "filter.h"
 #include "ab_transcoder.h"
 #include "film_state.h"
+#include "config.h"
 
 using namespace std;
 using namespace boost;
@@ -36,9 +38,8 @@ ABTranscodeJob::ABTranscodeJob (shared_ptr<const FilmState> s, shared_ptr<const 
 	: Job (s, o, l)
 {
 	_fs_b.reset (new FilmState (*_fs));
-	_fs_b->filters.clear ();
-	/* This is somewhat arbitrary, but hey ho */
-	_fs_b->scaler = Scaler::from_id ("bicubic");
+	_fs_b->scaler = Config::instance()->reference_scaler ();
+	_fs_b->filters = Config::instance()->reference_filters ();
 }
 
 string

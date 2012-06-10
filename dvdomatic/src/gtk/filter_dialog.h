@@ -32,11 +32,12 @@ class Film;
 class FilterDialog : public Gtk::Dialog
 {
 public:
-	FilterDialog (Film *);
+	FilterDialog (std::vector<Filter const *> const &);
+
+	sigc::signal1<void, std::vector<Filter const *> > ActiveChanged;
 
 private:
 	void active_changed ();
 	
 	FilterView _filters;
-	Film* _film;
 };

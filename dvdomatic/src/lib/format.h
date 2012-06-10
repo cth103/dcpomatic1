@@ -33,7 +33,7 @@
 class Format
 {
 public:
-	Format (int, Size, std::string, std::string);
+	Format (int, Size, std::string, std::string, std::string);
 
 	/** @return the aspect ratio multiplied by 100
 	 *  (e.g. 239 for Cinemascope 2.39:1)
@@ -53,6 +53,10 @@ public:
 	 */
 	Size dcp_size () const {
 		return _dcp_size;
+	}
+
+	std::string id () const {
+		return _id;
 	}
 
 	/** @return Full name to present to the user */
@@ -78,6 +82,7 @@ public:
 	static Format const * from_nickname (std::string n);
 	static Format const * from_metadata (std::string m);
 	static Format const * from_index (int i);
+	static Format const * from_id (std::string i);
 	static int as_index (Format const * f);
 	static std::vector<Format const *> all ();
 	static void setup_formats ();
@@ -91,6 +96,8 @@ private:
 	 *  to the ratio when we are doing things like 16:9 in a Flat frame.
 	 */
 	Size _dcp_size;
+	/** id for use in metadata */
+	std::string _id;
 	/** nickname (e.g. Flat, Scope) */
 	std::string _nickname;
 	/** text to use for this format as part of a DCP name (e.g. F, S) */
