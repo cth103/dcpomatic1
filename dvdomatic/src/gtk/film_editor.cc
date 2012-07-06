@@ -533,9 +533,9 @@ void
 FilmEditor::set_things_sensitive (bool s)
 {
 	_name.set_sensitive (s);
+	_frames_per_second.set_sensitive (s);
 	_format.set_sensitive (s);
 	_content.set_sensitive (s);
-	_copy_from_dvd_button.set_sensitive (s);
 	_left_crop.set_sensitive (s);
 	_right_crop.set_sensitive (s);
 	_top_crop.set_sensitive (s);
@@ -550,6 +550,11 @@ FilmEditor::set_things_sensitive (bool s)
 	_dcp_for.set_sensitive (s);
 	_dcp_for_frames.set_sensitive (s);
 	_dcp_ab.set_sensitive (s);
+	_audio_gain.set_sensitive (s);
+	_audio_delay.set_sensitive (s);
+	_copy_from_dvd_button.set_sensitive (s);
+	_examine_content_button.set_sensitive (s);
+	_make_dcp_from_existing_button.set_sensitive (s);
 }
 
 /** Called when the `Edit filters' button has been clicked */
