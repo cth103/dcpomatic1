@@ -37,6 +37,7 @@ public:
 	}
 
 	void set_film (Film *);
+	void setup_visibility ();
 
 private:
 	void position_slider_changed ();

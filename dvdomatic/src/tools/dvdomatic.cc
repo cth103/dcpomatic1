@@ -269,6 +269,7 @@ main (int argc, char* argv[])
 	/* XXX: calling these here is a bit of a hack */
 	film_editor->setup_visibility ();
 	film_player->setup_visibility ();
+	film_viewer->setup_visibility ();
 
 	film_editor->FileChanged.connect (ptr_fun (file_changed));
 	if (film) {

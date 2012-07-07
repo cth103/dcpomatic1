@@ -126,6 +126,8 @@ FilmViewer::film_changed (Film::Property p)
 		reload_current_thumbnail ();
 	} else if (p == Film::FORMAT) {
 		reload_current_thumbnail ();
+	} else if (p == Film::CONTENT) {
+		setup_visibility ();
 	}
 }
 
@@ -206,4 +208,16 @@ FilmViewer::scroller_size_allocate (Gtk::Allocation a)
 	}
 	
 	_last_scroller_allocation = a;
+}
+
+void
+FilmViewer::setup_visibility ()
+{
+	if (!_film) {
+		return;
+	}
+
+	ContentType const c = _film->content_type ();
+	_update_button.property_visible() = (c == VIDEO);
+	_position_slider.property_visible() = (c == VIDEO);
 }
