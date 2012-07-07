@@ -164,17 +164,11 @@ Film::set_name (string n)
 void
 Film::set_content (string c)
 {
-	bool const absolute = filesystem::path(c).has_root_directory ();
-	if (absolute && !starts_with (c, _state.directory)) {
-		throw BadContentLocationError ();
+	if (filesystem::path(c).has_root_directory () && starts_with (c, _state.directory)) {
+		c = c.substr (_state.directory.length());
 	}
 
-	string f = c;
-	if (absolute) {
-		f = f.substr (_state.directory.length());
-	}
-
-	if (f == _state.content) {
+	if (c == _state.content) {
 		return;
 	}
 	
@@ -182,7 +176,7 @@ Film::set_content (string c)
 	   about the content.
 	*/
 	shared_ptr<FilmState> s = state_copy ();
-	s->content = f;
+	s->content = c;
 	shared_ptr<Options> o (new Options ("", "", ""));
 	o->out_size = Size (1024, 1024);
 
@@ -195,7 +189,7 @@ Film::set_content (string c)
 	_state.audio_sample_rate = d->audio_sample_rate ();
 	_state.audio_sample_format = d->audio_sample_format ();
 
-	_state.content = f;
+	_state.content = c;
 	
 	signal_changed (SIZE);
 	signal_changed (LENGTH);
@@ -341,7 +335,7 @@ Film::metadata_file () const
 string
 Film::content () const
 {
-	return _state.file (_state.content);
+	return _state.content_path ();
 }
 
 /** The pre-processing GUI part of a thumbs update.
@@ -429,7 +423,7 @@ Film::j2k_dir () const
 	   settings.
 	*/
 	s << _state.format->nickname()
-	  << "_" << _state.content
+	  << "_" << _state.content_path()
 	  << "_" << left_crop() << "_" << right_crop() << "_" << top_crop() << "_" << bottom_crop()
 	  << "_" << f.first << "_" << f.second
 	  << "_" << _state.scaler->id();

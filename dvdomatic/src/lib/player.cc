@@ -118,7 +118,7 @@ Player::Player (shared_ptr<const FilmState> fs, shared_ptr<const Screen> screen,
 		}
 		
 		s << " -vf " << vf.str();
-		s << " \"" << fs->file (fs->content) << "\" ";
+		s << " \"" << fs->content_path() << "\" ";
 
 		string cmd (s.str ());
 

@@ -213,3 +213,13 @@ FilmState::file (string f) const
 	s << directory << "/" << f;
 	return s.str ();
 }
+
+string
+FilmState::content_path () const
+{
+	if (filesystem::path(content).has_root_directory ()) {
+		return content;
+	}
+
+	return file (content);
+}

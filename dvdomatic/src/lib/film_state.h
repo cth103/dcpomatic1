@@ -72,6 +72,8 @@ public:
 
 	std::string file (std::string f) const;
 	std::string dir (std::string d) const;
+
+	std::string content_path () const;
 	
 	bool content_is_dvd () const;
 
@@ -89,7 +91,9 @@ public:
 	std::string directory;
 	/** Name for DVD-o-matic */
 	std::string name;
-	/** File or directory containing content (relative to our directory) */
+	/** File or directory containing content; may be relative to our directory
+	 *  or an absolute path.
+	 */
 	std::string content;
 	/** DCP long name (e.g. BLUES-BROTHERS_FTR_F_EN-XX ...) */
 	std::string dcp_long_name;

@@ -52,7 +52,7 @@ using namespace boost;
 TIFFDecoder::TIFFDecoder (boost::shared_ptr<const FilmState> fs, boost::shared_ptr<const Options> o, Job* j, Log* l, bool minimal, bool ignore_length)
 	: Decoder (fs, o, j, l, minimal, ignore_length)
 {
-	string const dir = _fs->dir (_fs->content);
+	string const dir = _fs->content_path ();
 	
 	if (!filesystem::is_directory (dir)) {
 		throw DecodeError ("TIFF content must be in a directory");
@@ -190,7 +190,7 @@ string
 TIFFDecoder::file_path (string f) const
 {
 	stringstream s;
-	s << _fs->content << "/" << f;
+	s << _fs->content_path() << "/" << f;
 	return _fs->file (s.str ());
 }
 

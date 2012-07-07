@@ -88,8 +88,8 @@ FFmpegDecoder::setup_general ()
 	
 	av_register_all ();
 
-	if ((r = avformat_open_input (&_format_context, _fs->file (_fs->content).c_str(), 0, 0)) != 0) {
-		throw OpenFileError (_fs->file (_fs->content));
+	if ((r = avformat_open_input (&_format_context, _fs->content_path().c_str(), 0, 0)) != 0) {
+		throw OpenFileError (_fs->content_path ());
 	}
 
 	if (avformat_find_stream_info (_format_context, 0) < 0) {
