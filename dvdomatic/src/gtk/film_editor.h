@@ -58,6 +58,7 @@ private:
 	void scaler_changed ();
 	void audio_gain_changed ();
 	void audio_delay_changed ();
+	void still_duration_changed ();
 
 	/* Handle changes to the model */
 	void film_changed (Film::Property);
@@ -71,6 +72,7 @@ private:
 	void set_things_sensitive (bool);
 
 	Gtk::Widget & video_widget (Gtk::Widget &);
+	Gtk::Widget & still_widget (Gtk::Widget &);
 
 	/** The film we are editing */
 	Film* _film;
@@ -116,6 +118,8 @@ private:
 	Gtk::Label _length;
 	/** The Film's audio details */
 	Gtk::Label _audio;
+	/** The Film's duration for still sources */
+	Gtk::SpinButton _still_duration;
 
 	/** Button to start an examination of the Film's content */
 	Gtk::Button _examine_content_button;
@@ -133,4 +137,5 @@ private:
 	Gtk::CheckButton _dcp_ab;
 
 	std::list<Gtk::Widget*> _video_widgets;
+	std::list<Gtk::Widget*> _still_widgets;
 };

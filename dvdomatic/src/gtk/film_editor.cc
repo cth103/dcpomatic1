@@ -76,6 +76,8 @@ FilmEditor::FilmEditor (Film* f)
 	_audio_gain.set_increments (1, 3);
 	_audio_delay.set_range (-1000, 1000);
 	_audio_delay.set_increments (1, 20);
+	_still_duration.set_range (0, 60 * 60);
+	_still_duration.set_increments (1, 5);
 
 	vector<Format const *> fmt = Format::all ();
 	for (vector<Format const *>::iterator i = fmt.begin(); i != fmt.end(); ++i) {
@@ -127,6 +129,7 @@ FilmEditor::FilmEditor (Film* f)
 	_dcp_ab.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::dcp_ab_toggled));
 	_audio_gain.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::audio_gain_changed));
 	_audio_delay.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::audio_delay_changed));
+	_still_duration.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::still_duration_changed));
 
 	/* Set up the table */
 
@@ -169,6 +172,9 @@ FilmEditor::FilmEditor (Film* f)
 	c->pack_start (_bottom_crop, true, true);
 	t->attach (*c, 1, 2, n, n + 1);
 	++n;
+
+	/* VIDEO-only stuff */
+	int const special = n;
 	t->attach (video_widget (left_aligned_label ("Filters")), 0, 1, n, n + 1);
 	HBox* fb = manage (new HBox);
 	fb->set_spacing (4);
@@ -195,6 +201,13 @@ FilmEditor::FilmEditor (Film* f)
 	++n;
 	t->attach (video_widget (left_aligned_label ("Audio")), 0, 1, n, n + 1);
 	t->attach (video_widget (_audio), 1, 2, n, n + 1);
+
+	/* STILL-only stuff */
+	n = special;
+	t->attach (still_widget (left_aligned_label ("Duration")), 0, 1, n, n + 1);
+	t->attach (still_widget (_still_duration), 1, 2, n, n + 1);
+	t->attach (still_widget (left_aligned_label ("s")), 2, 3, n, n + 1);
+	++n;
 
 	t->show_all ();
 	_vbox.pack_start (*t, false, false);
@@ -411,6 +424,9 @@ FilmEditor::film_changed (Film::Property p)
 	case Film::AUDIO_DELAY:
 		_audio_delay.set_value (_film->audio_delay ());
 		break;
+	case Film::STILL_DURATION:
+		_still_duration.set_value (_film->still_duration ());
+		break;
 	}
 }
 
@@ -511,6 +527,7 @@ FilmEditor::set_film (Film* f)
 	film_changed (Film::SCALER);
 	film_changed (Film::AUDIO_GAIN);
 	film_changed (Film::AUDIO_DELAY);
+	film_changed (Film::STILL_DURATION);
 }
 
 /** Updates the sensitivity of lots of widgets to a given value.
@@ -539,6 +556,7 @@ FilmEditor::set_things_sensitive (bool s)
 	_dcp_ab.set_sensitive (s);
 	_audio_gain.set_sensitive (s);
 	_audio_delay.set_sensitive (s);
+	_still_duration.set_sensitive (s);
 	_copy_from_dvd_button.set_sensitive (s);
 	_examine_content_button.set_sensitive (s);
 	_make_dcp_from_existing_button.set_sensitive (s);
@@ -625,6 +643,13 @@ FilmEditor::video_widget (Widget& w)
 	return w;
 }
 
+Widget&
+FilmEditor::still_widget (Widget& w)
+{
+	_still_widgets.push_back (&w);
+	return w;
+}
+
 void
 FilmEditor::setup_visibility ()
 {
@@ -633,8 +658,20 @@ FilmEditor::setup_visibility ()
 	}
 			
 	ContentType const c = _film->content_type ();
+
 	for (list<Widget *>::iterator i = _video_widgets.begin(); i != _video_widgets.end(); ++i) {
 		(*i)->property_visible() = (c == VIDEO);
 	}
+
+	for (list<Widget *>::iterator i = _still_widgets.begin(); i != _still_widgets.end(); ++i) {
+		(*i)->property_visible() = (c == STILL);
+	}
 }
 
+void
+FilmEditor::still_duration_changed ()
+{
+	if (_film) {
+		_film->set_still_duration (_still_duration.get_value ());
+	}
+}

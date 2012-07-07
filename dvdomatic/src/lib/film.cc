@@ -679,3 +679,10 @@ Film::content_type () const
 
 	return VIDEO;
 }
+
+void
+Film::set_still_duration (int d)
+{
+	_state.still_duration = d;
+	signal_changed (STILL_DURATION);
+}

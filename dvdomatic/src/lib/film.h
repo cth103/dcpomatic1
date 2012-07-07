@@ -125,6 +125,10 @@ public:
 	int audio_delay () const {
 		return _state.audio_delay;
 	}
+
+	int still_duration () const {
+		return _state.still_duration;
+	}
 	
 	void set_filters (std::vector<Filter const *> const &);
 
@@ -161,6 +165,7 @@ public:
 	void set_dcp_content_type (DCPContentType const *);
 	void set_audio_gain (float);
 	void set_audio_delay (int);
+	void set_still_duration (int);
 
 	/** @return size, in pixels, of the source (ignoring cropping) */
 	Size size () const {
@@ -235,7 +240,8 @@ public:
 		LENGTH,
 		FRAMES_PER_SECOND,
 		AUDIO_CHANNELS,
-		AUDIO_SAMPLE_RATE
+		AUDIO_SAMPLE_RATE,
+		STILL_DURATION
 	};
 
 	boost::shared_ptr<FilmState> state_copy () const;

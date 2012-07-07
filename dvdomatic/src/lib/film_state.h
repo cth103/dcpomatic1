@@ -64,6 +64,7 @@ public:
 		, dcp_ab (false)
 		, audio_gain (0)
 		, audio_delay (0)
+		, still_duration (10)
 		, length (0)
 		, audio_channels (0)
 		, audio_sample_rate (0)
@@ -128,6 +129,8 @@ public:
 	float audio_gain;
 	/** Delay to apply to audio (positive moves audio later) in milliseconds */
 	int audio_delay;
+	/** Duration to make still-sourced films (in seconds) */
+	int still_duration;
 
 	/* Data which is cached to speed things up */
 
