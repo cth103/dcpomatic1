@@ -115,7 +115,7 @@ FilmViewer::film_changed (Film::Property p)
 	if (p == Film::LEFT_CROP || p == Film::RIGHT_CROP || p == Film::TOP_CROP || p == Film::BOTTOM_CROP) {
 		reload_current_thumbnail ();
 	} else if (p == Film::THUMBS) {
-		if (_film && _film->num_thumbs() > 0) {
+		if (_film && _film->num_thumbs() > 1) {
 			_position_slider.set_range (0, _film->num_thumbs () - 1);
 		} else {
 			_image.clear ();
