@@ -47,7 +47,7 @@ extern "C" {
 #include "exceptions.h"
 #include "scaler.h"
 #include "format.h"
-#include "content_type.h"
+#include "dcp_content_type.h"
 #include "filter.h"
 #include "screen.h"
 #include "film_state.h"
@@ -427,7 +427,7 @@ void
 dvdomatic_setup ()
 {
 	Format::setup_formats ();
-	ContentType::setup_content_types ();
+	DCPContentType::setup_dcp_content_types ();
 	Scaler::setup_scalers ();
 	Filter::setup_filters ();
 

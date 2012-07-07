@@ -33,7 +33,7 @@
 extern "C" {
 #include <libavcodec/avcodec.h>
 }
-#include "content_type.h"
+#include "dcp_content_type.h"
 #include "film_state.h"
 
 class Format;
@@ -140,7 +140,7 @@ public:
 	}
 
 	/** @return the type of content that this Film represents (feature, trailer etc.) */
-	ContentType const * dcp_content_type () {
+	DCPContentType const * dcp_content_type () {
 		return _state.dcp_content_type;
 	}
 
@@ -157,7 +157,7 @@ public:
 	void set_format (Format const *);
 	void set_dcp_long_name (std::string);
 	void set_guess_dcp_long_name (bool);
-	void set_dcp_content_type (ContentType const *);
+	void set_dcp_content_type (DCPContentType const *);
 	void set_audio_gain (float);
 	void set_audio_delay (int);
 

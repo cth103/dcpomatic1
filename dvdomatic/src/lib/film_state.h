@@ -35,7 +35,7 @@ extern "C" {
 #include "util.h"
 
 class Format;
-class ContentType;
+class DCPContentType;
 class Filter;
 
 /** @class FilmState
@@ -96,7 +96,7 @@ public:
 	/** true if we are guessing the dcp_long_name from other state */
 	bool guess_dcp_long_name;
 	/** The type of content that this Film represents (feature, trailer etc.) */
-	ContentType const * dcp_content_type;
+	DCPContentType const * dcp_content_type;
 	/** Frames per second of the source */
 	float frames_per_second;
 	/** The format to present this Film in (flat, scope, etc.) */

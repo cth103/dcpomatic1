@@ -9,8 +9,8 @@ def build(bld):
 		 ab_transcode_job.cc
 		 ab_transcoder.cc
 		 config.cc
-		 content_type.cc
 		 copy_from_dvd_job.cc
+		 dcp_content_type.cc
 		 dcp_video_frame.cc
 		 decoder.cc
                  decoder_factory.cc

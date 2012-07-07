@@ -24,13 +24,13 @@
 #include <string>
 #include <vector>
 
-/** @class ContentType
+/** @class DCPContentType
  *  @brief A description of the type of content for a DCP (e.g. feature, trailer etc.)
  */
-class ContentType
+class DCPContentType
 {
 public:
-	ContentType (std::string, std::string, std::string);
+	DCPContentType (std::string, std::string, std::string);
 
 	/** @return user-visible `pretty' name */
 	std::string pretty_name () const {
@@ -47,18 +47,18 @@ public:
 		return _dcp_name;
 	}
 
-	static ContentType const * from_pretty_name (std::string);
-	static ContentType const * from_index (int);
-	static int as_index (ContentType const *);
-	static std::vector<ContentType const *> all ();
-	static void setup_content_types ();
+	static DCPContentType const * from_pretty_name (std::string);
+	static DCPContentType const * from_index (int);
+	static int as_index (DCPContentType const *);
+	static std::vector<DCPContentType const *> all ();
+	static void setup_dcp_content_types ();
 
 private:
 	std::string _pretty_name;
 	std::string _opendcp_name;
 	std::string _dcp_name;
 
-	/** All available content types */
-	static std::vector<ContentType const *> _content_types;
+	/** All available DCP content types */
+	static std::vector<DCPContentType const *> _dcp_content_types;
 };
      

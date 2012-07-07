@@ -27,7 +27,7 @@ extern "C" {
 }
 #include "make_dcp_job.h"
 #include "film_state.h"
-#include "content_type.h"
+#include "dcp_content_type.h"
 #include "exceptions.h"
 
 using namespace std;

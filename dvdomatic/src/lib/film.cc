@@ -227,7 +227,7 @@ Film::set_dcp_long_name (string n)
  *  (feature, trailer etc.)
  */
 void
-Film::set_dcp_content_type (ContentType const * t)
+Film::set_dcp_content_type (DCPContentType const * t)
 {
 	_state.dcp_content_type = t;
 	signal_changed (DCP_CONTENT_TYPE);

@@ -87,8 +87,8 @@ FilmEditor::FilmEditor (Film* f)
 	_frames_per_second.set_digits (2);
 	_frames_per_second.set_range (0, 60);
 
-	vector<ContentType const *> const ct = ContentType::all ();
-	for (vector<ContentType const *>::const_iterator i = ct.begin(); i != ct.end(); ++i) {
+	vector<DCPContentType const *> const ct = DCPContentType::all ();
+	for (vector<DCPContentType const *>::const_iterator i = ct.begin(); i != ct.end(); ++i) {
 		_dcp_content_type.append_text ((*i)->pretty_name ());
 	}
 
@@ -400,7 +400,7 @@ FilmEditor::film_changed (Film::Property p)
 		_guess_dcp_long_name.set_active (_film->guess_dcp_long_name ());
 		break;
 	case Film::DCP_CONTENT_TYPE:
-		_dcp_content_type.set_active (ContentType::as_index (_film->dcp_content_type ()));
+		_dcp_content_type.set_active (DCPContentType::as_index (_film->dcp_content_type ()));
 		break;
 	case Film::THUMBS:
 		break;
@@ -471,7 +471,7 @@ FilmEditor::dcp_content_type_changed ()
 	if (_film) {
 		int const n = _dcp_content_type.get_active_row_number ();
 		if (n >= 0) {
-			_film->set_dcp_content_type (ContentType::from_index (n));
+			_film->set_dcp_content_type (DCPContentType::from_index (n));
 		}
 	}
 }

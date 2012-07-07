@@ -33,7 +33,7 @@
 #include "scaler.h"
 #include "filter.h"
 #include "format.h"
-#include "content_type.h"
+#include "dcp_content_type.h"
 #include "util.h"
 
 using namespace std;
@@ -101,7 +101,7 @@ FilmState::read_metadata (string k, string v)
 	} else if (k == "guess_dcp_long_name") {
 		guess_dcp_long_name = (v == "1");
 	} else if (k == "dcp_content_type") {
-		dcp_content_type = ContentType::from_pretty_name (v);
+		dcp_content_type = DCPContentType::from_pretty_name (v);
 	} else if (k == "frames_per_second") {
 		frames_per_second = atof (v.c_str ());
 	} else if (k == "format") {
