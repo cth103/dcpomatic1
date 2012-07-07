@@ -186,19 +186,6 @@ public:
 	{}
 };
 
-/** @class BadContentLocationError.
- *  @brief Indicates that a content location outside the Film's directory has been specified.
- */
-class BadContentLocationError : public std::exception
-{
-public:
-	~BadContentLocationError () throw () {}
-	
-	char const * what () const throw () {
-		return "bad content location";
-	}
-};
-
 /** @class NetworkError.
  *  @brief Indicates that some problem with communication between an encode client and server.
  */

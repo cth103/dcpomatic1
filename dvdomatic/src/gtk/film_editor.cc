@@ -154,8 +154,8 @@ FilmEditor::FilmEditor (Film* f)
 	t->attach (left_aligned_label ("Content Type"), 0, 1, n, n + 1);
 	t->attach (_dcp_content_type, 1, 2, n, n + 1);
 	++n;
-	t->attach (left_aligned_label ("Frames Per Second"), 0, 1, n, n + 1);
-	t->attach (_frames_per_second, 1, 2, n, n + 1);
+	t->attach (video_widget (left_aligned_label ("Frames Per Second")), 0, 1, n, n + 1);
+	t->attach (video_widget (_frames_per_second), 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Format"), 0, 1, n, n + 1);
 	t->attach (_format, 1, 2, n, n + 1);
@@ -173,32 +173,32 @@ FilmEditor::FilmEditor (Film* f)
 	c->pack_start (_bottom_crop, true, true);
 	t->attach (*c, 1, 2, n, n + 1);
 	++n;
-	t->attach (left_aligned_label ("Filters"), 0, 1, n, n + 1);
+	t->attach (video_widget (left_aligned_label ("Filters")), 0, 1, n, n + 1);
 	HBox* fb = manage (new HBox);
 	fb->set_spacing (4);
-	fb->pack_start (_filters, true, true);
-	fb->pack_start (_filters_button, false, false);
+	fb->pack_start (video_widget (_filters), true, true);
+	fb->pack_start (video_widget (_filters_button), false, false);
 	t->attach (*fb, 1, 2, n, n + 1);
 	++n;
-	t->attach (left_aligned_label ("Scaler"), 0, 1, n, n + 1);
-	t->attach (_scaler, 1, 2, n, n + 1);
+	t->attach (video_widget (left_aligned_label ("Scaler")), 0, 1, n, n + 1);
+	t->attach (video_widget (_scaler), 1, 2, n, n + 1);
 	++n;
-	t->attach (left_aligned_label ("Audio Gain"), 0, 1, n, n + 1);
-	t->attach (_audio_gain, 1, 2, n, n + 1);
-	t->attach (left_aligned_label ("dB"), 2, 3, n, n + 1);
+	t->attach (video_widget (left_aligned_label ("Audio Gain")), 0, 1, n, n + 1);
+	t->attach (video_widget (_audio_gain), 1, 2, n, n + 1);
+	t->attach (video_widget (left_aligned_label ("dB")), 2, 3, n, n + 1);
 	++n;
-	t->attach (left_aligned_label ("Audio Delay"), 0, 1, n, n + 1);
-	t->attach (_audio_delay, 1, 2, n, n + 1);
-	t->attach (left_aligned_label ("ms"), 2, 3, n, n + 1);
+	t->attach (video_widget (left_aligned_label ("Audio Delay")), 0, 1, n, n + 1);
+	t->attach (video_widget (_audio_delay), 1, 2, n, n + 1);
+	t->attach (video_widget (left_aligned_label ("ms")), 2, 3, n, n + 1);
 	++n;
-	t->attach (left_aligned_label ("Original Size"), 0, 1, n, n + 1);
-	t->attach (_original_size, 1, 2, n, n + 1);
+	t->attach (video_widget (left_aligned_label ("Original Size")), 0, 1, n, n + 1);
+	t->attach (video_widget (_original_size), 1, 2, n, n + 1);
 	++n;
-	t->attach (left_aligned_label ("Length"), 0, 1, n, n + 1);
-	t->attach (_length, 1, 2, n, n + 1);
+	t->attach (video_widget (left_aligned_label ("Length")), 0, 1, n, n + 1);
+	t->attach (video_widget (_length), 1, 2, n, n + 1);
 	++n;
-	t->attach (left_aligned_label ("Audio"), 0, 1, n, n + 1);
-	t->attach (_audio, 1, 2, n, n + 1);
+	t->attach (video_widget (left_aligned_label ("Audio")), 0, 1, n, n + 1);
+	t->attach (video_widget (_audio), 1, 2, n, n + 1);
 
 	t->show_all ();
 	_vbox.pack_start (*t, false, false);
@@ -210,19 +210,19 @@ FilmEditor::FilmEditor (Film* f)
 
 	HBox* h = manage (new HBox);
 	h->set_spacing (12);
-	h->pack_start (_examine_content_button, false, false);
-	h->pack_start (_copy_from_dvd_button, false, false);
-	h->pack_start (_make_dcp_from_existing_button, false, false);
+	h->pack_start (video_widget (_examine_content_button), false, false);
+	h->pack_start (video_widget (_copy_from_dvd_button), false, false);
+	h->pack_start (video_widget (_make_dcp_from_existing_button), false, false);
 	_vbox.pack_start (*h, false, false);
 	
 	h = manage (new HBox);
 	h->set_spacing (12);
 	h->pack_start (_make_dcp_button, false, false);
-	h->pack_start (_dcp_whole, false, false);
-	h->pack_start (_dcp_for, false, false);
-	h->pack_start (_dcp_for_frames, true, true);
-	h->pack_start (left_aligned_label ("frames"), false, false);
-	h->pack_start (_dcp_ab);
+	h->pack_start (video_widget (_dcp_whole), false, false);
+	h->pack_start (video_widget (_dcp_for), false, false);
+	h->pack_start (video_widget (_dcp_for_frames), true, true);
+	h->pack_start (video_widget (left_aligned_label ("frames")), false, false);
+	h->pack_start (video_widget (_dcp_ab));
 	_vbox.pack_start (*h, false, false);
 }
 
@@ -276,19 +276,9 @@ FilmEditor::content_changed ()
 	if (!_film) {
 		return;
 	}
+
 	try {
-		/* XXX: hack; set to parent directory if we get a TIFF */
-		string const f = _content.get_filename ();
-#if BOOST_FILESYSTEM_VERSION == 3		
-		string const ext = filesystem::path(f).extension().string();
-#else
-		string const ext = filesystem::path(f).extension();
-#endif		
-		if (ext == ".tif" || ext == ".tiff") {
-			_film->set_content (filesystem::path (f).branch_path().string ());
-		} else {
-			_film->set_content (f);
-		}
+		_film->set_content (_content.get_filename ());
 	} catch (std::exception& e) {
 		_content.set_filename (_film->directory ());
 		stringstream m;
@@ -348,6 +338,7 @@ FilmEditor::film_changed (Film::Property p)
 	switch (p) {
 	case Film::CONTENT:
 		_content.set_filename (_film->content ());
+		setup_visibility ();
 		break;
 	case Film::FORMAT:
 		_format.set_active (Format::as_index (_film->format ()));
@@ -630,3 +621,20 @@ FilmEditor::audio_delay_changed ()
 		_film->set_audio_delay (_audio_delay.get_value ());
 	}
 }
+
+Widget&
+FilmEditor::video_widget (Widget& w)
+{
+	_video_widgets.push_back (&w);
+	return w;
+}
+
+void
+FilmEditor::setup_visibility ()
+{
+	ContentType const c = _film->content_type ();
+	for (list<Widget *>::iterator i = _video_widgets.begin(); i != _video_widgets.end(); ++i) {
+		(*i)->property_visible() = (c == VIDEO);
+	}
+}
+

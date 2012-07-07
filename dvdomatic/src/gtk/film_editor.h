@@ -66,6 +66,9 @@ private:
 	void make_dcp_clicked (bool);
 
 	void set_things_sensitive (bool);
+	void setup_visibility ();
+
+	Gtk::Widget & video_widget (Gtk::Widget &);
 
 	/** The film we are editing */
 	Film* _film;
@@ -128,4 +131,6 @@ private:
 	Gtk::SpinButton _dcp_for_frames;
 	/** Selector to generate an A/B comparison DCP */
 	Gtk::CheckButton _dcp_ab;
+
+	std::list<Gtk::Widget*> _video_widgets;
 };

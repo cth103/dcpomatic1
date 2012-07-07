@@ -46,6 +46,11 @@ extern double seconds (struct timeval);
 extern void dvdomatic_setup ();
 extern std::vector<std::string> split_at_spaces_considering_quotes (std::string);
 
+enum ContentType {
+	STILL,
+	VIDEO
+};
+
 #ifdef DEBUG_HASH
 extern void md5_data (std::string, void const *, int);
 #endif

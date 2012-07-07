@@ -63,6 +63,7 @@ public:
 	}
 
 	std::string content () const;
+	ContentType content_type () const;
 
 	/** @return name for DVD-o-matic */
 	std::string name () const {

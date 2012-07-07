@@ -664,3 +664,18 @@ Film::audio_files () const
 
 	return f;
 }
+
+ContentType
+Film::content_type () const
+{
+#if BOOST_FILESYSTEM_VERSION == 3
+	string const ext = filesystem::path(_state.content).extension().string();
+#else
+	string const ext = filesystem::path(_state.content).extension();
+#endif
+	if (ext == ".tif" || ext == ".tiff" || ext == ".jpg" || ext == ".jpeg" || ext == ".png") {
+		return STILL;
+	}
+
+	return VIDEO;
+}
