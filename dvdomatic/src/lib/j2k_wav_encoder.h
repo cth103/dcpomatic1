@@ -47,8 +47,6 @@ public:
 	void process_audio (uint8_t *, int);
 	void process_end ();
 
-	float current_frames_per_second () const;
-
 private:	
 
 	void encoder_thread (Server *);
@@ -64,8 +62,4 @@ private:
 	std::list<boost::thread *> _worker_threads;
 	mutable boost::mutex _worker_mutex;
 	boost::condition _worker_condition;
-
-	mutable boost::mutex _history_mutex;
-	std::list<struct timeval> _time_history;
-	static int const _history_size;
 };

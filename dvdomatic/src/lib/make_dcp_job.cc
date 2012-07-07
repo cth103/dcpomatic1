@@ -66,9 +66,7 @@ MakeDCPJob::run ()
 		throw EncodeError ("missing video.mxf");
 	}
 
-	if (!filesystem::exists (filesystem::path (_fs->file ("audio.mxf")))) {
-		throw EncodeError ("missing audio.mxf");
-	}
+	bool const have_audio = filesystem::exists (filesystem::path (_fs->file ("audio.mxf")));
 
 	/* Remove any old DCP */
 	filesystem::remove_all (dcp_path);
@@ -81,12 +79,18 @@ MakeDCPJob::run ()
 	  << " opendcp_xml -d -a " << _fs->dcp_long_name
 	  << " -t \"" << _fs->name << "\""
 	  << " -k " << _fs->dcp_content_type->opendcp_name()
-	  << " --reel \"" << _fs->file ("video.mxf") << "\" \"" << _fs->file ("audio.mxf") << "\"";
+	  << " --reel \"" << _fs->file ("video.mxf") << "\"";
+	
+	if (have_audio) {
+		c << " \"" << _fs->file ("audio.mxf") << "\"";
+	}
 
 	command (c.str ());
 
 	filesystem::rename (filesystem::path (_fs->file ("video.mxf")), filesystem::path (dcp_path + "/video.mxf"));
-	filesystem::rename (filesystem::path (_fs->file ("audio.mxf")), filesystem::path (dcp_path + "/audio.mxf"));
+	if (have_audio) {
+		filesystem::rename (filesystem::path (_fs->file ("audio.mxf")), filesystem::path (dcp_path + "/audio.mxf"));
+	}
 
 	set_progress (1);
 }

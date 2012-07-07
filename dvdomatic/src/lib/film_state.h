@@ -75,6 +75,7 @@ public:
 	std::string dir (std::string d) const;
 
 	std::string content_path () const;
+	ContentType content_type () const;
 	
 	bool content_is_dvd () const;
 

@@ -22,8 +22,11 @@
  */
 
 #include "encoder.h"
+#include "util.h"
 
 using namespace boost;
+
+int const Encoder::_history_size = 25;
 
 /** @param s FilmState of the film that we are encoding.
  *  @param o Options.
@@ -35,4 +38,34 @@ Encoder::Encoder (shared_ptr<const FilmState> s, shared_ptr<const Options> o, Lo
 	, _log (l)
 {
 
+}
+
+
+/** @return an estimate of the current number of frames we are encoding per second,
+ *  or 0 if not known.
+ */
+float
+Encoder::current_frames_per_second () const
+{
+	boost::mutex::scoped_lock lock (_history_mutex);
+	if (int (_time_history.size()) < _history_size) {
+		return 0;
+	}
+
+	struct timeval now;
+	gettimeofday (&now, 0);
+
+	return _history_size / (seconds (now) - seconds (_time_history.back ()));
+}
+
+void
+Encoder::frame_done ()
+{
+	boost::mutex::scoped_lock lock (_history_mutex);
+	struct timeval tv;
+	gettimeofday (&tv, 0);
+	_time_history.push_front (tv);
+	if (int (_time_history.size()) > _history_size) {
+		_time_history.pop_back ();
+	}
 }

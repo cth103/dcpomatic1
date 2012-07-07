@@ -187,7 +187,12 @@ Decoder::process_video (AVFrame* frame)
 	}
 
 	/* Use FilmState::length here as our one may be wrong */
-	int const gap = _fs->length / _opt->decode_video_frequency;
+
+	int gap = 0;
+	if (_opt->decode_video_frequency != 0) {
+		gap = _fs->length / _opt->decode_video_frequency;
+	}
+	
 	if (_opt->decode_video_frequency != 0 && gap != 0 && (_video_frame % gap) != 0) {
 		++_video_frame;
 		return;

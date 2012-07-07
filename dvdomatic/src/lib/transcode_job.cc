@@ -30,6 +30,7 @@
 #include "transcoder.h"
 #include "film_state.h"
 #include "log.h"
+#include "encoder_factory.h"
 
 using namespace std;
 using namespace boost;
@@ -59,7 +60,7 @@ TranscodeJob::run ()
 
 		_log->log ("Transcode job starting");
 
-		_encoder.reset (new J2KWAVEncoder (_fs, _opt, _log));
+		_encoder = encoder_factory (_fs, _opt, _log);
 		Transcoder w (_fs, _opt, this, _log, _encoder);
 		w.go ();
 		set_progress (1);

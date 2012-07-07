@@ -24,7 +24,7 @@
 #include <boost/shared_ptr.hpp>
 #include "job.h"
 
-class J2KWAVEncoder;
+class Encoder;
 
 /** @class TranscodeJob
  *  @brief A job which transcodes from one format to another.
@@ -39,5 +39,5 @@ public:
 	std::string status () const;
 
 private:
-	boost::shared_ptr<J2KWAVEncoder> _encoder;
+	boost::shared_ptr<Encoder> _encoder;
 };

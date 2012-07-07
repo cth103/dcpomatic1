@@ -14,7 +14,7 @@ public:
 	}
 
 	float frames_per_second () const {
-		return 24;
+		return static_frames_per_second ();
 	}
 
 	Size native_size () const;
@@ -29,6 +29,10 @@ public:
 
 	AVSampleFormat audio_sample_format () const {
 		return AV_SAMPLE_FMT_NONE;
+	}
+
+	static float static_frames_per_second () {
+		return 24;
 	}
 
 protected:

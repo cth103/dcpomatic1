@@ -25,6 +25,7 @@
 #include "filter.h"
 #include "ab_transcoder.h"
 #include "film_state.h"
+#include "encoder_factory.h"
 #include "config.h"
 
 using namespace std;
@@ -54,10 +55,8 @@ void
 ABTranscodeJob::run ()
 {
 	try {
-
-		shared_ptr<J2KWAVEncoder> e (new J2KWAVEncoder (_fs, _opt, _log));
 		/* _fs_b is the one with no filters */
-		ABTranscoder w (_fs_b, _fs, _opt, this, _log, e);
+		ABTranscoder w (_fs_b, _fs, _opt, this, _log, encoder_factory (_fs, _opt, _log));
 		w.go ();
 		set_progress (1);
 		set_state (FINISHED_OK);

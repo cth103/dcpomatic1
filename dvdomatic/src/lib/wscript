@@ -17,6 +17,7 @@ def build(bld):
                  delay_line.cc
                  dvd.cc
 		 encoder.cc
+                 encoder_factory.cc
 		 examine_content_job.cc
                  ffmpeg_decoder.cc
     	         film.cc
@@ -25,6 +26,7 @@ def build(bld):
 		 format.cc
                  image.cc
                  imagemagick_decoder.cc
+		 j2k_still_encoder.cc
 		 j2k_wav_encoder.cc
 		 job.cc
 		 job_manager.cc

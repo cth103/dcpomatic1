@@ -508,7 +508,9 @@ Film::make_dcp (bool transcode, int freq)
 	}
 	
 	JobManager::instance()->add (shared_ptr<Job> (new MakeMXFJob (fs, o, log (), MakeMXFJob::VIDEO)));
-	JobManager::instance()->add (shared_ptr<Job> (new MakeMXFJob (fs, o, log (), MakeMXFJob::AUDIO)));
+	if (audio_channels() > 0) {
+		JobManager::instance()->add (shared_ptr<Job> (new MakeMXFJob (fs, o, log (), MakeMXFJob::AUDIO)));
+	}
 	JobManager::instance()->add (shared_ptr<Job> (new MakeDCPJob (fs, o, log ())));
 }
 
@@ -668,16 +670,7 @@ Film::audio_files () const
 ContentType
 Film::content_type () const
 {
-#if BOOST_FILESYSTEM_VERSION == 3
-	string const ext = filesystem::path(_state.content).extension().string();
-#else
-	string const ext = filesystem::path(_state.content).extension();
-#endif
-	if (ext == ".tif" || ext == ".tiff" || ext == ".jpg" || ext == ".jpeg" || ext == ".png") {
-		return STILL;
-	}
-
-	return VIDEO;
+	return _state.content_type ();
 }
 
 void

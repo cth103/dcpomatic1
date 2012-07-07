@@ -226,3 +226,18 @@ FilmState::content_path () const
 
 	return file (content);
 }
+
+ContentType
+FilmState::content_type () const
+{
+#if BOOST_FILESYSTEM_VERSION == 3
+	string const ext = filesystem::path(content).extension().string();
+#else
+	string const ext = filesystem::path(content).extension();
+#endif
+	if (ext == ".tif" || ext == ".tiff" || ext == ".jpg" || ext == ".jpeg" || ext == ".png") {
+		return STILL;
+	}
+
+	return VIDEO;
+}

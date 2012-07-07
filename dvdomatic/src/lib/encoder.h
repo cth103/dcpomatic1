@@ -17,11 +17,16 @@
 
 */
 
+#ifndef DVDOMATIC_ENCODER_H
+#define DVDOMATIC_ENCODER_H
+
 /** @file src/encoder.h
  *  @brief Parent class for classes which can encode video and audio frames.
  */
 
 #include <boost/shared_ptr.hpp>
+#include <boost/thread/mutex.hpp>
+#include <list>
 #include <stdint.h>
 
 class FilmState;
@@ -38,6 +43,7 @@ class Log;
  *  The subclass is expected to encode the video and/or audio in
  *  some way and write it to disk.
  */
+
 class Encoder
 {
 public:
@@ -61,11 +67,21 @@ public:
 	/** Called when a processing run has finished */
 	virtual void process_end () = 0;
 
+	float current_frames_per_second () const;
+
 protected:
+	void frame_done ();
+	
 	/** FilmState of the film that we are encoding */
 	boost::shared_ptr<const FilmState> _fs;
 	/** Options */
 	boost::shared_ptr<const Options> _opt;
 	/** Log */
 	Log* _log;
+
+	mutable boost::mutex _history_mutex;
+	std::list<struct timeval> _time_history;
+	static int const _history_size;
 };
+
+#endif

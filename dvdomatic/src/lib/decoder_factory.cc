@@ -40,12 +40,7 @@ decoder_factory (
 		return shared_ptr<Decoder> (new TIFFDecoder (fs, o, j, l, minimal, ignore_length));
 	}
 
-#if BOOST_FILESYSTEM_VERSION == 3
-	string const ext = filesystem::path(fs->content_path()).extension().string();
-#else
-	string const ext = filesystem::path(fs->content_path()).extension();
-#endif
-	if (ext == ".tif" || ext == ".tiff" || ext == ".jpg" || ext == ".jpeg" || ext == ".png") {
+	if (fs->content_type() == STILL) {
 		return shared_ptr<Decoder> (new ImageMagickDecoder (fs, o, j, l, minimal, ignore_length));
 	}
 	
