@@ -41,7 +41,7 @@ public:
 
 private:
 	void position_slider_changed ();
-	void update_button_clicked ();
+	void update_thumbs ();
 	std::string format_position_slider_value (double) const;
 	void load_thumbnail (int);
 	void film_changed (Film::Property);

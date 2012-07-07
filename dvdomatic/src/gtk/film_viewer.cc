@@ -50,7 +50,7 @@ FilmViewer::FilmViewer (Film* f)
 	_vbox.pack_start (*controls, false, false);
 	_vbox.set_border_width (12);
 
-	_update_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmViewer::update_button_clicked));
+	_update_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmViewer::update_thumbs));
 
 	_position_slider.set_digits (0);
 	_position_slider.signal_format_value().connect (sigc::mem_fun (*this, &FilmViewer::format_position_slider_value));
@@ -128,6 +128,7 @@ FilmViewer::film_changed (Film::Property p)
 		reload_current_thumbnail ();
 	} else if (p == Film::CONTENT) {
 		setup_visibility ();
+		update_thumbs ();
 	}
 }
 
@@ -180,7 +181,7 @@ FilmViewer::update_scaled_pixbuf ()
 }
 
 void
-FilmViewer::update_button_clicked ()
+FilmViewer::update_thumbs ()
 {
 	if (!_film) {
 		return;
