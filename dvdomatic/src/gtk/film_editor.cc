@@ -63,7 +63,6 @@ FilmEditor::FilmEditor (Film* f)
 	_vbox.set_spacing (12);
 	
 	/* Set up our editing widgets */
-	_directory.set_alignment (0, 0.5);
 	_left_crop.set_range (0, 1024);
 	_left_crop.set_increments (1, 16);
 	_top_crop.set_range (0, 1024);
@@ -137,9 +136,6 @@ FilmEditor::FilmEditor (Film* f)
 	t->set_col_spacings (12);
 	
 	int n = 0;
-	t->attach (left_aligned_label ("Directory"), 0, 1, n, n + 1);
-	t->attach (_directory, 1, 2, n, n + 1);
-	++n;
 	t->attach (left_aligned_label ("Name"), 0, 1, n, n + 1);
 	t->attach (_name, 1, 2, n, n + 1);
 	++n;
@@ -489,9 +485,9 @@ FilmEditor::set_film (Film* f)
 	}
 
 	if (_film) {
-		_directory.set_text (_film->directory ());
+		FileChanged (_film->directory ());
 	} else {
-		_directory.set_text ("");
+		FileChanged ("");
 	}
 	
 	film_changed (Film::NAME);

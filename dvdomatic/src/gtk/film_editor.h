@@ -38,6 +38,8 @@ public:
 	void set_film (Film *);
 	void setup_visibility ();
 
+	sigc::signal1<void, std::string> FileChanged;
+
 private:
 	/* Handle changes to the view */
 	void name_changed ();
@@ -74,8 +76,6 @@ private:
 	Film* _film;
 	/** The overall VBox containing our widget */
 	Gtk::VBox _vbox;
-	/** The Film's directory */
-	Gtk::Label _directory;
 	/** The Film's name */
 	Gtk::Entry _name;
 	/** The Film's frames per second */

@@ -208,6 +208,18 @@ window_closed (GdkEventAny *)
 	return false;
 }
 
+void
+file_changed (string f)
+{
+	stringstream s;
+	s << "DVD-o-matic";
+	if (!f.empty ()) {
+		s << " — " << f;
+	}
+	
+	window->set_title (s.str ());
+}
+
 int
 main (int argc, char* argv[])
 {
@@ -257,7 +269,15 @@ main (int argc, char* argv[])
 	/* XXX: calling these here is a bit of a hack */
 	film_editor->setup_visibility ();
 	film_player->setup_visibility ();
-	
+
+	film_editor->FileChanged.connect (ptr_fun (file_changed));
+	if (film) {
+		file_changed (film->directory ());
+	} else {
+		file_changed ("");
+	}
+
+	/* XXX this should be in JobManagerView, shouldn't it? */
 	Glib::signal_timeout().connect (sigc::bind_return (sigc::mem_fun (jobs_view, &JobManagerView::update), true), 1000);
 
 	window->maximize ();
