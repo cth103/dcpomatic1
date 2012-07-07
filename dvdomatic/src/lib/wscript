@@ -2,7 +2,7 @@ def build(bld):
     obj = bld(features = 'cxx cxxshlib')
     obj.name = 'libdvdomatic'
     obj.export_includes = ['.']
-    obj.uselib = 'AVCODEC AVUTIL AVFORMAT AVFILTER SWSCALE SWRESAMPLE SNDFILE BOOST_FILESYSTEM BOOST_THREAD OPENJPEG POSTPROC TIFF SIGC++'
+    obj.uselib = 'AVCODEC AVUTIL AVFORMAT AVFILTER SWSCALE SWRESAMPLE SNDFILE BOOST_FILESYSTEM BOOST_THREAD OPENJPEG POSTPROC TIFF SIGC++ MAGICK'
     if bld.env.DEBUG_HASH:
         obj.uselib += ' MHASH'
     obj.source = """
@@ -24,6 +24,7 @@ def build(bld):
 		 filter.cc
 		 format.cc
                  image.cc
+                 imagemagick_decoder.cc
 		 j2k_wav_encoder.cc
 		 job.cc
 		 job_manager.cc

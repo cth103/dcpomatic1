@@ -632,6 +632,10 @@ FilmEditor::video_widget (Widget& w)
 void
 FilmEditor::setup_visibility ()
 {
+	if (!_film) {
+		return;
+	}
+			
 	ContentType const c = _film->content_type ();
 	for (list<Widget *>::iterator i = _video_widgets.begin(); i != _video_widgets.end(); ++i) {
 		(*i)->property_visible() = (c == VIDEO);

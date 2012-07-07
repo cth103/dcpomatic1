@@ -24,8 +24,10 @@
 #include <boost/filesystem.hpp>
 #include "ffmpeg_decoder.h"
 #include "tiff_decoder.h"
+#include "imagemagick_decoder.h"
 #include "film_state.h"
 
+using namespace std;
 using namespace boost;
 
 shared_ptr<Decoder>
@@ -38,5 +40,14 @@ decoder_factory (
 		return shared_ptr<Decoder> (new TIFFDecoder (fs, o, j, l, minimal, ignore_length));
 	}
 
+#if BOOST_FILESYSTEM_VERSION == 3
+	string const ext = filesystem::path(fs->content_path()).extension().string();
+#else
+	string const ext = filesystem::path(fs->content_path()).extension();
+#endif
+	if (ext == ".tif" || ext == ".tiff" || ext == ".jpg" || ext == ".jpeg" || ext == ".png") {
+		return shared_ptr<Decoder> (new ImageMagickDecoder (fs, o, j, l, minimal, ignore_length));
+	}
+	
 	return shared_ptr<Decoder> (new FFmpegDecoder (fs, o, j, l, minimal, ignore_length));
 }

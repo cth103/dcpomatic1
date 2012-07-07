@@ -248,7 +248,7 @@ public:
 	}
 
 	/** Emitted when some metadata property has changed */
-	sigc::signal1<void, Property> Changed;
+	mutable sigc::signal1<void, Property> Changed;
 	
 private:
 	void read_metadata ();

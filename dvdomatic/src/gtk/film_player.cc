@@ -89,6 +89,10 @@ FilmPlayer::set_film (Film const * f)
 	if (_film && _film->length() != 0 && _film->frames_per_second() != 0) {
 		_position.set_range (0, _film->length() / _film->frames_per_second());
 	}
+
+	if (_film) {
+		_film->Changed.connect (sigc::mem_fun (*this, &FilmPlayer::film_changed));
+	}
 }
 
 Gtk::Widget &
@@ -285,4 +289,22 @@ FilmPlayer::update_screens ()
 	} else if (!scr.empty ()) {
 		_screen.set_active (0);
 	}
+}
+
+void
+FilmPlayer::film_changed (Film::Property p)
+{
+	if (p == Film::CONTENT) {
+		setup_visibility ();
+	}
+}
+
+void
+FilmPlayer::setup_visibility ()
+{
+	if (!_film) {
+		return;
+	}
+	
+	widget().property_visible() = (_film->content_type() == VIDEO);
 }

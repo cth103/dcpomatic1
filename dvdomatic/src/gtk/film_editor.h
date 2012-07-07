@@ -36,6 +36,7 @@ public:
 	Gtk::Widget& widget ();
 
 	void set_film (Film *);
+	void setup_visibility ();
 
 private:
 	/* Handle changes to the view */
@@ -66,7 +67,6 @@ private:
 	void make_dcp_clicked (bool);
 
 	void set_things_sensitive (bool);
-	void setup_visibility ();
 
 	Gtk::Widget & video_widget (Gtk::Widget &);
 

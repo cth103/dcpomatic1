@@ -157,11 +157,6 @@ TIFFDecoder::do_pass ()
 		throw DecodeError ("could not read TIFF data");
 	}
 
-	AVFrame* frame = avcodec_alloc_frame ();
-	if (frame == 0) {
-		throw DecodeError ("could not allocate frame");
-	}
-
 	RGBFrameImage image (Size (width, height));
 
 	uint8_t* p = image.data()[0];

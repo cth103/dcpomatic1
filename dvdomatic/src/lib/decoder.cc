@@ -21,6 +21,7 @@
  *  @brief Parent class for decoders of content.
  */
 
+#include <iostream>
 #include <stdint.h>
 extern "C" {
 #include <libavfilter/avfiltergraph.h>
@@ -186,7 +187,8 @@ Decoder::process_video (AVFrame* frame)
 	}
 
 	/* Use FilmState::length here as our one may be wrong */
-	if (_opt->decode_video_frequency != 0 && (_video_frame % (_fs->length / _opt->decode_video_frequency)) != 0) {
+	int const gap = _fs->length / _opt->decode_video_frequency;
+	if (_opt->decode_video_frequency != 0 && gap != 0 && (_video_frame % gap) != 0) {
 		++_video_frame;
 		return;
 	}

@@ -18,6 +18,7 @@
 */
 
 #include <gtkmm.h>
+#include "lib/film.h"
 
 class Film;
 class Screen;
@@ -31,6 +32,7 @@ public:
 	Gtk::Widget& widget ();
 	
 	void set_film (Film const *);
+	void setup_visibility ();
 
 private:
 	void play_clicked ();
@@ -38,6 +40,7 @@ private:
 	void stop_clicked ();
 	void position_changed ();
 	std::string format_position (double);
+	void film_changed (Film::Property);
 	
 	void set_button_states ();
 	boost::shared_ptr<Screen> screen () const;

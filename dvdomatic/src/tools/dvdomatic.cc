@@ -253,6 +253,10 @@ main (int argc, char* argv[])
 
 	window->add (vbox);
 	window->show_all ();
+
+	/* XXX: calling these here is a bit of a hack */
+	film_editor->setup_visibility ();
+	film_player->setup_visibility ();
 	
 	Glib::signal_timeout().connect (sigc::bind_return (sigc::mem_fun (jobs_view, &JobManagerView::update), true), 1000);
 
