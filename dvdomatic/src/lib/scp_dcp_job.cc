@@ -207,7 +207,9 @@ SCPDCPJob::run ()
 			}
 		}
 
+		set_progress (1);
 		set_status ("OK");
+		set_state (FINISHED_OK);
 
 	} catch (std::exception& e) {
 

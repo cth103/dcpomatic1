@@ -36,7 +36,11 @@ public:
 
 private:
 	void on_response (int);
-	
+
+	void tms_ip_changed ();
+	void tms_path_changed ();
+	void tms_user_changed ();
+	void tms_password_changed ();
 	void num_local_encoding_threads_changed ();
 	void colour_lut_changed ();
 	void j2k_bandwidth_changed ();
@@ -85,6 +89,10 @@ private:
 		Gtk::TreeModelColumn<std::string> _height;
 	};
 
+	Gtk::Entry _tms_ip;
+	Gtk::Entry _tms_path;
+	Gtk::Entry _tms_user;
+	Gtk::Entry _tms_password;
 	Gtk::SpinButton _num_local_encoding_threads;
 	Gtk::ComboBoxText _colour_lut;
 	Gtk::SpinButton _j2k_bandwidth;

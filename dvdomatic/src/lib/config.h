@@ -81,6 +81,22 @@ public:
 		return _reference_filters;
 	}
 
+	std::string tms_ip () const {
+		return _tms_ip;
+	}
+
+	std::string tms_path () const {
+		return _tms_path;
+	}
+
+	std::string tms_user () const {
+		return _tms_user;
+	}
+
+	std::string tms_password () const {
+		return _tms_password;
+	}
+
 	/** @param n New number of local encoding threads */
 	void set_num_local_encoding_threads (int n) {
 		_num_local_encoding_threads = n;
@@ -126,23 +142,26 @@ public:
 		Changed ();
 	}
 
-	std::string tms_ip () const {
-		return _tms_ip;
+	void set_tms_ip (std::string i) {
+		_tms_ip = i;
+		Changed ();
 	}
 
-	std::string tms_path () const {
-		return _tms_path;
+	void set_tms_path (std::string p) {
+		_tms_path = p;
+		Changed ();
 	}
 
-	std::string tms_user () const {
-		return _tms_user;
+	void set_tms_user (std::string u) {
+		_tms_user = u;
+		Changed ();
 	}
 
-	std::string tms_password () const {
-		return _tms_password;
+	void set_tms_password (std::string p) {
+		_tms_password = p;
+		Changed ();
 	}
-
-
+	
 	void write () const;
 
 	sigc::signal0<void> Changed;

@@ -49,35 +49,46 @@ ConfigDialog::ConfigDialog ()
 	t->set_col_spacings (6);
 	t->set_border_width (6);
 
+	Config* config = Config::instance ();
+
+	_tms_ip.set_text (config->tms_ip ());
+	_tms_ip.signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::tms_ip_changed));
+	_tms_path.set_text (config->tms_path ());
+	_tms_path.signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::tms_path_changed));
+	_tms_user.set_text (config->tms_user ());
+	_tms_user.signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::tms_user_changed));
+	_tms_password.set_text (config->tms_password ());
+	_tms_password.signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::tms_password_changed));
+
 	_num_local_encoding_threads.set_range (1, 128);
 	_num_local_encoding_threads.set_increments (1, 4);
-	_num_local_encoding_threads.set_value (Config::instance()->num_local_encoding_threads ());
+	_num_local_encoding_threads.set_value (config->num_local_encoding_threads ());
 	_num_local_encoding_threads.signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::num_local_encoding_threads_changed));
 
 	_colour_lut.append_text ("sRGB");
 	_colour_lut.append_text ("Rec 709");
-	_colour_lut.set_active (Config::instance()->colour_lut_index ());
+	_colour_lut.set_active (config->colour_lut_index ());
 	_colour_lut.signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::colour_lut_changed));
 	
 	_j2k_bandwidth.set_range (50, 250);
 	_j2k_bandwidth.set_increments (10, 50);
-	_j2k_bandwidth.set_value (Config::instance()->j2k_bandwidth() / 1e6);
+	_j2k_bandwidth.set_value (config->j2k_bandwidth() / 1e6);
 	_j2k_bandwidth.signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::j2k_bandwidth_changed));
 
 	vector<Scaler const *> const sc = Scaler::all ();
 	for (vector<Scaler const *>::const_iterator i = sc.begin(); i != sc.end(); ++i) {
 		_reference_scaler.append_text ((*i)->name ());
 	}
-	_reference_scaler.set_active (Scaler::as_index (Config::instance()->reference_scaler ()));
+	_reference_scaler.set_active (Scaler::as_index (config->reference_scaler ()));
 	_reference_scaler.signal_changed().connect (sigc::mem_fun (*this, &ConfigDialog::reference_scaler_changed));
 
 	_reference_filters.set_alignment (0, 0.5);
-	pair<string, string> p = Filter::ffmpeg_strings (Config::instance()->reference_filters ());
+	pair<string, string> p = Filter::ffmpeg_strings (config->reference_filters ());
 	_reference_filters.set_text (p.first + " " + p.second);
 	_reference_filters_button.signal_clicked().connect (sigc::mem_fun (*this, &ConfigDialog::edit_reference_filters_clicked));
 
 	_servers_store = Gtk::ListStore::create (_servers_columns);
-	vector<Server*> servers = Config::instance()->servers ();
+	vector<Server*> servers = config->servers ();
 	for (vector<Server*>::iterator i = servers.begin(); i != servers.end(); ++i) {
 		add_server_to_store (*i);
 	}
@@ -93,7 +104,7 @@ ConfigDialog::ConfigDialog ()
 	server_selection_changed ();
 	
 	_screens_store = Gtk::TreeStore::create (_screens_columns);
-	vector<shared_ptr<Screen> > screens = Config::instance()->screens ();
+	vector<shared_ptr<Screen> > screens = config->screens ();
 	for (vector<shared_ptr<Screen> >::iterator i = screens.begin(); i != screens.end(); ++i) {
 		add_screen_to_store (*i);
 	}
@@ -113,6 +124,18 @@ ConfigDialog::ConfigDialog ()
 	screen_selection_changed ();
 
 	int n = 0;
+	t->attach (left_aligned_label ("TMS IP address"), 0, 1, n, n + 1);
+	t->attach (_tms_ip, 1, 2, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("TMS target path"), 0, 1, n, n + 1);
+	t->attach (_tms_path, 1, 2, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("TMS user name"), 0, 1, n, n + 1);
+	t->attach (_tms_user, 1, 2, n, n + 1);
+	++n;
+	t->attach (left_aligned_label ("TMS password"), 0, 1, n, n + 1);
+	t->attach (_tms_password, 1, 2, n, n + 1);
+	++n;
 	t->attach (left_aligned_label ("Threads to use for encoding on this host"), 0, 1, n, n + 1);
 	t->attach (_num_local_encoding_threads, 1, 2, n, n + 1);
 	++n;
@@ -133,7 +156,7 @@ ConfigDialog::ConfigDialog ()
 	fb->pack_start (_reference_filters_button, false, false);
 	t->attach (*fb, 1, 2, n, n + 1);
 	++n;
-	t->attach (left_aligned_label ("Servers"), 0, 1, n, n + 1);
+	t->attach (left_aligned_label ("Encoding Servers"), 0, 1, n, n + 1);
 	t->attach (_servers_view, 1, 2, n, n + 1);
 	Gtk::VBox* b = manage (new Gtk::VBox);
 	b->pack_start (_add_server, false, false);
@@ -155,6 +178,31 @@ ConfigDialog::ConfigDialog ()
 
 	add_button ("Close", Gtk::RESPONSE_CLOSE);
 }
+
+void
+ConfigDialog::tms_ip_changed ()
+{
+	Config::instance()->set_tms_ip (_tms_ip.get_text ());
+}
+
+void
+ConfigDialog::tms_path_changed ()
+{
+	Config::instance()->set_tms_path (_tms_path.get_text ());
+}
+
+void
+ConfigDialog::tms_user_changed ()
+{
+	Config::instance()->set_tms_user (_tms_user.get_text ());
+}
+
+void
+ConfigDialog::tms_password_changed ()
+{
+	Config::instance()->set_tms_password (_tms_password.get_text ());
+}
+
 
 void
 ConfigDialog::num_local_encoding_threads_changed ()
