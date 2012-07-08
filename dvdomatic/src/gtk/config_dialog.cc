@@ -45,7 +45,7 @@ ConfigDialog::ConfigDialog ()
 	, _remove_screen ("Remove Screen")
 {
 	Gtk::Table* t = manage (new Gtk::Table);
-	t->set_row_spacings (12);
+	t->set_row_spacings (6);
 	t->set_col_spacings (6);
 	t->set_border_width (6);
 
