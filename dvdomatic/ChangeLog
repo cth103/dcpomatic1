@@ -1,5 +1,9 @@
 2012-07-08  Carl Hetherington  <cth@carlh.net>
 
+	* Version 0.24 released.
+
+2012-07-08  Carl Hetherington  <cth@carlh.net>
+
 	* Add support for generating static DCPs from single
 	image files.
 
