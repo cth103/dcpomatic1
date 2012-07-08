@@ -119,6 +119,7 @@ SCPDCPJob::run ()
 		set_status ("Connecting");
 
 		ssh_options_set (ss.session, SSH_OPTIONS_HOST, Config::instance()->tms_ip().c_str ());
+		ssh_options_set (ss.session, SSH_OPTIONS_USER, Config::instance()->tms_user().c_str ());
 		int const port = 22;
 		ssh_options_set (ss.session, SSH_OPTIONS_PORT, &port);
 		
