@@ -80,7 +80,7 @@ Format::setup_formats ()
 {
 	_formats.push_back (new Format (133, Size (1998, 1080), "133-in-flat", "4:3 within Flat", "F"));
 	_formats.push_back (new Format (137, Size (1480, 1080), "137", "Academy", "133"));
-	_formats.push_back (new Format (178, Size (1998, 1080), "178-in-flat", "16:9", "F"));
+	_formats.push_back (new Format (178, Size (1998, 1080), "178-in-flat", "16:9 within Flat", "F"));
 	_formats.push_back (new Format (185, Size (1998, 1080), "185", "Flat", "F"));
 	_formats.push_back (new Format (239, Size (2048, 858), "239", "Scope", "S"));
 }
