@@ -32,6 +32,9 @@
 #include <sys/socket.h>
 #include <boost/algorithm/string.hpp>
 #include <openjpeg.h>
+#include <magick/MagickCore.h>
+#include <magick/version.h>
+#include <libssh/libssh.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -300,7 +303,9 @@ dependency_version_summary ()
 	  << "libavformat " << ffmpeg_version_to_string (avformat_version()) << ", "
 	  << "libavutil " << ffmpeg_version_to_string (avutil_version()) << ", "
 	  << "libpostproc " << ffmpeg_version_to_string (postproc_version()) << ", "
-	  << "libswscale " << ffmpeg_version_to_string (swscale_version());
+	  << "libswscale " << ffmpeg_version_to_string (swscale_version()) << ", "
+	  << MagickVersion << ", "
+	  << "libssh " << ssh_version (0);
 
 	return s.str ();
 }

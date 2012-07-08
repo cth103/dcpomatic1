@@ -385,7 +385,6 @@ EncodedData::write (shared_ptr<const Options> opt, int frame)
 	string const tmp_j2k = opt->frame_out_path (frame, true);
 
 	FILE* f = fopen (tmp_j2k.c_str (), "wb");
-	cout << "writing to " << tmp_j2k << "\n";
 	
 	if (!f) {
 		throw WriteFileError (tmp_j2k, errno);

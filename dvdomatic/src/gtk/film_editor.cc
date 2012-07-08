@@ -636,7 +636,6 @@ void
 FilmEditor::audio_delay_changed ()
 {
 	if (_film) {
-		cout << "AD now " << _audio_delay.get_value() << "\n";
 		_film->set_audio_delay (_audio_delay.get_value ());
 	}
 }
