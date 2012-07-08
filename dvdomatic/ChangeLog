@@ -1,3 +1,13 @@
+2012-07-08  Carl Hetherington  <cth@carlh.net>
+
+	* Add support for generating static DCPs from single
+	image files.
+
+	* Add option to copy DCP to a remote server (e.g. a TMS)
+	via SCP.
+
+	* Auto-update thumbs when content changes.
+
 2012-06-10  Carl Hetherington  <cth@carlh.net>
 
 	* Fix up bad padding setup when there isn't any.
