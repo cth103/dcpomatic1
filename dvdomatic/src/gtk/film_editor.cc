@@ -38,6 +38,7 @@
 #include "lib/copy_from_dvd_job.h"
 #include "lib/screen.h"
 #include "lib/config.h"
+#include "lib/scp_dcp_job.h"
 #include "filter_dialog.h"
 #include "gtk_util.h"
 #include "film_editor.h"
@@ -54,6 +55,7 @@ FilmEditor::FilmEditor (Film* f)
 	, _guess_dcp_long_name ("Guess")
 	, _examine_content_button ("Examine Content")
 	, _make_dcp_button ("Make DCP")
+	, _send_to_tms_button ("Send DCP to TMS")
 	, _make_dcp_from_existing_button ("Make DCP from existing transcode")
 	, _dcp_whole ("Whole Film")
 	, _dcp_for ("For")
@@ -216,6 +218,7 @@ FilmEditor::FilmEditor (Film* f)
 	_examine_content_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::examine_content_clicked));
 	_make_dcp_from_existing_button.signal_clicked().connect (sigc::bind (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked), false));
 	_make_dcp_button.signal_clicked().connect (sigc::bind (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked), true));
+	_send_to_tms_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::send_to_tms_clicked));
 
 	HBox* h = manage (new HBox);
 	h->set_spacing (12);
@@ -227,6 +230,7 @@ FilmEditor::FilmEditor (Film* f)
 	h = manage (new HBox);
 	h->set_spacing (12);
 	h->pack_start (_make_dcp_button, false, false);
+	h->pack_start (_send_to_tms_button, false, false);
 	h->pack_start (video_widget (_dcp_whole), false, false);
 	h->pack_start (video_widget (_dcp_for), false, false);
 	h->pack_start (video_widget (_dcp_for_frames), true, true);
@@ -550,6 +554,7 @@ FilmEditor::set_things_sensitive (bool s)
 	_guess_dcp_long_name.set_sensitive (s);
 	_dcp_content_type.set_sensitive (s);
 	_make_dcp_button.set_sensitive (s);
+	_send_to_tms_button.set_sensitive (s);
 	_dcp_whole.set_sensitive (s);
 	_dcp_for.set_sensitive (s);
 	_dcp_for_frames.set_sensitive (s);
@@ -674,4 +679,19 @@ FilmEditor::still_duration_changed ()
 	if (_film) {
 		_film->set_still_duration (_still_duration.get_value ());
 	}
+}
+
+void
+FilmEditor::send_to_tms_clicked ()
+{
+	_send_to_tms_button.set_sensitive (false);
+	shared_ptr<Job> j (new SCPDCPJob (_film->state_copy (), _film->log ()));
+	j->Finished.connect (sigc::mem_fun (*this, &FilmEditor::send_to_tms_post_gui));
+	JobManager::instance()->add (j);
+}
+
+void
+FilmEditor::send_to_tms_post_gui ()
+{
+	_send_to_tms_button.set_sensitive (true);
 }

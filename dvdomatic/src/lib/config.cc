@@ -38,6 +38,7 @@ Config::Config ()
 	, _colour_lut_index (0)
 	, _j2k_bandwidth (250000000)
 	, _reference_scaler (Scaler::from_id ("bicubic"))
+	, _tms_path (".")
 {
 	ifstream f (file().c_str ());
 	string line;
@@ -74,6 +75,14 @@ Config::Config ()
 			_servers.push_back (Server::create_from_metadata (v));
 		} else if (k == "screen") {
 			_screens.push_back (Screen::create_from_metadata (v));
+		} else if (k == "tms_ip") {
+			_tms_ip = v;
+		} else if (k == "tms_path") {
+			_tms_path = v;
+		} else if (k == "tms_user") {
+			_tms_user = v;
+		} else if (k == "tms_password") {
+			_tms_password = v;
 		}
 	}
 
@@ -122,4 +131,9 @@ Config::write () const
 	for (vector<shared_ptr<Screen> >::const_iterator i = _screens.begin(); i != _screens.end(); ++i) {
 		f << "screen " << (*i)->as_metadata () << "\n";
 	}
+
+	f << "tms_ip " << _tms_ip << "\n";
+	f << "tms_path " << _tms_path << "\n";
+	f << "tms_user " << _tms_user << "\n";
+	f << "tms_password " << _tms_password << "\n";
 }

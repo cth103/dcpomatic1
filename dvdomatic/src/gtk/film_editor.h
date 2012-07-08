@@ -68,6 +68,8 @@ private:
 	void copy_from_dvd_clicked ();
 	void examine_content_clicked ();
 	void make_dcp_clicked (bool);
+	void send_to_tms_clicked ();
+	void send_to_tms_post_gui ();
 
 	void set_things_sensitive (bool);
 
@@ -125,6 +127,7 @@ private:
 	Gtk::Button _examine_content_button;
 	/** Button to start making a DCP */
 	Gtk::Button _make_dcp_button;
+	Gtk::Button _send_to_tms_button;
 	/** Button to start making a DCP from existing J2K and WAV files */
 	Gtk::Button _make_dcp_from_existing_button;
 	/** Selector to make a DCP of the whole Film */

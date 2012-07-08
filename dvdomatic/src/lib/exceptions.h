@@ -23,6 +23,7 @@
 
 #include <stdexcept>
 #include <sstream>
+#include <cstring>
 
 /** @class StringError
  *  @brief A parent class for exceptions using messages held in a std::string
@@ -187,7 +188,7 @@ public:
 };
 
 /** @class NetworkError.
- *  @brief Indicates that some problem with communication between an encode client and server.
+ *  @brief Indicates some problem with communication on the network.
  */
 class NetworkError : public StringError
 {

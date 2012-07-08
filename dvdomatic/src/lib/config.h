@@ -126,6 +126,23 @@ public:
 		Changed ();
 	}
 
+	std::string tms_ip () const {
+		return _tms_ip;
+	}
+
+	std::string tms_path () const {
+		return _tms_path;
+	}
+
+	std::string tms_user () const {
+		return _tms_user;
+	}
+
+	std::string tms_password () const {
+		return _tms_password;
+	}
+
+
 	void write () const;
 
 	sigc::signal0<void> Changed;
@@ -158,6 +175,11 @@ private:
 
 	/** Filters to use for the "A" part of A/B comparisons */
 	std::vector<Filter const *> _reference_filters;
+
+	std::string _tms_ip;
+	std::string _tms_path;
+	std::string _tms_user;
+	std::string _tms_password;
 
 	/** Singleton instance, or 0 */
 	static Config* _instance;

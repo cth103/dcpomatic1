@@ -48,6 +48,14 @@ def configure(conf):
 			      return 0;\n
 			      }
 			      """, msg = 'Checking for library openjpeg', lib = 'openjpeg', uselib_store = 'OPENJPEG')
+
+    conf.check_cc(fragment  = """
+                              #include <libssh/libssh.h>\n
+                              int main () {\n
+                              ssh_session s = ssh_new ();\n
+                              return 0;\n
+                              }
+                              """, msg = 'Checking for library libssh', lib = 'ssh', uselib_store = 'SSH')
 			      
     conf.check_cxx(fragment = """
     			      #include <boost/thread.hpp>\n
