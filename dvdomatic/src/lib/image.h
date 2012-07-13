@@ -65,7 +65,7 @@ public:
 
 	int components () const;
 	int lines (int) const;
-	boost::shared_ptr<RGBFrameImage> scale_and_convert_to_rgb (Size, Scaler const *) const;
+	boost::shared_ptr<RGBFrameImage> scale_and_convert_to_rgb (Size, int, Scaler const *) const;
 	boost::shared_ptr<PostProcessImage> post_process (std::string) const;
 	
 #ifdef DEBUG_HASH	

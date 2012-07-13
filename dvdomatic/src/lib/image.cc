@@ -122,15 +122,18 @@ Image::hash (string n) const
  *  @param scaler Scaler to use.
  */
 shared_ptr<RGBFrameImage>
-Image::scale_and_convert_to_rgb (Size out_size, Scaler const * scaler) const
+Image::scale_and_convert_to_rgb (Size out_size, int padding, Scaler const * scaler) const
 {
 	assert (scaler);
 
-	shared_ptr<RGBFrameImage> rgb (new RGBFrameImage (out_size));
+	Size content_size = out_size;
+	content_size.width -= (padding * 2);
+
+	shared_ptr<RGBFrameImage> rgb (new RGBFrameImage (content_size));
 	
 	struct SwsContext* scale_context = sws_getContext (
 		size().width, size().height, pixel_format(),
-		out_size.width, out_size.height, PIX_FMT_RGB24,
+		content_size.width, content_size.height, PIX_FMT_RGB24,
 		scaler->ffmpeg_id (), 0, 0, 0
 		);
 
@@ -141,6 +144,28 @@ Image::scale_and_convert_to_rgb (Size out_size, Scaler const * scaler) const
 		0, size().height,
 		rgb->data (), rgb->line_size ()
 		);
+
+	/* Put the image in the right place in a black frame if are padding; this is
+	   a bit grubby and expensive, but probably inconsequential in the great
+	   scheme of things.
+	*/
+	if (padding > 0) {
+		shared_ptr<RGBFrameImage> padded_rgb (new RGBFrameImage (out_size));
+		padded_rgb->make_black ();
+
+		/* XXX: we are cheating a bit here; we know the frame is RGB so we can
+		   make assumptions about its composition.
+		*/
+		uint8_t* p = padded_rgb->data()[0] + padding * 3;
+		uint8_t* q = rgb->data()[0];
+		for (int j = 0; j < rgb->lines(0); ++j) {
+			memcpy (p, q, rgb->line_size()[0]);
+			p += padded_rgb->line_size()[0];
+			q += rgb->line_size()[0];
+		}
+
+		rgb = padded_rgb;
+	}
 
 	sws_freeContext (scale_context);
 
@@ -184,9 +209,10 @@ Image::make_black ()
 
 	case PIX_FMT_RGB24:		
 		memset (data()[0], 0, lines(0) * line_size()[0]);
-		memset (data()[1], 0, lines(1) * line_size()[1]);
-		memset (data()[2], 0, lines(2) * line_size()[2]);
 		break;
+
+	default:
+		assert (false);
 	}
 }
 

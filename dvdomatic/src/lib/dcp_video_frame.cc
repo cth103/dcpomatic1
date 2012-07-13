@@ -63,8 +63,9 @@ using namespace boost;
 
 /** Construct a DCP video frame.
  *  @param input Input image.
- *  @param out Required size of output, in pixels.
+ *  @param out Required size of output, in pixels (including any padding).
  *  @param s Scaler to use.
+ *  @param p Number of pixels of padding either side of the image.
  *  @param f Index of the frame within the Film.
  *  @param fps Frames per second of the Film.
  *  @param pp FFmpeg post-processing string to use.
@@ -73,9 +74,10 @@ using namespace boost;
  *  @param l Log to write to.
  */
 DCPVideoFrame::DCPVideoFrame (
-	shared_ptr<Image> yuv, Size out, Scaler const * s, int f, float fps, string pp, int clut, int bw, Log* l)
+	shared_ptr<Image> yuv, Size out, int p, Scaler const * s, int f, float fps, string pp, int clut, int bw, Log* l)
 	: _input (yuv)
 	, _out_size (out)
+	, _padding (p)
 	, _scaler (s)
 	, _frame (f)
 	  /* we round here; not sure if this is right */
@@ -153,7 +155,7 @@ DCPVideoFrame::encode_locally ()
 		prepared = prepared->post_process (_post_process);
 	}
 	
-	prepared = prepared->scale_and_convert_to_rgb (_out_size, _scaler);
+	prepared = prepared->scale_and_convert_to_rgb (_out_size, _padding, _scaler);
 
 	create_openjpeg_container ();
 
@@ -332,6 +334,7 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 	stringstream s;
 	s << "encode "
 	  << _input->size().width << " " << _input->size().height << " "
+	  << _padding
 	  << _input->pixel_format() << " "
 	  << _out_size.width << " " << _out_size.height << " "
 	  << _scaler->id () << " "

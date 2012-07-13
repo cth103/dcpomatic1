@@ -73,6 +73,7 @@ process (int fd)
 	Size in_size;
 	int pixel_format_int;
 	Size out_size;
+	int padding;
 	string scaler_id;
 	int frame;
 	float frames_per_second;
@@ -83,6 +84,7 @@ process (int fd)
 	s >> in_size.width >> in_size.height
 	  >> pixel_format_int
 	  >> out_size.width >> out_size.height
+	  >> padding
 	  >> scaler_id
 	  >> frame
 	  >> frames_per_second
@@ -112,7 +114,7 @@ process (int fd)
 	image->hash ("Image for encoding (as received by server)");
 #endif		
 	
-	DCPVideoFrame dcp_video_frame (image, out_size, scaler, frame, frames_per_second, post_process, colour_lut_index, j2k_bandwidth, &log_);
+	DCPVideoFrame dcp_video_frame (image, out_size, padding, scaler, frame, frames_per_second, post_process, colour_lut_index, j2k_bandwidth, &log_);
 	shared_ptr<EncodedData> encoded = dcp_video_frame.encode_locally ();
 	encoded->send (fd);
 

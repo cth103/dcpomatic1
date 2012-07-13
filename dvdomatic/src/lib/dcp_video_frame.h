@@ -109,7 +109,7 @@ public:
 class DCPVideoFrame
 {
 public:
-	DCPVideoFrame (boost::shared_ptr<Image>, Size, Scaler const *, int, float, std::string, int, int, Log *);
+	DCPVideoFrame (boost::shared_ptr<Image>, Size, int, Scaler const *, int, float, std::string, int, int, Log *);
 	virtual ~DCPVideoFrame ();
 
 	boost::shared_ptr<EncodedData> encode_locally ();
@@ -125,6 +125,7 @@ private:
 
 	boost::shared_ptr<Image> _input; ///< the input image
 	Size _out_size;                  ///< the required size of the output, in pixels
+	int _padding;
 	Scaler const * _scaler;          ///< scaler to use
 	int _frame;                      ///< frame index within the Film
 	int _frames_per_second;          ///< Frames per second that we will use for the DCP (rounded)
