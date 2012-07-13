@@ -165,7 +165,7 @@ void
 Film::set_content (string c)
 {
 	if (filesystem::path(c).has_root_directory () && starts_with (c, _state.directory)) {
-		c = c.substr (_state.directory.length());
+		c = c.substr (_state.directory.length() + 1);
 	}
 
 	if (c == _state.content) {
