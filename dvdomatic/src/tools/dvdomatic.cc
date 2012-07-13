@@ -253,7 +253,7 @@ main (int argc, char* argv[])
 	Gtk::VBox left_vbox;
 	left_vbox.set_spacing (12);
 	left_vbox.pack_start (film_editor->widget (), false, false);
-	left_vbox.pack_start (film_player->widget (), false, false);
+//	left_vbox.pack_start (film_player->widget (), false, false);
 	hbox.pack_start (left_vbox, false, false);
 
 	Gtk::VBox right_vbox;
