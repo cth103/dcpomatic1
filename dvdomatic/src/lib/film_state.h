@@ -52,7 +52,7 @@ class FilmState
 {
 public:
 	FilmState ()
-		: guess_dcp_long_name (false)
+		: guess_dcp_long_name (true)
 		, dcp_content_type (0)
 		, frames_per_second (0)
 		, format (0)
