@@ -172,6 +172,15 @@ Image::post_process (string pp) const
 	return out;
 }
 
+void
+Image::make_black ()
+{
+	/* Black is 0 for all components in RGB and YUV */
+	for (int i = 0; i < components(); ++i) {
+		memset (data()[i], 0, lines(i) * line_size()[i]);
+	}
+}
+
 /** Construct a SimpleImage of a given size and format, allocating memory
  *  as required.
  *

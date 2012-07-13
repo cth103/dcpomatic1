@@ -42,6 +42,7 @@
 #include "filter_dialog.h"
 #include "gtk_util.h"
 #include "film_editor.h"
+#include "dcp_range_dialog.h"
 
 using namespace std;
 using namespace boost;
@@ -57,8 +58,7 @@ FilmEditor::FilmEditor (Film* f)
 	, _make_dcp_button ("Make DCP")
 	, _send_to_tms_button ("Send DCP to TMS")
 	, _make_dcp_from_existing_button ("Make DCP from existing transcode")
-	, _dcp_whole ("Whole Film")
-	, _dcp_for ("For")
+	, _change_dcp_range_button ("Change...")
 	, _dcp_ab ("A/B")
 {
 	_vbox.set_border_width (12);
@@ -104,11 +104,6 @@ FilmEditor::FilmEditor (Film* f)
 	_length.set_alignment (0, 0.5);
 	_audio.set_alignment (0, 0.5);
 
-	Gtk::RadioButtonGroup g = _dcp_whole.get_group ();
-	_dcp_for.set_group (g);
-	_dcp_for_frames.set_range (24, 65536);
-	_dcp_for_frames.set_increments (24, 60 * 24);
-
 	/* And set their values from the Film */
 	set_film (f);
 	
@@ -126,8 +121,6 @@ FilmEditor::FilmEditor (Film* f)
 	_dcp_long_name.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_long_name_changed));
 	_guess_dcp_long_name.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::guess_dcp_long_name_toggled));
 	_dcp_content_type.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_content_type_changed));
-	_dcp_for.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::dcp_frames_changed));
-	_dcp_for_frames.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_frames_changed));
 	_dcp_ab.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::dcp_ab_toggled));
 	_audio_gain.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::audio_gain_changed));
 	_audio_delay.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::audio_delay_changed));
@@ -214,6 +207,7 @@ FilmEditor::FilmEditor (Film* f)
 	t->show_all ();
 	_vbox.pack_start (*t, false, false);
 
+	_change_dcp_range_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::change_dcp_range_clicked));
 	_copy_from_dvd_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::copy_from_dvd_clicked));
 	_examine_content_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::examine_content_clicked));
 	_make_dcp_from_existing_button.signal_clicked().connect (sigc::bind (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked), false));
@@ -231,10 +225,8 @@ FilmEditor::FilmEditor (Film* f)
 	h->set_spacing (12);
 	h->pack_start (_make_dcp_button, false, false);
 	h->pack_start (_send_to_tms_button, false, false);
-	h->pack_start (video_widget (_dcp_whole), false, false);
-	h->pack_start (video_widget (_dcp_for), false, false);
-	h->pack_start (video_widget (_dcp_for_frames), true, true);
-	h->pack_start (video_widget (left_aligned_label ("frames")), false, false);
+	h->pack_start (video_widget (_dcp_range), false, false);
+	h->pack_start (video_widget (_change_dcp_range_button), false, false);
 	h->pack_start (video_widget (_dcp_ab));
 	_vbox.pack_start (*h, false, false);
 }
@@ -299,21 +291,6 @@ FilmEditor::content_changed ()
 		Gtk::MessageDialog d (m.str(), false, MESSAGE_ERROR);
 		d.set_title ("DVD-o-matic");
 		d.run ();
-	}
-}
-
-/** Called when the number of DCP frames has been changed */
-void
-FilmEditor::dcp_frames_changed ()
-{
-	if (!_film) {
-		return;
-	}
-
-	if (_dcp_for.get_active ()) {
-		_film->set_dcp_frames (_dcp_for_frames.get_value ());
-	} else {
-		_film->set_dcp_frames (0);
 	}
 }
 
@@ -410,11 +387,14 @@ FilmEditor::film_changed (Film::Property p)
 		break;
 	case Film::DCP_FRAMES:
 		if (_film->dcp_frames() == 0) {
-			_dcp_whole.set_active (true);
+			_dcp_range.set_text ("Range: Whole film");
 		} else {
-			_dcp_for.set_active (true);
-			_dcp_for_frames.set_value (_film->dcp_frames ());
+			stringstream s;
+			s << "Range: First " << _film->dcp_frames() << " frames";
+			_dcp_range.set_text (s.str ());
 		}
+		break;
+	case Film::DCP_TRIM_ACTION:
 		break;
 	case Film::DCP_AB:
 		_dcp_ab.set_active (_film->dcp_ab ());
@@ -522,6 +502,7 @@ FilmEditor::set_film (Film* f)
 	film_changed (Film::BOTTOM_CROP);
 	film_changed (Film::FILTERS);
 	film_changed (Film::DCP_FRAMES);
+	film_changed (Film::DCP_TRIM_ACTION);
 	film_changed (Film::DCP_AB);
 	film_changed (Film::SIZE);
 	film_changed (Film::LENGTH);
@@ -555,9 +536,8 @@ FilmEditor::set_things_sensitive (bool s)
 	_dcp_content_type.set_sensitive (s);
 	_make_dcp_button.set_sensitive (s);
 	_send_to_tms_button.set_sensitive (s);
-	_dcp_whole.set_sensitive (s);
-	_dcp_for.set_sensitive (s);
-	_dcp_for_frames.set_sensitive (s);
+	_dcp_range.set_sensitive (s);
+	_change_dcp_range_button.set_sensitive (s);
 	_dcp_ab.set_sensitive (s);
 	_audio_gain.set_sensitive (s);
 	_audio_delay.set_sensitive (s);
@@ -693,4 +673,19 @@ void
 FilmEditor::send_to_tms_post_gui ()
 {
 	_send_to_tms_button.set_sensitive (true);
+}
+
+void
+FilmEditor::change_dcp_range_clicked ()
+{
+	DCPRangeDialog d (_film);
+	d.Changed.connect (sigc::mem_fun (*this, &FilmEditor::dcp_range_changed));
+	d.run ();
+}
+
+void
+FilmEditor::dcp_range_changed (int frames, TrimAction action)
+{
+	_film->set_dcp_frames (frames);
+	_film->set_dcp_trim_action (action);
 }

@@ -52,8 +52,8 @@ private:
 	void format_changed ();
 	void dcp_long_name_changed ();
 	void guess_dcp_long_name_toggled ();
+	void dcp_range_changed (int, TrimAction);
 	void dcp_content_type_changed ();
-	void dcp_frames_changed ();
 	void dcp_ab_toggled ();
 	void scaler_changed ();
 	void audio_gain_changed ();
@@ -65,6 +65,7 @@ private:
 
 	/* Button clicks */
 	void edit_filters_clicked ();
+	void change_dcp_range_clicked ();
 	void copy_from_dvd_clicked ();
 	void examine_content_clicked ();
 	void make_dcp_clicked (bool);
@@ -130,12 +131,10 @@ private:
 	Gtk::Button _send_to_tms_button;
 	/** Button to start making a DCP from existing J2K and WAV files */
 	Gtk::Button _make_dcp_from_existing_button;
-	/** Selector to make a DCP of the whole Film */
-	Gtk::RadioButton _dcp_whole;
-	/** Selector to make a DCP for part of the Film */
-	Gtk::RadioButton _dcp_for;
-	/** Number of frames to make the DCP for if _dcp_for is selected */
-	Gtk::SpinButton _dcp_for_frames;
+	/** Display of the range of frames that will be used */
+	Gtk::Label _dcp_range;
+	/** Button to change the range */
+	Gtk::Button _change_dcp_range_button;
 	/** Selector to generate an A/B comparison DCP */
 	Gtk::CheckButton _dcp_ab;
 

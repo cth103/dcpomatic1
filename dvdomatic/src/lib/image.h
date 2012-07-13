@@ -70,7 +70,9 @@ public:
 	
 #ifdef DEBUG_HASH	
 	void hash (std::string) const;
-#endif	
+#endif
+
+	void make_black ();
 	
 	PixelFormat pixel_format () const {
 		return _pixel_format;

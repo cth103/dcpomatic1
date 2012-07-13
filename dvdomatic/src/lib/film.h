@@ -110,6 +110,10 @@ public:
 		return _state.dcp_frames;
 	}
 
+	TrimAction dcp_trim_action () const {
+		return _state.dcp_trim_action;
+	}
+
 	/** @return true to create an A/B comparison DCP, where the left half of the image
 	 *  is the video without any filters or post-processing, and the right half
 	 *  has the specified filters and post-processing.
@@ -150,6 +154,7 @@ public:
 	}
 
 	void set_dcp_frames (int);
+	void set_dcp_trim_action (TrimAction);
 	void set_dcp_ab (bool);
 	
 	void set_name (std::string);
@@ -232,6 +237,7 @@ public:
 		FILTERS,
 		SCALER,
 		DCP_FRAMES,
+		DCP_TRIM_ACTION,
 		DCP_AB,
 		AUDIO_GAIN,
 		AUDIO_DELAY,

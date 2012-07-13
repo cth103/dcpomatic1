@@ -33,6 +33,7 @@ extern "C" {
 }
 #include "scaler.h"
 #include "util.h"
+#include "trim_action.h"
 
 class Format;
 class DCPContentType;
@@ -61,6 +62,7 @@ public:
 		, bottom_crop (0)
 		, scaler (Scaler::from_id ("bicubic"))
 		, dcp_frames (0)
+		, dcp_trim_action (CUT)
 		, dcp_ab (false)
 		, audio_gain (0)
 		, audio_delay (0)
@@ -121,6 +123,9 @@ public:
 	Scaler const * scaler;
 	/** Number of frames to put in the DCP, or 0 for all */
 	int dcp_frames;
+
+	TrimAction dcp_trim_action;
+		
 	/** true to create an A/B comparison DCP, where the left half of the image
 	    is the video without any filters or post-processing, and the right half
 	    has the specified filters and post-processing.

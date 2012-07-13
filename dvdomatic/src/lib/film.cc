@@ -296,6 +296,13 @@ Film::set_dcp_frames (int n)
 	signal_changed (DCP_FRAMES);
 }
 
+void
+Film::set_dcp_trim_action (TrimAction a)
+{
+	_state.dcp_trim_action = a;
+	signal_changed (DCP_TRIM_ACTION);
+}
+
 /** Set whether or not to generate a A/B comparison DCP.
  *  Such a DCP has the left half of its frame as the Film
  *  content without any filtering or post-processing; the
@@ -423,7 +430,7 @@ Film::j2k_dir () const
 	   settings.
 	*/
 	s << _state.format->nickname()
-	  << "_" << _state.content_path()
+	  << "_" << _state.content
 	  << "_" << left_crop() << "_" << right_crop() << "_" << top_crop() << "_" << bottom_crop()
 	  << "_" << f.first << "_" << f.second
 	  << "_" << _state.scaler->id();
@@ -494,7 +501,24 @@ Film::make_dcp (bool transcode, int freq)
 	shared_ptr<const FilmState> fs = state_copy ();
 	shared_ptr<Options> o (new Options (j2k_dir(), ".j2c", _state.dir ("wavs")));
 	o->out_size = format()->dcp_size ();
-	o->num_frames = dcp_frames ();
+	if (dcp_frames() == 0) {
+		/* Decode the whole film, no blacking */
+		o->num_frames = 0;
+		o->black_after = 0;
+	} else {
+		switch (dcp_trim_action()) {
+		case CUT:
+			/* Decode only part of the film, no blacking */
+			o->num_frames = dcp_frames ();
+			o->black_after = 0;
+			break;
+		case BLACK_OUT:
+			/* Decode the whole film, but black some frames out */
+			o->num_frames = 0;
+			o->black_after = dcp_frames ();
+		}
+	}
+	
 	o->decode_video_frequency = freq;
 	o->padding = format()->dcp_padding ();
 	o->ratio = format()->ratio_as_float ();

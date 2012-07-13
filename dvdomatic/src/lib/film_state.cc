@@ -66,6 +66,17 @@ FilmState::write_metadata (ofstream& f) const
 	}
 	f << "scaler " << scaler->id () << "\n";
 	f << "dcp_frames " << dcp_frames << "\n";
+
+	f << "dcp_trim_action ";
+	switch (dcp_trim_action) {
+	case CUT:
+		f << "cut\n";
+		break;
+	case BLACK_OUT:
+		f << "black_out\n";
+		break;
+	}
+	
 	f << "dcp_ab " << (dcp_ab ? "1" : "0") << "\n";
 	f << "audio_gain " << audio_gain << "\n";
 	f << "audio_delay " << audio_delay << "\n";
@@ -121,6 +132,12 @@ FilmState::read_metadata (string k, string v)
 		scaler = Scaler::from_id (v);
 	} else if (k == "dcp_frames") {
 		dcp_frames = atoi (v.c_str ());
+	} else if (k == "dcp_trim_action") {
+		if (v == "cut") {
+			dcp_trim_action = CUT;
+		} else if (v == "black_out") {
+			dcp_trim_action = BLACK_OUT;
+		}
 	} else if (k == "dcp_ab") {
 		dcp_ab = (v == "1");
 	} else if (k == "audio_gain") {

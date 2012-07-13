@@ -208,6 +208,11 @@ Decoder::process_video (AVFrame* frame)
 			
 			/* This takes ownership of filter_buffer */
 			shared_ptr<Image> image (new FilterBufferImage ((PixelFormat) frame->format, filter_buffer));
+
+			if (_opt->black_after > 0 && _video_frame > _opt->black_after) {
+				image->make_black ();
+			}
+
 			Video (image, _video_frame);
 			++_video_frame;
 		}
