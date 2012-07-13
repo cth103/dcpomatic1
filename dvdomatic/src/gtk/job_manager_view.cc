@@ -24,7 +24,9 @@
 #include "lib/job_manager.h"
 #include "lib/job.h"
 #include "lib/util.h"
+#include "lib/exceptions.h"
 #include "job_manager_view.h"
+#include "gtk_util.h"
 
 using namespace std;
 using namespace boost;
@@ -119,7 +121,13 @@ JobManagerView::update ()
 		}
 
 		if (inform_of_finish) {
-			(*i)->emit_finished ();
+			try {
+				(*i)->emit_finished ();
+			} catch (OpenFileError& e) {
+				stringstream s;
+				s << "Error: " << e.what();
+				error_dialog (s.str ());
+			}
 			r[_columns.informed_of_finish] = true;
 		}
 	}
