@@ -175,9 +175,18 @@ Image::post_process (string pp) const
 void
 Image::make_black ()
 {
-	/* Black is 0 for all components in RGB and YUV */
-	for (int i = 0; i < components(); ++i) {
-		memset (data()[i], 0, lines(i) * line_size()[i]);
+	switch (_pixel_format) {
+	case PIX_FMT_YUV420P:
+		memset (data()[0], 0, lines(0) * line_size()[0]);
+		memset (data()[1], 0x80, lines(1) * line_size()[1]);
+		memset (data()[2], 0x80, lines(2) * line_size()[2]);
+		break;
+
+	case PIX_FMT_RGB24:		
+		memset (data()[0], 0, lines(0) * line_size()[0]);
+		memset (data()[1], 0, lines(1) * line_size()[1]);
+		memset (data()[2], 0, lines(2) * line_size()[2]);
+		break;
 	}
 }
 
