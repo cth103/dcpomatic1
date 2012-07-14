@@ -334,9 +334,9 @@ DCPVideoFrame::encode_remotely (Server const * serv)
 	stringstream s;
 	s << "encode "
 	  << _input->size().width << " " << _input->size().height << " "
-	  << _padding
 	  << _input->pixel_format() << " "
 	  << _out_size.width << " " << _out_size.height << " "
+	  << _padding << " "
 	  << _scaler->id () << " "
 	  << _frame << " "
 	  << _frames_per_second << " "
