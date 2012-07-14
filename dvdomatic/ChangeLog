@@ -1,3 +1,22 @@
+2012-07-14  Carl Hetherington  <cth@carlh.net>
+
+	* Version 0.25 released.
+
+2012-07-14  Carl Hetherington  <cth@carlh.net>
+
+	* Various GUI cleanups.
+
+	* Remove player from the GUI for now.
+
+	* Fix hash down the left-hand side of encoded DCPs.
+
+	* Add option to black-out the end of an encode, in order
+	to remove unwanted frames of video whilst keeping sound.
+
+	* Fixes to copy-to-server.
+
+	* Fix name of 16:9 format.
+
 2012-07-08  Carl Hetherington  <cth@carlh.net>
 
 	* Version 0.24 released.
