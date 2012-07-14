@@ -52,8 +52,7 @@ class FilmState
 {
 public:
 	FilmState ()
-		: guess_dcp_long_name (true)
-		, dcp_content_type (0)
+		: dcp_content_type (0)
 		, frames_per_second (0)
 		, format (0)
 		, left_crop (0)
@@ -99,10 +98,6 @@ public:
 	 *  or an absolute path.
 	 */
 	std::string content;
-	/** DCP long name (e.g. BLUES-BROTHERS_FTR_F_EN-XX ...) */
-	std::string dcp_long_name;
-	/** true if we are guessing the dcp_long_name from other state */
-	bool guess_dcp_long_name;
 	/** The type of content that this Film represents (feature, trailer etc.) */
 	DCPContentType const * dcp_content_type;
 	/** Frames per second of the source */

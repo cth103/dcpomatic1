@@ -153,14 +153,14 @@ SCPDCPJob::run ()
 			throw NetworkError (s.str ());
 		}
 
-		r = ssh_scp_push_directory (sc.scp, _fs->dcp_long_name.c_str(), S_IRWXU);
+		r = ssh_scp_push_directory (sc.scp, _fs->name.c_str(), S_IRWXU);
 		if (r != SSH_OK) {
 			stringstream s;
-			s << "Could not create remote directory " << _fs->dcp_long_name << "(" << ssh_get_error (ss.session) << ")";
+			s << "Could not create remote directory " << _fs->name << "(" << ssh_get_error (ss.session) << ")";
 			throw NetworkError (s.str ());
 		}
 
-		string const dcp_dir = _fs->dir (_fs->dcp_long_name);
+		string const dcp_dir = _fs->dir (_fs->name);
 
 		int bytes_to_transfer = 0;
 		for (filesystem::directory_iterator i = filesystem::directory_iterator (dcp_dir); i != filesystem::directory_iterator(); ++i) {

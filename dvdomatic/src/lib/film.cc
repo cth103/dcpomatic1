@@ -209,16 +209,6 @@ Film::set_format (Format const * f)
 	signal_changed (FORMAT);
 }
 
-/** Set the `long name' to use when generating the DCP
- *  (the one like THE-BLUES-BROS_FTR_F_EN-XX ...)
- */
-void
-Film::set_dcp_long_name (string n)
-{
-	_state.dcp_long_name = n;
-	signal_changed (DCP_LONG_NAME);
-}
-
 /** Set the type to specify the DCP as having
  *  (feature, trailer etc.)
  */
@@ -451,11 +441,6 @@ void
 Film::signal_changed (Property p)
 {
 	_dirty = true;
-
-	if (p == NAME || p == DCP_CONTENT_TYPE || p == FORMAT || p == AUDIO_CHANNELS) {
-		maybe_guess_dcp_long_name ();
-	}
-	
 	Changed (p);
 }
 
@@ -465,9 +450,9 @@ Film::signal_changed (Property p)
 void
 Film::make_dcp (bool transcode, int freq)
 {
-	string const t = dcp_long_name ();
+	string const t = name ();
 	if (t.find ("/") != string::npos) {
-		throw BadSettingError ("dcp_long_name", "cannot contain slashes");
+		throw BadSettingError ("name", "cannot contain slashes");
 	}
 	
 	{
@@ -496,8 +481,8 @@ Film::make_dcp (bool transcode, int freq)
 		throw MissingSettingError ("content type");
 	}
 
-	if (dcp_long_name().empty()) {
-		throw MissingSettingError ("long name");
+	if (name().empty()) {
+		throw MissingSettingError ("name");
 	}
 
 	shared_ptr<const FilmState> fs = state_copy ();
@@ -544,83 +529,6 @@ shared_ptr<FilmState>
 Film::state_copy () const
 {
 	return shared_ptr<FilmState> (new FilmState (_state));
-}
-
-void
-Film::set_guess_dcp_long_name (bool g)
-{
-	_state.guess_dcp_long_name = g;
-	maybe_guess_dcp_long_name ();
-	signal_changed (GUESS_DCP_LONG_NAME);
-}
-
-void
-Film::maybe_guess_dcp_long_name ()
-{
-	if (!_state.guess_dcp_long_name) {
-		return;
-	}
-
-	string short_name;
-	if (_state.name.length() < 14) {
-		short_name = _state.name;
-	} else {
-		string::size_type last_space = string::npos;
-		
-		/* Pick complete words from _state.name until we hit the length limit */
-		for (size_t i = 0; i < 14; ++i) {
-			if (_state.name[i] == ' ') {
-				last_space = i;
-			}
-		}
-
-		if (last_space == string::npos) {
-			short_name = _state.name.substr (0, 14);
-		} else {
-			short_name = _state.name.substr (0, last_space);
-		}
-	}
-	
-	to_upper (short_name);
-	replace_all (short_name, " ", "-");
-	replace_all (short_name, "/", "-");
-	stringstream s;
-	s << short_name;
-
-	if (_state.dcp_content_type) {
-		s << "_" << _state.dcp_content_type->dcp_name ();
-	}
-
-	if (_state.format) {
-		s << "_" << _state.format->dcp_name ();
-	}
-
-	s << "_EN-XX_GB";
-
-	switch (_state.audio_channels) {
-	case 1:
-		s << "_10-EN";
-		break;
-	case 2:
-		s << "_20-EN";
-		break;
-	case 5:
-		s << "_51-EN";
-		break;
-	}
-
-	s << "_2K_ST";
-
-	time_t t;
-	time (&t);
-	struct tm * ts = localtime (&t);
-	s << "_" << (ts->tm_year + 1900);
-	s.width (2);
-	s << setfill('0') << (ts->tm_mon + 1) << ts->tm_mday;
-
-	s << "_FAC_2D_OV";
-	
-	set_dcp_long_name (s.str ());
 }
 
 void

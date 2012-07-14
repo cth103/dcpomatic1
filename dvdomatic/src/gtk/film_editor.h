@@ -50,8 +50,6 @@ private:
 	void content_changed ();
 	void frames_per_second_changed ();
 	void format_changed ();
-	void dcp_long_name_changed ();
-	void guess_dcp_long_name_toggled ();
 	void dcp_range_changed (int, TrimAction);
 	void dcp_content_type_changed ();
 	void dcp_ab_toggled ();
@@ -102,10 +100,6 @@ private:
 	Gtk::SpinButton _audio_gain;
 	/** The Film's audio delay */
 	Gtk::SpinButton _audio_delay;
-	/** The Film's DCP long name */
-	Gtk::Entry _dcp_long_name;
-	/** Button to choose whether to guess the contents of _dcp_long_name */
-	Gtk::CheckButton _guess_dcp_long_name;
 	/** The Film's DCP content type */
 	Gtk::ComboBoxText _dcp_content_type;
 	/** The Film's original size */

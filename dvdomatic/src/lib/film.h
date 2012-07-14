@@ -138,16 +138,6 @@ public:
 
 	void set_scaler (Scaler const *);
 
-	/** @return DCP long name (e.g. BLUES-BROTHERS_FTR_F_EN-XX ...) */
-	std::string dcp_long_name () const {
-		return _state.dcp_long_name;
-	}
-
-	/** @return true if we are guessing the dcp_long_name from other state */
-	bool guess_dcp_long_name () const {
-		return _state.guess_dcp_long_name;
-	}
-
 	/** @return the type of content that this Film represents (feature, trailer etc.) */
 	DCPContentType const * dcp_content_type () {
 		return _state.dcp_content_type;
@@ -165,8 +155,6 @@ public:
 	void set_right_crop (int);
 	void set_frames_per_second (float);
 	void set_format (Format const *);
-	void set_dcp_long_name (std::string);
-	void set_guess_dcp_long_name (bool);
 	void set_dcp_content_type (DCPContentType const *);
 	void set_audio_gain (float);
 	void set_audio_delay (int);
@@ -228,8 +216,6 @@ public:
 	enum Property {
 		NAME,
 		CONTENT,
-		DCP_LONG_NAME,
-		GUESS_DCP_LONG_NAME,
 		DCP_CONTENT_TYPE,
 		FORMAT,
 		LEFT_CROP,
@@ -269,7 +255,6 @@ private:
 	std::string metadata_file () const;
 	void update_dimensions ();
 	void signal_changed (Property);
-	void maybe_guess_dcp_long_name ();
 
 	/** The majority of our state.  Kept in a separate object
 	 *  so that it can easily be copied for passing onto long-running

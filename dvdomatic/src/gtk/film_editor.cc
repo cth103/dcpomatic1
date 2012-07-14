@@ -50,7 +50,6 @@ using namespace Gtk;
 FilmEditor::FilmEditor (Film* f)
 	: _film (f)
 	, _filters_button ("Edit...")
-	, _guess_dcp_long_name ("Guess")
 	, _change_dcp_range_button ("Edit...")
 	, _dcp_ab ("A/B")
 {
@@ -112,8 +111,6 @@ FilmEditor::FilmEditor (Film* f)
 	_bottom_crop.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::bottom_crop_changed));
 	_filters_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::edit_filters_clicked));
 	_scaler.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::scaler_changed));
-	_dcp_long_name.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_long_name_changed));
-	_guess_dcp_long_name.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::guess_dcp_long_name_toggled));
 	_dcp_content_type.signal_changed().connect (sigc::mem_fun (*this, &FilmEditor::dcp_content_type_changed));
 	_dcp_ab.signal_toggled().connect (sigc::mem_fun (*this, &FilmEditor::dcp_ab_toggled));
 	_audio_gain.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::audio_gain_changed));
@@ -131,11 +128,6 @@ FilmEditor::FilmEditor (Film* f)
 	int n = 0;
 	t->attach (left_aligned_label ("Name"), 0, 1, n, n + 1);
 	t->attach (_name, 1, 2, n, n + 1);
-	++n;
-	t->attach (left_aligned_label ("DCP Long Name"), 0, 1, n, n + 1);
-	t->attach (_dcp_long_name, 1, 2, n, n + 1);
-	++n;
-	t->attach (_guess_dcp_long_name, 1, 2, n, n + 1);
 	++n;
 	t->attach (left_aligned_label ("Content"), 0, 1, n, n + 1);
 	t->attach (_content, 1, 2, n, n + 1);
@@ -354,12 +346,6 @@ FilmEditor::film_changed (Film::Property p)
 		}
 		_length.set_text (s.str ());
 		break;
-	case Film::DCP_LONG_NAME:
-		_dcp_long_name.set_text (_film->dcp_long_name ());
-		break;
-	case Film::GUESS_DCP_LONG_NAME:
-		_guess_dcp_long_name.set_active (_film->guess_dcp_long_name ());
-		break;
 	case Film::DCP_CONTENT_TYPE:
 		_dcp_content_type.set_active (DCPContentType::as_index (_film->dcp_content_type ()));
 		break;
@@ -418,15 +404,6 @@ FilmEditor::dcp_content_type_changed ()
 	}
 }
 
-/** Called when the DCP long name widget has been changed */
-void
-FilmEditor::dcp_long_name_changed ()
-{
-	if (_film) {
-		_film->set_dcp_long_name (_dcp_long_name.get_text ());
-	}
-}
-
 /** Sets the Film that we are editing */
 void
 FilmEditor::set_film (Film* f)
@@ -447,8 +424,6 @@ FilmEditor::set_film (Film* f)
 	
 	film_changed (Film::NAME);
 	film_changed (Film::CONTENT);
-	film_changed (Film::DCP_LONG_NAME);
-	film_changed (Film::GUESS_DCP_LONG_NAME);
 	film_changed (Film::DCP_CONTENT_TYPE);
 	film_changed (Film::FORMAT);
 	film_changed (Film::LEFT_CROP);
@@ -486,8 +461,6 @@ FilmEditor::set_things_sensitive (bool s)
 	_bottom_crop.set_sensitive (s);
 	_filters_button.set_sensitive (s);
 	_scaler.set_sensitive (s);
-	_dcp_long_name.set_sensitive (s);
-	_guess_dcp_long_name.set_sensitive (s);
 	_dcp_content_type.set_sensitive (s);
 	_dcp_range.set_sensitive (s);
 	_change_dcp_range_button.set_sensitive (s);
@@ -504,17 +477,6 @@ FilmEditor::edit_filters_clicked ()
 	FilterDialog d (_film->filters ());
 	d.ActiveChanged.connect (sigc::mem_fun (*_film, &Film::set_filters));
 	d.run ();
-}
-
-/** Called when the selector to guess the DCP long name has been toggled */
-void
-FilmEditor::guess_dcp_long_name_toggled ()
-{
-	if (!_film) {
-		return;
-	}
-
-	_film->set_guess_dcp_long_name (_guess_dcp_long_name.get_active ());
 }
 
 /** Called when the scaler widget has been changed */

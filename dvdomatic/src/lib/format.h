@@ -33,7 +33,7 @@
 class Format
 {
 public:
-	Format (int, Size, std::string, std::string, std::string);
+	Format (int, Size, std::string, std::string);
 
 	/** @return the aspect ratio multiplied by 100
 	 *  (e.g. 239 for Cinemascope 2.39:1)
@@ -67,13 +67,6 @@ public:
 		return _nickname;
 	}
 
-	/** @return Text to use for this format as part of a DCP name
-	 *  (e.g. F, S)
-	 */
-	std::string dcp_name () const {
-		return _dcp_name;
-	}
-
 	std::string as_metadata () const;
 
 	int dcp_padding () const;
@@ -100,8 +93,6 @@ private:
 	std::string _id;
 	/** nickname (e.g. Flat, Scope) */
 	std::string _nickname;
-	/** text to use for this format as part of a DCP name (e.g. F, S) */
-	std::string _dcp_name;
 
 	/** all available formats */
 	static std::vector<Format const *> _formats;

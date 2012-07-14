@@ -54,11 +54,9 @@ MakeDCPJob::name () const
 void
 MakeDCPJob::run ()
 {
-	assert (!_fs->dcp_long_name.empty());
-
 	set_progress_unknown ();
 
-	string const dcp_path = _fs->dir (_fs->dcp_long_name);
+	string const dcp_path = _fs->dir (_fs->name);
 	
 	/* Check that we have our prerequisites */
 
@@ -72,11 +70,11 @@ MakeDCPJob::run ()
 	filesystem::remove_all (dcp_path);
 
 	/* Re-make the DCP directory */
-	_fs->dir (_fs->dcp_long_name);
+	_fs->dir (_fs->name);
 	
 	stringstream c;
 	c << "cd \"" << dcp_path << "\" && "
-	  << " opendcp_xml -d -a " << _fs->dcp_long_name
+	  << " opendcp_xml -d -a " << _fs->name
 	  << " -t \"" << _fs->name << "\""
 	  << " -k " << _fs->dcp_content_type->opendcp_name()
 	  << " --reel \"" << _fs->file ("video.mxf") << "\"";

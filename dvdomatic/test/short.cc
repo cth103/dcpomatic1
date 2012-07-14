@@ -55,7 +55,6 @@ BOOST_AUTO_TEST_CASE (film_metadata_test)
 
 	f.set_name ("fred");
 	BOOST_CHECK_THROW (f.set_content ("jim"), OpenFileError);
-	f.set_dcp_long_name ("sheila");
 	f.set_dcp_content_type (DCPContentType::from_pretty_name ("Short"));
 	f.set_format (Format::from_nickname ("Flat"));
 	f.set_left_crop (1);
@@ -77,7 +76,6 @@ BOOST_AUTO_TEST_CASE (film_metadata_test)
 	Film g (test_film, true);
 
 	BOOST_CHECK_EQUAL (g.name(), "fred");
-	BOOST_CHECK_EQUAL (g.dcp_long_name(), "sheila");
 	BOOST_CHECK_EQUAL (g.dcp_content_type(), DCPContentType::from_pretty_name ("Short"));
 	BOOST_CHECK_EQUAL (g.format(), Format::from_nickname ("Flat"));
 	BOOST_CHECK_EQUAL (g.left_crop(), 1);

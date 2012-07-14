@@ -28,10 +28,9 @@ using namespace std;
 
 vector<DCPContentType const *> DCPContentType::_dcp_content_types;
 
-DCPContentType::DCPContentType (string p, string o, string d)
+DCPContentType::DCPContentType (string p, string o)
 	: _pretty_name (p)
 	, _opendcp_name (o)
-	, _dcp_name (d)
 {
 
 }
@@ -39,16 +38,16 @@ DCPContentType::DCPContentType (string p, string o, string d)
 void
 DCPContentType::setup_dcp_content_types ()
 {
-	_dcp_content_types.push_back (new DCPContentType ("Feature", "feature", "FTR"));
-	_dcp_content_types.push_back (new DCPContentType ("Short", "short", "SHR"));
-	_dcp_content_types.push_back (new DCPContentType ("Trailer", "trailer", "TLR"));
-	_dcp_content_types.push_back (new DCPContentType ("Test", "test", "TST"));
-	_dcp_content_types.push_back (new DCPContentType ("Transitional", "transitional", "XSN"));
-	_dcp_content_types.push_back (new DCPContentType ("Rating", "rating", "RTG"));
-	_dcp_content_types.push_back (new DCPContentType ("Teaser", "teaster", "TSR"));
-	_dcp_content_types.push_back (new DCPContentType ("Policy", "policy", "POL"));
-	_dcp_content_types.push_back (new DCPContentType ("Public Service Announcement", "psa", "PSA"));
-	_dcp_content_types.push_back (new DCPContentType ("Advertisement", "advertisement", "ADV"));
+	_dcp_content_types.push_back (new DCPContentType ("Feature", "feature"));
+	_dcp_content_types.push_back (new DCPContentType ("Short", "short"));
+	_dcp_content_types.push_back (new DCPContentType ("Trailer", "trailer"));
+	_dcp_content_types.push_back (new DCPContentType ("Test", "test"));
+	_dcp_content_types.push_back (new DCPContentType ("Transitional", "transitional"));
+	_dcp_content_types.push_back (new DCPContentType ("Rating", "rating"));
+	_dcp_content_types.push_back (new DCPContentType ("Teaser", "teaster"));
+	_dcp_content_types.push_back (new DCPContentType ("Policy", "policy"));
+	_dcp_content_types.push_back (new DCPContentType ("Public Service Announcement", "psa"));
+	_dcp_content_types.push_back (new DCPContentType ("Advertisement", "advertisement"));
 }
 
 DCPContentType const *

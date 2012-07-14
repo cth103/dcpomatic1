@@ -85,7 +85,6 @@ BOOST_AUTO_TEST_CASE (make_dcp_test)
 	boost::filesystem::copy_file ("test/zombie.mpeg", "build/test/film/zombie.mpeg");
 	f.set_content ("zombie.mpeg");
 	f.set_dcp_content_type (DCPContentType::from_pretty_name ("Test"));
-	f.set_dcp_long_name (dcp_name);
 
 	BOOST_CHECK_EQUAL (f.audio_channels(), 2);
 	BOOST_CHECK_EQUAL (f.audio_sample_rate(), 48000);

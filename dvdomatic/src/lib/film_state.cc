@@ -48,8 +48,6 @@ FilmState::write_metadata (ofstream& f) const
 	/* User stuff */
 	f << "name " << name << "\n";
 	f << "content " << content << "\n";
-	f << "dcp_long_name " << dcp_long_name << "\n";
-	f << "guess_dcp_long_name " << (guess_dcp_long_name ? "1" : "0") << "\n";
 	if (dcp_content_type) {
 		f << "dcp_content_type " << dcp_content_type->pretty_name () << "\n";
 	}
@@ -108,10 +106,6 @@ FilmState::read_metadata (string k, string v)
 		name = v;
 	} else if (k == "content") {
 		content = v;
-	} else if (k == "dcp_long_name") {
-		dcp_long_name = v;
-	} else if (k == "guess_dcp_long_name") {
-		guess_dcp_long_name = (v == "1");
 	} else if (k == "dcp_content_type") {
 		dcp_content_type = DCPContentType::from_pretty_name (v);
 	} else if (k == "frames_per_second") {
