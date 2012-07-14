@@ -66,11 +66,6 @@ private:
 	/* Button clicks */
 	void edit_filters_clicked ();
 	void change_dcp_range_clicked ();
-	void copy_from_dvd_clicked ();
-	void examine_content_clicked ();
-	void make_dcp_clicked (bool);
-	void send_to_tms_clicked ();
-	void send_to_tms_post_gui ();
 
 	void set_things_sensitive (bool);
 
@@ -89,8 +84,6 @@ private:
 	Gtk::ComboBoxText _format;
 	/** The Film's content file */
 	Gtk::FileChooserButton _content;
-	/** Button to copy content from a DVD */
-	Gtk::Button _copy_from_dvd_button;
 	/** The Film's left crop */
 	Gtk::SpinButton _left_crop;
 	/** The Film's right crop */
@@ -124,11 +117,6 @@ private:
 	/** The Film's duration for still sources */
 	Gtk::SpinButton _still_duration;
 
-	/** Button to start an examination of the Film's content */
-	Gtk::Button _examine_content_button;
-	/** Button to start making a DCP */
-	Gtk::Button _make_dcp_button;
-	Gtk::Button _send_to_tms_button;
 	/** Button to start making a DCP from existing J2K and WAV files */
 	Gtk::Button _make_dcp_from_existing_button;
 	/** Display of the range of frames that will be used */

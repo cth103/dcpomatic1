@@ -37,6 +37,8 @@
 #include "ab_transcode_job.h"
 #include "transcode_job.h"
 #include "make_mxf_job.h"
+#include "scp_dcp_job.h"
+#include "copy_from_dvd_job.h"
 #include "make_dcp_job.h"
 #include "film_state.h"
 #include "log.h"
@@ -703,3 +705,19 @@ Film::set_still_duration (int d)
 	_state.still_duration = d;
 	signal_changed (STILL_DURATION);
 }
+
+void
+Film::send_dcp_to_tms ()
+{
+	shared_ptr<Job> j (new SCPDCPJob (state_copy (), log ()));
+	JobManager::instance()->add (j);
+}
+
+void
+Film::copy_from_dvd ()
+{
+	shared_ptr<Job> j (new CopyFromDVDJob (state_copy (), log ()));
+	j->Finished.connect (sigc::mem_fun (*this, &Film::copy_from_dvd_post_gui));
+	JobManager::instance()->add (j);
+}
+

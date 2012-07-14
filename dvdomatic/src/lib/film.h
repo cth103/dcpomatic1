@@ -215,6 +215,8 @@ public:
 	void copy_from_dvd_post_gui ();
 	void examine_content ();
 	void examine_content_post_gui ();
+	void send_dcp_to_tms ();
+	void copy_from_dvd ();
 
 	/** @return true if our metadata has been modified since it was last saved */
 	bool dirty () const {

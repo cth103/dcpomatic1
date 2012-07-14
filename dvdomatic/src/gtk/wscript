@@ -17,5 +17,6 @@ def build(bld):
 		 gpl.cc
 		 job_manager_view.cc
 		 gtk_util.cc
+                 job_wrapper.cc
 		 """
     obj.target = 'dvdomatic-gtk'

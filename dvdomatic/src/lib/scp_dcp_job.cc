@@ -104,7 +104,7 @@ string
 SCPDCPJob::name () const
 {
 	stringstream s;
-	s << "Copy DCP to server";
+	s << "Copy DCP to TMS";
 	return s.str ();
 }
 

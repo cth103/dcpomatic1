@@ -17,6 +17,8 @@
 
 */
 
+#include <gtkmm.h>
+
 /** @file src/gtk/util.h
  *  @brief Some utility functions.
  */

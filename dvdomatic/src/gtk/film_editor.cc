@@ -32,10 +32,8 @@
 #include "lib/ab_transcode_job.h"
 #include "lib/thumbs_job.h"
 #include "lib/make_mxf_job.h"
-#include "lib/make_dcp_job.h"
 #include "lib/job_manager.h"
 #include "lib/filter.h"
-#include "lib/copy_from_dvd_job.h"
 #include "lib/screen.h"
 #include "lib/config.h"
 #include "lib/scp_dcp_job.h"
@@ -51,14 +49,9 @@ using namespace Gtk;
 /** @param f Film to edit */
 FilmEditor::FilmEditor (Film* f)
 	: _film (f)
-	, _copy_from_dvd_button ("Copy from DVD")
 	, _filters_button ("Edit...")
 	, _guess_dcp_long_name ("Guess")
-	, _examine_content_button ("Examine Content")
-	, _make_dcp_button ("Make DCP")
-	, _send_to_tms_button ("Send DCP to TMS")
-	, _make_dcp_from_existing_button ("Make DCP from existing transcode")
-	, _change_dcp_range_button ("Change...")
+	, _change_dcp_range_button ("Edit...")
 	, _dcp_ab ("A/B")
 {
 	_vbox.set_border_width (12);
@@ -80,6 +73,7 @@ FilmEditor::FilmEditor (Film* f)
 	_audio_delay.set_increments (1, 20);
 	_still_duration.set_range (0, 60 * 60);
 	_still_duration.set_increments (1, 5);
+	_dcp_range.set_alignment (0, 0.5);
 
 	vector<Format const *> fmt = Format::all ();
 	for (vector<Format const *>::iterator i = fmt.begin(); i != fmt.end(); ++i) {
@@ -125,6 +119,7 @@ FilmEditor::FilmEditor (Film* f)
 	_audio_gain.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::audio_gain_changed));
 	_audio_delay.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::audio_delay_changed));
 	_still_duration.signal_value_changed().connect (sigc::mem_fun (*this, &FilmEditor::still_duration_changed));
+	_change_dcp_range_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::change_dcp_range_clicked));
 
 	/* Set up the table */
 
@@ -196,6 +191,14 @@ FilmEditor::FilmEditor (Film* f)
 	++n;
 	t->attach (video_widget (left_aligned_label ("Audio")), 0, 1, n, n + 1);
 	t->attach (video_widget (_audio), 1, 2, n, n + 1);
+	++n;
+	t->attach (video_widget (left_aligned_label ("Range")), 0, 1, n, n + 1);
+	Gtk::HBox* db = manage (new Gtk::HBox);
+	db->pack_start (_dcp_range, true, true);
+	db->pack_start (_change_dcp_range_button, false, false);
+	t->attach (*db, 1, 2, n, n + 1);
+	++n;
+	t->attach (_dcp_ab, 0, 3, n, n + 1);
 
 	/* STILL-only stuff */
 	n = special;
@@ -206,29 +209,6 @@ FilmEditor::FilmEditor (Film* f)
 
 	t->show_all ();
 	_vbox.pack_start (*t, false, false);
-
-	_change_dcp_range_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::change_dcp_range_clicked));
-	_copy_from_dvd_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::copy_from_dvd_clicked));
-	_examine_content_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::examine_content_clicked));
-	_make_dcp_from_existing_button.signal_clicked().connect (sigc::bind (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked), false));
-	_make_dcp_button.signal_clicked().connect (sigc::bind (sigc::mem_fun (*this, &FilmEditor::make_dcp_clicked), true));
-	_send_to_tms_button.signal_clicked().connect (sigc::mem_fun (*this, &FilmEditor::send_to_tms_clicked));
-
-	HBox* h = manage (new HBox);
-	h->set_spacing (12);
-	h->pack_start (video_widget (_examine_content_button), false, false);
-	h->pack_start (video_widget (_copy_from_dvd_button), false, false);
-	h->pack_start (video_widget (_make_dcp_from_existing_button), false, false);
-	_vbox.pack_start (*h, false, false);
-	
-	h = manage (new HBox);
-	h->set_spacing (12);
-	h->pack_start (_make_dcp_button, false, false);
-	h->pack_start (_send_to_tms_button, false, false);
-	h->pack_start (video_widget (_dcp_range), false, false);
-	h->pack_start (video_widget (_change_dcp_range_button), false, false);
-	h->pack_start (video_widget (_dcp_ab));
-	_vbox.pack_start (*h, false, false);
 }
 
 /** @return Our main widget, which contains everything else */
@@ -387,10 +367,10 @@ FilmEditor::film_changed (Film::Property p)
 		break;
 	case Film::DCP_FRAMES:
 		if (_film->dcp_frames() == 0) {
-			_dcp_range.set_text ("Range: Whole film");
+			_dcp_range.set_text ("Whole film");
 		} else {
 			stringstream s;
-			s << "Range: First " << _film->dcp_frames() << " frames";
+			s << "First " << _film->dcp_frames() << " frames";
 			_dcp_range.set_text (s.str ());
 		}
 		break;
@@ -423,31 +403,6 @@ FilmEditor::format_changed ()
 		if (n >= 0) {
 			_film->set_format (Format::from_index (n));
 		}
-	}
-}
-
-/** Called when the `Make DCP' button has been clicked */
-void
-FilmEditor::make_dcp_clicked (bool transcode)
-{
-	if (!_film) {
-		return;
-	}
-
-	try {
-		_film->make_dcp (transcode);
-	} catch (BadSettingError& e) {
-		stringstream s;
-		if (e.setting() == "dcp_long_name") {
-			s << "Could not make DCP: long name is invalid (" << e.what() << ")";
-		} else {
-			s << "Bad setting for " << e.setting() << "(" << e.what() << ")";
-		}
-		error_dialog (s.str ());
-	} catch (std::exception& e) {
-		stringstream s;
-		s << "Could not make DCP: " << e.what () << ".";
-		error_dialog (s.str ());
 	}
 }
 
@@ -534,17 +489,12 @@ FilmEditor::set_things_sensitive (bool s)
 	_dcp_long_name.set_sensitive (s);
 	_guess_dcp_long_name.set_sensitive (s);
 	_dcp_content_type.set_sensitive (s);
-	_make_dcp_button.set_sensitive (s);
-	_send_to_tms_button.set_sensitive (s);
 	_dcp_range.set_sensitive (s);
 	_change_dcp_range_button.set_sensitive (s);
 	_dcp_ab.set_sensitive (s);
 	_audio_gain.set_sensitive (s);
 	_audio_delay.set_sensitive (s);
 	_still_duration.set_sensitive (s);
-	_copy_from_dvd_button.set_sensitive (s);
-	_examine_content_button.set_sensitive (s);
-	_make_dcp_from_existing_button.set_sensitive (s);
 }
 
 /** Called when the `Edit filters' button has been clicked */
@@ -565,22 +515,6 @@ FilmEditor::guess_dcp_long_name_toggled ()
 	}
 
 	_film->set_guess_dcp_long_name (_guess_dcp_long_name.get_active ());
-}
-
-/** Called when the `Copy from DVD' button has been clicked */
-void
-FilmEditor::copy_from_dvd_clicked ()
-{
-	shared_ptr<Job> j (new CopyFromDVDJob (_film->state_copy (), _film->log ()));
-	j->Finished.connect (sigc::mem_fun (_film, &Film::copy_from_dvd_post_gui));
-	JobManager::instance()->add (j);
-}
-
-/** Called when the `Examine content' button has been clicked */
-void
-FilmEditor::examine_content_clicked ()
-{
-	_film->examine_content ();
 }
 
 /** Called when the scaler widget has been changed */
@@ -658,21 +592,6 @@ FilmEditor::still_duration_changed ()
 	if (_film) {
 		_film->set_still_duration (_still_duration.get_value ());
 	}
-}
-
-void
-FilmEditor::send_to_tms_clicked ()
-{
-	_send_to_tms_button.set_sensitive (false);
-	shared_ptr<Job> j (new SCPDCPJob (_film->state_copy (), _film->log ()));
-	j->Finished.connect (sigc::mem_fun (*this, &FilmEditor::send_to_tms_post_gui));
-	JobManager::instance()->add (j);
-}
-
-void
-FilmEditor::send_to_tms_post_gui ()
-{
-	_send_to_tms_button.set_sensitive (true);
 }
 
 void

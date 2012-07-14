@@ -25,6 +25,7 @@
 #include "gtk/job_manager_view.h"
 #include "gtk/config_dialog.h"
 #include "gtk/gpl.h"
+#include "gtk/job_wrapper.h"
 #include "lib/film.h"
 #include "lib/format.h"
 #include "lib/config.h"
@@ -147,6 +148,36 @@ edit_preferences ()
 }
 
 void
+jobs_make_dcp ()
+{
+	JobWrapper::make_dcp (film, true);
+}
+
+void
+jobs_make_dcp_from_existing_transcode ()
+{
+	JobWrapper::make_dcp (film, false);
+}
+
+void
+jobs_copy_from_dvd ()
+{
+	film->copy_from_dvd ();
+}
+
+void
+jobs_send_dcp_to_tms ()
+{
+	film->send_dcp_to_tms ();
+}
+
+void
+jobs_examine_content ()
+{
+	film->examine_content ();
+}
+
+void
 help_about ()
 {
 	Gtk::AboutDialog d;
@@ -188,6 +219,14 @@ setup_menu (Gtk::MenuBar& m)
 	MenuList& edit_items (edit->items ());
 	edit_items.push_back (MenuElem ("_Preferences...", sigc::ptr_fun (edit_preferences)));
 
+	Gtk::Menu* jobs = manage (new Gtk::Menu);
+	MenuList& jobs_items (jobs->items ());
+	jobs_items.push_back (MenuElem ("_Make DCP", sigc::ptr_fun (jobs_make_dcp)));
+	jobs_items.push_back (MenuElem ("_Send DCP to TMS", sigc::ptr_fun (jobs_send_dcp_to_tms)));
+	jobs_items.push_back (MenuElem ("Copy from _DVD", sigc::ptr_fun (jobs_copy_from_dvd)));
+	jobs_items.push_back (MenuElem ("_Examine content", sigc::ptr_fun (jobs_examine_content)));
+	jobs_items.push_back (MenuElem ("Make DCP from _existing transcode", sigc::ptr_fun (jobs_make_dcp_from_existing_transcode)));
+
 	Gtk::Menu* help = manage (new Gtk::Menu);
 	MenuList& help_items (help->items ());
 	help_items.push_back (MenuElem ("_About", sigc::ptr_fun (help_about)));
@@ -195,6 +234,7 @@ setup_menu (Gtk::MenuBar& m)
 	MenuList& items (m.items ());
 	items.push_back (MenuElem ("_File", *file));
 	items.push_back (MenuElem ("_Edit", *edit));
+	items.push_back (MenuElem ("_Jobs", *jobs));
 	items.push_back (MenuElem ("_Help", *help));
 }
 
