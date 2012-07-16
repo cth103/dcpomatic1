@@ -1,5 +1,6 @@
 def configure(conf):
     conf.check_cc(msg = 'Checking for library expat', header_name = 'tiffio.h', lib = 'expat', uselib_store = 'EXPAT', mandatory = True)
+    conf.check_cfg(package = 'openssl', args = '--cflags --libs', uselib_store = 'OPENSSL', mandatory = True)
     conf.env.append_value('CXXFLAGS', '-DHAVE_EXPAT')
     conf.env.append_value('CXXFLAGS', '-D_FILE_OFFSET_BITS=64')
     conf.env.append_value('CXXFLAGS', '-DPACKAGE_VERSION="1.9.45-dvdomatic"')
@@ -9,20 +10,26 @@ def configure(conf):
 def build(bld):
     obj = bld(features = 'cxx cxxshlib')
     obj.name = 'libkumu-dvdomatic'
+    obj.target = 'kumu-dvdomatic'
     obj.uselib = 'EXPAT'
     obj.includes = ['.']
+    obj.export_includes = ['.']
     obj.source = """
                  KM_fileio.cpp
                  KM_log.cpp
 		 KM_util.cpp
 		 KM_xml.cpp
                  KM_tai.cpp
+                 KM_prng.cpp
                  """
 
     obj = bld(features = 'cxx cxxshlib')
     obj.name = 'libasdcp-dvdomatic'
-    obj.uselib = 'EXPAT'
+    obj.target = 'asdcp-dvdomatic'
+    obj.uselib = 'EXPAT OPENSSL'
+    obj.use = 'libkumu-dvdomatic'
     obj.includes = ['.']
+    obj.export_includes = ['.']
     obj.source = """
 		 MPEG2_Parser.cpp
                  MPEG.cpp
