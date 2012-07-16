@@ -315,12 +315,12 @@ lh__Reader::OpenRead(const char* filename, EssenceType_t type)
 	      DefaultLogSink().Warn("EditRate and SampleRate do not match (%.03f, %.03f).\n",
 				    m_EditRate.Quotient(), m_SampleRate.Quotient());
 	      
-	      if ( m_EditRate == EditRate_24 && m_SampleRate == EditRate_48 ||
-		   m_EditRate == EditRate_25 && m_SampleRate == EditRate_50 ||
-		   m_EditRate == EditRate_30 && m_SampleRate == EditRate_60 ||
-		   m_EditRate == EditRate_48 && m_SampleRate == EditRate_96 ||
-		   m_EditRate == EditRate_50 && m_SampleRate == EditRate_100 ||
-		   m_EditRate == EditRate_60 && m_SampleRate == EditRate_120 )
+	      if ( (m_EditRate == EditRate_24 && m_SampleRate == EditRate_48) ||
+		   (m_EditRate == EditRate_25 && m_SampleRate == EditRate_50) ||
+		   (m_EditRate == EditRate_30 && m_SampleRate == EditRate_60) ||
+		   (m_EditRate == EditRate_48 && m_SampleRate == EditRate_96) ||
+		   (m_EditRate == EditRate_50 && m_SampleRate == EditRate_100) ||
+		   (m_EditRate == EditRate_60 && m_SampleRate == EditRate_120) )
 		{
 		  DefaultLogSink().Debug("File may contain JPEG Interop stereoscopic images.\n");
 		  return RESULT_SFORMAT;
