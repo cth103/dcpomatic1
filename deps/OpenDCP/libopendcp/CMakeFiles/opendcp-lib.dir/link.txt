@@ -1,2 +1,0 @@
-/usr/bin/ar cr libopendcp.a  CMakeFiles/opendcp-lib.dir/opendcp_xml_sign.c.o CMakeFiles/opendcp-lib.dir/opendcp_j2k.c.o CMakeFiles/opendcp-lib.dir/opendcp_xml.c.o CMakeFiles/opendcp-lib.dir/opendcp_common.c.o CMakeFiles/opendcp-lib.dir/opendcp_log.c.o CMakeFiles/opendcp-lib.dir/asdcp_intf.cpp.o CMakeFiles/opendcp-lib.dir/image/opendcp_tif.c.o CMakeFiles/opendcp-lib.dir/image/opendcp_image.c.o CMakeFiles/opendcp-lib.dir/image/opendcp_dpx.c.o
-/usr/bin/ranlib libopendcp.a

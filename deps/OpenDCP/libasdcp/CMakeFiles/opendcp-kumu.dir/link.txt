@@ -1,2 +1,0 @@
-/usr/bin/ar cr libopendcp-kumu.a  CMakeFiles/opendcp-kumu.dir/KM_fileio.cpp.o CMakeFiles/opendcp-kumu.dir/KM_log.cpp.o CMakeFiles/opendcp-kumu.dir/KM_prng.cpp.o CMakeFiles/opendcp-kumu.dir/KM_util.cpp.o CMakeFiles/opendcp-kumu.dir/KM_xml.cpp.o CMakeFiles/opendcp-kumu.dir/KM_tai.cpp.o
-/usr/bin/ranlib libopendcp-kumu.a

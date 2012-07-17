@@ -1,3 +1,0 @@
-repository='external project URL'
-module='http://opendcp.googlecode.com/files/openjpeg_v1_4_sources_r697.tar.gz'
-tag=''

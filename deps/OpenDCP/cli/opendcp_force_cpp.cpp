@@ -1,1 +1,0 @@
-/* dummy file to force cmake to use CXX linkage */

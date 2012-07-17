@@ -1,8 +1,0 @@
-<RCC>
-  <qresource prefix="/">
-    <file>naming.xml</file>
-  </qresource>
-  <qresource prefix="images">
-    <file>opendcp.png</file>
-  </qresource>
-</RCC>
