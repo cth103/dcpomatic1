@@ -1,0 +1,37 @@
+version 1
+name Boon
+use_dci_name 1
+content /mnt/boon_telly.mkv
+trust_content_header 1
+dcp_content_type Short
+format 133-in-flat
+left_crop 5
+right_crop 2
+top_crop 5
+bottom_crop 0
+scaler bicubic
+dcp_trim_start 0
+dcp_trim_end 0
+dcp_ab 0
+selected_content_audio_stream ffmpeg 1 44100 3 unknown
+use_content_audio 1
+audio_gain 0
+audio_delay 0
+still_duration 10
+with_subtitles 0
+subtitle_offset 0
+subtitle_scale 1
+audio_language EN
+subtitle_language XX
+territory UK
+rating 18
+studio CSY
+facility CSY
+package_type OV
+width 320
+height 240
+length 6911
+content_digest 72332980e2f9b2fec52e665d9de67f5d
+content_audio_stream ffmpeg 1 44100 3 unknown
+external_audio_stream external 0 0
+frames_per_second 29.97
