@@ -113,7 +113,7 @@ class Parser:
         return data
 
 if __name__ == '__main__':
-    for r in ['t1.micro/1', 'c1.xlarge/1', 'houllier/1']:
+    for r in ['t1.micro/1', 'c1.xlarge/1', 'houllier/1', 'shankly/1']:
         print '-- %s' % r
         p = Parser(r)
         d = p.parse()
