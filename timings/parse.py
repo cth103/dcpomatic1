@@ -36,7 +36,7 @@ class Data:
         return float(self.frames) / self.duration_seconds()
 
     def cost(self):
-        if self.host is None:
+        if self.host is None or self.host not in cost_per_hour:
             return None
 
         return (self.duration_seconds() / 3600) * cost_per_hour[self.host]
@@ -113,7 +113,7 @@ class Parser:
         return data
 
 if __name__ == '__main__':
-    for r in ['t1.micro/1', 'c1.xlarge/1']:
+    for r in ['t1.micro/1', 'c1.xlarge/1', 'houllier/1']:
         print '-- %s' % r
         p = Parser(r)
         d = p.parse()
