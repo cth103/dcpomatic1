@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompositionPlaylist xmlns="http://www.smpte-ra.org/schemas/429-7/2006/CPL">
+  <Id>urn:uuid:dac85bc8-3427-434b-8f77-a3fba8c1bb3b</Id>
+  <AnnotationText>SCALING_TEST_FTR_S_51_2K_20130531</AnnotationText>
+  <IssueDate>2013-05-31T02:10:12+00:00</IssueDate>
+  <Creator>libdcp0.51pre</Creator>
+  <ContentTitleText>SCALING_TEST_FTR_S_51_2K_20130531</ContentTitleText>
+  <ContentKind>feature</ContentKind>
+  <ContentVersion>
+    <Id>urn:uri:dac85bc8-3427-434b-8f77-a3fba8c1bb3b_2013-05-31T02:10:12+00:00</Id>
+    <LabelText>dac85bc8-3427-434b-8f77-a3fba8c1bb3b_2013-05-31T02:10:12+00:00</LabelText>
+  </ContentVersion>
+  <RatingList/>
+  <ReelList>
+    <Reel>
+      <Id>urn:uuid:97cd94ff-75a4-4792-84e8-0f9ed4c7c905</Id>
+      <AssetList>
+        <MainPicture>
+          <Id>urn:uuid:a02bec71-12eb-444b-9b7a-a641d8217682</Id>
+          <AnnotationText>scaling_test_video.mxf</AnnotationText>
+          <EditRate>24 1</EditRate>
+          <IntrinsicDuration>1</IntrinsicDuration>
+          <EntryPoint>0</EntryPoint>
+          <Duration>1</Duration>
+          <FrameRate>24 1</FrameRate>
+          <ScreenAspectRatio>2048 858</ScreenAspectRatio>
+        </MainPicture>
+        <MainSound>
+          <Id>urn:uuid:531979ca-17a4-42d4-ad4f-23ff8acc5f50</Id>
+          <AnnotationText>scaling_test_audio.mxf</AnnotationText>
+          <EditRate>24 1</EditRate>
+          <IntrinsicDuration>1</IntrinsicDuration>
+          <EntryPoint>0</EntryPoint>
+          <Duration>1</Duration>
+        </MainSound>
+      </AssetList>
+    </Reel>
+  </ReelList>
+</CompositionPlaylist>

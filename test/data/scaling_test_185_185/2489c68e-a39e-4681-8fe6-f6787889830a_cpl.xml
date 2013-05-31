@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompositionPlaylist xmlns="http://www.smpte-ra.org/schemas/429-7/2006/CPL">
+  <Id>urn:uuid:2489c68e-a39e-4681-8fe6-f6787889830a</Id>
+  <AnnotationText>SCALING_TEST_FTR_F_51_2K_20130531</AnnotationText>
+  <IssueDate>2013-05-31T02:07:15+00:00</IssueDate>
+  <Creator>libdcp0.51pre</Creator>
+  <ContentTitleText>SCALING_TEST_FTR_F_51_2K_20130531</ContentTitleText>
+  <ContentKind>feature</ContentKind>
+  <ContentVersion>
+    <Id>urn:uri:2489c68e-a39e-4681-8fe6-f6787889830a_2013-05-31T02:07:15+00:00</Id>
+    <LabelText>2489c68e-a39e-4681-8fe6-f6787889830a_2013-05-31T02:07:15+00:00</LabelText>
+  </ContentVersion>
+  <RatingList/>
+  <ReelList>
+    <Reel>
+      <Id>urn:uuid:0c4b7242-4a13-46d5-b21c-4908341e2cd3</Id>
+      <AssetList>
+        <MainPicture>
+          <Id>urn:uuid:d41353a7-4337-4bbe-b79b-5c724f869baa</Id>
+          <AnnotationText>scaling_test_video.mxf</AnnotationText>
+          <EditRate>24 1</EditRate>
+          <IntrinsicDuration>1</IntrinsicDuration>
+          <EntryPoint>0</EntryPoint>
+          <Duration>1</Duration>
+          <FrameRate>24 1</FrameRate>
+          <ScreenAspectRatio>1998 1080</ScreenAspectRatio>
+        </MainPicture>
+        <MainSound>
+          <Id>urn:uuid:44bcf697-836f-41b6-bfa3-908b2a3ec215</Id>
+          <AnnotationText>scaling_test_audio.mxf</AnnotationText>
+          <EditRate>24 1</EditRate>
+          <IntrinsicDuration>1</IntrinsicDuration>
+          <EntryPoint>0</EntryPoint>
+          <Duration>1</Duration>
+        </MainSound>
+      </AssetList>
+    </Reel>
+  </ReelList>
+</CompositionPlaylist>
