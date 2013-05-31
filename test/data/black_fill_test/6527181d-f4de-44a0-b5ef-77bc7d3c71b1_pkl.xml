@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PackingList xmlns="http://www.smpte-ra.org/schemas/429-8/2007/PKL">
+  <Id>urn:uuid:6527181d-f4de-44a0-b5ef-77bc7d3c71b1</Id>
+  <AnnotationText>BLACK_FILL_TES_FTR_F_51_2K_20130531</AnnotationText>
+  <IssueDate>2013-05-31T05:20:05+00:00</IssueDate>
+  <Issuer>libdcp0.51pre</Issuer>
+  <Creator>libdcp0.51pre</Creator>
+  <AssetList>
+    <Asset>
+      <Id>urn:uuid:661b8e98-d558-470b-81f9-13c7535c0f16</Id>
+      <AnnotationText>black_fill_test_video.mxf</AnnotationText>
+      <Hash>pixXjvPnzrpj6bkxhwh4MFBAHeQ=</Hash>
+      <Size>385248</Size>
+      <Type>application/mxf</Type>
+    </Asset>
+    <Asset>
+      <Id>urn:uuid:9c3ecef7-8181-4c0b-99e7-013f01b3b8bd</Id>
+      <AnnotationText>black_fill_test_audio.mxf</AnnotationText>
+      <Hash>46BW0ixkVwvw9VBlt0VWT5MOKpo=</Hash>
+      <Size>305006</Size>
+      <Type>application/mxf</Type>
+    </Asset>
+    <Asset>
+      <Id>urn:uuid:861a22d9-ba37-4cf1-89f2-33377bae6db0</Id>
+      <Hash>N4fcLRyfNPJDUxTQNdqCa9BH59I=</Hash>
+      <Size>1607</Size>
+      <Type>text/xml</Type>
+    </Asset>
+  </AssetList>
+</PackingList>
