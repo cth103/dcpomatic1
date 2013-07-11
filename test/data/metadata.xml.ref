@@ -7,8 +7,6 @@
   <Container>185</Container>
   <Scaler>bicubic</Scaler>
   <WithSubtitles>0</WithSubtitles>
-  <SubtitleOffset>0</SubtitleOffset>
-  <SubtitleScale>1</SubtitleScale>
   <ColourLUT>0</ColourLUT>
   <J2KBandwidth>200000000</J2KBandwidth>
   <DCIMetadata>
