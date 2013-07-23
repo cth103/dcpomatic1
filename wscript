@@ -68,6 +68,8 @@ def configure(conf):
 
     if not conf.options.static:
         conf.check_cfg(package = 'libdcp', atleast_version = '0.52', args = '--cflags --libs', uselib_store = 'DCP', mandatory = True)
+        # Remove erroneous escaping of quotes from xmlsec1 defines
+        conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
         conf.check_cfg(package = 'libavformat', args = '--cflags --libs', uselib_store = 'AVFORMAT', mandatory = True)
         conf.check_cfg(package = 'libavfilter', args = '--cflags --libs', uselib_store = 'AVFILTER', mandatory = True)
         conf.check_cfg(package = 'libavcodec', args = '--cflags --libs', uselib_store = 'AVCODEC', mandatory = True)
