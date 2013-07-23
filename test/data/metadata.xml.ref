@@ -21,8 +21,7 @@
   <DCPVideoFrameRate>24</DCPVideoFrameRate>
   <DCIDate>20130211</DCIDate>
   <DCPAudioChannels>6</DCPAudioChannels>
+  <DCP3D>0</DCP3D>
   <SequenceVideo>1</SequenceVideo>
-  <Playlist>
-    <SequenceVideo>1</SequenceVideo>
-  </Playlist>
+  <Playlist/>
 </Metadata>
