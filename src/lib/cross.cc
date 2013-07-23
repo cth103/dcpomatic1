@@ -40,6 +40,7 @@ using std::list;
 using std::ifstream;
 using std::string;
 using std::make_pair;
+using std::wstring;
 using boost::shared_ptr;
 
 void
