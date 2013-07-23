@@ -28,7 +28,7 @@ def configure(conf):
     conf.env.TARGET_OSX = sys.platform == 'darwin'
     conf.env.TARGET_LINUX = not conf.env.TARGET_WINDOWS and not conf.env.TARGET_OSX
 
-    conf.env.append_value('CXXFLAGS', ['-D__STDC_CONSTANT_MACROS', '-D__STDC_LIMIT_MACROS', '-msse', '-mfpmath=sse', '-ffast-math', '-fno-strict-aliasing',
+    conf.env.append_value('CXXFLAGS', ['-D__STDC_CONSTANT_MACROS', '-msse', '-mfpmath=sse', '-ffast-math', '-fno-strict-aliasing',
                                        '-Wall', '-Wno-attributes', '-Wextra', '-D_FILE_OFFSET_BITS=64'])
 
     if conf.env.TARGET_WINDOWS:
@@ -50,6 +50,7 @@ def configure(conf):
         conf.env.append_value('CXXFLAGS', '-DDVDOMATIC_POSIX')
         conf.env.append_value('CXXFLAGS', '-DPOSIX_LOCALE_PREFIX="%s/share/locale"' % conf.env['PREFIX'])
         conf.env.append_value('CXXFLAGS', '-DPOSIX_ICON_PREFIX="%s/share/dvdomatic"' % conf.env['PREFIX'])
+        conf.env.append_value('CXXFLAGS', '-D__STDC_LIMIT_MACROS')
         boost_lib_suffix = ''
         boost_thread = 'boost_thread'
         conf.env.append_value('LINKFLAGS', '-pthread')
