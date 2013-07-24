@@ -18,10 +18,10 @@
     <Facility></Facility>
     <PackageType></PackageType>
   </DCIMetadata>
-  <DCPVideoFrameRate>24</DCPVideoFrameRate>
+  <VideoFrameRate>24</VideoFrameRate>
   <DCIDate>20130211</DCIDate>
-  <DCPAudioChannels>6</DCPAudioChannels>
-  <DCP3D>0</DCP3D>
+  <AudioChannels>6</AudioChannels>
+  <ThreeD>0</ThreeD>
   <SequenceVideo>1</SequenceVideo>
   <Playlist/>
 </Metadata>
