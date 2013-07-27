@@ -87,6 +87,8 @@ JobManagerView::update ()
 			int n = 1;
 			r.finalised = false;
 			r.gauge = new wxGauge (_panel, wxID_ANY, 100);
+			/* This seems to be required to allow the gauge to shrink under OS X */
+			r.gauge->SetMinSize (wxSize (0, -1));
 			_table->Insert (index + n, r.gauge, 1, wxEXPAND | wxLEFT | wxRIGHT);
 			++n;
 			
