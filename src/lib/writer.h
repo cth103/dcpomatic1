@@ -116,7 +116,7 @@ private:
 	int _pushed_to_disk;
 	
 	boost::shared_ptr<libdcp::MonoPictureAsset> _picture_asset;
-	boost::shared_ptr<libdcp::MonoPictureAssetWriter> _picture_asset_writer;
+	boost::shared_ptr<libdcp::PictureAssetWriter> _picture_asset_writer;
 	boost::shared_ptr<libdcp::SoundAsset> _sound_asset;
 	boost::shared_ptr<libdcp::SoundAssetWriter> _sound_asset_writer;
 };

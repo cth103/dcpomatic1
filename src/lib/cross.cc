@@ -33,6 +33,7 @@
 #endif
 #ifdef DVDOMATIC_OSX
 #include <sys/sysctl.h>
+#include <mach-o/dyld.h>
 #endif
 
 using std::pair;
@@ -179,8 +180,27 @@ run_ffprobe (boost::filesystem::path content, boost::filesystem::path out, share
 	CloseHandle (process_info.hProcess);
 	CloseHandle (process_info.hThread);
 	CloseHandle (child_stderr_read);
-#else
+#endif
+
+#ifdef DVDOMATIC_LINUX	
 	string ffprobe = "ffprobe \"" + content.string() + "\" 2> \"" + out.string() + "\"";
+	log->log (String::compose ("Probing with %1", ffprobe));
+	system (ffprobe.c_str ());
+#endif
+
+#ifdef DVDOMATIC_OSX
+	uint32_t size = 1024;
+	char buffer[size];
+	if (_NSGetExecutablePath (buffer, &size)) {
+		log->log ("_NSGetExecutablePath failed");
+		return;
+	}
+	
+	boost::filesystem::path path (buffer);
+	path.remove_filename ();
+	path /= "ffprobe";
+	
+	string ffprobe = path.string() + " \"" + content.string() + "\" 2> \"" + out.string() + "\"";
 	log->log (String::compose ("Probing with %1", ffprobe));
 	system (ffprobe.c_str ());
 #endif	
