@@ -33,6 +33,7 @@ function universal_copy {
 }
 
 universal_copy $ROOT src/dvdomatic/build/src/tools/dvdomatic $WORK/$macos
+universal_copy $ROOT src/dvdomatic/build/src/tools/servomatic $WORK/$macos
 universal_copy $ROOT src/dvdomatic/build/src/lib/libdvdomatic.dylib $WORK/$libs
 universal_copy $ROOT src/dvdomatic/build/src/wx/libdvdomatic-wx.dylib $WORK/$libs
 universal_copy $ROOT lib/libcxml.dylib $WORK/$libs
