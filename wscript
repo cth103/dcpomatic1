@@ -3,7 +3,7 @@ import os
 import sys
 
 APPNAME = 'dvdomatic'
-VERSION = '0.109pre'
+VERSION = '0.110pre'
 
 def options(opt):
     opt.load('compiler_cxx')
@@ -62,6 +62,7 @@ def configure(conf):
 
     if conf.env.TARGET_OSX:
         conf.env.append_value('CXXFLAGS', '-DDVDOMATIC_OSX')
+        conf.env.append_value('LINKFLAGS', '-headerpad_max_install_names')
 
     if conf.options.enable_debug:
         conf.env.append_value('CXXFLAGS', ['-g', '-DDVDOMATIC_DEBUG'])

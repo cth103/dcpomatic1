@@ -33,6 +33,7 @@ function universal_copy {
 }
 
 universal_copy $ROOT src/dvdomatic/build/src/tools/dvdomatic $WORK/$macos
+universal_copy $ROOT src/dvdomatic/build/src/tools/servomatic $WORK/$macos
 universal_copy $ROOT src/dvdomatic/build/src/lib/libdvdomatic.dylib $WORK/$libs
 universal_copy $ROOT src/dvdomatic/build/src/wx/libdvdomatic-wx.dylib $WORK/$libs
 universal_copy $ROOT lib/libcxml.dylib $WORK/$libs
@@ -40,6 +41,7 @@ universal_copy $ROOT lib/libdcp.dylib $WORK/$libs
 universal_copy $ROOT lib/libasdcp-libdcp.dylib $WORK/$libs
 universal_copy $ROOT lib/libkumu-libdcp.dylib $WORK/$libs
 universal_copy $ROOT lib/libopenjpeg*.dylib $WORK/$libs
+universal_copy $ROOT lib/libavdevice*.dylib $WORK/$libs
 universal_copy $ROOT lib/libavformat*.dylib $WORK/$libs
 universal_copy $ROOT lib/libavfilter*.dylib $WORK/$libs
 universal_copy $ROOT lib/libavutil*.dylib $WORK/$libs
@@ -72,7 +74,7 @@ universal_copy $ENV lib/libfreetype*.dylib $WORK/$libs
 universal_copy $ENV lib/libexpat*.dylib $WORK/$libs
 universal_copy $ENV lib/libxmlsec1*.dylib $WORK/$libs
 
-for obj in $WORK/$macos/dvdomatic $WORK/$libs/*.dylib; do
+for obj in $WORK/$macos/dvdomatic $WORK/$macos/ffprobe $WORK/$libs/*.dylib; do
   deps=`otool -L $obj | awk '{print $1}' | egrep "(/Users/carl|libboost|libssh)"`
   changes=""
   for dep in $deps; do
@@ -127,7 +129,7 @@ echo '
 chmod -Rf go-w $WORK/mnt
 sync
 
-umount $device
+umount -f $device
 hdiutil eject $device
 hdiutil convert -format UDZO $tmp_dmg -imagekey zlib-level=9 -o "$dmg"
 sips -i $WORK/$resources/DVD-o-matic.icns

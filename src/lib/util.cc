@@ -1025,7 +1025,7 @@ AudioMapping::minimum_dcp_channels () const
 int
 AudioMapping::dcp_channels () const
 {
-	return max (_source_channels, _minimum_channels);
+	return max (_source_channels, minimum_dcp_channels ());
 }
 
 FrameRateConversion::FrameRateConversion (float source, int dcp)
