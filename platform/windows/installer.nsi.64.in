@@ -93,6 +93,7 @@ File "%deps%/bin/libbz2.dll"
 File "%deps%/bin/cxml.dll"
 File "%deps%/bin/libxmlsec1.dll"
 File "%deps%/bin/libxmlsec1-openssl.dll"
+File "%deps%/bin/libxslt-1.dll"
 File "%deps%/bin/ffprobe.exe"
 
 File "%binaries%/src/wx/dvdomatic-wx.dll"
