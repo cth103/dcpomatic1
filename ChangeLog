@@ -1,5 +1,9 @@
 2013-07-28  Carl Hetherington  <cth@carlh.net>
 
+	* Version 0.109beta3 released.
+
+2013-07-28  Carl Hetherington  <cth@carlh.net>
+
 	* Fix very extended progress bar on OS X.
 
 	* Fix failure to pad mono sources to 5.1.
