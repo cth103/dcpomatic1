@@ -78,7 +78,7 @@ universal_copy $ENV lib/libxmlsec1*.dylib $WORK/$libs
 universal_copy $ENV lib/libltdl*.dylib $WORK/$libs
 
 for obj in $WORK/$macos/dvdomatic $WORK/$macos/ffprobe $WORK/$libs/*.dylib; do
-  deps=`otool -L $obj | awk '{print $1}' | egrep "(/Users/carl|libboost|libssh)"`
+  deps=`otool -L $obj | awk '{print $1}' | egrep "(/Users/carl|libboost|libssh|libltdl)"`
   changes=""
   for dep in $deps; do
     base=`basename $dep`
@@ -86,7 +86,7 @@ for obj in $WORK/$macos/dvdomatic $WORK/$macos/ffprobe $WORK/$libs/*.dylib; do
   done
   if test "x$changes" != "x"; then
     install_name_tool $changes $obj
-  fi  
+  fi
 done
 
 cp build/platform/osx/Info.plist $WORK/$approot
