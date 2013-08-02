@@ -97,14 +97,13 @@ dmg="$WORK/DVD-o-matic $version.dmg"
 vol_name=DVD-o-matic-$version
 
 mkdir -p $WORK/$vol_name
+cp -r $WORK/$appdir $WORK/$vol_name
 
 rm -f $tmp_dmg "$dmg"
-hdiutil create -megabytes $DMG_SIZE $tmp_dmg
-device=$(hdid -nomount $tmp_dmg | grep Apple_HFS | cut -f 1 -d ' ')
-newfs_hfs -v ${vol_name} $device
-mount -t hfs "$device" $WORK/$vol_name
-
-cp -r $WORK/$appdir $WORK/$vol_name
+hdiutil create -srcfolder $WORK/$vol_name -volname $vol_name -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW -size $DMG_SIZE $tmp_dmg
+attach=$(hdiutil attach -readwrite -noverify -noautoopen $tmp_dmg)
+device=`echo $attach | egrep '^/dev/' | sed 1q | awk '{print $5}'`
+sleep 5
 
 echo '
   tell application "Finder"
@@ -129,7 +128,7 @@ echo '
    end tell
 ' | osascript
 
-chmod -Rf go-w $WORK/mnt
+chmod -Rf go-w /Volumes/"$vol_name"/$appdir
 sync
 
 umount -f $device
