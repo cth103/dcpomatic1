@@ -8,7 +8,7 @@ def build(bld):
         obj = bld(features = 'cxx cxxprogram')
         if bld.env.TARGET_WINDOWS:
             obj.linkflags = ['-mconsole']
-        obj.uselib = 'BOOST_THREAD OPENJPEG DCP AVFORMAT AVFILTER AVCODEC AVUTIL SWSCALE POSTPROC CXML WXWIDGETS'
+        obj.uselib = 'BOOST_THREAD OPENJPEG DCP AVFORMAT AVFILTER AVCODEC AVUTIL SWSCALE POSTPROC CXML'
         obj.includes = ['..']
         obj.use    = ['libdvdomatic']
         obj.source = '%s.cc' % t
