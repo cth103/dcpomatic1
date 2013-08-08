@@ -21,7 +21,7 @@ def build(target):
 
     target.command(cmd)
 
-    target.command('./waf')
+    target.command('./waf -v')
 
     if target.platform == 'linux' or target.platform == 'osx':
         target.command('./waf install')
