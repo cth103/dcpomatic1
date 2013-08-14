@@ -100,10 +100,15 @@ mkdir -p $WORK/$vol_name
 cp -r $WORK/$appdir $WORK/$vol_name
 
 rm -f $tmp_dmg "$dmg"
+echo "A.."
 hdiutil create -srcfolder $WORK/$vol_name -volname $vol_name -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW -size $DMG_SIZE $tmp_dmg
+echo "B.."
 attach=$(hdiutil attach -readwrite -noverify -noautoopen $tmp_dmg)
+echo "C.."
 device=`echo $attach | egrep '^/dev/' | sed 1q | awk '{print $5}'`
+echo "D.."
 sleep 5
+echo "E.."
 
 echo '
   tell application "Finder"
