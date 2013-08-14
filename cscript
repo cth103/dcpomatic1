@@ -6,7 +6,7 @@ def dependencies(target):
     if target.platform == 'windows':
         return ()
     else:
-        return (('ffmpeg-cdist', '0d76267f36cbf01acd6a2a96ad2f7497a1843862'),
+        return (('ffmpeg-cdist', '61d7015f7c79f97e9af00bacedc856e195538a44'),
                 ('libdcp', 'v0.70'))
 
 def build(target):
