@@ -251,6 +251,10 @@ dvdomatic_setup_i18n ()
 		locale->AddCatalogLookupPathPrefix (std_to_wx (mo_path().string()));
 #endif		
 
+#ifdef DVDOMATIC_POSIX
+		locale->AddCatalogLookupPathPrefix (POSIX_LOCALE_PREFIX);
+#endif
+		
 		locale->AddCatalog (wxT ("libdvdomatic-wx"));
 		locale->AddCatalog (wxT ("dvdomatic"));
 		

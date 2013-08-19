@@ -1,3 +1,8 @@
+2013-08-19  Carl Hetherington  <carl@d1stkfactory>
+
+	* Add /usr/share/locale as a search path for .mo
+	files on Linux.
+
 2013-08-16  Carl Hetherington  <cth@carlh.net>
 
 	* Version 0.121 released.
