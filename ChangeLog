@@ -1,4 +1,7 @@
-2013-08-19  Carl Hetherington  <carl@d1stkfactory>
+2013-08-19  Carl Hetherington  <cth@carlh.net>
+
+	* Slight modification to Rec 709 colour matrix
+	from Wolfgang Woehl via Lilian Lefranc.
 
 	* Add /usr/share/locale as a search path for .mo
 	files on Linux.
