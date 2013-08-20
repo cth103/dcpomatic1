@@ -106,6 +106,7 @@ private:
 	void setup_notebook_size ();
 	void setup_frame_rate_description ();
 	void setup_minimum_audio_channels ();
+	void setup_warnings ();
 	
 	wxControl* video_control (wxControl *);
 	wxControl* still_control (wxControl *);
@@ -187,6 +188,7 @@ private:
 	wxChoice* _trim_type;
 	/** Selector to generate an A/B comparison DCP */
 	wxCheckBox* _dcp_ab;
+	wxStaticText* _warnings;
 
 	std::list<wxControl*> _video_controls;
 	std::list<wxControl*> _still_controls;
@@ -195,4 +197,6 @@ private:
 
 	bool _generally_sensitive;
 	AudioDialog* _audio_dialog;
+
+	bool _ignore_minimum_audio_channels_change;
 };

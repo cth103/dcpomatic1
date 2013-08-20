@@ -55,6 +55,7 @@ using std::fixed;
 using std::setprecision;
 using std::list;
 using std::vector;
+using std::max;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
 
@@ -64,6 +65,7 @@ FilmEditor::FilmEditor (shared_ptr<Film> f, wxWindow* parent)
 	, _film (f)
 	, _generally_sensitive (true)
 	, _audio_dialog (0)
+	, _ignore_minimum_audio_channels_change (false)
 {
 	wxBoxSizer* s = new wxBoxSizer (wxVERTICAL);
 	SetSizer (s);
@@ -156,10 +158,12 @@ FilmEditor::make_film_panel ()
 
 	_frame_rate_description = new wxStaticText (_film_panel, wxID_ANY, wxT ("\n \n "), wxDefaultPosition, wxDefaultSize);
 	grid->Add (video_control (_frame_rate_description), wxGBPosition (r, 0), wxGBSpan (1, 2), wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL, 6);
-	wxFont font = _frame_rate_description->GetFont();
-	font.SetStyle(wxFONTSTYLE_ITALIC);
-	font.SetPointSize(font.GetPointSize() - 1);
-	_frame_rate_description->SetFont(font);
+	{
+		wxFont font = _frame_rate_description->GetFont();
+		font.SetStyle(wxFONTSTYLE_ITALIC);
+		font.SetPointSize(font.GetPointSize() - 1);
+		_frame_rate_description->SetFont(font);
+	}
 	++r;
 	
 	video_control (add_label_to_grid_bag_sizer (grid, _film_panel, _("Length"), true, wxGBPosition (r, 0)));
@@ -205,6 +209,16 @@ FilmEditor::make_film_panel ()
 	}
 	++r;
 
+	_warnings = new wxStaticText (_film_panel, wxID_ANY, wxT ("\n \n \n \n"), wxDefaultPosition, wxDefaultSize, wxST_NO_AUTORESIZE);
+	grid->Add (_warnings, wxGBPosition (r, 0), wxGBSpan (1, 2), wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL, 6);
+	{
+		wxFont font = _warnings->GetFont();
+		font.SetWeight(wxFONTWEIGHT_BOLD);
+		font.SetPointSize(font.GetPointSize() - 1);
+		_warnings->SetFont (font);
+	}
+	++r;
+	
 	vector<DCPContentType const *> const ct = DCPContentType::all ();
 	for (vector<DCPContentType const *>::const_iterator i = ct.begin(); i != ct.end(); ++i) {
 		_dcp_content_type->Append (std_to_wx ((*i)->pretty_name ()));
@@ -432,7 +446,9 @@ FilmEditor::make_audio_panel ()
 
 	_audio_gain->SetRange (-60, 60);
 	_audio_delay->SetRange (-1000, 1000);
+	_ignore_minimum_audio_channels_change = true;
 	_minimum_audio_channels->SetRange (0, MAX_AUDIO_CHANNELS);
+	_ignore_minimum_audio_channels_change = false;
 }
 
 void
@@ -787,7 +803,6 @@ FilmEditor::film_changed (Film::Property p)
 		setup_minimum_audio_channels ();
 		break;
 	case Film::USE_CONTENT_AUDIO:
-		_film->log()->log (String::compose ("Film::USE_CONTENT_AUDIO changed; setting GUI using %1", _film->use_content_audio ()));
 		checked_set (_use_content_audio, _film->use_content_audio());
 		checked_set (_use_external_audio, !_film->use_content_audio());
 		setup_dcp_name ();
@@ -836,6 +851,8 @@ FilmEditor::film_changed (Film::Property p)
 		setup_minimum_audio_channels ();
 		break;
 	}
+
+	setup_warnings ();
 }
 
 void
@@ -1454,23 +1471,58 @@ FilmEditor::setup_minimum_audio_channels ()
 	_pad_with_silence->SetValue (_film->audio_stream()->channels() < _film->minimum_audio_channels());
 
 	AudioMapping m (_film);
+	/* For some bizarre reason this call results in minimum_audio_channels_changed being
+	   called with _minimum_audio_channels' value set to the low end of the range
+	   (on Windows only)
+	*/
+	_ignore_minimum_audio_channels_change = true;
 	_minimum_audio_channels->SetRange (m.minimum_dcp_channels() + 1, MAX_AUDIO_CHANNELS);
+	_ignore_minimum_audio_channels_change = false;
 }
 
 void
 FilmEditor::pad_with_silence_toggled (wxCommandEvent &)
 {
 	setup_audio_control_sensitivity ();
+
+	if (!_pad_with_silence->GetValue ()) {
+		_film->set_minimum_audio_channels (0);
+	}
 }
 
 void
 FilmEditor::minimum_audio_channels_changed (wxCommandEvent &)
 {
-	if (!_film) {
+	if (!_film || _ignore_minimum_audio_channels_change) {
 		return;
 	}
 
 	if (_pad_with_silence->GetValue ()) {
 		_film->set_minimum_audio_channels (_minimum_audio_channels->GetValue ());
 	}
+}
+
+void
+FilmEditor::setup_warnings ()
+{
+	string w;
+
+	int c = max (_film->audio_channels (), _film->minimum_audio_channels ());
+	
+	if (c == 0) {
+		w += _("The film has no audio.  This will cause problems on some projectors.  "
+		       "Try setting 'pad with silence' in the Audio tab to 6 channels.\n");
+	} else if (c % 2) {
+		w += _("The film has an odd number of audio channels.  This will cause problems on some projectors.  "
+		       "Try setting 'pad with silence' in the Audio tab to 6 channels.\n");
+	} else if (c < 6) {
+		w += _("The film has fewer than 6 audio channels.  This will cause problems on a few projectors.  "
+		       "Try setting 'pad with silence' in the Audio tab to 6 channels.\n");
+	}
+
+	if (_film->dcp_frame_rate() != 24) {
+		w += _("This film is not at 24 frames-per-second.  Some older projectors will not play it.\n");
+	}
+
+	checked_set (_warnings, w);
 }
