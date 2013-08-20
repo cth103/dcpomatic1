@@ -324,6 +324,7 @@ Film::make_dcp ()
 	} else {
 		log()->log (String::compose ("Using external audio (%1 files)", external_audio().size()));
 	}
+	log()->log (String::compose ("Minimum audio channels is set to %1", minimum_audio_channels()));
 #ifdef DVDOMATIC_DEBUG
 	log()->log ("DVD-o-matic built in debug mode.");
 #else
