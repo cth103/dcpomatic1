@@ -1469,5 +1469,7 @@ FilmEditor::minimum_audio_channels_changed (wxCommandEvent &)
 		return;
 	}
 
-	_film->set_minimum_audio_channels (_minimum_audio_channels->GetValue ());
+	if (_pad_with_silence->GetValue ()) {
+		_film->set_minimum_audio_channels (_minimum_audio_channels->GetValue ());
+	}
 }
