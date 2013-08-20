@@ -948,6 +948,7 @@ FilmEditor::set_film (shared_ptr<Film> f)
 	film_changed (Film::SUBTITLE_STREAMS);
 	film_changed (Film::SOURCE_FRAME_RATE);
 	film_changed (Film::DCP_FRAME_RATE);
+	film_changed (Film::MINIMUM_AUDIO_CHANNELS);
 }
 
 /** Updates the sensitivity of lots of widgets to a given value.
