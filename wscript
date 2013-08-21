@@ -71,7 +71,7 @@ def configure(conf):
         conf.env.append_value('CXXFLAGS', '-O2')
 
     if not conf.options.static:
-        conf.check_cfg(package = 'libdcp', atleast_version = '0.73', args = '--cflags --libs', uselib_store = 'DCP', mandatory = True)
+        conf.check_cfg(package = 'libdcp', atleast_version = '0.74', args = '--cflags --libs', uselib_store = 'DCP', mandatory = True)
         # Remove erroneous escaping of quotes from xmlsec1 defines
         conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
         conf.check_cfg(package = 'libavformat', args = '--cflags --libs', uselib_store = 'AVFORMAT', mandatory = True)
