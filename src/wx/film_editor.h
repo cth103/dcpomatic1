@@ -106,7 +106,9 @@ private:
 	void setup_notebook_size ();
 	void setup_frame_rate_description ();
 	void setup_minimum_audio_channels ();
+#if 0	
 	void setup_warnings ();
+#endif	
 	
 	wxControl* video_control (wxControl *);
 	wxControl* still_control (wxControl *);
@@ -188,7 +190,9 @@ private:
 	wxChoice* _trim_type;
 	/** Selector to generate an A/B comparison DCP */
 	wxCheckBox* _dcp_ab;
+#if 0	
 	wxStaticText* _warnings;
+#endif	
 
 	std::list<wxControl*> _video_controls;
 	std::list<wxControl*> _still_controls;

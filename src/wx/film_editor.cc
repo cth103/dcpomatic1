@@ -209,6 +209,7 @@ FilmEditor::make_film_panel ()
 	}
 	++r;
 
+#if 0	
 	_warnings = new wxStaticText (_film_panel, wxID_ANY, wxT ("\n \n \n \n"), wxDefaultPosition, wxDefaultSize, wxST_NO_AUTORESIZE);
 	grid->Add (_warnings, wxGBPosition (r, 0), wxGBSpan (1, 2), wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL, 6);
 	{
@@ -218,6 +219,7 @@ FilmEditor::make_film_panel ()
 		_warnings->SetFont (font);
 	}
 	++r;
+#endif	
 	
 	vector<DCPContentType const *> const ct = DCPContentType::all ();
 	for (vector<DCPContentType const *>::const_iterator i = ct.begin(); i != ct.end(); ++i) {
@@ -852,7 +854,9 @@ FilmEditor::film_changed (Film::Property p)
 		break;
 	}
 
+#if 0	
 	setup_warnings ();
+#endif	
 }
 
 void
@@ -1502,6 +1506,7 @@ FilmEditor::minimum_audio_channels_changed (wxCommandEvent &)
 	}
 }
 
+#if 0
 void
 FilmEditor::setup_warnings ()
 {
@@ -1526,3 +1531,4 @@ FilmEditor::setup_warnings ()
 
 	checked_set (_warnings, w);
 }
+#endif
