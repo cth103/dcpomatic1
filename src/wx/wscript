@@ -31,9 +31,6 @@ def configure(conf):
         conf.env.LINKFLAGS_WXWIDGETS = [f.replace('-Wl,--subsystem,windows', '') for f in conf.env.LINKFLAGS_WXWIDGETS]
         conf.env.CFLAGS_WXWIDGETS = [f.replace('-mwindows', '') for f in conf.env.CFLAGS_WXWIDGETS]
         conf.env.CXXFLAGS_WXWIDGETS = [f.replace('-mwindows', '') for f in conf.env.CXXFLAGS_WXWIDGETS]
-        print conf.env.LINKFLAGS_WXWIDGETS
-        print conf.env.CFLAGS_WXWIDGETS
-        print conf.env.CXXFLAGS_WXWIDGETS
 
     if conf.env.STATIC:
 	# wx-config returns its static libraries as full paths, without -l prefixes, which confuses

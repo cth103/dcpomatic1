@@ -210,7 +210,7 @@ FilmEditor::make_film_panel ()
 	++r;
 
 #if 0	
-	_warnings = new wxStaticText (_film_panel, wxID_ANY, wxT ("\n \n \n \n"), wxDefaultPosition, wxDefaultSize, wxST_NO_AUTORESIZE);
+	_warnings = new wxStaticText (_film_panel, wxID_ANY, wxT ("\n \n \n"), wxDefaultPosition, wxDefaultSize, wxST_NO_AUTORESIZE);
 	grid->Add (_warnings, wxGBPosition (r, 0), wxGBSpan (1, 2), wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL, 6);
 	{
 		wxFont font = _warnings->GetFont();
@@ -1515,13 +1515,13 @@ FilmEditor::setup_warnings ()
 	int c = max (_film->audio_channels (), _film->minimum_audio_channels ());
 	
 	if (c == 0) {
-		w += _("The film has no audio.  This will cause problems on some projectors.  "
+		w += _("The film has no audio.  This will cause problems on some projectors.\n"
 		       "Try setting 'pad with silence' in the Audio tab to 6 channels.\n");
 	} else if (c % 2) {
-		w += _("The film has an odd number of audio channels.  This will cause problems on some projectors.  "
+		w += _("The film has an odd number of audio channels.  This will cause problems on some projectors.\n"
 		       "Try setting 'pad with silence' in the Audio tab to 6 channels.\n");
 	} else if (c < 6) {
-		w += _("The film has fewer than 6 audio channels.  This will cause problems on a few projectors.  "
+		w += _("The film has fewer than 6 audio channels.  This will cause problems on a few projectors.\n"
 		       "Try setting 'pad with silence' in the Audio tab to 6 channels.\n");
 	}
 
