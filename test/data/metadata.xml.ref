@@ -10,6 +10,7 @@
   <WithSubtitles>0</WithSubtitles>
   <J2KBandwidth>200000000</J2KBandwidth>
   <DCIMetadata>
+    <ContentVersion>1</ContentVersion>
     <AudioLanguage></AudioLanguage>
     <SubtitleLanguage></SubtitleLanguage>
     <Territory></Territory>
@@ -23,5 +24,6 @@
   <AudioChannels>6</AudioChannels>
   <ThreeD>0</ThreeD>
   <SequenceVideo>1</SequenceVideo>
+  <Interop>0</Interop>
   <Playlist/>
 </Metadata>
