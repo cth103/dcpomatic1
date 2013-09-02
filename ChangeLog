@@ -1,3 +1,8 @@
+2013-09-02  Carl Hetherington  <cth@carlh.net>
+
+	* Add missing boost datetime dependency to
+	debian control files.
+
 2013-08-28  Carl Hetherington  <carl@d1stkfactory>
 
 	* Add missing libxmlsec1 dependency to debian
