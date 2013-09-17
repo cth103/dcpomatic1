@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PackingList xmlns="http://www.smpte-ra.org/schemas/429-8/2007/PKL">
+  <Id>urn:uuid:9d47a9bd-966f-4f37-a430-30cf551a8b43</Id>
+  <AnnotationText>SCALING_TEST_FTR_F_51_2K_20130531</AnnotationText>
+  <IssueDate>2013-05-31T02:07:15+00:00</IssueDate>
+  <Issuer>libdcp0.51pre</Issuer>
+  <Creator>libdcp0.51pre</Creator>
+  <AssetList>
+    <Asset>
+      <Id>urn:uuid:d41353a7-4337-4bbe-b79b-5c724f869baa</Id>
+      <AnnotationText>scaling_test_video.mxf</AnnotationText>
+      <Hash>QmkaoLrKD8j/lD5rCXGU80QiImM=</Hash>
+      <Size>112649</Size>
+      <Type>application/mxf</Type>
+    </Asset>
+    <Asset>
+      <Id>urn:uuid:44bcf697-836f-41b6-bfa3-908b2a3ec215</Id>
+      <AnnotationText>scaling_test_audio.mxf</AnnotationText>
+      <Hash>U1gvEqMvwiyJGe1HpRlS67n5spg=</Hash>
+      <Size>52866</Size>
+      <Type>application/mxf</Type>
+    </Asset>
+    <Asset>
+      <Id>urn:uuid:2489c68e-a39e-4681-8fe6-f6787889830a</Id>
+      <Hash>kX7mBcihp3ITj2b9WtrIciRDK2E=</Hash>
+      <Size>1597</Size>
+      <Type>text/xml</Type>
+    </Asset>
+  </AssetList>
+</PackingList>

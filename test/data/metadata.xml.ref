@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Metadata>
+  <Version>4</Version>
+  <Name>fred</Name>
+  <UseDCIName>1</UseDCIName>
+  <DCPContentType>SHR</DCPContentType>
+  <Container>185</Container>
+  <Resolution>2K</Resolution>
+  <Scaler>bicubic</Scaler>
+  <WithSubtitles>0</WithSubtitles>
+  <J2KBandwidth>200000000</J2KBandwidth>
+  <DCIMetadata>
+    <ContentVersion>1</ContentVersion>
+    <AudioLanguage></AudioLanguage>
+    <SubtitleLanguage></SubtitleLanguage>
+    <Territory></Territory>
+    <Rating></Rating>
+    <Studio></Studio>
+    <Facility></Facility>
+    <PackageType></PackageType>
+  </DCIMetadata>
+  <VideoFrameRate>24</VideoFrameRate>
+  <DCIDate>20130211</DCIDate>
+  <AudioChannels>6</AudioChannels>
+  <ThreeD>0</ThreeD>
+  <SequenceVideo>1</SequenceVideo>
+  <Interop>0</Interop>
+  <Playlist/>
+</Metadata>
