@@ -3,11 +3,8 @@ import shutil
 import os
 
 def dependencies(target):
-    if target.platform == 'windows':
-        return ()
-    else:
-        return (('ffmpeg-cdist', '61d7015f7c79f97e9af00bacedc856e195538a44'),
-                ('libdcp', 'bd879ccdd0c0b06a55026c63d3a1b231af991eac'))
+    return (('ffmpeg-cdist', '61d7015f7c79f97e9af00bacedc856e195538a44'),
+            ('libdcp', 'bd879ccdd0c0b06a55026c63d3a1b231af991eac'))
 
 def build(target):
     cmd = './waf configure --prefix=%s' % target.work_dir_cscript()
