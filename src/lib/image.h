@@ -93,7 +93,7 @@ protected:
 	friend class pixel_formats_test;
 
 private:
-	void yuv_16_black (uint16_t);
+	void yuv_16_black (uint16_t, bool);
 	static uint16_t swap_16 (uint16_t);
 	
 	AVPixelFormat _pixel_format; ///< FFmpeg's way of describing the pixel format of this Image
