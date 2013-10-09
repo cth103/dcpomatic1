@@ -25,5 +25,7 @@
   <ThreeD>0</ThreeD>
   <SequenceVideo>1</SequenceVideo>
   <Interop>0</Interop>
+  <Encrypted>0</Encrypted>
+  <Key>8303468d41cd5413e1678384c9ab4dfc</Key>
   <Playlist/>
 </Metadata>
