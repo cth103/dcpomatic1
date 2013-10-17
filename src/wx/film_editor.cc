@@ -619,8 +619,8 @@ FilmEditor::j2k_bandwidth_changed (wxCommandEvent &)
 	if (!_film) {
 		return;
 	}
-	
-	_film->set_j2k_bandwidth (_j2k_bandwidth->GetValue() * 1e6);
+
+	_film->set_j2k_bandwidth (_j2k_bandwidth->GetValue() * 1000000);
 }
 
 void
@@ -784,8 +784,9 @@ FilmEditor::film_changed (Film::Property p)
 		checked_set (_colour_lut, _film->colour_lut ());
 		break;
 	case Film::J2K_BANDWIDTH:
-		checked_set (_j2k_bandwidth, double (_film->j2k_bandwidth()) / 1e6);
+		checked_set (_j2k_bandwidth, _film->j2k_bandwidth() / 1000000);
 		break;
+	}
 	case Film::USE_DCI_NAME:
 		checked_set (_use_dci_name, _film->use_dci_name ());
 		setup_dcp_name ();
