@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+export PATH=$PATH:/opt/mingw/32/bin
+export CXXFLAGS="-I$ENV/include"
+./waf $*
+
