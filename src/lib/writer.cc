@@ -366,7 +366,11 @@ Writer::check_existing_picture_mxf ()
 		libdcp::FrameInfo info (ifi);
 
 		/* Read the data from the MXF and hash it */
+#ifdef DVDOMATIC_WINDOWS
+		_fseeki64 (mxf, info.offset, SEEK_SET);
+#else		
 		fseek (mxf, info.offset, SEEK_SET);
+#endif		
 		EncodedData data (info.size);
 		fread (data.data(), 1, data.size(), mxf);
 		string const existing_hash = md5_digest (data.data(), data.size());

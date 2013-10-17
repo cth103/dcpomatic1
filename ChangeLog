@@ -1,5 +1,8 @@
 2013-10-17  Carl Hetherington  <cth@carlh.net>
 
+	* Fix failure to resume encode jobs correctly
+	on large (>4Gb) MXF files on 32-bit Windows.
+
 	* Fix weird behaviour of J2K bandwidth control
 	on Windows.
 
