@@ -1,3 +1,8 @@
+2013-10-17  Carl Hetherington  <cth@carlh.net>
+
+	* Fix weird behaviour of J2K bandwidth control
+	on Windows.
+
 2013-10-01  Carl Hetherington  <cth@carlh.net>
 
 	* Version 0.130 released.
