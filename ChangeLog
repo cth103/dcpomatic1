@@ -1,3 +1,7 @@
+2013-10-27  Carl Hetherington  <cth@carlh.net>
+
+	* Version 0.131 released.
+
 2013-10-17  Carl Hetherington  <cth@carlh.net>
 
 	* Fix failure to resume encode jobs correctly
