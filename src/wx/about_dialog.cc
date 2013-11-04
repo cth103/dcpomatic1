@@ -115,6 +115,7 @@ AboutDialog::AboutDialog (wxWindow* parent)
 	supported_by.Add (wxT ("Andres Fink"));
 	supported_by.Add (wxT ("Kieran Carroll"));
 	supported_by.Add (wxT ("Wolfram Weber"));
+	supported_by.Add (wxT ("Randy Stankey"));
 	supported_by.Add (wxT ("Frank Cianciolo"));
 	add_section (_("Supported by"), supported_by);
 
