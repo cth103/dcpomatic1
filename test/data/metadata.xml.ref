@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Metadata>
   <Version>4</Version>
   <Name>fred</Name>
@@ -26,6 +26,6 @@
   <SequenceVideo>1</SequenceVideo>
   <Interop>0</Interop>
   <Encrypted>0</Encrypted>
-  <Key>8303468d41cd5413e1678384c9ab4dfc</Key>
+  <Key>1366d4b823d07f5b7e6baa80d6715810</Key>
   <Playlist/>
 </Metadata>
