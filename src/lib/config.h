@@ -133,6 +133,10 @@ public:
 		return _default_still_length;
 	}
 
+	Ratio const * default_scale () const {
+		return _default_scale;
+	}
+
 	Ratio const * default_container () const {
 		return _default_container;
 	}
@@ -167,6 +171,10 @@ public:
 
 	std::string mail_password () const {
 		return _mail_password;
+	}
+
+	std::string kdm_subject () const {
+		return _kdm_subject;
 	}
 
 	std::string kdm_from () const {
@@ -278,6 +286,11 @@ public:
 		changed ();
 	}
 
+	void set_default_scale (Ratio const * s) {
+		_default_scale = s;
+		changed ();
+	}
+
 	void set_default_container (Ratio const * c) {
 		_default_container = c;
 		changed ();
@@ -320,6 +333,11 @@ public:
 
 	void set_mail_password (std::string p) {
 		_mail_password = p;
+		changed ();
+	}
+
+	void set_kdm_subject (std::string s) {
+		_kdm_subject = s;
 		changed ();
 	}
 
@@ -404,6 +422,7 @@ private:
 	ISDCFMetadata _default_isdcf_metadata;
 	boost::optional<std::string> _language;
 	int _default_still_length;
+	Ratio const * _default_scale;
 	Ratio const * _default_container;
 	DCPContentType const * _default_dcp_content_type;
 	libdcp::XMLMetadata _dcp_metadata;
@@ -414,6 +433,7 @@ private:
 	std::string _mail_server;
 	std::string _mail_user;
 	std::string _mail_password;
+	std::string _kdm_subject;
 	std::string _kdm_from;
 	std::string _kdm_cc;
 	std::string _kdm_email;

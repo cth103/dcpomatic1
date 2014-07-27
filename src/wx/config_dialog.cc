@@ -266,6 +266,10 @@ public:
 		add_label_to_sizer (table, panel, _("Default ISDCF name details"), true);
 		_isdcf_metadata_button = new wxButton (panel, wxID_ANY, _("Edit..."));
 		table->Add (_isdcf_metadata_button);
+
+		add_label_to_sizer (table, panel, _("Default scale to"), true);
+		_scale = new wxChoice (panel, wxID_ANY);
+		table->Add (_scale);
 		
 		add_label_to_sizer (table, panel, _("Default container"), true);
 		_container = new wxChoice (panel, wxID_ANY);
@@ -315,6 +319,10 @@ public:
 		vector<Ratio const *> ratio = Ratio::all ();
 		int n = 0;
 		for (vector<Ratio const *>::iterator i = ratio.begin(); i != ratio.end(); ++i) {
+			_scale->Append (std_to_wx ((*i)->nickname ()));
+			if (*i == config->default_scale ()) {
+				_scale->SetSelection (n);
+			}
 			_container->Append (std_to_wx ((*i)->nickname ()));
 			if (*i == config->default_container ()) {
 				_container->SetSelection (n);
@@ -322,6 +330,7 @@ public:
 			++n;
 		}
 		
+		_scale->Bind (wxEVT_COMMAND_CHOICE_SELECTED, boost::bind (&DefaultsPage::scale_changed, this));
 		_container->Bind (wxEVT_COMMAND_CHOICE_SELECTED, boost::bind (&DefaultsPage::container_changed, this));
 		
 		vector<DCPContentType const *> const ct = DCPContentType::all ();
@@ -380,6 +389,12 @@ private:
 	{
 		Config::instance()->set_default_still_length (_still_length->GetValue ());
 	}
+
+	void scale_changed ()
+	{
+		vector<Ratio const *> ratio = Ratio::all ();
+		Config::instance()->set_default_scale (ratio[_scale->GetSelection()]);
+	}
 	
 	void container_changed ()
 	{
@@ -416,6 +431,7 @@ private:
 #else
 	wxDirPickerCtrl* _directory;
 #endif
+	wxChoice* _scale;
 	wxChoice* _container;
 	wxChoice* _dcp_content_type;
 	wxTextCtrl* _issuer;
@@ -669,6 +685,10 @@ public:
 		font.SetPointSize (font.GetPointSize() - 1);
 		plain->SetFont (font);
 		table->AddSpacer (0);
+
+		add_label_to_sizer (table, panel, _("Subject"), true);
+		_kdm_subject = new wxTextCtrl (panel, wxID_ANY);
+		table->Add (_kdm_subject, 1, wxEXPAND | wxALL);
 		
 		add_label_to_sizer (table, panel, _("From address"), true);
 		_kdm_from = new wxTextCtrl (panel, wxID_ANY);
@@ -691,12 +711,14 @@ public:
 		_mail_user->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&KDMEmailPage::mail_user_changed, this));
 		_mail_password->SetValue (std_to_wx (config->mail_password ()));
 		_mail_password->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&KDMEmailPage::mail_password_changed, this));
+		_kdm_subject->SetValue (std_to_wx (config->kdm_subject ()));
+		_kdm_subject->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&KDMEmailPage::kdm_subject_changed, this));
 		_kdm_from->SetValue (std_to_wx (config->kdm_from ()));
 		_kdm_from->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&KDMEmailPage::kdm_from_changed, this));
 		_kdm_cc->SetValue (std_to_wx (config->kdm_cc ()));
 		_kdm_cc->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&KDMEmailPage::kdm_cc_changed, this));
 		_kdm_email->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&KDMEmailPage::kdm_email_changed, this));
-		_kdm_email->SetValue (wx_to_std (Config::instance()->kdm_email ()));
+		_kdm_email->SetValue (std_to_wx (Config::instance()->kdm_email ()));
 		_reset_kdm_email->Bind (wxEVT_COMMAND_BUTTON_CLICKED, boost::bind (&KDMEmailPage::reset_kdm_email, this));
 
 		return panel;
@@ -716,6 +738,11 @@ private:
 	void mail_password_changed ()
 	{
 		Config::instance()->set_mail_password (wx_to_std (_mail_password->GetValue ()));
+	}
+
+	void kdm_subject_changed ()
+	{
+		Config::instance()->set_kdm_subject (wx_to_std (_kdm_subject->GetValue ()));
 	}
 	
 	void kdm_from_changed ()
@@ -742,6 +769,7 @@ private:
 	wxTextCtrl* _mail_server;
 	wxTextCtrl* _mail_user;
 	wxTextCtrl* _mail_password;
+	wxTextCtrl* _kdm_subject;
 	wxTextCtrl* _kdm_from;
 	wxTextCtrl* _kdm_cc;
 	wxTextCtrl* _kdm_email;
