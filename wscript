@@ -3,7 +3,7 @@ import os
 import sys
 
 APPNAME = 'dcpomatic'
-VERSION = '1.72.4devel'
+VERSION = '1.73.7devel'
 
 def options(opt):
     opt.load('compiler_cxx')
@@ -84,7 +84,7 @@ def static_dcp(conf, static_boost, static_xmlpp, static_xmlsec, static_ssh):
         conf.env.LIB_DCP.append('ssh')
 
 def dynamic_dcp(conf):
-    conf.check_cfg(package='libdcp', atleast_version='0.95.0', args='--cflags --libs', uselib_store='DCP', mandatory=True)
+    conf.check_cfg(package='libdcp', atleast_version='0.97.0', args='--cflags --libs', uselib_store='DCP', mandatory=True)
     conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
 
 def dynamic_ssh(conf):
@@ -251,7 +251,7 @@ def configure(conf):
     #
 
     if conf.env.TARGET_DEBIAN:
-        conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags', uselib_store='CXML', mandatory=True)
+        conf.check_cfg(package='libcxml', atleast_version='0.11', args='--cflags', uselib_store='CXML', mandatory=True)
         conf.env.STLIB_CXML = ['cxml']
         conf.check_cfg(package='libxml++-2.6', args='--cflags --libs', uselib_store='XMLPP', mandatory=True)
         conf.check_cfg(package='libcurl', args='--cflags --libs', uselib_store='CURL', mandatory=True)

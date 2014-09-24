@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-16 13:56+0100\n"
+"POT-Creation-Date: 2014-09-08 23:05+0100\n"
 "PO-Revision-Date: 2014-01-19 09:14+0100\n"
 "Last-Translator: Adam Klotblixt <adam.klotblixt@gmail.com>\n"
 "Language-Team: \n"
@@ -106,11 +106,11 @@ msgstr "Lägg till Cinema..."
 msgid "Add Screen..."
 msgstr "Lägg till Skärm..."
 
-#: src/wx/film_editor.cc:279
+#: src/wx/film_editor.cc:280
 msgid "Add file(s)..."
 msgstr "Lägg till fil(er)..."
 
-#: src/wx/film_editor.cc:281
+#: src/wx/film_editor.cc:282
 msgid "Add folder..."
 msgstr "Lägg till folder..."
 
@@ -118,7 +118,23 @@ msgstr "Lägg till folder..."
 msgid "Add..."
 msgstr "Lägg till..."
 
-#: src/wx/config_dialog.cc:792
+#: src/wx/hints_dialog.cc:102
+msgid ""
+"All of your content is at 1.85:1 or narrower but your DCP's container is "
+"Scope (2.39:1).  This will pillar-box your content inside a Flat (1.85:1) "
+"frame.  You may prefer to set your DCP's container to Flat (1.85:1) in the "
+"\"DCP\" tab."
+msgstr ""
+
+#: src/wx/hints_dialog.cc:96
+msgid ""
+"All of your content is in Scope (2.39:1) but your DCP's container is Flat "
+"(1.85:1).  This will letter-box your content inside a Flat (1.85:1) frame.  "
+"You may prefer to set your DCP's container to Scope (2.39:1) in the \"DCP\" "
+"tab."
+msgstr ""
+
+#: src/wx/config_dialog.cc:804
 #, fuzzy
 msgid "Allow any DCP frame rate"
 msgstr "bildhastighet"
@@ -156,7 +172,12 @@ msgstr ""
 "Audio kommer att överföras från innehållskanal %d till DCP-kanal %d med "
 "förstärkning %.1fdB."
 
-#: src/wx/job_wrapper.cc:38
+#: src/wx/config_dialog.cc:685
+#, fuzzy
+msgid "BCC address"
+msgstr "IP-adress"
+
+#: src/wx/job_wrapper.cc:37
 #, c-format
 msgid "Bad setting for %s (%s)"
 msgstr "Felaktig inställning för %s (%s)"
@@ -207,7 +228,7 @@ msgstr ""
 msgid "Calculate..."
 msgstr "Beräkna..."
 
-#: src/wx/job_manager_view.cc:66
+#: src/wx/job_manager_view.cc:67
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -216,8 +237,8 @@ msgstr "Avbryt"
 msgid "Certificate"
 msgstr "Välj certifikatfil"
 
-#: src/wx/dolby_certificate_dialog.cc:157
-#: src/wx/doremi_certificate_dialog.cc:92
+#: src/wx/dolby_certificate_dialog.cc:191
+#: src/wx/doremi_certificate_dialog.cc:103
 #, fuzzy
 msgid "Certificate downloaded"
 msgstr "Välj certifikatfil"
@@ -246,11 +267,11 @@ msgstr "Sök efter uppdateringar vid start"
 msgid "Choose a file"
 msgstr "Välj en fil"
 
-#: src/wx/film_editor.cc:792
+#: src/wx/film_editor.cc:797
 msgid "Choose a file or files"
 msgstr "Välj en fil eller filer"
 
-#: src/wx/content_menu.cc:175 src/wx/film_editor.cc:815
+#: src/wx/content_menu.cc:175 src/wx/film_editor.cc:820
 msgid "Choose a folder"
 msgstr "Välj en folder"
 
@@ -270,7 +291,7 @@ msgid "Colour conversion"
 msgstr "Färgkonvertering"
 
 # Svengelska
-#: src/wx/config_dialog.cc:805
+#: src/wx/config_dialog.cc:817
 #, fuzzy
 msgid "Config|Timing"
 msgstr "Tajming"
@@ -301,6 +322,10 @@ msgstr "Innehållsversion"
 msgid "Content video is %dx%d (%.2f:1)\n"
 msgstr "Original-videon är %dx%d (%.2f:1)\n"
 
+#: src/wx/editable_list.h:64
+msgid "Copy..."
+msgstr ""
+
 #: src/wx/audio_dialog.cc:151
 msgid "Could not analyse audio."
 msgstr "Kunde inte analysera audio."
@@ -310,7 +335,7 @@ msgstr "Kunde inte analysera audio."
 msgid "Could not decode video for view (%s)"
 msgstr "Kunde inte avkoda video för visning (%s)"
 
-#: src/wx/job_wrapper.cc:40
+#: src/wx/job_wrapper.cc:39
 #, c-format
 msgid "Could not make DCP: %s"
 msgstr "Kunde inte skapa DCP: %s"
@@ -364,25 +389,20 @@ msgstr "DCP-o-matic audio - %s"
 msgid "Default ISDCF name details"
 msgstr "Detaljer om förvalda DCI-namn"
 
-#: src/wx/config_dialog.cc:279
+#: src/wx/config_dialog.cc:283
 msgid "Default JPEG2000 bandwidth"
 msgstr "Förvald JPEG2000-bandbredd"
 
-#: src/wx/config_dialog.cc:288
+#: src/wx/config_dialog.cc:292
 msgid "Default audio delay"
 msgstr "Förvald audiofördröjning"
 
-#: src/wx/config_dialog.cc:270
+#: src/wx/config_dialog.cc:274
 msgid "Default container"
 msgstr "Förvald innehållstyp"
 
-#: src/wx/config_dialog.cc:274
+#: src/wx/config_dialog.cc:278
 msgid "Default content type"
-msgstr "Förvald innehållstyp"
-
-#: src/wx/config_dialog.cc:300
-#, fuzzy
-msgid "Default creator"
 msgstr "Förvald innehållstyp"
 
 #: src/wx/config_dialog.cc:258
@@ -393,10 +413,14 @@ msgstr "Förvald katalog för nya filmer"
 msgid "Default duration of still images"
 msgstr "Förvald varaktighet på stillbilder"
 
-#: src/wx/config_dialog.cc:296
+#: src/wx/config_dialog.cc:300
 #, fuzzy
 msgid "Default issuer"
 msgstr "Standardval"
+
+#: src/wx/config_dialog.cc:270
+msgid "Default scale to"
+msgstr ""
 
 #: src/wx/config_dialog.cc:229
 msgid "Defaults"
@@ -407,7 +431,7 @@ msgstr "Standardval"
 msgid "Delay"
 msgstr "Audio Fördröjning"
 
-#: src/wx/film_editor.cc:130 src/wx/job_manager_view.cc:78
+#: src/wx/film_editor.cc:130 src/wx/job_manager_view.cc:79
 msgid "Details..."
 msgstr "Detaljer..."
 
@@ -425,11 +449,11 @@ msgstr ""
 msgid "Doremi"
 msgstr ""
 
-#: src/wx/doremi_certificate_dialog.cc:49
+#: src/wx/doremi_certificate_dialog.cc:50
 msgid "Doremi serial numbers must have 6 digits"
 msgstr ""
 
-#: src/wx/film_editor.cc:287
+#: src/wx/film_editor.cc:288
 msgid "Down"
 msgstr "Ner"
 
@@ -442,8 +466,8 @@ msgstr "Ner"
 msgid "Download certificate"
 msgstr ""
 
-#: src/wx/dolby_certificate_dialog.cc:132
-#: src/wx/doremi_certificate_dialog.cc:53
+#: src/wx/dolby_certificate_dialog.cc:157
+#: src/wx/doremi_certificate_dialog.cc:54
 msgid "Downloading certificate"
 msgstr ""
 
@@ -457,7 +481,7 @@ msgstr "Redigera Skärm..."
 
 #: src/wx/audio_mapping_view.cc:135 src/wx/config_dialog.cc:267
 #: src/wx/video_panel.cc:155 src/wx/video_panel.cc:172
-#: src/wx/editable_list.h:64
+#: src/wx/editable_list.h:66
 msgid "Edit..."
 msgstr "Redigera..."
 
@@ -473,7 +497,7 @@ msgstr "Kodningsservrar"
 msgid "Encrypted"
 msgstr "Krypterad"
 
-#: src/wx/config_dialog.cc:802
+#: src/wx/config_dialog.cc:814
 msgid "Errors"
 msgstr ""
 
@@ -481,8 +505,9 @@ msgstr ""
 msgid "Facility (e.g. DLA)"
 msgstr "Företag (ex. DLA)"
 
-#: src/wx/dolby_certificate_dialog.cc:76 src/wx/dolby_certificate_dialog.cc:91
-#: src/wx/dolby_certificate_dialog.cc:106
+#: src/wx/dolby_certificate_dialog.cc:76
+#: src/wx/dolby_certificate_dialog.cc:100
+#: src/wx/dolby_certificate_dialog.cc:123
 #, fuzzy
 msgid "Fetching..."
 msgstr "räknar..."
@@ -533,7 +558,7 @@ msgstr "IP-adress"
 msgid "Full"
 msgstr "Full"
 
-#: src/wx/timing_panel.cc:44
+#: src/wx/timing_panel.cc:45
 msgid "Full length"
 msgstr "Full längd"
 
@@ -554,7 +579,7 @@ msgstr "Förstärkning för innehållskanal %d i DCP-kanal %d"
 msgid "Gb"
 msgstr "Gb"
 
-#: src/wx/config_dialog.cc:797
+#: src/wx/config_dialog.cc:809
 msgid "General"
 msgstr ""
 
@@ -562,7 +587,7 @@ msgstr ""
 msgid "HI"
 msgstr "HI"
 
-#: src/wx/hints_dialog.cc:26
+#: src/wx/hints_dialog.cc:30
 msgid "Hints"
 msgstr "Råd"
 
@@ -627,7 +652,7 @@ msgid "KDM|Timing"
 msgstr "Tajming"
 
 # "sekvens" eller "ordning"?
-#: src/wx/film_editor.cc:297
+#: src/wx/film_editor.cc:298
 msgid "Keep video in sequence"
 msgstr "Behåll video i sekvens"
 
@@ -655,7 +680,7 @@ msgstr "Linjärisera indatas gammakurva för låga värden"
 msgid "Load from file..."
 msgstr ""
 
-#: src/wx/config_dialog.cc:796
+#: src/wx/config_dialog.cc:808
 msgid "Log"
 msgstr ""
 
@@ -663,7 +688,7 @@ msgstr ""
 msgid "Ls"
 msgstr "Vs"
 
-#: src/wx/film_editor.cc:766
+#: src/wx/film_editor.cc:771
 msgid "MISSING: "
 msgstr "SAKNAS:"
 
@@ -687,12 +712,12 @@ msgstr ""
 msgid "Matrix"
 msgstr "Matris"
 
-#: src/wx/config_dialog.cc:784
+#: src/wx/config_dialog.cc:796
 #, fuzzy
 msgid "Maximum JPEG2000 bandwidth"
 msgstr "JPEG2000-bandbredd"
 
-#: src/wx/config_dialog.cc:283 src/wx/config_dialog.cc:788
+#: src/wx/config_dialog.cc:287 src/wx/config_dialog.cc:800
 #: src/wx/film_editor.cc:185
 msgid "Mbit/s"
 msgstr ""
@@ -765,7 +790,7 @@ msgstr "Svarta kanter tillagda för %dx%d (%.2f:1)\n"
 msgid "Password"
 msgstr "Lösenord"
 
-#: src/wx/job_manager_view.cc:72 src/wx/job_manager_view.cc:164
+#: src/wx/job_manager_view.cc:73 src/wx/job_manager_view.cc:165
 msgid "Pause"
 msgstr "Pausa"
 
@@ -777,7 +802,7 @@ msgstr "Topp"
 msgid "Play"
 msgstr "Spela"
 
-#: src/wx/timing_panel.cc:53
+#: src/wx/timing_panel.cc:54
 msgid "Play length"
 msgstr "Spellängd"
 
@@ -785,7 +810,7 @@ msgstr "Spellängd"
 msgid "Please wait; audio is being analysed..."
 msgstr "Vänligen vänta; audio analyseras..."
 
-#: src/wx/timing_panel.cc:41
+#: src/wx/timing_panel.cc:42
 msgid "Position"
 msgstr "Position"
 
@@ -813,8 +838,8 @@ msgstr "Hc"
 msgid "Red band"
 msgstr ""
 
-#: src/wx/content_menu.cc:54 src/wx/film_editor.cc:283
-#: src/wx/editable_list.h:66
+#: src/wx/content_menu.cc:54 src/wx/film_editor.cc:284
+#: src/wx/editable_list.h:68
 msgid "Remove"
 msgstr "Ta bort"
 
@@ -839,7 +864,7 @@ msgstr "Repetera Innehåll"
 msgid "Repeat..."
 msgstr "Upprepa..."
 
-#: src/wx/config_dialog.cc:688
+#: src/wx/config_dialog.cc:692
 msgid "Reset to default text"
 msgstr ""
 
@@ -847,7 +872,7 @@ msgstr ""
 msgid "Resolution"
 msgstr "Upplösning"
 
-#: src/wx/job_manager_view.cc:167
+#: src/wx/job_manager_view.cc:168
 msgid "Resume"
 msgstr "Fortsätt"
 
@@ -915,7 +940,7 @@ msgstr "Server"
 msgid "Server manufacturer"
 msgstr ""
 
-#: src/wx/doremi_certificate_dialog.cc:36
+#: src/wx/doremi_certificate_dialog.cc:37
 msgid "Server serial number"
 msgstr ""
 
@@ -924,7 +949,7 @@ msgstr ""
 msgid "Servers"
 msgstr "Server"
 
-#: src/wx/timecode.cc:65 src/wx/timing_panel.cc:62
+#: src/wx/timecode.cc:65 src/wx/timing_panel.cc:63
 msgid "Set"
 msgstr "Sätt"
 
@@ -978,7 +1003,7 @@ msgstr "Undertextspråk (ex. SV)"
 msgid "Subtitles"
 msgstr "Undertexter"
 
-#: src/wx/about_dialog.cc:154
+#: src/wx/about_dialog.cc:160
 msgid "Supported by"
 msgstr "Stöd från"
 
@@ -1003,7 +1028,7 @@ msgstr "Område (ex. SV)"
 msgid "Test version "
 msgstr "Testversion"
 
-#: src/wx/about_dialog.cc:199
+#: src/wx/about_dialog.cc:205
 #, fuzzy
 msgid "Tested by"
 msgstr "Översatt av"
@@ -1017,7 +1042,7 @@ msgstr ""
 "Innehållsfilerna du angav är inte samma som de som saknas. Försök igen med "
 "rätt innehållsfiler eller ta bort det saknade innehållet."
 
-#: src/wx/hints_dialog.cc:97
+#: src/wx/hints_dialog.cc:128
 msgid "There are no hints: everything looks good!"
 msgstr "Det finns inga råd: allt verkar bra!"
 
@@ -1045,12 +1070,12 @@ msgstr "Tid"
 msgid "Timeline"
 msgstr "Tidslinje"
 
-#: src/wx/film_editor.cc:289
+#: src/wx/film_editor.cc:290
 msgid "Timeline..."
 msgstr "Tidslinje..."
 
 # Svengelska
-#: src/wx/timing_panel.cc:36
+#: src/wx/timing_panel.cc:37
 #, fuzzy
 msgid "Timing|Timing"
 msgstr "Tajming"
@@ -1063,11 +1088,11 @@ msgstr "Övre beskärning"
 msgid "Translated by"
 msgstr "Översatt av"
 
-#: src/wx/timing_panel.cc:50
+#: src/wx/timing_panel.cc:51
 msgid "Trim from end"
 msgstr "Trimma från slut"
 
-#: src/wx/timing_panel.cc:47
+#: src/wx/timing_panel.cc:48
 msgid "Trim from start"
 msgstr "Trimma från start"
 
@@ -1075,7 +1100,7 @@ msgstr "Trimma från start"
 msgid "Type"
 msgstr "Typ"
 
-#: src/wx/dolby_certificate_dialog.cc:148
+#: src/wx/dolby_certificate_dialog.cc:182
 #, fuzzy
 msgid "Unexpected certificate filename form"
 msgstr "Välj certifikatfil"
@@ -1090,7 +1115,7 @@ msgstr "okänt"
 msgid "Until"
 msgstr "Tills"
 
-#: src/wx/film_editor.cc:285
+#: src/wx/film_editor.cc:286
 msgid "Up"
 msgstr "Upp"
 
@@ -1127,11 +1152,11 @@ msgstr "VI"
 msgid "Video"
 msgstr "Video"
 
-#: src/wx/timing_panel.cc:58
+#: src/wx/timing_panel.cc:59
 msgid "Video frame rate"
 msgstr "bildhastighet"
 
-#: src/wx/config_dialog.cc:799
+#: src/wx/config_dialog.cc:811
 msgid "Warnings"
 msgstr ""
 
@@ -1157,7 +1182,7 @@ msgstr "Undertext Förskjutning"
 msgid "Y Offset"
 msgstr "Undertext Förskjutning"
 
-#: src/wx/hints_dialog.cc:90
+#: src/wx/hints_dialog.cc:121
 #, c-format
 msgid ""
 "You have %d files that look like they are VOB files from DVD. You should "
@@ -1166,7 +1191,7 @@ msgstr ""
 "Du har %d filer som verkar vara VOB-filer från DVD. Du borde sammanfoga dom "
 "för att säkerställa jämna övergångar mellan filerna."
 
-#: src/wx/hints_dialog.cc:76
+#: src/wx/hints_dialog.cc:108
 #, c-format
 msgid ""
 "Your DCP frame rate (%d fps) may cause problems in a few (mostly older) "
@@ -1175,7 +1200,7 @@ msgstr ""
 "Din DCP-bildhastighet (%d bps) kan orsaka problem i några få (äldre) "
 "projektorer. Använd 24 eller 48 bilder per sekund för att vara säker."
 
-#: src/wx/hints_dialog.cc:66
+#: src/wx/hints_dialog.cc:71
 msgid ""
 "Your DCP has an odd number of audio channels.  This is very likely to cause "
 "problems on playback."
@@ -1183,7 +1208,7 @@ msgstr ""
 "Din DCP har udda antal audiokanaler. Detta kommer troligen att ge problem "
 "vid uppspelning."
 
-#: src/wx/hints_dialog.cc:70
+#: src/wx/hints_dialog.cc:75
 msgid ""
 "Your DCP has fewer than 6 audio channels.  This may cause problems on some "
 "projectors."
@@ -1208,7 +1233,7 @@ msgid "dB"
 msgstr "dB"
 
 #. / TRANSLATORS: this is an abbreviation for milliseconds, the unit of time
-#: src/wx/audio_panel.cc:78 src/wx/config_dialog.cc:292
+#: src/wx/audio_panel.cc:78 src/wx/config_dialog.cc:296
 msgid "ms"
 msgstr "ms"
 
@@ -1228,6 +1253,10 @@ msgstr "tider"
 #: src/wx/timeline.cc:241
 msgid "video"
 msgstr "video"
+
+#, fuzzy
+#~ msgid "Default creator"
+#~ msgstr "Förvald innehållstyp"
 
 #~ msgid "Audio Gain"
 #~ msgstr "Audio Förstärkning"

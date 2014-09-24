@@ -40,7 +40,6 @@ sources = """
           job.cc
           job_manager.cc
           kdm.cc
-          json_server.cc
           log.cc
           md5_digester.cc
           piece.cc
@@ -49,6 +48,7 @@ sources = """
           playlist.cc
           ratio.cc
           resampler.cc
+          safe_stringstream.cc
           scp_dcp_job.cc
           scaler.cc
           send_kdm_email_job.cc
@@ -68,6 +68,7 @@ sources = """
           update.cc
           util.cc
           video_content.cc
+          video_content_scale.cc
           video_decoder.cc
           writer.cc
           """

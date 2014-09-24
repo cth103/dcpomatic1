@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -193,7 +193,7 @@ void
 checked_set (wxSpinCtrlDouble* widget, double value)
 {
 	/* XXX: completely arbitrary epsilon */
-	if (fabs (widget->GetValue() - value) < 1e-16) {
+	if (fabs (widget->GetValue() - value) > 1e-16) {
 		widget->SetValue (value);
 	}
 }
@@ -310,14 +310,6 @@ double
 wx_get (wxSpinCtrlDouble* w)
 {
 	return w->GetValue ();
-}
-
-void
-run_gui_loop ()
-{
-	while (wxTheApp->Pending ()) {
-		wxTheApp->Dispatch ();
-	}
 }
 
 /** @param s String of the form Context|String

@@ -1,4 +1,4 @@
-dcpomatic (1.72.4-1) UNRELEASED; urgency=low
+dcpomatic (1.73.7-1) UNRELEASED; urgency=low
 
   * New upstream release.
   * New upstream release.
@@ -169,8 +169,22 @@ dcpomatic (1.72.4-1) UNRELEASED; urgency=low
   * New upstream release.
   * New upstream release.
   * New upstream release.
+  * New upstream release.
+  * New upstream release.
+  * New upstream release.
+  * New upstream release.
+  * New upstream release.
+  * New upstream release.
+  * New upstream release.
+  * New upstream release.
+  * New upstream release.
+  * New upstream release.
+  * New upstream release.
+  * New upstream release.
+  * New upstream release.
+  * New upstream release.
 
- -- Carl Hetherington <carl@107.191.37.242.vultr.com>  Wed, 16 Jul 2014 16:10:58 +0000
+ -- Carl Hetherington <carl@d1stkfactory>  Tue, 16 Sep 2014 21:19:53 +0100
 
 dcpomatic (0.87-1) UNRELEASED; urgency=low
 
