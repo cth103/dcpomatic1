@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-23 22:03+0100\n"
+"POT-Creation-Date: 2014-10-26 23:30+0000\n"
 "PO-Revision-Date: 2014-10-26 21:20+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
@@ -33,7 +33,7 @@ msgstr "%1 canaux, %2kHz, %3 échantillons"
 msgid "%1 frames; %2 frames per second"
 msgstr "%1 images ; %2 images par seconde"
 
-#: src/lib/video_content.cc:211
+#: src/lib/video_content.cc:222
 msgid "%1x%2 pixels (%3:1)"
 msgstr "%1x%2 pixels (%3:1)"
 
@@ -89,7 +89,7 @@ msgstr "Bicubique"
 msgid "Bilinear"
 msgstr "Bilinéaire"
 
-#: src/lib/job.cc:322
+#: src/lib/job.cc:323
 msgid "Cancelled"
 msgstr "Annulé"
 
@@ -129,19 +129,19 @@ msgstr "Le contenu à ajouter doit présenter le même délais audio"
 msgid "Content to be joined must have the same audio gain."
 msgstr "Le contenu à ajouter doit avoir le même gain audio"
 
-#: src/lib/video_content.cc:146
+#: src/lib/video_content.cc:148
 msgid "Content to be joined must have the same colour conversion."
 msgstr "Le contenu à ajouter doit avoir le même type de conversion couleur"
 
-#: src/lib/video_content.cc:138
+#: src/lib/video_content.cc:140
 msgid "Content to be joined must have the same crop."
 msgstr "le contenu à ajouter doit avoir les mêmes valeurs de rognage"
 
-#: src/lib/video_content.cc:126
+#: src/lib/video_content.cc:128
 msgid "Content to be joined must have the same picture size."
 msgstr "Le contenu à ajouter doit avoir la même taille d'image"
 
-#: src/lib/video_content.cc:142
+#: src/lib/video_content.cc:144
 msgid "Content to be joined must have the same scale setting."
 msgstr ""
 "Le contenu à ajouter doit avoir les mêmes paramètres de mise à l'échelle"
@@ -168,11 +168,11 @@ msgid "Content to be joined must have the same subtitle Y scale."
 msgstr ""
 "le contenu ajouté doit avoir le même positionnement vertical de sous-titres"
 
-#: src/lib/video_content.cc:130
+#: src/lib/video_content.cc:132
 msgid "Content to be joined must have the same video frame rate."
 msgstr "Le contenu à ajouter doit avoir la même cadence d'images"
 
-#: src/lib/video_content.cc:134
+#: src/lib/video_content.cc:136
 msgid "Content to be joined must have the same video frame type."
 msgstr "Le contenu à ajouter doit avoir le même type de trame vidéo"
 
@@ -303,7 +303,7 @@ msgstr "Envoyer KDM par email pour %1"
 msgid "Encoding image data"
 msgstr "encodage des données image"
 
-#: src/lib/job.cc:320
+#: src/lib/job.cc:321
 msgid "Error (%1)"
 msgstr "Erreur (%1)"
 
@@ -411,7 +411,7 @@ msgstr "Aucun fichier image valide dans ce dossier."
 msgid "Noise reduction"
 msgstr "Réduction de bruit"
 
-#: src/lib/job.cc:318
+#: src/lib/job.cc:319
 msgid "OK (ran for %1)"
 msgstr "OK (processus %1)"
 
@@ -557,7 +557,7 @@ msgstr "Échantillonnage audio (%1) inconnu"
 msgid "Unsharp mask and Gaussian blur"
 msgstr "Adoucissement et flou Gaussien"
 
-#: src/lib/colour_conversion.cc:139
+#: src/lib/colour_conversion.cc:149
 msgid "Untitled"
 msgstr "Sans titre"
 
@@ -641,11 +641,11 @@ msgstr "lecture du fichier audio impossible"
 msgid "could not open file %1"
 msgstr "lecture du fichier (%1) impossible"
 
-#: src/lib/dcp_video_frame.cc:331
+#: src/lib/dcp_video_frame.cc:338
 msgid "could not open file for reading"
 msgstr "lecture du fichier impossible"
 
-#: src/lib/dcp_video_frame.cc:337
+#: src/lib/dcp_video_frame.cc:344
 msgid "could not read encoded data"
 msgstr "lecture des données encodées impossible"
 
@@ -737,11 +737,11 @@ msgstr "sous-titres non-bitmap non supportés actuellement"
 
 #. / TRANSLATORS: remaining here follows an amount of time that is remaining
 #. / on an operation.
-#: src/lib/job.cc:315
+#: src/lib/job.cc:316
 msgid "remaining"
 msgstr "restant"
 
-#: src/lib/config.cc:84 src/lib/video_content.cc:179
+#: src/lib/config.cc:84 src/lib/video_content.cc:185
 msgid "sRGB"
 msgstr "sRGB"
 

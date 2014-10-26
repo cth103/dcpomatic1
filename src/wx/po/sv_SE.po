@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-23 22:03+0100\n"
+"POT-Creation-Date: 2014-10-26 23:30+0000\n"
 "PO-Revision-Date: 2014-01-19 09:14+0100\n"
 "Last-Translator: Adam Klotblixt <adam.klotblixt@gmail.com>\n"
 "Language-Team: \n"
@@ -48,7 +48,7 @@ msgstr "1 / "
 msgid "1 channel"
 msgstr "1 kanal"
 
-#: src/wx/video_panel.cc:197
+#: src/wx/video_panel.cc:199
 msgid "2D"
 msgstr "2D"
 
@@ -65,24 +65,24 @@ msgstr "2K"
 msgid "3D"
 msgstr "3D"
 
-#: src/wx/video_panel.cc:200
+#: src/wx/video_panel.cc:202
 msgid "3D alternate"
 msgstr ""
 
-#: src/wx/video_panel.cc:201
+#: src/wx/video_panel.cc:203
 msgid "3D left only"
 msgstr ""
 
-#: src/wx/video_panel.cc:198
+#: src/wx/video_panel.cc:200
 msgid "3D left/right"
 msgstr "3D left/right"
 
-#: src/wx/video_panel.cc:202
+#: src/wx/video_panel.cc:204
 #, fuzzy
 msgid "3D right only"
 msgstr "3D left/right"
 
-#: src/wx/video_panel.cc:199
+#: src/wx/video_panel.cc:201
 msgid "3D top/bottom"
 msgstr "3D top/bottom"
 
@@ -249,7 +249,7 @@ msgstr ""
 msgid "Calculate..."
 msgstr "Beräkna..."
 
-#: src/wx/job_manager_view.cc:67
+#: src/wx/job_manager_view.cc:66
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -329,7 +329,7 @@ msgstr "Innehåll"
 msgid "Content Type"
 msgstr "Innehållstyp"
 
-#: src/wx/video_panel.cc:332
+#: src/wx/video_panel.cc:347
 #, c-format
 msgid "Content frame rate %.4f\n"
 msgstr "Innehållets bildhastighet %.4f\n"
@@ -338,7 +338,7 @@ msgstr "Innehållets bildhastighet %.4f\n"
 msgid "Content version"
 msgstr "Innehållsversion"
 
-#: src/wx/video_panel.cc:292
+#: src/wx/video_panel.cc:307
 #, c-format
 msgid "Content video is %dx%d (%.2f:1)\n"
 msgstr "Original-videon är %dx%d (%.2f:1)\n"
@@ -374,13 +374,13 @@ msgstr ""
 msgid "Create in folder"
 msgstr "Skapa i katalog"
 
-#: src/wx/video_panel.cc:304
+#: src/wx/video_panel.cc:319
 #, c-format
 msgid "Cropped to %dx%d (%.2f:1)\n"
 msgstr "Beskuren till %dx%d (%.2f:1)\n"
 
 # sammanhang?
-#: src/wx/video_panel.cc:244
+#: src/wx/video_panel.cc:250
 msgid "Custom"
 msgstr "Special"
 
@@ -452,7 +452,7 @@ msgstr "Standardval"
 msgid "Delay"
 msgstr "Audio Fördröjning"
 
-#: src/wx/film_editor.cc:125 src/wx/job_manager_view.cc:79
+#: src/wx/film_editor.cc:125 src/wx/job_manager_view.cc:76
 msgid "Details..."
 msgstr "Detaljer..."
 
@@ -501,7 +501,7 @@ msgid "Edit Screen..."
 msgstr "Redigera Skärm..."
 
 #: src/wx/audio_mapping_view.cc:135 src/wx/config_dialog.cc:271
-#: src/wx/video_panel.cc:155 src/wx/video_panel.cc:172
+#: src/wx/video_panel.cc:155 src/wx/video_panel.cc:174
 #: src/wx/editable_list.h:66
 msgid "Edit..."
 msgstr "Redigera..."
@@ -730,7 +730,7 @@ msgid "Make KDMs"
 msgstr "Skapa KDM:er"
 
 #: src/wx/isdcf_metadata_dialog.cc:71
-msgid "Mastered luminance (e.g. 4fl)"
+msgid "Mastered luminance (e.g. 14fl)"
 msgstr ""
 
 #: src/wx/colour_conversion_editor.cc:67
@@ -756,7 +756,7 @@ msgid "Move the selected piece of content later in the film."
 msgstr ""
 
 # Låter mysko
-#: src/wx/video_panel.cc:280
+#: src/wx/video_panel.cc:295
 msgid "Multiple content selected"
 msgstr "Flera innehåll valda"
 
@@ -785,7 +785,8 @@ msgstr ""
 "Ingen audio kommer att överföras från innehållskanalen %d till DCP-kanalen "
 "%d."
 
-#: src/wx/video_panel.cc:153 src/wx/video_panel.cc:249
+#: src/wx/video_panel.cc:153 src/wx/video_panel.cc:255
+#: src/wx/video_panel.cc:264
 msgid "None"
 msgstr "Inget"
 
@@ -818,7 +819,7 @@ msgstr "Utdata gamma"
 msgid "Package Type (e.g. OV)"
 msgstr "Förpackningstyp (ex. OV)"
 
-#: src/wx/video_panel.cc:325
+#: src/wx/video_panel.cc:340
 #, c-format
 msgid "Padded with black to %dx%d (%.2f:1)\n"
 msgstr "Svarta kanter tillagda för %dx%d (%.2f:1)\n"
@@ -827,7 +828,7 @@ msgstr "Svarta kanter tillagda för %dx%d (%.2f:1)\n"
 msgid "Password"
 msgstr "Lösenord"
 
-#: src/wx/job_manager_view.cc:73 src/wx/job_manager_view.cc:165
+#: src/wx/job_manager_view.cc:71 src/wx/job_manager_view.cc:160
 msgid "Pause"
 msgstr "Pausa"
 
@@ -913,7 +914,7 @@ msgstr ""
 msgid "Resolution"
 msgstr "Upplösning"
 
-#: src/wx/job_manager_view.cc:168
+#: src/wx/job_manager_view.cc:163
 msgid "Resume"
 msgstr "Fortsätt"
 
@@ -937,7 +938,7 @@ msgstr "SMPTE"
 msgid "Scale to"
 msgstr "Skala om till"
 
-#: src/wx/video_panel.cc:316
+#: src/wx/video_panel.cc:331
 #, c-format
 msgid "Scaled to %dx%d (%.2f:1)\n"
 msgstr "Skalad till %dx%d (%.2f:1)\n"
@@ -1039,7 +1040,7 @@ msgstr "Undertextspråk (ex. SV)"
 msgid "Subtitles"
 msgstr "Undertexter"
 
-#: src/wx/about_dialog.cc:166
+#: src/wx/about_dialog.cc:167
 msgid "Supported by"
 msgstr "Stöd från"
 
@@ -1064,7 +1065,7 @@ msgstr "Område (ex. SV)"
 msgid "Test version "
 msgstr "Testversion"
 
-#: src/wx/about_dialog.cc:211
+#: src/wx/about_dialog.cc:212
 #, fuzzy
 msgid "Tested by"
 msgstr "Översatt av"

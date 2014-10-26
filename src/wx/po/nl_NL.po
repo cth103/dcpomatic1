@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-23 22:03+0100\n"
+"POT-Creation-Date: 2014-10-26 23:30+0000\n"
 "PO-Revision-Date: 2014-09-04 20:17+0100\n"
 "Last-Translator: Cherif Ben Brahim <firehc@mac.com>\n"
 "Language-Team: UniversalDV <TKooijmans@universaldv.nl>\n"
@@ -49,7 +49,7 @@ msgstr "1 / "
 msgid "1 channel"
 msgstr "1 channel"
 
-#: src/wx/video_panel.cc:197
+#: src/wx/video_panel.cc:199
 msgid "2D"
 msgstr "2D"
 
@@ -65,23 +65,23 @@ msgstr "2K"
 msgid "3D"
 msgstr "3D"
 
-#: src/wx/video_panel.cc:200
+#: src/wx/video_panel.cc:202
 msgid "3D alternate"
 msgstr "3D alternate"
 
-#: src/wx/video_panel.cc:201
+#: src/wx/video_panel.cc:203
 msgid "3D left only"
 msgstr "3D enkel Links"
 
-#: src/wx/video_panel.cc:198
+#: src/wx/video_panel.cc:200
 msgid "3D left/right"
 msgstr "3D links/rechts"
 
-#: src/wx/video_panel.cc:202
+#: src/wx/video_panel.cc:204
 msgid "3D right only"
 msgstr "3D enkel rechts"
 
-#: src/wx/video_panel.cc:199
+#: src/wx/video_panel.cc:201
 msgid "3D top/bottom"
 msgstr "3D boven/beneden"
 
@@ -251,7 +251,7 @@ msgstr "CPL opmerkingen tekst"
 msgid "Calculate..."
 msgstr "Bereken..."
 
-#: src/wx/job_manager_view.cc:67
+#: src/wx/job_manager_view.cc:66
 msgid "Cancel"
 msgstr "Afbreken"
 
@@ -325,7 +325,7 @@ msgstr "Content"
 msgid "Content Type"
 msgstr "Content Type"
 
-#: src/wx/video_panel.cc:332
+#: src/wx/video_panel.cc:347
 #, c-format
 msgid "Content frame rate %.4f\n"
 msgstr "Content frame rate %.4f\n"
@@ -334,7 +334,7 @@ msgstr "Content frame rate %.4f\n"
 msgid "Content version"
 msgstr "Content versie"
 
-#: src/wx/video_panel.cc:292
+#: src/wx/video_panel.cc:307
 #, c-format
 msgid "Content video is %dx%d (%.2f:1)\n"
 msgstr "Content video is %dx%d (%.2f:1)\n"
@@ -370,12 +370,12 @@ msgstr "Land"
 msgid "Create in folder"
 msgstr "Maak in map"
 
-#: src/wx/video_panel.cc:304
+#: src/wx/video_panel.cc:319
 #, c-format
 msgid "Cropped to %dx%d (%.2f:1)\n"
 msgstr "Cropped naar %dx%d (%.2f:1)\n"
 
-#: src/wx/video_panel.cc:244
+#: src/wx/video_panel.cc:250
 msgid "Custom"
 msgstr "aangepast"
 
@@ -444,7 +444,7 @@ msgstr "Standaard instellingen"
 msgid "Delay"
 msgstr "Vertraging"
 
-#: src/wx/film_editor.cc:125 src/wx/job_manager_view.cc:79
+#: src/wx/film_editor.cc:125 src/wx/job_manager_view.cc:76
 msgid "Details..."
 msgstr "Details..."
 
@@ -492,7 +492,7 @@ msgid "Edit Screen..."
 msgstr "Edit scherm"
 
 #: src/wx/audio_mapping_view.cc:135 src/wx/config_dialog.cc:271
-#: src/wx/video_panel.cc:155 src/wx/video_panel.cc:172
+#: src/wx/video_panel.cc:155 src/wx/video_panel.cc:174
 #: src/wx/editable_list.h:66
 msgid "Edit..."
 msgstr "Edit..."
@@ -713,7 +713,8 @@ msgid "Make KDMs"
 msgstr "Maak KDM's"
 
 #: src/wx/isdcf_metadata_dialog.cc:71
-msgid "Mastered luminance (e.g. 4fl)"
+#, fuzzy
+msgid "Mastered luminance (e.g. 14fl)"
 msgstr "Gemasterde helderheid (bv. 4fl)"
 
 #: src/wx/colour_conversion_editor.cc:67
@@ -737,7 +738,7 @@ msgstr ""
 msgid "Move the selected piece of content later in the film."
 msgstr ""
 
-#: src/wx/video_panel.cc:280
+#: src/wx/video_panel.cc:295
 msgid "Multiple content selected"
 msgstr "Meedere content geselecteerd"
 
@@ -766,7 +767,8 @@ msgstr ""
 "Er wordt geen audio van het content kanaal %d doorgestuurd naar DCP kanaal "
 "%d."
 
-#: src/wx/video_panel.cc:153 src/wx/video_panel.cc:249
+#: src/wx/video_panel.cc:153 src/wx/video_panel.cc:255
+#: src/wx/video_panel.cc:264
 msgid "None"
 msgstr "Geen"
 
@@ -798,7 +800,7 @@ msgstr "Output gamma"
 msgid "Package Type (e.g. OV)"
 msgstr "Package Type (e.g. OV)"
 
-#: src/wx/video_panel.cc:325
+#: src/wx/video_panel.cc:340
 #, c-format
 msgid "Padded with black to %dx%d (%.2f:1)\n"
 msgstr "Opgevuld met zwart tot %dx%d (%.2f:1)\n"
@@ -807,7 +809,7 @@ msgstr "Opgevuld met zwart tot %dx%d (%.2f:1)\n"
 msgid "Password"
 msgstr "Wachtwoord"
 
-#: src/wx/job_manager_view.cc:73 src/wx/job_manager_view.cc:165
+#: src/wx/job_manager_view.cc:71 src/wx/job_manager_view.cc:160
 msgid "Pause"
 msgstr "Pauze"
 
@@ -892,7 +894,7 @@ msgstr "Herinstellen oorspronkelijke tekst"
 msgid "Resolution"
 msgstr "Resolutie"
 
-#: src/wx/job_manager_view.cc:168
+#: src/wx/job_manager_view.cc:163
 msgid "Resume"
 msgstr "Vervolg"
 
@@ -916,7 +918,7 @@ msgstr "SMPTE"
 msgid "Scale to"
 msgstr "Schaal tot"
 
-#: src/wx/video_panel.cc:316
+#: src/wx/video_panel.cc:331
 #, c-format
 msgid "Scaled to %dx%d (%.2f:1)\n"
 msgstr "Geschaald naar %dx%d (%.2f:1)\n"
@@ -1013,7 +1015,7 @@ msgstr "Ondertitel Taal (vb  NL)"
 msgid "Subtitles"
 msgstr "Ondertitels"
 
-#: src/wx/about_dialog.cc:166
+#: src/wx/about_dialog.cc:167
 msgid "Supported by"
 msgstr "Ondersteund door"
 
@@ -1037,7 +1039,7 @@ msgstr "Grondgebied (vb NL)"
 msgid "Test version "
 msgstr "Test Versie"
 
-#: src/wx/about_dialog.cc:211
+#: src/wx/about_dialog.cc:212
 msgid "Tested by"
 msgstr "Getest door"
 

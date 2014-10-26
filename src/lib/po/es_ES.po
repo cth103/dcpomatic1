@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LIBDCPOMATIC\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-23 22:03+0100\n"
+"POT-Creation-Date: 2014-10-26 23:30+0000\n"
 "PO-Revision-Date: 2014-04-20 10:12-0500\n"
 "Last-Translator: Manuel AC <manuel.acevedo@civantos.>\n"
 "Language-Team: Manuel AC <manuel.acevedo@civantos.com>\n"
@@ -33,7 +33,7 @@ msgstr "%1 canales, %2kHz, %3 muestras"
 msgid "%1 frames; %2 frames per second"
 msgstr "%1 imágenes; %2 imágenes per second"
 
-#: src/lib/video_content.cc:211
+#: src/lib/video_content.cc:222
 msgid "%1x%2 pixels (%3:1)"
 msgstr "%1x%2 pixels (%3:1)"
 
@@ -89,7 +89,7 @@ msgstr "Bicúbico"
 msgid "Bilinear"
 msgstr "Bilineal"
 
-#: src/lib/job.cc:322
+#: src/lib/job.cc:323
 msgid "Cancelled"
 msgstr "Cancelado"
 
@@ -129,19 +129,19 @@ msgstr "Para unir contenido debe tener el mismo retardo de audio."
 msgid "Content to be joined must have the same audio gain."
 msgstr "Para unir contenido debe tener la misma ganancia de audio."
 
-#: src/lib/video_content.cc:146
+#: src/lib/video_content.cc:148
 msgid "Content to be joined must have the same colour conversion."
 msgstr "Para unir contenido debe tener la misma conversión de color."
 
-#: src/lib/video_content.cc:138
+#: src/lib/video_content.cc:140
 msgid "Content to be joined must have the same crop."
 msgstr "Para unir contenido debe tener el mismo recorte."
 
-#: src/lib/video_content.cc:126
+#: src/lib/video_content.cc:128
 msgid "Content to be joined must have the same picture size."
 msgstr "Para unir contenido debe tener el mismo tamaño de imagen."
 
-#: src/lib/video_content.cc:142
+#: src/lib/video_content.cc:144
 msgid "Content to be joined must have the same scale setting."
 msgstr "Para unir contenido debe tener la misma redimensión."
 
@@ -165,11 +165,11 @@ msgstr ""
 msgid "Content to be joined must have the same subtitle Y scale."
 msgstr "Para unir contenido debe tener el mismo tamaño de subtítulo."
 
-#: src/lib/video_content.cc:130
+#: src/lib/video_content.cc:132
 msgid "Content to be joined must have the same video frame rate."
 msgstr "Para unir contenido debe tener la misma velocidad de imagen."
 
-#: src/lib/video_content.cc:134
+#: src/lib/video_content.cc:136
 msgid "Content to be joined must have the same video frame type."
 msgstr "Para unir contenido debe tener el mismo tamaño de imagen."
 
@@ -297,7 +297,7 @@ msgstr "Enviar por email las KDM para %1"
 msgid "Encoding image data"
 msgstr "Codificando imagen"
 
-#: src/lib/job.cc:320
+#: src/lib/job.cc:321
 msgid "Error (%1)"
 msgstr "Error (%1)"
 
@@ -406,7 +406,7 @@ msgstr ""
 msgid "Noise reduction"
 msgstr "Reducción de ruido"
 
-#: src/lib/job.cc:318
+#: src/lib/job.cc:319
 msgid "OK (ran for %1)"
 msgstr "OK (ejecución %1)"
 
@@ -554,7 +554,7 @@ msgstr "Formato de audio desconocido (%1)"
 msgid "Unsharp mask and Gaussian blur"
 msgstr "Máscara de desenfoque Gaussiano"
 
-#: src/lib/colour_conversion.cc:139
+#: src/lib/colour_conversion.cc:149
 msgid "Untitled"
 msgstr "Sin título"
 
@@ -638,11 +638,11 @@ msgstr "no se pudo abrir el fichero de audio para lectura"
 msgid "could not open file %1"
 msgstr "no se pudo abrir el fichero %1"
 
-#: src/lib/dcp_video_frame.cc:331
+#: src/lib/dcp_video_frame.cc:338
 msgid "could not open file for reading"
 msgstr "no se pudo abrir el fichero para lectura"
 
-#: src/lib/dcp_video_frame.cc:337
+#: src/lib/dcp_video_frame.cc:344
 msgid "could not read encoded data"
 msgstr "no se pudo leer la información codificada"
 
@@ -732,11 +732,11 @@ msgstr "todavía no se soportan subtítulos que no son en mapas de bits"
 
 #. / TRANSLATORS: remaining here follows an amount of time that is remaining
 #. / on an operation.
-#: src/lib/job.cc:315
+#: src/lib/job.cc:316
 msgid "remaining"
 msgstr "pendiente"
 
-#: src/lib/config.cc:84 src/lib/video_content.cc:179
+#: src/lib/config.cc:84 src/lib/video_content.cc:185
 msgid "sRGB"
 msgstr "sRGB"
 

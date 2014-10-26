@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-23 22:03+0100\n"
+"POT-Creation-Date: 2014-10-26 23:30+0000\n"
 "PO-Revision-Date: 2014-01-19 08:59+0100\n"
 "Last-Translator: Adam Klotblixt <adam.klotblixt@gmail.com>\n"
 "Language-Team: \n"
@@ -33,7 +33,7 @@ msgstr "%1 kanaler, %2kHz, %3 sampel"
 msgid "%1 frames; %2 frames per second"
 msgstr "%1 bilder; %2 bilder per sekund"
 
-#: src/lib/video_content.cc:211
+#: src/lib/video_content.cc:222
 msgid "%1x%2 pixels (%3:1)"
 msgstr "%1x%2 pixlar (%3:1)"
 
@@ -89,7 +89,7 @@ msgstr "Bikubisk"
 msgid "Bilinear"
 msgstr "Bilinjär"
 
-#: src/lib/job.cc:322
+#: src/lib/job.cc:323
 msgid "Cancelled"
 msgstr "Avbruten"
 
@@ -129,19 +129,19 @@ msgstr "Innehåll som ska sammanfogas måste använda samma audiofördröjning."
 msgid "Content to be joined must have the same audio gain."
 msgstr "Innehåll som ska sammanfogas måste använda samma audioförstärkning."
 
-#: src/lib/video_content.cc:146
+#: src/lib/video_content.cc:148
 msgid "Content to be joined must have the same colour conversion."
 msgstr "Innehåll som ska sammanfogas måste använda samma färgkonvertering."
 
-#: src/lib/video_content.cc:138
+#: src/lib/video_content.cc:140
 msgid "Content to be joined must have the same crop."
 msgstr "Innehåll som ska sammanfogas måste använda samma beskärning."
 
-#: src/lib/video_content.cc:126
+#: src/lib/video_content.cc:128
 msgid "Content to be joined must have the same picture size."
 msgstr "Innehåll som ska sammanfogas måste använda samma bildstorlek."
 
-#: src/lib/video_content.cc:142
+#: src/lib/video_content.cc:144
 #, fuzzy
 msgid "Content to be joined must have the same scale setting."
 msgstr "Innehåll som ska sammanfogas måste använda samma bildförhållande."
@@ -168,11 +168,11 @@ msgstr ""
 msgid "Content to be joined must have the same subtitle Y scale."
 msgstr "Innehåll som ska sammanfogas måste använda samma skala på undertexten."
 
-#: src/lib/video_content.cc:130
+#: src/lib/video_content.cc:132
 msgid "Content to be joined must have the same video frame rate."
 msgstr "Innehåll som ska sammanfogas måste använda samma videobildhastighet."
 
-#: src/lib/video_content.cc:134
+#: src/lib/video_content.cc:136
 msgid "Content to be joined must have the same video frame type."
 msgstr "Innehåll som ska sammanfogas måste använda samma videobildtyp."
 
@@ -301,7 +301,7 @@ msgstr "E-posta KDM:er för %1"
 msgid "Encoding image data"
 msgstr "Kodar bild-data"
 
-#: src/lib/job.cc:320
+#: src/lib/job.cc:321
 msgid "Error (%1)"
 msgstr "Fel (%1)"
 
@@ -412,7 +412,7 @@ msgstr ""
 msgid "Noise reduction"
 msgstr "Brusreducering"
 
-#: src/lib/job.cc:318
+#: src/lib/job.cc:319
 msgid "OK (ran for %1)"
 msgstr "OK (kördes %1)"
 
@@ -563,7 +563,7 @@ msgstr "Okänt audio-sampelformat (%1)"
 msgid "Unsharp mask and Gaussian blur"
 msgstr "Oskärpemask och Gaussisk suddighet"
 
-#: src/lib/colour_conversion.cc:139
+#: src/lib/colour_conversion.cc:149
 msgid "Untitled"
 msgstr "Utan titel"
 
@@ -649,11 +649,11 @@ msgstr "kunde inte öppna audio-fil för läsning"
 msgid "could not open file %1"
 msgstr "kunde inte öppna fil %1"
 
-#: src/lib/dcp_video_frame.cc:331
+#: src/lib/dcp_video_frame.cc:338
 msgid "could not open file for reading"
 msgstr "kunde inte öppna fil för läsning"
 
-#: src/lib/dcp_video_frame.cc:337
+#: src/lib/dcp_video_frame.cc:344
 msgid "could not read encoded data"
 msgstr "kunde inte läsa kodat data"
 
@@ -745,11 +745,11 @@ msgstr "icke-rastergrafiska undertexter stöds inte ännu"
 
 #. / TRANSLATORS: remaining here follows an amount of time that is remaining
 #. / on an operation.
-#: src/lib/job.cc:315
+#: src/lib/job.cc:316
 msgid "remaining"
 msgstr "återstående tid"
 
-#: src/lib/config.cc:84 src/lib/video_content.cc:179
+#: src/lib/config.cc:84 src/lib/video_content.cc:185
 msgid "sRGB"
 msgstr "sRGB"
 

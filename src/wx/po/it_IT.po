@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IT VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-23 22:03+0100\n"
+"POT-Creation-Date: 2014-10-26 23:30+0000\n"
 "PO-Revision-Date: 2014-02-03 10:46+0100\n"
 "Last-Translator: William Fanelli <william.f@impronte.com>\n"
 "Language-Team: \n"
@@ -47,7 +47,7 @@ msgstr ""
 msgid "1 channel"
 msgstr "1 canale"
 
-#: src/wx/video_panel.cc:197
+#: src/wx/video_panel.cc:199
 msgid "2D"
 msgstr ""
 
@@ -64,23 +64,23 @@ msgstr ""
 msgid "3D"
 msgstr ""
 
-#: src/wx/video_panel.cc:200
+#: src/wx/video_panel.cc:202
 msgid "3D alternate"
 msgstr ""
 
-#: src/wx/video_panel.cc:201
+#: src/wx/video_panel.cc:203
 msgid "3D left only"
 msgstr ""
 
-#: src/wx/video_panel.cc:198
+#: src/wx/video_panel.cc:200
 msgid "3D left/right"
 msgstr ""
 
-#: src/wx/video_panel.cc:202
+#: src/wx/video_panel.cc:204
 msgid "3D right only"
 msgstr ""
 
-#: src/wx/video_panel.cc:199
+#: src/wx/video_panel.cc:201
 msgid "3D top/bottom"
 msgstr ""
 
@@ -245,7 +245,7 @@ msgstr ""
 msgid "Calculate..."
 msgstr "Calcola..."
 
-#: src/wx/job_manager_view.cc:67
+#: src/wx/job_manager_view.cc:66
 msgid "Cancel"
 msgstr "Annulla"
 
@@ -323,7 +323,7 @@ msgstr "Sorgente"
 msgid "Content Type"
 msgstr "Tipo di sorgente"
 
-#: src/wx/video_panel.cc:332
+#: src/wx/video_panel.cc:347
 #, c-format
 msgid "Content frame rate %.4f\n"
 msgstr "Freq. fotogrammi sorgente %.4f\n"
@@ -332,7 +332,7 @@ msgstr "Freq. fotogrammi sorgente %.4f\n"
 msgid "Content version"
 msgstr "Tipo di sorgente"
 
-#: src/wx/video_panel.cc:292
+#: src/wx/video_panel.cc:307
 #, fuzzy, c-format
 msgid "Content video is %dx%d (%.2f:1)\n"
 msgstr "Il video originale è %dx%d (%.2f:1)\n"
@@ -368,12 +368,12 @@ msgstr ""
 msgid "Create in folder"
 msgstr "Crea nella cartella"
 
-#: src/wx/video_panel.cc:304
+#: src/wx/video_panel.cc:319
 #, c-format
 msgid "Cropped to %dx%d (%.2f:1)\n"
 msgstr "Tagliato da %dx%d (%.2f:1)\n"
 
-#: src/wx/video_panel.cc:244
+#: src/wx/video_panel.cc:250
 msgid "Custom"
 msgstr ""
 
@@ -446,7 +446,7 @@ msgstr "Predefiniti"
 msgid "Delay"
 msgstr "Ritardo dell'audio"
 
-#: src/wx/film_editor.cc:125 src/wx/job_manager_view.cc:79
+#: src/wx/film_editor.cc:125 src/wx/job_manager_view.cc:76
 msgid "Details..."
 msgstr "Dettagli"
 
@@ -494,7 +494,7 @@ msgid "Edit Screen..."
 msgstr "Modifica Schermo..."
 
 #: src/wx/audio_mapping_view.cc:135 src/wx/config_dialog.cc:271
-#: src/wx/video_panel.cc:155 src/wx/video_panel.cc:172
+#: src/wx/video_panel.cc:155 src/wx/video_panel.cc:174
 #: src/wx/editable_list.h:66
 msgid "Edit..."
 msgstr "Modifica..."
@@ -722,7 +722,7 @@ msgid "Make KDMs"
 msgstr "Crea KDM"
 
 #: src/wx/isdcf_metadata_dialog.cc:71
-msgid "Mastered luminance (e.g. 4fl)"
+msgid "Mastered luminance (e.g. 14fl)"
 msgstr ""
 
 #: src/wx/colour_conversion_editor.cc:67
@@ -747,7 +747,7 @@ msgstr ""
 msgid "Move the selected piece of content later in the film."
 msgstr ""
 
-#: src/wx/video_panel.cc:280
+#: src/wx/video_panel.cc:295
 msgid "Multiple content selected"
 msgstr "Molteplici sorgenti selezionate"
 
@@ -774,7 +774,8 @@ msgstr "Una nuova versione di DCP-o-matic è disponibile."
 msgid "No audio will be passed from content channel %d to DCP channel %d."
 msgstr "Nessun audio sarà passato dal canale %d sorgente al canale %d del DCP"
 
-#: src/wx/video_panel.cc:153 src/wx/video_panel.cc:249
+#: src/wx/video_panel.cc:153 src/wx/video_panel.cc:255
+#: src/wx/video_panel.cc:264
 msgid "None"
 msgstr "Nessuno"
 
@@ -807,7 +808,7 @@ msgstr "Gamma in uscita"
 msgid "Package Type (e.g. OV)"
 msgstr "Tipo di Package (es. OV)"
 
-#: src/wx/video_panel.cc:325
+#: src/wx/video_panel.cc:340
 #, c-format
 msgid "Padded with black to %dx%d (%.2f:1)\n"
 msgstr "Riempito con nero a %dx%d (%.2f:1)\n"
@@ -817,7 +818,7 @@ msgstr "Riempito con nero a %dx%d (%.2f:1)\n"
 msgid "Password"
 msgstr "Password del TMS"
 
-#: src/wx/job_manager_view.cc:73 src/wx/job_manager_view.cc:165
+#: src/wx/job_manager_view.cc:71 src/wx/job_manager_view.cc:160
 msgid "Pause"
 msgstr "Pausa"
 
@@ -902,7 +903,7 @@ msgstr ""
 msgid "Resolution"
 msgstr "Risoluzione"
 
-#: src/wx/job_manager_view.cc:168
+#: src/wx/job_manager_view.cc:163
 msgid "Resume"
 msgstr ""
 
@@ -926,7 +927,7 @@ msgstr ""
 msgid "Scale to"
 msgstr "Scala a"
 
-#: src/wx/video_panel.cc:316
+#: src/wx/video_panel.cc:331
 #, c-format
 msgid "Scaled to %dx%d (%.2f:1)\n"
 msgstr "Scalato a %dx%d (%.2f:1)\n"
@@ -1027,7 +1028,7 @@ msgstr "Lingua dei Sottotitoli (es. FR)"
 msgid "Subtitles"
 msgstr "Sottotitoli"
 
-#: src/wx/about_dialog.cc:166
+#: src/wx/about_dialog.cc:167
 msgid "Supported by"
 msgstr ""
 
@@ -1053,7 +1054,7 @@ msgstr "Nazione (es. UK)"
 msgid "Test version "
 msgstr "Versione di test"
 
-#: src/wx/about_dialog.cc:211
+#: src/wx/about_dialog.cc:212
 msgid "Tested by"
 msgstr ""
 

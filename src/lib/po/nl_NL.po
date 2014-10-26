@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-23 22:03+0100\n"
+"POT-Creation-Date: 2014-10-26 23:30+0000\n"
 "PO-Revision-Date: 2014-09-04 20:34+0100\n"
 "Last-Translator: Cherif Ben Brahim <firehc@mac.com>\n"
 "Language-Team: UniversalDV <Tkooijmans@universaldv.nl>\n"
@@ -34,7 +34,7 @@ msgstr "%1 kanalen, %2kHz, %3 samples"
 msgid "%1 frames; %2 frames per second"
 msgstr "%1 frames; %2 frames per seconde"
 
-#: src/lib/video_content.cc:211
+#: src/lib/video_content.cc:222
 msgid "%1x%2 pixels (%3:1)"
 msgstr "%1x%2 pixels (%3:1)"
 
@@ -90,7 +90,7 @@ msgstr "Bicubic"
 msgid "Bilinear"
 msgstr "Bilinear"
 
-#: src/lib/job.cc:322
+#: src/lib/job.cc:323
 msgid "Cancelled"
 msgstr "Afgebroken"
 
@@ -130,19 +130,19 @@ msgstr "Toegevoegde bestanden moeten dezelfde audio vertraging hebben."
 msgid "Content to be joined must have the same audio gain."
 msgstr "Toegevoegde bestanden moeten dezelfde audio gain hebben."
 
-#: src/lib/video_content.cc:146
+#: src/lib/video_content.cc:148
 msgid "Content to be joined must have the same colour conversion."
 msgstr "Toegevoegde bestanden moeten dezelfde kleurindeling hebben."
 
-#: src/lib/video_content.cc:138
+#: src/lib/video_content.cc:140
 msgid "Content to be joined must have the same crop."
 msgstr "Toegevoegde bestanden moeten dezelfde crop hebben."
 
-#: src/lib/video_content.cc:126
+#: src/lib/video_content.cc:128
 msgid "Content to be joined must have the same picture size."
 msgstr "Toegevoegde bestanden moeten dezelfde grootte hebben."
 
-#: src/lib/video_content.cc:142
+#: src/lib/video_content.cc:144
 msgid "Content to be joined must have the same scale setting."
 msgstr "Toegevoegde bestanden moeten dezelfde schaal hebben."
 
@@ -164,11 +164,11 @@ msgstr "Toegevoegde bestanden moeten dezelfde ondertitel Y offset hebben."
 msgid "Content to be joined must have the same subtitle Y scale."
 msgstr "Toegevoegde bestanden moeten dezelfde ondertitel grootte hebben."
 
-#: src/lib/video_content.cc:130
+#: src/lib/video_content.cc:132
 msgid "Content to be joined must have the same video frame rate."
 msgstr "Toegevoegde bestanden moeten dezelfde video frame rate hebben."
 
-#: src/lib/video_content.cc:134
+#: src/lib/video_content.cc:136
 msgid "Content to be joined must have the same video frame type."
 msgstr "Toegevoegde bestanden moeten dezelfde video formaat hebben."
 
@@ -299,7 +299,7 @@ msgstr "Email KDMs voor %1"
 msgid "Encoding image data"
 msgstr "Encoding bestandsdata"
 
-#: src/lib/job.cc:320
+#: src/lib/job.cc:321
 msgid "Error (%1)"
 msgstr "Fout (%1)"
 
@@ -407,7 +407,7 @@ msgstr "Geen geldige beeldbestanden gevonden in deze map."
 msgid "Noise reduction"
 msgstr "Ruis reductie"
 
-#: src/lib/job.cc:318
+#: src/lib/job.cc:319
 msgid "OK (ran for %1)"
 msgstr "OK (bezig.. %1)"
 
@@ -557,7 +557,7 @@ msgstr "Niet herkenbaar audio sample formaat (%1)"
 msgid "Unsharp mask and Gaussian blur"
 msgstr "Unsharp mask and Gaussian blur"
 
-#: src/lib/colour_conversion.cc:139
+#: src/lib/colour_conversion.cc:149
 msgid "Untitled"
 msgstr "Niet benoemd"
 
@@ -641,11 +641,11 @@ msgstr "kan audio bestand niet openen om te lezen"
 msgid "could not open file %1"
 msgstr "kan bestand niet openen %1"
 
-#: src/lib/dcp_video_frame.cc:331
+#: src/lib/dcp_video_frame.cc:338
 msgid "could not open file for reading"
 msgstr "kan bestand niet openen om te lezen"
 
-#: src/lib/dcp_video_frame.cc:337
+#: src/lib/dcp_video_frame.cc:344
 msgid "could not read encoded data"
 msgstr "kan encoded data niet lezen"
 
@@ -735,11 +735,11 @@ msgstr "non-bitmap ondertitels worden nog niet ondersteund"
 
 #. / TRANSLATORS: remaining here follows an amount of time that is remaining
 #. / on an operation.
-#: src/lib/job.cc:315
+#: src/lib/job.cc:316
 msgid "remaining"
 msgstr "resterend"
 
-#: src/lib/config.cc:84 src/lib/video_content.cc:179
+#: src/lib/config.cc:84 src/lib/video_content.cc:185
 msgid "sRGB"
 msgstr "sRGB"
 
