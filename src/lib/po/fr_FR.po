@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-23 22:03+0100\n"
-"PO-Revision-Date: 2014-07-14 12:04+0100\n"
+"PO-Revision-Date: 2014-10-26 21:20+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.6\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: src/lib/sndfile_content.cc:61
 msgid "%1 [audio]"
@@ -153,9 +153,9 @@ msgstr ""
 "titres"
 
 #: src/lib/subtitle_content.cc:89
-#, fuzzy
 msgid "Content to be joined must have the same subtitle X scale."
-msgstr "le contenu à ajouter doit avoir le même positionnement de sous-titre"
+msgstr ""
+"le contenu ajouté doit avoir le même positionnement horizontal de sous-titres"
 
 #: src/lib/subtitle_content.cc:85
 msgid "Content to be joined must have the same subtitle Y offset."
@@ -164,9 +164,9 @@ msgstr ""
 "titres"
 
 #: src/lib/subtitle_content.cc:93
-#, fuzzy
 msgid "Content to be joined must have the same subtitle Y scale."
-msgstr "le contenu à ajouter doit avoir le même positionnement de sous-titre"
+msgstr ""
+"le contenu ajouté doit avoir le même positionnement vertical de sous-titres"
 
 #: src/lib/video_content.cc:130
 msgid "Content to be joined must have the same video frame rate."
@@ -197,15 +197,16 @@ msgid "Could not create remote directory %1 (%2)"
 msgstr "Création du dossier distant %1 (%2) impossible"
 
 #: src/lib/image_proxy.cc:147
-#, fuzzy
 msgid "Could not decode image file (%1)"
-msgstr "Impossible de décoder le ficher image"
+msgstr "Impossible de décoder le ficher image  (%1)"
 
 #: src/lib/server_finder.cc:114
 msgid ""
 "Could not listen for remote encode servers.  Perhaps another instance of DCP-"
 "o-matic is running."
 msgstr ""
+"Ne trouve pas d'autres serveurs d'encodage. Une autre instance de DCP-o-"
+"matic est peut-être ouverte."
 
 #: src/lib/job.cc:90
 msgid "Could not open %1"
@@ -356,7 +357,7 @@ msgstr ""
 
 #: src/lib/config.cc:199
 msgid "KDM delivery: $CPL_NAME"
-msgstr ""
+msgstr "Livraison de KDM: $CPL_NAME"
 
 #: src/lib/filter.cc:66
 msgid "Kernel deinterlacer"
@@ -749,9 +750,8 @@ msgid "sRGB non-linearised"
 msgstr "sRGB non linéarisé"
 
 #: src/lib/util.cc:194
-#, fuzzy
 msgid "second"
-msgstr "secondes"
+msgstr "seconde"
 
 #: src/lib/util.cc:196
 msgid "seconds"

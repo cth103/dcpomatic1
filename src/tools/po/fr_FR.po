@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-23 22:03+0100\n"
-"PO-Revision-Date: 2014-07-14 10:43+0100\n"
+"PO-Revision-Date: 2014-10-26 21:23+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.6\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: src/tools/dcpomatic.cc:306
 msgid "%1 already exists as a file, so you cannot use it for a new film."
@@ -75,7 +75,7 @@ msgstr "&Quitter"
 
 #: src/tools/dcpomatic.cc:603
 msgid "&Save\tCtrl-S"
-msgstr ""
+msgstr "&Enregistrer\tCtrl-S"
 
 #: src/tools/dcpomatic.cc:633
 msgid "&Send DCP to TMS"

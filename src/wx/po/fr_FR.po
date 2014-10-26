@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-23 22:03+0100\n"
-"PO-Revision-Date: 2014-07-14 11:27+0100\n"
+"PO-Revision-Date: 2014-10-26 21:44+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.6\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: src/wx/subtitle_panel.cc:48 src/wx/subtitle_panel.cc:57
 #: src/wx/subtitle_panel.cc:66 src/wx/subtitle_panel.cc:75
@@ -109,6 +109,8 @@ msgstr "Ajout une salle"
 msgid ""
 "Add a directory of image files which will be used as a moving image sequence."
 msgstr ""
+"Ajouter un répertoire d'images fixes qui sera utilisé comme séquence à "
+"animer."
 
 #: src/wx/film_editor.cc:280
 msgid "Add file(s)..."
@@ -119,10 +121,12 @@ msgid ""
 "Add image\n"
 "sequence..."
 msgstr ""
+"Ajout séquence\n"
+"images"
 
 #: src/wx/film_editor.cc:281
 msgid "Add video, image or sound files to the film."
-msgstr ""
+msgstr "Ajouter des fichiers vidéo, image ou son au projet."
 
 #: src/wx/editable_list.h:62
 msgid "Add..."
@@ -135,6 +139,11 @@ msgid ""
 "frame.  You may prefer to set your DCP's container to Flat (1.85:1) in the "
 "\"DCP\" tab."
 msgstr ""
+"Tous vos contenus sont au format 1:85:1 ou moins larges mais le format image "
+"du DCP est réglé sur Scope (2:39:1). Des bandes noires verticales seront "
+"créées de part et d'autre de votre contenu pour remplir le format final. "
+"Vous pourriez préférer régler le format du DCP sur Flat (1:85:1) dans "
+"l'onglet \"DCP\" ."
 
 #: src/wx/hints_dialog.cc:96
 msgid ""
@@ -143,6 +152,11 @@ msgid ""
 "You may prefer to set your DCP's container to Scope (2.39:1) in the \"DCP\" "
 "tab."
 msgstr ""
+"Tous vos contenus sont au format Scope (2:39:1) mais le format image du DCP "
+"est réglé sur Flat (1:85:1). Des bandes noires horizontales seront créées au "
+"dessus et en dessous de votre contenu pour remplir le format final. Vous "
+"pourriez préférer régler le format du DCP sur Scope (2:39:1) dans l'onglet "
+"\"DCP\" ."
 
 #: src/wx/config_dialog.cc:799
 msgid "Allow any DCP frame rate"
@@ -181,14 +195,13 @@ msgstr ""
 "%.1fdB."
 
 #: src/wx/audio_panel.cc:248
-#, fuzzy, c-format
+#, c-format
 msgid "Audio will be resampled from %.3fkHz to %.3fkHz."
-msgstr "L'audio sera rééchantillonné de %dHz à %dHz."
+msgstr "Le son sera ré-échantillonné de %.3fkHz à %.3fkHz."
 
 #: src/wx/audio_panel.cc:253
-#, fuzzy
 msgid "Audio will not be resampled."
-msgstr "L'audio sera rééchantillonné de %dHz à %dHz."
+msgstr "L'audio ne sera pas ré-échantillonné."
 
 #: src/wx/config_dialog.cc:683
 #, fuzzy
@@ -334,7 +347,7 @@ msgstr "Le contenu vidéo est %dx%d (%.2f:1)\n"
 
 #: src/wx/editable_list.h:64
 msgid "Copy..."
-msgstr ""
+msgstr "Copier..."
 
 #: src/wx/audio_dialog.cc:151
 msgid "Could not analyse audio."
@@ -427,7 +440,7 @@ msgstr "Labo par défaut"
 
 #: src/wx/config_dialog.cc:274
 msgid "Default scale to"
-msgstr ""
+msgstr "Redimensionner par défaut en"
 
 #: src/wx/config_dialog.cc:235
 msgid "Defaults"
@@ -643,7 +656,7 @@ msgstr "e-mail KDM"
 
 #: src/wx/kdm_dialog.cc:162
 msgid "KDM type"
-msgstr ""
+msgstr "Type de KDM"
 
 #: src/wx/kdm_dialog.cc:99
 msgid "KDM|Timing"
@@ -683,7 +696,7 @@ msgstr "Rapport"
 
 #: src/wx/config_dialog.cc:804
 msgid "Log:"
-msgstr ""
+msgstr "Rapport:"
 
 #: src/wx/audio_mapping_view.cc:293
 msgid "Ls"
@@ -724,11 +737,11 @@ msgstr "Mbit/s"
 
 #: src/wx/film_editor.cc:293
 msgid "Move the selected piece of content earlier in the film."
-msgstr ""
+msgstr "Déplacer le contenu sélectionné plus tôt dans le film."
 
 #: src/wx/film_editor.cc:297
 msgid "Move the selected piece of content later in the film."
-msgstr ""
+msgstr "Déplacer le contenu sélectionné plus tard dans le film."
 
 #: src/wx/video_panel.cc:280
 msgid "Multiple content selected"
@@ -767,7 +780,7 @@ msgstr "Eteint"
 
 #: src/wx/film_editor.cc:301
 msgid "Open the timeline for the film."
-msgstr ""
+msgstr "Ouvrir la timeline pour le film."
 
 #: src/wx/screen_dialog.cc:65
 msgid "Other"
@@ -861,7 +874,7 @@ msgstr "Supprimer la salle"
 
 #: src/wx/film_editor.cc:289
 msgid "Remove the selected piece of content from the film."
-msgstr ""
+msgstr "Supprimer le contenu sélectionné du film."
 
 #: src/wx/repeat_dialog.cc:26
 msgid "Repeat"
@@ -994,7 +1007,7 @@ msgstr "Studio (ex. TCF)"
 
 #: src/wx/config_dialog.cc:671
 msgid "Subject"
-msgstr ""
+msgstr "Sujet"
 
 #: src/wx/isdcf_metadata_dialog.cc:38
 msgid "Subtitle Language (e.g. FR)"
@@ -1171,18 +1184,16 @@ msgid "X Offset"
 msgstr "Position horizontale"
 
 #: src/wx/subtitle_panel.cc:62
-#, fuzzy
 msgid "X Scale"
-msgstr "Mise à l'échelle"
+msgstr "Echelle horizontale"
 
 #: src/wx/subtitle_panel.cc:53
 msgid "Y Offset"
 msgstr "Position verticale"
 
 #: src/wx/subtitle_panel.cc:71
-#, fuzzy
 msgid "Y Scale"
-msgstr "Mise à l'échelle"
+msgstr "Échelle verticale"
 
 #: src/wx/hints_dialog.cc:121
 #, c-format
