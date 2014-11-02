@@ -1,5 +1,9 @@
 2014-11-02  Carl Hetherington  <cth@carlh.net>
 
+	* Version 1.76.8 released.
+
+2014-11-02  Carl Hetherington  <cth@carlh.net>
+
 	* Be more tolerant of some FFmpeg audio decoding errors;
 	should fix #352.
 
