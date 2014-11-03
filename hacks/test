@@ -1,0 +1,10 @@
+#!/bin/bash
+
+ref=$1
+compare=$2
+if [ "$ref" == "" -o "$compare" == "" ]; then
+  echo "Syntax: $0 <ref> <compare>"
+  exit 1
+fi
+
+crun add -- ccheck -p dcpomatic -r $1 -c $2 
