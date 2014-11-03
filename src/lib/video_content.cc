@@ -62,7 +62,7 @@ VideoContent::VideoContent (shared_ptr<const Film> f)
 	, _original_video_frame_rate (0)
 	, _video_frame_rate (0)
 	, _video_frame_type (VIDEO_FRAME_TYPE_2D)
-	, _scale (Config::instance()->default_scale ())
+	, _scale (VideoContentScale (Ratio::from_id ("178")))
 {
 	set_default_colour_conversion (false);
 }
@@ -73,7 +73,7 @@ VideoContent::VideoContent (shared_ptr<const Film> f, Time s, VideoContent::Fram
 	, _original_video_frame_rate (0)
 	, _video_frame_rate (0)
 	, _video_frame_type (VIDEO_FRAME_TYPE_2D)
-	, _scale (Config::instance()->default_scale ())
+	, _scale (VideoContentScale (Ratio::from_id ("178")))
 {
 	set_default_colour_conversion (false);
 }
@@ -84,7 +84,7 @@ VideoContent::VideoContent (shared_ptr<const Film> f, boost::filesystem::path p)
 	, _original_video_frame_rate (0)
 	, _video_frame_rate (0)
 	, _video_frame_type (VIDEO_FRAME_TYPE_2D)
-	, _scale (Config::instance()->default_scale ())
+	, _scale (VideoContentScale (Ratio::from_id ("178")))
 {
 	set_default_colour_conversion (false);
 }
@@ -98,6 +98,7 @@ VideoContent::VideoContent (shared_ptr<const Film> f, shared_ptr<const cxml::Nod
 	_video_frame_rate = node->number_child<float> ("VideoFrameRate");
 	_original_video_frame_rate = node->optional_number_child<float> ("OriginalVideoFrameRate").get_value_or (_video_frame_rate);
 	_video_frame_type = static_cast<VideoFrameType> (node->number_child<int> ("VideoFrameType"));
+	_sample_aspect_ratio = node->optional_number_child<float> ("SampleAspectRatio");
 	_crop.left = node->number_child<int> ("LeftCrop");
 	_crop.right = node->number_child<int> ("RightCrop");
 	_crop.top = node->number_child<int> ("TopCrop");
@@ -173,6 +174,9 @@ VideoContent::as_xml (xmlpp::Node* node) const
 	node->add_child("VideoFrameRate")->add_child_text (raw_convert<string> (_video_frame_rate));
 	node->add_child("OriginalVideoFrameRate")->add_child_text (raw_convert<string> (_original_video_frame_rate));
 	node->add_child("VideoFrameType")->add_child_text (raw_convert<string> (static_cast<int> (_video_frame_type)));
+	if (_sample_aspect_ratio) {
+		node->add_child("SampleAspectRatio")->add_child_text (raw_convert<string> (_sample_aspect_ratio.get ()));
+	}
 	_crop.as_xml (node);
 	_scale.as_xml (node->add_child("Scale"));
 	if (_colour_conversion) {
@@ -199,16 +203,24 @@ VideoContent::take_from_video_examiner (shared_ptr<VideoExaminer> d)
 	/* These examiner calls could call other content methods which take a lock on the mutex */
 	libdcp::Size const vs = d->video_size ();
 	float const vfr = d->video_frame_rate ();
-	
+	optional<float> const ar = d->sample_aspect_ratio ();
+
 	{
 		boost::mutex::scoped_lock lm (_mutex);
 		_video_size = vs;
 		_video_frame_rate = vfr;
 		_original_video_frame_rate = vfr;
+		_sample_aspect_ratio = ar;
+
+		/* Guess correct scale from size and sample aspect ratio */
+		_scale = VideoContentScale (
+			Ratio::nearest_from_ratio (float (_video_size.width) * ar.get_value_or (1) / _video_size.height)
+			);
 	}
 	
 	signal_changed (VideoContentProperty::VIDEO_SIZE);
 	signal_changed (VideoContentProperty::VIDEO_FRAME_RATE);
+	signal_changed (VideoContentProperty::VIDEO_SCALE);
 }
 
 
@@ -227,6 +239,10 @@ VideoContent::information () const
 		video_size().height,
 		setprecision (3), video_size().ratio ()
 		);
+
+	if (sample_aspect_ratio ()) {
+		s << String::compose (" sample aspect ratio %1:1", sample_aspect_ratio().get ());
+	}
 	
 	return s.str ();
 }
@@ -340,10 +356,16 @@ VideoContent::set_video_frame_type (VideoFrameType t)
 string
 VideoContent::technical_summary () const
 {
-	return String::compose (
+	string s = String::compose (
 		"video: length %1, size %2x%3, rate %4",
 		video_length_after_3d_combine(), video_size().width, video_size().height, video_frame_rate()
 		);
+
+	if (sample_aspect_ratio ()) {
+		s += String::compose (", sample aspect ratio %1", (sample_aspect_ratio().get ()));
+	}
+
+	return s;
 }
 
 libdcp::Size
