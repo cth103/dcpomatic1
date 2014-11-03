@@ -1,3 +1,7 @@
+2014-11-03  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.9 released.
+
 2014-10-31  Carl Hetherington  <cth@carlh.net>
 
 	* Fix for hangs at 99% when encoding
