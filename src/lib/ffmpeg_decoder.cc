@@ -145,8 +145,11 @@ FFmpegDecoder::flush ()
 	}
 
 	/* Stop us being asked for any more data */
-	_video_position = _ffmpeg_content->video_length_after_3d_combine ();
-	_audio_position = _ffmpeg_content->audio_length ();
+	Time const end = _ffmpeg_content->trim_start() + _ffmpeg_content->length_after_trim();
+	shared_ptr<const Film> film = _film.lock ();
+	assert (film);
+	_video_position = film->time_to_video_frames (end);
+	_audio_position = film->time_to_audio_frames (end);
 }
 
 void
@@ -578,8 +581,18 @@ FFmpegDecoder::setup_subtitle ()
 bool
 FFmpegDecoder::done () const
 {
-	bool const vd = !_decode_video || (_video_position >= _ffmpeg_content->video_length());
-	bool const ad = !_decode_audio || !_ffmpeg_content->audio_stream() || (_audio_position >= _ffmpeg_content->audio_length());
+	shared_ptr<const Film> film = _film.lock ();
+	assert (film);
+
+	Time const vp = film->video_frames_to_time (_video_position);
+	Time const ap = film->audio_frames_to_time (_audio_position);
+
+	bool const vd = !_decode_video ||
+		((vp - _ffmpeg_content->trim_start()) >= _ffmpeg_content->length_after_trim ());
+	
+	bool const ad = !_decode_audio || !_ffmpeg_content->audio_stream() ||
+		((ap - _ffmpeg_content->trim_start()) >= _ffmpeg_content->length_after_trim ());
+	
 	return vd && ad;
 }
 	
