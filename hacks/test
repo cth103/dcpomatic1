@@ -7,4 +7,4 @@ if [ "$ref" == "" -o "$compare" == "" ]; then
   exit 1
 fi
 
-crun add -- ccheck -p dcpomatic -r $1 -c $2 
+crun -s cs2-1 -e dcpomatic-test add -- ccheck -r $1 -c $2 compare
