@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-26 23:30+0000\n"
-"PO-Revision-Date: 2014-07-13 02:32+0100\n"
+"PO-Revision-Date: 2014-11-04 13:03+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: de\n"
@@ -154,9 +154,9 @@ msgstr ""
 "verwenden."
 
 #: src/lib/subtitle_content.cc:89
-#, fuzzy
 msgid "Content to be joined must have the same subtitle X scale."
-msgstr "Zu verbindende Inhalte müssen die gleiche Untertitelgröße verwenden."
+msgstr ""
+"Zu verbindende Inhalte müssen die gleiche horizontale Skalierung verwenden."
 
 #: src/lib/subtitle_content.cc:85
 msgid "Content to be joined must have the same subtitle Y offset."
@@ -165,9 +165,9 @@ msgstr ""
 "verwenden."
 
 #: src/lib/subtitle_content.cc:93
-#, fuzzy
 msgid "Content to be joined must have the same subtitle Y scale."
-msgstr "Zu verbindende Inhalte müssen die gleiche Untertitelgröße verwenden."
+msgstr ""
+"Zu verbindende Inhalte müssen die gleiche vertikale Skalierung verwenden."
 
 #: src/lib/video_content.cc:132
 msgid "Content to be joined must have the same video frame rate."
@@ -199,15 +199,16 @@ msgid "Could not create remote directory %1 (%2)"
 msgstr "Konnte entfernten Ordner %1 (%2) nicht erstellen."
 
 #: src/lib/image_proxy.cc:147
-#, fuzzy
 msgid "Could not decode image file (%1)"
-msgstr "Bilddatei konnte nicht dekodiert werden"
+msgstr "Bilddatei (%1) konnte nicht dekodiert werden"
 
 #: src/lib/server_finder.cc:114
 msgid ""
 "Could not listen for remote encode servers.  Perhaps another instance of DCP-"
 "o-matic is running."
 msgstr ""
+"Konnte keine Encoding Server finden. Ist das Programm vielleicht zweimal "
+"gestartet worden?"
 
 #: src/lib/job.cc:90
 msgid "Could not open %1"
@@ -755,7 +756,6 @@ msgid "sRGB non-linearised"
 msgstr "sRGB nicht linearisiert"
 
 #: src/lib/util.cc:194
-#, fuzzy
 msgid "second"
 msgstr "Sekunden"
 

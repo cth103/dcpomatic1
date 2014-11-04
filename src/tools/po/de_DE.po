@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-26 23:30+0000\n"
-"PO-Revision-Date: 2014-07-13 03:04+0100\n"
+"PO-Revision-Date: 2014-11-04 13:58+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: de\n"
@@ -53,17 +53,14 @@ msgid "&Jobs"
 msgstr "&Aufgaben"
 
 #: src/tools/dcpomatic.cc:631
-#, fuzzy
 msgid "&Make DCP\tCtrl-M"
 msgstr "&DCP erstellen\tCtrl-M"
 
 #: src/tools/dcpomatic.cc:601
-#, fuzzy
 msgid "&Open...\tCtrl-O"
 msgstr "&Öffnen...\tCtrl-O"
 
 #: src/tools/dcpomatic.cc:620 src/tools/dcpomatic.cc:623
-#, fuzzy
 msgid "&Preferences...\tCtrl-P"
 msgstr "&Einstellungen...\tCtrl-P"
 
@@ -77,7 +74,7 @@ msgstr "&Beenden"
 
 #: src/tools/dcpomatic.cc:603
 msgid "&Save\tCtrl-S"
-msgstr ""
+msgstr "&Speichern\tCtrl-S"
 
 #: src/tools/dcpomatic.cc:633
 msgid "&Send DCP to TMS"
@@ -100,13 +97,13 @@ msgid "Add Film..."
 msgstr "Projekt hinzufügen..."
 
 #: src/tools/dcpomatic.cc:821
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An exception occurred (%s).  Please report this problem to the DCP-o-matic "
 "author (carl@dcpomatic.com)."
 msgstr ""
-"Ein unbekannter Fehler ist aufgetreten. Bitte melden Sie dieses Problem an "
-"den Autor von DCP-o-matic (carl@dcpomatic.com)!"
+"Ein Fehler ((%s) ist aufgetreten. Bitte melden Sie dieses Problem an den "
+"Autor von DCP-o-matic (carl@dcpomatic.com)!"
 
 #: src/tools/dcpomatic.cc:418
 msgid "An unknown exception occurred."
