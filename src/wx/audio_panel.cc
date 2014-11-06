@@ -242,16 +242,7 @@ AudioPanel::setup_description ()
 		return;
 	}
 
-	shared_ptr<AudioContent> acs = ac.front ();
-	if (acs->content_audio_frame_rate() != acs->output_audio_frame_rate ()) {
-		_description->SetLabel (wxString::Format (
-						_("Audio will be resampled from %.3fkHz to %.3fkHz."),
-						acs->content_audio_frame_rate() / 1000.0,
-						acs->output_audio_frame_rate() / 1000.0
-						));
-	} else {
-		_description->SetLabel (_("Audio will not be resampled."));
-	}
+	_description->SetLabel (std_to_wx (ac.front()->processing_description ()));
 }
 
 void

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IT VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-06 10:45+0000\n"
+"POT-Creation-Date: 2014-11-06 11:17+0000\n"
 "PO-Revision-Date: 2014-02-03 10:46+0100\n"
 "Last-Translator: William Fanelli <william.f@impronte.com>\n"
 "Language-Team: \n"
@@ -43,7 +43,7 @@ msgstr ""
 msgid "1 / "
 msgstr ""
 
-#: src/wx/audio_panel.cc:273
+#: src/wx/audio_panel.cc:264
 msgid "1 channel"
 msgstr "1 canale"
 
@@ -186,16 +186,6 @@ msgid ""
 msgstr ""
 "L' audio sarà trasferito dal canale %d sorgente al canale %d DCP con "
 "guadagno di %.1fdB."
-
-#: src/wx/audio_panel.cc:248
-#, fuzzy, c-format
-msgid "Audio will be resampled from %.3fkHz to %.3fkHz."
-msgstr "L'Audio sarà ricampionato da %dHz a %dHz"
-
-#: src/wx/audio_panel.cc:253
-#, fuzzy
-msgid "Audio will not be resampled."
-msgstr "L'Audio sarà ricampionato da %dHz a %dHz."
 
 #: src/wx/config_dialog.cc:683
 #, fuzzy
@@ -605,7 +595,7 @@ msgstr ""
 msgid "Host name or IP address"
 msgstr "Nome dell'Host o indirizzo IP"
 
-#: src/wx/audio_panel.cc:277
+#: src/wx/audio_panel.cc:268
 msgid "Hz"
 msgstr "Hz"
 
@@ -1243,7 +1233,7 @@ msgstr ""
 msgid "audio"
 msgstr "Audio"
 
-#: src/wx/audio_panel.cc:275
+#: src/wx/audio_panel.cc:266
 msgid "channels"
 msgstr "canali"
 

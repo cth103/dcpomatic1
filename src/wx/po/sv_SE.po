@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-06 10:45+0000\n"
+"POT-Creation-Date: 2014-11-06 11:17+0000\n"
 "PO-Revision-Date: 2014-01-19 09:14+0100\n"
 "Last-Translator: Adam Klotblixt <adam.klotblixt@gmail.com>\n"
 "Language-Team: \n"
@@ -44,7 +44,7 @@ msgstr ""
 msgid "1 / "
 msgstr "1 / "
 
-#: src/wx/audio_panel.cc:273
+#: src/wx/audio_panel.cc:264
 msgid "1 channel"
 msgstr "1 kanal"
 
@@ -189,16 +189,6 @@ msgid ""
 msgstr ""
 "Audio kommer att överföras från innehållskanal %d till DCP-kanal %d med "
 "förstärkning %.1fdB."
-
-#: src/wx/audio_panel.cc:248
-#, fuzzy, c-format
-msgid "Audio will be resampled from %.3fkHz to %.3fkHz."
-msgstr "Audio kommer att samplas om från %dHz till %dHz."
-
-#: src/wx/audio_panel.cc:253
-#, fuzzy
-msgid "Audio will not be resampled."
-msgstr "Audio kommer att samplas om från %dHz till %dHz."
 
 #: src/wx/config_dialog.cc:683
 #, fuzzy
@@ -612,7 +602,7 @@ msgstr "Dator"
 msgid "Host name or IP address"
 msgstr "Datornamn eller IP-adress"
 
-#: src/wx/audio_panel.cc:277
+#: src/wx/audio_panel.cc:268
 msgid "Hz"
 msgstr "Hz"
 
@@ -1258,7 +1248,7 @@ msgstr ""
 msgid "audio"
 msgstr "audio"
 
-#: src/wx/audio_panel.cc:275
+#: src/wx/audio_panel.cc:266
 msgid "channels"
 msgstr "kanaler"
 
@@ -1291,6 +1281,14 @@ msgstr "tider"
 #: src/wx/timeline.cc:241
 msgid "video"
 msgstr "video"
+
+#, fuzzy
+#~ msgid "Audio will be resampled from %.3fkHz to %.3fkHz."
+#~ msgstr "Audio kommer att samplas om från %dHz till %dHz."
+
+#, fuzzy
+#~ msgid "Audio will not be resampled."
+#~ msgstr "Audio kommer att samplas om från %dHz till %dHz."
 
 #~ msgid "Add folder..."
 #~ msgstr "Lägg till folder..."

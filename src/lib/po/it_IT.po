@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IT VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-06 10:45+0000\n"
+"POT-Creation-Date: 2014-11-06 11:17+0000\n"
 "PO-Revision-Date: 2014-02-03 10:48+0100\n"
 "Last-Translator: William Fanelli <william.f@impronte.com>\n"
 "Language-Team: \n"
@@ -33,7 +33,7 @@ msgstr ""
 msgid "%1 frames; %2 frames per second"
 msgstr "%1 fotogrammi; %2 fotogrammi al secondo"
 
-#: src/lib/video_content.cc:222
+#: src/lib/video_content.cc:225
 msgid "%1x%2 pixels (%3:1)"
 msgstr ""
 
@@ -82,6 +82,14 @@ msgstr "Analizzo l'audio di %1"
 msgid "Area"
 msgstr "Area"
 
+#: src/lib/audio_content.cc:192
+msgid "Audio will be resampled from %1kHz to %2kHz."
+msgstr "L'Audio sarà ricampionato da %1kHz a %2kHz"
+
+#: src/lib/audio_content.cc:194
+msgid "Audio will not be resampled."
+msgstr ""
+
 #: src/lib/scaler.cc:62
 msgid "Bicubic"
 msgstr "Bicubica"
@@ -123,31 +131,31 @@ msgstr ""
 msgid "Content and DCP have the same rate.\n"
 msgstr "Il DCP e il sorgente hanno la stessa frequenza.\n"
 
-#: src/lib/video_content.cc:499
+#: src/lib/video_content.cc:506
 msgid "Content frame rate"
 msgstr ""
 
-#: src/lib/audio_content.cc:83
+#: src/lib/audio_content.cc:86
 msgid "Content to be joined must have the same audio delay."
 msgstr ""
 
-#: src/lib/audio_content.cc:79
+#: src/lib/audio_content.cc:82
 msgid "Content to be joined must have the same audio gain."
 msgstr ""
 
-#: src/lib/video_content.cc:148
+#: src/lib/video_content.cc:151
 msgid "Content to be joined must have the same colour conversion."
 msgstr ""
 
-#: src/lib/video_content.cc:140
+#: src/lib/video_content.cc:143
 msgid "Content to be joined must have the same crop."
 msgstr ""
 
-#: src/lib/video_content.cc:128
+#: src/lib/video_content.cc:131
 msgid "Content to be joined must have the same picture size."
 msgstr ""
 
-#: src/lib/video_content.cc:144
+#: src/lib/video_content.cc:147
 #, fuzzy
 msgid "Content to be joined must have the same scale setting."
 msgstr ""
@@ -175,11 +183,11 @@ msgid "Content to be joined must have the same subtitle Y scale."
 msgstr ""
 "Il contenuto da unire deve avere lo stesso spostamento Y dei sottotitoli."
 
-#: src/lib/video_content.cc:132
+#: src/lib/video_content.cc:135
 msgid "Content to be joined must have the same video frame rate."
 msgstr ""
 
-#: src/lib/video_content.cc:136
+#: src/lib/video_content.cc:139
 msgid "Content to be joined must have the same video frame type."
 msgstr ""
 
@@ -191,9 +199,8 @@ msgstr ""
 msgid "Content to be joined must use the same subtitle stream."
 msgstr ""
 
-#: src/lib/video_content.cc:460
-#, c-format
-msgid "Content video is %dx%d"
+#: src/lib/video_content.cc:464
+msgid "Content video is %1x%2"
 msgstr ""
 
 #: src/lib/scp_dcp_job.cc:111
@@ -240,9 +247,8 @@ msgstr "Non posso avviare la sessione SCP (%1)"
 msgid "Could not write to remote file (%1)"
 msgstr "Non posso scrivere il file remoto (%1)"
 
-#: src/lib/video_content.cc:471
-#, c-format
-msgid "Cropped to %dx%d"
+#: src/lib/video_content.cc:475
+msgid "Cropped to %1x%2"
 msgstr ""
 
 #: src/lib/frame_rate_change.cc:98
@@ -452,9 +458,8 @@ msgstr ""
 msgid "Overcomplete wavelet denoiser"
 msgstr "Overcomplete wavelet denoiser"
 
-#: src/lib/video_content.cc:493
-#, c-format
-msgid "Padded with black to %dx%d"
+#: src/lib/video_content.cc:499
+msgid "Padded with black to %1x%2"
 msgstr ""
 
 #: src/lib/dcp_content_type.cc:51
@@ -495,9 +500,8 @@ msgstr "Surround destro"
 msgid "SSH error (%1)"
 msgstr "Errore SSH (%1)"
 
-#: src/lib/video_content.cc:485
-#, c-format
-msgid "Scaled to %dx%d"
+#: src/lib/video_content.cc:490
+msgid "Scaled to %1x%2"
 msgstr ""
 
 #: src/lib/ratio.cc:41
@@ -779,7 +783,7 @@ msgstr "sottotitoli non-bitmap non ancora supportati"
 msgid "remaining"
 msgstr "restano"
 
-#: src/lib/config.cc:84 src/lib/video_content.cc:185
+#: src/lib/config.cc:84 src/lib/video_content.cc:188
 msgid "sRGB"
 msgstr "sRGB"
 

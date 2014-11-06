@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libdcpomatic-wx\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-06 10:45+0000\n"
+"POT-Creation-Date: 2014-11-06 11:17+0000\n"
 "PO-Revision-Date: 2014-04-20 12:06-0500\n"
 "Last-Translator: Manuel AC <manuel.acevedo@civantos.>\n"
 "Language-Team: Manuel AC <manuel.acevedo@civantos.com>\n"
@@ -44,7 +44,7 @@ msgstr ""
 msgid "1 / "
 msgstr "1 / "
 
-#: src/wx/audio_panel.cc:273
+#: src/wx/audio_panel.cc:264
 msgid "1 channel"
 msgstr "1 canal"
 
@@ -185,15 +185,6 @@ msgid ""
 "Audio will be passed from content channel %d to DCP channel %d with gain "
 "%.1fdB."
 msgstr "El audio del canal %d pasará al canal %d del DCP con ganancia %.1fdB."
-
-#: src/wx/audio_panel.cc:248
-#, c-format
-msgid "Audio will be resampled from %.3fkHz to %.3fkHz."
-msgstr ""
-
-#: src/wx/audio_panel.cc:253
-msgid "Audio will not be resampled."
-msgstr ""
 
 #: src/wx/config_dialog.cc:683
 #, fuzzy
@@ -598,7 +589,7 @@ msgstr "Host"
 msgid "Host name or IP address"
 msgstr "Nombre o dirección IP"
 
-#: src/wx/audio_panel.cc:277
+#: src/wx/audio_panel.cc:268
 msgid "Hz"
 msgstr "Hz"
 
@@ -1231,7 +1222,7 @@ msgstr ""
 msgid "audio"
 msgstr "audio"
 
-#: src/wx/audio_panel.cc:275
+#: src/wx/audio_panel.cc:266
 msgid "channels"
 msgstr "canales"
 

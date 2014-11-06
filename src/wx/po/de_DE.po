@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-06 10:45+0000\n"
+"POT-Creation-Date: 2014-11-06 11:17+0000\n"
 "PO-Revision-Date: 2014-11-04 14:33+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,7 +45,7 @@ msgstr "-6dB"
 msgid "1 / "
 msgstr "1/"
 
-#: src/wx/audio_panel.cc:273
+#: src/wx/audio_panel.cc:264
 msgid "1 channel"
 msgstr "1 Kanal"
 
@@ -203,15 +203,6 @@ msgid ""
 msgstr ""
 "Der Ton von Kanal %d wird wird an den DCP Kanal %d mit %.1fdB Pegel "
 "weitergegeben."
-
-#: src/wx/audio_panel.cc:248
-#, c-format
-msgid "Audio will be resampled from %.3fkHz to %.3fkHz."
-msgstr "Audio wird von %.3fkHz auf %.3fkHz angepasst."
-
-#: src/wx/audio_panel.cc:253
-msgid "Audio will not be resampled."
-msgstr "Audiospur muss nicht in der Abtastrate verändert werden."
 
 #: src/wx/config_dialog.cc:683
 msgid "BCC address"
@@ -610,7 +601,7 @@ msgstr "Host"
 msgid "Host name or IP address"
 msgstr "Host Name oder IP-Adresse"
 
-#: src/wx/audio_panel.cc:277
+#: src/wx/audio_panel.cc:268
 msgid "Hz"
 msgstr "Hz"
 
@@ -1230,7 +1221,7 @@ msgstr ""
 msgid "audio"
 msgstr "Ton"
 
-#: src/wx/audio_panel.cc:275
+#: src/wx/audio_panel.cc:266
 msgid "channels"
 msgstr "Kanäle"
 

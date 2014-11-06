@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-06 10:45+0000\n"
+"POT-Creation-Date: 2014-11-06 11:17+0000\n"
 "PO-Revision-Date: 2014-09-04 20:17+0100\n"
 "Last-Translator: Cherif Ben Brahim <firehc@mac.com>\n"
 "Language-Team: UniversalDV <TKooijmans@universaldv.nl>\n"
@@ -45,7 +45,7 @@ msgstr "-6dB"
 msgid "1 / "
 msgstr "1 / "
 
-#: src/wx/audio_panel.cc:273
+#: src/wx/audio_panel.cc:264
 msgid "1 channel"
 msgstr "1 channel"
 
@@ -195,15 +195,6 @@ msgid ""
 msgstr ""
 "Audio wordt doorgestuurd van content kanaal %d naar DCP kanaal %d met gain "
 "%1fdB."
-
-#: src/wx/audio_panel.cc:248
-#, c-format
-msgid "Audio will be resampled from %.3fkHz to %.3fkHz."
-msgstr ""
-
-#: src/wx/audio_panel.cc:253
-msgid "Audio will not be resampled."
-msgstr ""
 
 #: src/wx/config_dialog.cc:683
 msgid "BCC address"
@@ -600,7 +591,7 @@ msgstr "Host"
 msgid "Host name or IP address"
 msgstr "Host naam of IP address"
 
-#: src/wx/audio_panel.cc:277
+#: src/wx/audio_panel.cc:268
 msgid "Hz"
 msgstr "Hz"
 
@@ -1224,7 +1215,7 @@ msgstr ""
 msgid "audio"
 msgstr "audio"
 
-#: src/wx/audio_panel.cc:275
+#: src/wx/audio_panel.cc:266
 msgid "channels"
 msgstr "kanalen"
 

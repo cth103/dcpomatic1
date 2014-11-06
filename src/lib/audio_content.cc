@@ -32,6 +32,9 @@
 using std::string;
 using std::cout;
 using std::vector;
+using std::fixed;
+using std::setprecision;
+using std::stringstream;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
 using libdcp::raw_convert;
@@ -173,5 +176,24 @@ AudioContent::output_audio_frame_rate () const
 	}
 
 	return rint (t);
+}
+
+string
+AudioContent::processing_description () const
+{
+	stringstream d;
+	
+	if (content_audio_frame_rate() != output_audio_frame_rate ()) {
+		stringstream from;
+		from << fixed << setprecision(3) << (content_audio_frame_rate() / 1000.0);
+		stringstream to;
+		to << fixed << setprecision(3) << (output_audio_frame_rate() / 1000.0);
+
+		d << String::compose (_("Audio will be resampled from %1kHz to %2kHz."), from.str(), to.str());
+	} else {
+		d << _("Audio will not be resampled.");
+	}
+
+	return d.str ();
 }
 
