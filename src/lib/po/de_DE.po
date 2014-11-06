@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-26 23:30+0000\n"
+"POT-Creation-Date: 2014-11-06 10:45+0000\n"
 "PO-Revision-Date: 2014-11-04 13:03+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -122,6 +122,10 @@ msgstr "Bildübersicht berechnen"
 msgid "Content and DCP have the same rate.\n"
 msgstr "Quelle und DCP haben dieselbe Bildrate. Gut ;-)\n"
 
+#: src/lib/video_content.cc:499
+msgid "Content frame rate"
+msgstr "Inhalt Bildrate"
+
 #: src/lib/audio_content.cc:83
 msgid "Content to be joined must have the same audio delay."
 msgstr "Zu verbindende Inhalte müssen die gleiche Tonverzögerung verwenden."
@@ -186,6 +190,11 @@ msgstr ""
 msgid "Content to be joined must use the same subtitle stream."
 msgstr "Zu verbindende Inhalte müssen die gleiche Untertitelspur verwenden."
 
+#: src/lib/video_content.cc:460
+#, c-format
+msgid "Content video is %dx%d"
+msgstr "Inhalt Video ist %dx%d"
+
 #: src/lib/scp_dcp_job.cc:111
 msgid "Copy DCP to TMS"
 msgstr "DCP zu TMS übertragen"
@@ -229,6 +238,11 @@ msgstr "SCP Session (%1) konnte nicht gestartet werden"
 #: src/lib/scp_dcp_job.cc:191
 msgid "Could not write to remote file (%1)"
 msgstr "Entfernte Datei (%1) konnte nicht gespeichert werden"
+
+#: src/lib/video_content.cc:471
+#, c-format
+msgid "Cropped to %dx%d"
+msgstr "Beschnitten zu %dx%d"
 
 #: src/lib/frame_rate_change.cc:98
 msgid "DCP will run at %1%% of the content speed.\n"
@@ -438,6 +452,11 @@ msgstr "Zuwenig Speicher"
 msgid "Overcomplete wavelet denoiser"
 msgstr "Überbestimmte Wavelet Entrauschung"
 
+#: src/lib/video_content.cc:493
+#, c-format
+msgid "Padded with black to %dx%d"
+msgstr "Mit Schwarz gefüllt auf %dx%d"
+
 #: src/lib/dcp_content_type.cc:51
 msgid "Policy"
 msgstr "Vorschrift"
@@ -473,6 +492,11 @@ msgstr "Surround rechts"
 #: src/lib/scp_dcp_job.cc:135
 msgid "SSH error (%1)"
 msgstr "SSH Fehler (%1)"
+
+#: src/lib/video_content.cc:485
+#, c-format
+msgid "Scaled to %dx%d"
+msgstr "Skaliert auf %dx%d"
 
 #: src/lib/ratio.cc:41
 msgid "Scope"
@@ -557,7 +581,7 @@ msgstr "Ungültiges Bildformat vom Server erhalten"
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
-#: src/lib/ffmpeg_decoder.cc:293
+#: src/lib/ffmpeg_decoder.cc:297
 msgid "Unrecognised audio sample format (%1)"
 msgstr "Ton Sample Format (%1) nicht erkannt."
 
@@ -729,7 +753,7 @@ msgstr "Benötigte Einstellung %1 fehlt"
 msgid "moving"
 msgstr "wird verschoben"
 
-#: src/lib/ffmpeg_decoder.cc:589
+#: src/lib/ffmpeg_decoder.cc:615
 msgid "multi-part subtitles not yet supported"
 msgstr "Mehr-Segment Untertitel werden noch nicht unterstützt"
 
@@ -737,7 +761,7 @@ msgstr "Mehr-Segment Untertitel werden noch nicht unterstützt"
 msgid "name"
 msgstr "Name"
 
-#: src/lib/ffmpeg_decoder.cc:604
+#: src/lib/ffmpeg_decoder.cc:630
 msgid "non-bitmap subtitles not yet supported"
 msgstr "Nur Bitmap Untertitel werden unterstützt"
 

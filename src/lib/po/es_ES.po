@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LIBDCPOMATIC\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-26 23:30+0000\n"
+"POT-Creation-Date: 2014-11-06 10:45+0000\n"
 "PO-Revision-Date: 2014-04-20 10:12-0500\n"
 "Last-Translator: Manuel AC <manuel.acevedo@civantos.>\n"
 "Language-Team: Manuel AC <manuel.acevedo@civantos.com>\n"
@@ -121,6 +121,10 @@ msgstr "Calculando la firma resumen de imagen"
 msgid "Content and DCP have the same rate.\n"
 msgstr "La fuente y el DCP tienen la misma velocidad.\n"
 
+#: src/lib/video_content.cc:499
+msgid "Content frame rate"
+msgstr "Velocidad del contenido"
+
 #: src/lib/audio_content.cc:83
 msgid "Content to be joined must have the same audio delay."
 msgstr "Para unir contenido debe tener el mismo retardo de audio."
@@ -181,6 +185,11 @@ msgstr "Para unir contenido debe usar el mismo tipo de audio."
 msgid "Content to be joined must use the same subtitle stream."
 msgstr "Para unir contenido debe tener el mismo tipo de subtítulos."
 
+#: src/lib/video_content.cc:460
+#, c-format
+msgid "Content video is %dx%d"
+msgstr "El video es %dx%d"
+
 #: src/lib/scp_dcp_job.cc:111
 msgid "Copy DCP to TMS"
 msgstr "Copiar DCP al TMS"
@@ -223,6 +232,11 @@ msgstr "No se pudo iniciar la sesión SCP (%1)"
 #: src/lib/scp_dcp_job.cc:191
 msgid "Could not write to remote file (%1)"
 msgstr "No se pudo escribir el fichero remoto (%1)"
+
+#: src/lib/video_content.cc:471
+#, c-format
+msgid "Cropped to %dx%d"
+msgstr "Recortado a %dx%d"
 
 #: src/lib/frame_rate_change.cc:98
 msgid "DCP will run at %1%% of the content speed.\n"
@@ -427,6 +441,11 @@ msgstr "Falta de memoria"
 msgid "Overcomplete wavelet denoiser"
 msgstr "Overcomplete wavelet denoiser"
 
+#: src/lib/video_content.cc:493
+#, c-format
+msgid "Padded with black to %dx%d"
+msgstr "Completado con negro hasta %dx%d"
+
 #: src/lib/dcp_content_type.cc:51
 msgid "Policy"
 msgstr "Policy"
@@ -462,6 +481,11 @@ msgstr "Surround derecha"
 #: src/lib/scp_dcp_job.cc:135
 msgid "SSH error (%1)"
 msgstr "error SSH (%1)"
+
+#: src/lib/video_content.cc:485
+#, c-format
+msgid "Scaled to %dx%d"
+msgstr "Redimensionado a %dx%d"
 
 #: src/lib/ratio.cc:41
 msgid "Scope"
@@ -546,7 +570,7 @@ msgstr ""
 msgid "Unknown error"
 msgstr "Error desconocido"
 
-#: src/lib/ffmpeg_decoder.cc:293
+#: src/lib/ffmpeg_decoder.cc:297
 msgid "Unrecognised audio sample format (%1)"
 msgstr "Formato de audio desconocido (%1)"
 
@@ -718,7 +742,7 @@ msgstr "falta una configuración obligatoria %1"
 msgid "moving"
 msgstr "moviendo"
 
-#: src/lib/ffmpeg_decoder.cc:589
+#: src/lib/ffmpeg_decoder.cc:615
 msgid "multi-part subtitles not yet supported"
 msgstr "todavía no se soportan subtítulos en múltiples partes"
 
@@ -726,7 +750,7 @@ msgstr "todavía no se soportan subtítulos en múltiples partes"
 msgid "name"
 msgstr "nombre"
 
-#: src/lib/ffmpeg_decoder.cc:604
+#: src/lib/ffmpeg_decoder.cc:630
 msgid "non-bitmap subtitles not yet supported"
 msgstr "todavía no se soportan subtítulos que no son en mapas de bits"
 

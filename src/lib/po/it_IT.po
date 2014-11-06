@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IT VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-26 23:30+0000\n"
+"POT-Creation-Date: 2014-11-06 10:45+0000\n"
 "PO-Revision-Date: 2014-02-03 10:48+0100\n"
 "Last-Translator: William Fanelli <william.f@impronte.com>\n"
 "Language-Team: \n"
@@ -123,6 +123,10 @@ msgstr ""
 msgid "Content and DCP have the same rate.\n"
 msgstr "Il DCP e il sorgente hanno la stessa frequenza.\n"
 
+#: src/lib/video_content.cc:499
+msgid "Content frame rate"
+msgstr ""
+
 #: src/lib/audio_content.cc:83
 msgid "Content to be joined must have the same audio delay."
 msgstr ""
@@ -187,6 +191,11 @@ msgstr ""
 msgid "Content to be joined must use the same subtitle stream."
 msgstr ""
 
+#: src/lib/video_content.cc:460
+#, c-format
+msgid "Content video is %dx%d"
+msgstr ""
+
 #: src/lib/scp_dcp_job.cc:111
 msgid "Copy DCP to TMS"
 msgstr "Copia del DCP al TMS"
@@ -230,6 +239,11 @@ msgstr "Non posso avviare la sessione SCP (%1)"
 #: src/lib/scp_dcp_job.cc:191
 msgid "Could not write to remote file (%1)"
 msgstr "Non posso scrivere il file remoto (%1)"
+
+#: src/lib/video_content.cc:471
+#, c-format
+msgid "Cropped to %dx%d"
+msgstr ""
 
 #: src/lib/frame_rate_change.cc:98
 #, fuzzy
@@ -438,6 +452,11 @@ msgstr ""
 msgid "Overcomplete wavelet denoiser"
 msgstr "Overcomplete wavelet denoiser"
 
+#: src/lib/video_content.cc:493
+#, c-format
+msgid "Padded with black to %dx%d"
+msgstr ""
+
 #: src/lib/dcp_content_type.cc:51
 msgid "Policy"
 msgstr "Politica"
@@ -475,6 +494,11 @@ msgstr "Surround destro"
 #: src/lib/scp_dcp_job.cc:135
 msgid "SSH error (%1)"
 msgstr "Errore SSH (%1)"
+
+#: src/lib/video_content.cc:485
+#, c-format
+msgid "Scaled to %dx%d"
+msgstr ""
 
 #: src/lib/ratio.cc:41
 msgid "Scope"
@@ -562,7 +586,7 @@ msgstr ""
 msgid "Unknown error"
 msgstr "Errore sconosciuto"
 
-#: src/lib/ffmpeg_decoder.cc:293
+#: src/lib/ffmpeg_decoder.cc:297
 msgid "Unrecognised audio sample format (%1)"
 msgstr "Formato di campionamento audio non riconosciuto (%1)"
 
@@ -737,7 +761,7 @@ msgstr "persa la regolazione richiesta %1"
 msgid "moving"
 msgstr ""
 
-#: src/lib/ffmpeg_decoder.cc:589
+#: src/lib/ffmpeg_decoder.cc:615
 msgid "multi-part subtitles not yet supported"
 msgstr "sottotitoli multi-part non ancora supportati"
 
@@ -745,7 +769,7 @@ msgstr "sottotitoli multi-part non ancora supportati"
 msgid "name"
 msgstr "nome"
 
-#: src/lib/ffmpeg_decoder.cc:604
+#: src/lib/ffmpeg_decoder.cc:630
 msgid "non-bitmap subtitles not yet supported"
 msgstr "sottotitoli non-bitmap non ancora supportati"
 

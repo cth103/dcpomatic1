@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-26 23:30+0000\n"
+"POT-Creation-Date: 2014-11-06 10:45+0000\n"
 "PO-Revision-Date: 2014-01-19 08:59+0100\n"
 "Last-Translator: Adam Klotblixt <adam.klotblixt@gmail.com>\n"
 "Language-Team: \n"
@@ -121,6 +121,10 @@ msgstr "Beräknar bildsammanfattning"
 msgid "Content and DCP have the same rate.\n"
 msgstr "Källa och DCP har samma bildfrekvens.\n"
 
+#: src/lib/video_content.cc:499
+msgid "Content frame rate"
+msgstr "Innehållets bildhastighet"
+
 #: src/lib/audio_content.cc:83
 msgid "Content to be joined must have the same audio delay."
 msgstr "Innehåll som ska sammanfogas måste använda samma audiofördröjning."
@@ -184,6 +188,11 @@ msgstr "Innehåll som ska sammanfogas måste använda samma audioström."
 msgid "Content to be joined must use the same subtitle stream."
 msgstr "Innehåll som ska sammanfogas måste använda samma undertextström."
 
+#: src/lib/video_content.cc:460
+#, c-format
+msgid "Content video is %dx%d"
+msgstr "Original-videon är %dx%d"
+
 #: src/lib/scp_dcp_job.cc:111
 msgid "Copy DCP to TMS"
 msgstr "Kopiera DCP till TMS"
@@ -227,6 +236,11 @@ msgstr "Kunde inte starta SCP-session (%1)"
 #: src/lib/scp_dcp_job.cc:191
 msgid "Could not write to remote file (%1)"
 msgstr "Kunde inte skriva till fjärrfil (%1)"
+
+#: src/lib/video_content.cc:471
+#, c-format
+msgid "Cropped to %dx%d"
+msgstr "Beskuren till %dx%d"
 
 #: src/lib/frame_rate_change.cc:98
 msgid "DCP will run at %1%% of the content speed.\n"
@@ -433,6 +447,11 @@ msgstr ""
 msgid "Overcomplete wavelet denoiser"
 msgstr "Överkomplett wavelet-brusreducering"
 
+#: src/lib/video_content.cc:493
+#, c-format
+msgid "Padded with black to %dx%d"
+msgstr "Svarta kanter tillagda för %dx%d"
+
 #: src/lib/dcp_content_type.cc:51
 msgid "Policy"
 msgstr "Policy"
@@ -469,6 +488,11 @@ msgstr "Höger surround"
 #: src/lib/scp_dcp_job.cc:135
 msgid "SSH error (%1)"
 msgstr "SSH fel (%1)"
+
+#: src/lib/video_content.cc:485
+#, c-format
+msgid "Scaled to %dx%d"
+msgstr "Skalad till %dx%d"
 
 #: src/lib/ratio.cc:41
 msgid "Scope"
@@ -555,7 +579,7 @@ msgid "Unknown error"
 msgstr "Okänt fel"
 
 # Svengelska
-#: src/lib/ffmpeg_decoder.cc:293
+#: src/lib/ffmpeg_decoder.cc:297
 msgid "Unrecognised audio sample format (%1)"
 msgstr "Okänt audio-sampelformat (%1)"
 
@@ -731,7 +755,7 @@ msgstr "saknad nödvändig inställning %1"
 msgid "moving"
 msgstr "rörlig"
 
-#: src/lib/ffmpeg_decoder.cc:589
+#: src/lib/ffmpeg_decoder.cc:615
 msgid "multi-part subtitles not yet supported"
 msgstr "undertexter i flera delar stöds inte ännu"
 
@@ -739,7 +763,7 @@ msgstr "undertexter i flera delar stöds inte ännu"
 msgid "name"
 msgstr "namn"
 
-#: src/lib/ffmpeg_decoder.cc:604
+#: src/lib/ffmpeg_decoder.cc:630
 msgid "non-bitmap subtitles not yet supported"
 msgstr "icke-rastergrafiska undertexter stöds inte ännu"
 

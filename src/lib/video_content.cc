@@ -48,6 +48,9 @@ using std::cout;
 using std::vector;
 using std::min;
 using std::max;
+using std::fixed;
+using std::stringstream;
+using std::scientific;
 using boost::shared_ptr;
 using boost::optional;
 using boost::dynamic_pointer_cast;
@@ -450,3 +453,61 @@ VideoContent::set_video_frame_rate (float r)
 	signal_changed (VideoContentProperty::VIDEO_FRAME_RATE);
 }
 
+string
+VideoContent::processing_description () const
+{
+	/* stringstream is OK here as this string is just for presentation to the user */
+	stringstream d;
+
+	if (video_size().width && video_size().height) {
+		d << String::compose (
+			_("Content video is %1x%2"),
+			video_size_after_3d_split().width,
+			video_size_after_3d_split().height
+			);
+
+		d << " (" << fixed << setprecision(2) << video_size_after_3d_split().ratio() << ":1)\n";
+	}
+
+	if ((crop().left || crop().right || crop().top || crop().bottom) && video_size() != libdcp::Size (0, 0)) {
+		libdcp::Size cropped = video_size_after_crop ();
+		d << String::compose (
+			_("Cropped to %1x%2"),
+			cropped.width, cropped.height
+			);
+
+		d << " (" << fixed << setprecision(2) << cropped.ratio () << ":1)\n";
+	}
+
+	shared_ptr<const Film> film = _film.lock ();
+	assert (film);
+
+	libdcp::Size const container_size = film->frame_size ();
+	libdcp::Size const scaled = scale().size (dynamic_pointer_cast<const VideoContent> (shared_from_this ()), container_size, container_size);
+
+	if (scaled != video_size_after_crop ()) {
+		d << String::compose (
+			_("Scaled to %1x%2"),
+			scaled.width, scaled.height
+			);
+
+		d << " (" << fixed << setprecision(2) << scaled.ratio() << ":1)\n";
+	}
+	
+	if (scaled != container_size) {
+		d << String::compose (
+			_("Padded with black to %1x%2"),
+			container_size.width, container_size.height
+			);
+
+		d << " (" << fixed << setprecision(2) << container_size.ratio () << ":1)\n";
+	}
+
+	d << _("Content frame rate");
+	d << " " << fixed << setprecision(4) << video_frame_rate() << "\n";
+	
+	FrameRateChange frc (video_frame_rate(), film->video_frame_rate ());
+	d << frc.description () << "\n";
+
+	return d.str ();
+}

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libdcpomatic-wx\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-26 23:30+0000\n"
+"POT-Creation-Date: 2014-11-06 10:45+0000\n"
 "PO-Revision-Date: 2014-04-20 12:06-0500\n"
 "Last-Translator: Manuel AC <manuel.acevedo@civantos.>\n"
 "Language-Team: Manuel AC <manuel.acevedo@civantos.com>\n"
@@ -90,6 +90,13 @@ msgstr "3D arriba/abajo"
 msgid "4K"
 msgstr "4K"
 
+#: src/wx/hints_dialog.cc:119
+msgid ""
+"A few projectors have problems playing back very high bit-rate DCPs.  It is "
+"a good idea to drop the JPEG2000 bandwidth down to about 200Mbit/s; this is "
+"unlikely to have any visible effect on the image."
+msgstr ""
+
 #: src/wx/update_dialog.cc:34
 msgid "A new version of DCP-o-matic is available."
 msgstr "Una nueva versión de DCP-o-matic está disponible."
@@ -129,7 +136,7 @@ msgstr ""
 msgid "Add..."
 msgstr "Añadir..."
 
-#: src/wx/hints_dialog.cc:102
+#: src/wx/hints_dialog.cc:107
 msgid ""
 "All of your content is at 1.85:1 or narrower but your DCP's container is "
 "Scope (2.39:1).  This will pillar-box your content inside a Flat (1.85:1) "
@@ -137,7 +144,7 @@ msgid ""
 "\"DCP\" tab."
 msgstr ""
 
-#: src/wx/hints_dialog.cc:96
+#: src/wx/hints_dialog.cc:101
 msgid ""
 "All of your content is in Scope (2.39:1) but your DCP's container is Flat "
 "(1.85:1).  This will letter-box your content inside a Flat (1.85:1) frame.  "
@@ -281,11 +288,11 @@ msgstr "Buscar actualizaciones al iniciar"
 msgid "Choose a file"
 msgstr "Elige un fichero"
 
-#: src/wx/film_editor.cc:815
+#: src/wx/film_editor.cc:825
 msgid "Choose a file or files"
 msgstr "Elegir un fichero o ficheros"
 
-#: src/wx/content_menu.cc:175 src/wx/film_editor.cc:838
+#: src/wx/content_menu.cc:175 src/wx/film_editor.cc:848
 msgid "Choose a folder"
 msgstr "Elige una carpeta"
 
@@ -319,19 +326,9 @@ msgstr "Contenido"
 msgid "Content Type"
 msgstr "Tipo de contenido"
 
-#: src/wx/video_panel.cc:347
-#, c-format
-msgid "Content frame rate %.4f\n"
-msgstr "Velocidad del contenido %.4f\n"
-
 #: src/wx/isdcf_metadata_dialog.cc:32
 msgid "Content version"
 msgstr "Versión del contenido"
-
-#: src/wx/video_panel.cc:307
-#, c-format
-msgid "Content video is %dx%d (%.2f:1)\n"
-msgstr "El video es %dx%d (%.2f:1)\n"
 
 #: src/wx/editable_list.h:64
 msgid "Copy..."
@@ -363,11 +360,6 @@ msgstr "País"
 #: src/wx/new_film_dialog.cc:40
 msgid "Create in folder"
 msgstr "Crear en carpeta"
-
-#: src/wx/video_panel.cc:319
-#, c-format
-msgid "Cropped to %dx%d (%.2f:1)\n"
-msgstr "Recortado a %dx%d (%.2f:1)\n"
 
 #: src/wx/video_panel.cc:250
 msgid "Custom"
@@ -696,7 +688,7 @@ msgstr ""
 msgid "Ls"
 msgstr "Ls"
 
-#: src/wx/film_editor.cc:789
+#: src/wx/film_editor.cc:799
 msgid "MISSING: "
 msgstr "FALTA:"
 
@@ -797,11 +789,6 @@ msgstr "Gamma de salida"
 #: src/wx/isdcf_metadata_dialog.cc:53
 msgid "Package Type (e.g. OV)"
 msgstr "Tipo de paquete (ej. OV)"
-
-#: src/wx/video_panel.cc:340
-#, c-format
-msgid "Padded with black to %dx%d (%.2f:1)\n"
-msgstr "Completado con negro hasta %dx%d (%.2f:1)\n"
 
 #: src/wx/config_dialog.cc:572
 msgid "Password"
@@ -915,11 +902,6 @@ msgstr "SMPTE"
 #: src/wx/video_panel.cc:132
 msgid "Scale to"
 msgstr "Redimensionar a"
-
-#: src/wx/video_panel.cc:331
-#, c-format
-msgid "Scaled to %dx%d (%.2f:1)\n"
-msgstr "Redimensionado a %dx%d (%.2f:1)\n"
 
 #: src/wx/film_editor.cc:195
 msgid "Scaler"
@@ -1055,7 +1037,7 @@ msgstr ""
 "El fichero(s) especificados no es el mismo que el ausente. Puedes probar de "
 "nuevo con el fichero correcto o eliminar el contenido ausente."
 
-#: src/wx/hints_dialog.cc:128
+#: src/wx/hints_dialog.cc:139
 msgid "There are no hints: everything looks good!"
 msgstr "No hay recomendaciones: ¡todo parece bien!"
 
@@ -1201,7 +1183,7 @@ msgstr "Desplazamiento en Y"
 msgid "Y Scale"
 msgstr "Escalador"
 
-#: src/wx/hints_dialog.cc:121
+#: src/wx/hints_dialog.cc:132
 #, c-format
 msgid ""
 "You have %d files that look like they are VOB files from DVD. You should "
@@ -1210,7 +1192,7 @@ msgstr ""
 "Hay %d ficheros que parecen VOBs en el DVD. Deberías unirlos para asegurarte "
 "transiciones suaves."
 
-#: src/wx/hints_dialog.cc:108
+#: src/wx/hints_dialog.cc:113
 #, c-format
 msgid ""
 "Your DCP frame rate (%d fps) may cause problems in a few (mostly older) "
@@ -1235,6 +1217,15 @@ msgid ""
 msgstr ""
 "Tu DCP tiene menos de 6 canales de audio. Esto puede causar problemas con "
 "algunos proyectores."
+
+#: src/wx/hints_dialog.cc:80
+#, fuzzy
+msgid ""
+"Your DCP has no audio channels.  This is likely to cause problems on "
+"playback."
+msgstr ""
+"Tu DCP tiene un número impar de canales de audio. Es muy probable que cause "
+"problemas de reproducción."
 
 #: src/wx/timeline.cc:220
 msgid "audio"
