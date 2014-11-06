@@ -718,7 +718,17 @@ FilmEditor::use_isdcf_name_changed ()
 {
 	bool const i = _film->use_isdcf_name ();
 
-	if (!i) {
+	if (i) {
+		/* We just chose to use the ISDCF name.  The user has probably unticked and re-ticked the box,
+		   so it's fairly likey that the film's name will now be a full ISDCF one.  Based on this guess,
+		   remove anything after the first _ in the film's name here.
+		*/
+		string const n = _film->name ();
+		if (n.find ("_") != string::npos) {
+			_film->set_name (n.substr (0, n.find ("_")));
+		}
+	} else {
+		/* Otherwise set the name to the full ISDCF name */
 		_film->set_name (_film->isdcf_name (true));
 	}
 
