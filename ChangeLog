@@ -1,5 +1,9 @@
 2014-11-07  Carl Hetherington  <cth@carlh.net>
 
+	* Version 1.76.11 released.
+
+2014-11-07  Carl Hetherington  <cth@carlh.net>
+
 	* Guess initial scale from the size of video
 	content images, taking pixel aspect ratio into
 	account where possible.
