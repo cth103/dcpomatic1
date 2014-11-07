@@ -120,6 +120,9 @@
 
 2014-11-07  Carl Hetherington  <cth@carlh.net>
 
+	* Speculative fix for hidden content appearing
+	(from timestamps before 0) (#418).
+
 	* Guess initial scale from the size of video
 	content images, taking pixel aspect ratio into
 	account where possible.
