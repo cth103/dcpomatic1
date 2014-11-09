@@ -83,6 +83,7 @@ extern int get_optional_int (std::multimap<std::string, std::string> const & kv,
 extern std::string get_optional_string (std::multimap<std::string, std::string> const & kv, std::string k);
 extern void* wrapped_av_malloc (size_t);
 extern int64_t divide_with_round (int64_t a, int64_t b);
+extern void set_backtrace_file (boost::filesystem::path);
 
 /** @class Socket
  *  @brief A class to wrap a boost::asio::ip::tcp::socket with some things
