@@ -1,5 +1,9 @@
 2014-11-09  Carl Hetherington  <cth@carlh.net>
 
+	* Version 1.76.12 released.
+
+2014-11-09  Carl Hetherington  <cth@carlh.net>
+
 	* Remove code which tried to load old DVD-o-matic
 	configuration files if they were present.  It is
 	not well tested and is unlikely to be of much use
