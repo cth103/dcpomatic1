@@ -399,9 +399,8 @@ public:
 
 private:
 	Config ();
-	boost::filesystem::path file (bool) const;
+	boost::filesystem::path file () const;
 	void read ();
-	void read_old_metadata ();
 	void write () const;
 
 	/** number of threads to use for J2K encoding on the local machine */

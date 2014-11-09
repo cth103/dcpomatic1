@@ -90,13 +90,8 @@ Config::Config ()
 void
 Config::read ()
 {
-	if (!boost::filesystem::exists (file (false))) {
-		read_old_metadata ();
-		return;
-	}
-
 	cxml::Document f ("Config");
-	f.read_file (file (false));
+	f.read_file (file ());
 	optional<string> c;
 
 	optional<int> version = f.optional_number_child<int> ("Version");
@@ -210,81 +205,17 @@ Config::read ()
 	}
 }
 
-void
-Config::read_old_metadata ()
-{
-	/* XXX: this won't work with non-Latin filenames */
-	ifstream f (file(true).string().c_str ());
-	string line;
-
-	while (getline (f, line)) {
-		if (line.empty ()) {
-			continue;
-		}
-
-		if (line[0] == '#') {
-			continue;
-		}
-
-		size_t const s = line.find (' ');
-		if (s == string::npos) {
-			continue;
-		}
-		
-		string const k = line.substr (0, s);
-		string const v = line.substr (s + 1);
-
-		if (k == N_("num_local_encoding_threads")) {
-			_num_local_encoding_threads = atoi (v.c_str ());
-		} else if (k == N_("default_directory")) {
-			_default_directory = v;
-		} else if (k == N_("server_port")) {
-			_server_port_base = atoi (v.c_str ());
-		} else if (k == N_("server")) {
-			vector<string> b;
-			split (b, v, is_any_of (" "));
-			if (b.size() == 2) {
-				_servers.push_back (b[0]);
-			}
-		} else if (k == N_("tms_ip")) {
-			_tms_ip = v;
-		} else if (k == N_("tms_path")) {
-			_tms_path = v;
-		} else if (k == N_("tms_user")) {
-			_tms_user = v;
-		} else if (k == N_("tms_password")) {
-			_tms_password = v;
-		} else if (k == N_("sound_processor")) {
-			_sound_processor = SoundProcessor::from_id (v);
-		} else if (k == "language") {
-			_language = v;
-		} else if (k == "default_container") {
-			_default_container = Ratio::from_id (v);
-		} else if (k == "default_dcp_content_type") {
-			_default_dcp_content_type = DCPContentType::from_isdcf_name (v);
-		} else if (k == "dcp_metadata_issuer") {
-			_dcp_issuer = v;
-		}
-
-		_default_isdcf_metadata.read_old_metadata (k, v);
-	}
-}
-
 /** @return Filename to write configuration to */
 boost::filesystem::path
-Config::file (bool old) const
+Config::file () const
 {
 	boost::filesystem::path p;
 	p /= g_get_user_config_dir ();
 	boost::system::error_code ec;
 	boost::filesystem::create_directory (p, ec);
-	if (old) {
-		p /= ".dvdomatic";
-	} else {
-		p /= "dcpomatic";
-		boost::filesystem::create_directory (p, ec);
-		p /= "config.xml";
-	}
+	p /= "dcpomatic";
+	boost::filesystem::create_directory (p, ec);
+	p /= "config.xml";
 	return p;
 }
 
@@ -389,7 +320,7 @@ Config::write () const
 		root->add_child("History")->add_child_text (i->string ());
 	}
 	
-	doc.write_to_file_formatted (file(false).string ());
+	doc.write_to_file_formatted (file().string ());
 }
 
 boost::filesystem::path
