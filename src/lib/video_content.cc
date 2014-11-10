@@ -241,7 +241,7 @@ VideoContent::information () const
 		);
 
 	if (sample_aspect_ratio ()) {
-		s << String::compose (" sample aspect ratio %1:1", sample_aspect_ratio().get ());
+		s << String::compose (_(" sample aspect ratio %1:1"), sample_aspect_ratio().get ());
 	}
 	
 	return s.str ();
@@ -362,7 +362,7 @@ VideoContent::technical_summary () const
 		);
 
 	if (sample_aspect_ratio ()) {
-		s += String::compose (", sample aspect ratio %1", (sample_aspect_ratio().get ()));
+		s += String::compose (_(", sample aspect ratio %1"), (sample_aspect_ratio().get ()));
 	}
 
 	return s;
