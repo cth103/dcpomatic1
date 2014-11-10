@@ -199,7 +199,7 @@ msgstr "Le contenu à ajouter doit avoir le même flux sous titre"
 #: src/lib/video_content.cc:464
 #, fuzzy
 msgid "Content video is %1x%2"
-msgstr "Le contenu vidéo est %dx%d"
+msgstr "Le contenu vidéo est %1x%2"
 
 #: src/lib/scp_dcp_job.cc:111
 msgid "Copy DCP to TMS"
@@ -248,7 +248,7 @@ msgstr "Écriture vers fichier distant (%1) impossible"
 #: src/lib/video_content.cc:475
 #, fuzzy
 msgid "Cropped to %1x%2"
-msgstr "Rognage de %dx%d"
+msgstr "Rognage de %1x%2"
 
 #: src/lib/frame_rate_change.cc:98
 msgid "DCP will run at %1%% of the content speed.\n"
@@ -456,7 +456,7 @@ msgstr "Réduction de bruit par ondelettes"
 #: src/lib/video_content.cc:499
 #, fuzzy
 msgid "Padded with black to %1x%2"
-msgstr "Enveloppe noire de %dx%d"
+msgstr "Enveloppe noire de %1x%2"
 
 #: src/lib/dcp_content_type.cc:51
 msgid "Policy"
@@ -497,7 +497,7 @@ msgstr "Erreur SSH (%1)"
 #: src/lib/video_content.cc:490
 #, fuzzy
 msgid "Scaled to %1x%2"
-msgstr "Mis à l'échelle de %dx%d"
+msgstr "Mis à l'échelle de %1x%2"
 
 #: src/lib/ratio.cc:41
 msgid "Scope"

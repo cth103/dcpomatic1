@@ -199,9 +199,8 @@ msgid "Content to be joined must use the same subtitle stream."
 msgstr "Zu verbindende Inhalte müssen die gleiche Untertitelspur verwenden."
 
 #: src/lib/video_content.cc:464
-#, fuzzy
 msgid "Content video is %1x%2"
-msgstr "Inhalt Video ist %dx%d"
+msgstr "Inhalt Video ist %1x%2"
 
 #: src/lib/scp_dcp_job.cc:111
 msgid "Copy DCP to TMS"
@@ -248,9 +247,8 @@ msgid "Could not write to remote file (%1)"
 msgstr "Entfernte Datei (%1) konnte nicht gespeichert werden"
 
 #: src/lib/video_content.cc:475
-#, fuzzy
 msgid "Cropped to %1x%2"
-msgstr "Beschnitten zu %dx%d"
+msgstr "Beschnitten zu %1x%2"
 
 #: src/lib/frame_rate_change.cc:98
 msgid "DCP will run at %1%% of the content speed.\n"
@@ -461,9 +459,8 @@ msgid "Overcomplete wavelet denoiser"
 msgstr "Überbestimmte Wavelet Entrauschung"
 
 #: src/lib/video_content.cc:499
-#, fuzzy
 msgid "Padded with black to %1x%2"
-msgstr "Mit Schwarz gefüllt auf %dx%d"
+msgstr "Mit Schwarz gefüllt auf %1x%2"
 
 #: src/lib/dcp_content_type.cc:51
 msgid "Policy"
@@ -502,9 +499,8 @@ msgid "SSH error (%1)"
 msgstr "SSH Fehler (%1)"
 
 #: src/lib/video_content.cc:490
-#, fuzzy
 msgid "Scaled to %1x%2"
-msgstr "Skaliert auf %dx%d"
+msgstr "Skaliert auf %1x%2"
 
 #: src/lib/ratio.cc:41
 msgid "Scope"
