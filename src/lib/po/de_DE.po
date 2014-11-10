@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-06 11:17+0000\n"
+"POT-Creation-Date: 2014-11-10 22:26+0000\n"
 "PO-Revision-Date: 2014-11-04 13:03+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.6.5\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/lib/video_content.cc:244
+msgid " sample aspect ratio %1:1"
+msgstr ""
 
 #: src/lib/sndfile_content.cc:61
 msgid "%1 [audio]"
@@ -34,9 +38,13 @@ msgstr "%1 Kanäle, %2kHz, %3 samples"
 msgid "%1 frames; %2 frames per second"
 msgstr "%1 Bilder; %2 Bilder pro Sekunde"
 
-#: src/lib/video_content.cc:225
+#: src/lib/video_content.cc:237
 msgid "%1x%2 pixels (%3:1)"
 msgstr "%1x%2 pixel (%3:1)"
+
+#: src/lib/video_content.cc:365
+msgid ", sample aspect ratio %1"
+msgstr ""
 
 #: src/lib/ratio.cc:34
 msgid "1.19"
@@ -106,7 +114,7 @@ msgstr "Abgebrochen"
 msgid "Cannot handle pixel format %1 during %2"
 msgstr "Kann dieses Pixelformat %1 während %2 nicht bearbeiten"
 
-#: src/lib/util.cc:791
+#: src/lib/util.cc:797
 msgid "Centre"
 msgstr "Center"
 
@@ -130,7 +138,7 @@ msgstr "Bildübersicht berechnen"
 msgid "Content and DCP have the same rate.\n"
 msgstr "Quelle und DCP haben dieselbe Bildrate. Gut ;-)\n"
 
-#: src/lib/video_content.cc:506
+#: src/lib/video_content.cc:528
 msgid "Content frame rate"
 msgstr "Inhalt Bildrate"
 
@@ -143,19 +151,19 @@ msgid "Content to be joined must have the same audio gain."
 msgstr ""
 "Zu verbindende Inhalte müssen die gleichen Tonpegeleinstellungen verwenden."
 
-#: src/lib/video_content.cc:151
+#: src/lib/video_content.cc:152
 msgid "Content to be joined must have the same colour conversion."
 msgstr "Zu verbindende Inhalte müssen die gleiche Farbumwandlung verwenden."
 
-#: src/lib/video_content.cc:143
+#: src/lib/video_content.cc:144
 msgid "Content to be joined must have the same crop."
 msgstr "Zu verbindende Inhalte müssen gleichen Beschnitt verwenden."
 
-#: src/lib/video_content.cc:131
+#: src/lib/video_content.cc:132
 msgid "Content to be joined must have the same picture size."
 msgstr "Zu verbindende Inhalte müssen die gleiche Bildgröße haben."
 
-#: src/lib/video_content.cc:147
+#: src/lib/video_content.cc:148
 msgid "Content to be joined must have the same scale setting."
 msgstr "Zu verbindende Inhalte müssen die gleiche Skalierung verwenden."
 
@@ -181,11 +189,11 @@ msgid "Content to be joined must have the same subtitle Y scale."
 msgstr ""
 "Zu verbindende Inhalte müssen die gleiche vertikale Skalierung verwenden."
 
-#: src/lib/video_content.cc:135
+#: src/lib/video_content.cc:136
 msgid "Content to be joined must have the same video frame rate."
 msgstr "Zu verbindende Inhalte müssen die gleiche Bildrate haben."
 
-#: src/lib/video_content.cc:139
+#: src/lib/video_content.cc:140
 msgid "Content to be joined must have the same video frame type."
 msgstr "Zu verbindende Inhalte müssen den gleichen Bildtyp (z.B. 2D) haben."
 
@@ -198,7 +206,7 @@ msgstr ""
 msgid "Content to be joined must use the same subtitle stream."
 msgstr "Zu verbindende Inhalte müssen die gleiche Untertitelspur verwenden."
 
-#: src/lib/video_content.cc:464
+#: src/lib/video_content.cc:486
 msgid "Content video is %1x%2"
 msgstr "Inhalt Video ist %1x%2"
 
@@ -246,7 +254,7 @@ msgstr "SCP Session (%1) konnte nicht gestartet werden"
 msgid "Could not write to remote file (%1)"
 msgstr "Entfernte Datei (%1) konnte nicht gespeichert werden"
 
-#: src/lib/video_content.cc:475
+#: src/lib/video_content.cc:497
 msgid "Cropped to %1x%2"
 msgstr "Beschnitten zu %1x%2"
 
@@ -276,7 +284,7 @@ msgstr ""
 msgid "De-interlacing"
 msgstr "De-Interlacer"
 
-#: src/lib/config.cc:436
+#: src/lib/config.cc:360
 msgid ""
 "Dear Projectionist\n"
 "\n"
@@ -362,7 +370,7 @@ msgstr "Gauss Filter"
 msgid "Gradient debander"
 msgstr "Gradient Glätter"
 
-#: src/lib/util.cc:795
+#: src/lib/util.cc:801
 msgid "Hearing impaired"
 msgstr "HI"
 
@@ -378,7 +386,7 @@ msgstr ""
 "Ein unbekannter Fehler ist aufgetreten. Bitte schicken Sie eine Nachricht an "
 "den DCP-o-matic Autor (carl@dcpomatic.com)."
 
-#: src/lib/config.cc:199
+#: src/lib/config.cc:188
 msgid "KDM delivery: $CPL_NAME"
 msgstr "KDM Zustellung: $CPL_NAME"
 
@@ -390,23 +398,23 @@ msgstr "Kernel De-Interlacer"
 msgid "Lanczos"
 msgstr "Lanczos"
 
-#: src/lib/util.cc:789
+#: src/lib/util.cc:795
 msgid "Left"
 msgstr "Links"
 
-#: src/lib/util.cc:797
+#: src/lib/util.cc:803
 msgid "Left centre"
 msgstr "Center links"
 
-#: src/lib/util.cc:799
+#: src/lib/util.cc:805
 msgid "Left rear surround"
 msgstr "Surround hinten links"
 
-#: src/lib/util.cc:793
+#: src/lib/util.cc:799
 msgid "Left surround"
 msgstr "Surround links"
 
-#: src/lib/util.cc:792
+#: src/lib/util.cc:798
 msgid "Lfe (sub)"
 msgstr "LFE (Subwoofer)"
 
@@ -458,7 +466,7 @@ msgstr "Zuwenig Speicher"
 msgid "Overcomplete wavelet denoiser"
 msgstr "Überbestimmte Wavelet Entrauschung"
 
-#: src/lib/video_content.cc:499
+#: src/lib/video_content.cc:521
 msgid "Padded with black to %1x%2"
 msgstr "Mit Schwarz gefüllt auf %1x%2"
 
@@ -474,23 +482,23 @@ msgstr "Hinweis"
 msgid "Rating"
 msgstr "Freigabehinweis"
 
-#: src/lib/config.cc:86 src/lib/config.cc:183
+#: src/lib/config.cc:85 src/lib/config.cc:172
 msgid "Rec. 709"
 msgstr "Rec. 709"
 
-#: src/lib/util.cc:790
+#: src/lib/util.cc:796
 msgid "Right"
 msgstr "Rechts"
 
-#: src/lib/util.cc:798
+#: src/lib/util.cc:804
 msgid "Right centre"
 msgstr "Center rechts"
 
-#: src/lib/util.cc:800
+#: src/lib/util.cc:806
 msgid "Right rear surround"
 msgstr "Surround hinten rechts"
 
-#: src/lib/util.cc:794
+#: src/lib/util.cc:800
 msgid "Right surround"
 msgstr "Surround rechts"
 
@@ -498,7 +506,7 @@ msgstr "Surround rechts"
 msgid "SSH error (%1)"
 msgstr "SSH Fehler (%1)"
 
-#: src/lib/video_content.cc:490
+#: src/lib/video_content.cc:512
 msgid "Scaled to %1x%2"
 msgstr "Skaliert auf %1x%2"
 
@@ -597,7 +605,7 @@ msgstr "Unscharf Maskieren mit Gaußschem Unschärfefilter"
 msgid "Untitled"
 msgstr "Unbenannt"
 
-#: src/lib/util.cc:796
+#: src/lib/util.cc:802
 msgid "Visually impaired"
 msgstr "VI"
 
@@ -629,7 +637,7 @@ msgstr "[Standbild]"
 msgid "cannot contain slashes"
 msgstr "Darf keine Schrägstriche enthalten"
 
-#: src/lib/util.cc:570
+#: src/lib/util.cc:576
 msgid "connect timed out"
 msgstr "Zeit für Verbindung abgelaufen"
 
@@ -709,19 +717,19 @@ msgstr "SSH Session konnte nicht gestartet werden"
 msgid "could not write to file %1 (%2)"
 msgstr "Datei %1 konnte nicht geschrieben werden (%2)"
 
-#: src/lib/util.cc:590
+#: src/lib/util.cc:596
 msgid "error during async_accept (%1)"
 msgstr "error during async_accept (%1)"
 
-#: src/lib/util.cc:566
+#: src/lib/util.cc:572
 msgid "error during async_connect (%1)"
 msgstr "error during async_connect (%1)"
 
-#: src/lib/util.cc:639
+#: src/lib/util.cc:645
 msgid "error during async_read (%1)"
 msgstr "error during async_read (%1)"
 
-#: src/lib/util.cc:611
+#: src/lib/util.cc:617
 msgid "error during async_write (%1)"
 msgstr "error during async_write (%1)"
 
@@ -745,7 +753,7 @@ msgstr "Minute"
 msgid "minutes"
 msgstr "Minuten"
 
-#: src/lib/util.cc:711
+#: src/lib/util.cc:717
 msgid "missing key %1 in key-value set"
 msgstr "Key %1 in Key-value set fehlt"
 
@@ -775,11 +783,11 @@ msgstr "Nur Bitmap Untertitel werden unterstützt"
 msgid "remaining"
 msgstr "verbleibend"
 
-#: src/lib/config.cc:84 src/lib/video_content.cc:188
+#: src/lib/config.cc:83 src/lib/video_content.cc:192
 msgid "sRGB"
 msgstr "sRGB"
 
-#: src/lib/config.cc:85
+#: src/lib/config.cc:84
 msgid "sRGB non-linearised"
 msgstr "sRGB nicht linearisiert"
 
@@ -795,7 +803,7 @@ msgstr "Sekunden"
 msgid "still"
 msgstr "Standbild"
 
-#: src/lib/ffmpeg_examiner.cc:168
+#: src/lib/ffmpeg_examiner.cc:175
 msgid "unknown"
 msgstr "unbekannt"
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-06 11:17+0000\n"
+"POT-Creation-Date: 2014-11-10 22:26+0000\n"
 "PO-Revision-Date: 2014-11-04 14:33+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "(C) 2012-2014 Carl Hetherington, Terrence Meiczinger, Paul Davis, Ole Laursen"
 
-#: src/wx/config_dialog.cc:664
+#: src/wx/config_dialog.cc:644
 msgid "(password will be stored on disk in plaintext)"
 msgstr "(Passwort wird im Klartext gespeichert!)"
 
@@ -168,7 +168,7 @@ msgstr ""
 "bitte, das Container-Format in den DCP-Einstellungen auf 'Scope' (2.39:1) zu "
 "ändern."
 
-#: src/wx/config_dialog.cc:799
+#: src/wx/config_dialog.cc:779
 msgid "Allow any DCP frame rate"
 msgstr "Auch Nicht-Standard-Bildraten erlauben (Vorsicht!)"
 
@@ -204,7 +204,7 @@ msgstr ""
 "Der Ton von Kanal %d wird wird an den DCP Kanal %d mit %.1fdB Pegel "
 "weitergegeben."
 
-#: src/wx/config_dialog.cc:683
+#: src/wx/config_dialog.cc:663
 msgid "BCC address"
 msgstr "BCC: Adresse"
 
@@ -237,7 +237,7 @@ msgstr "Aber ich nutze gegenwärtig Faderstellung"
 msgid "C"
 msgstr "C"
 
-#: src/wx/config_dialog.cc:679
+#: src/wx/config_dialog.cc:659
 msgid "CC address"
 msgstr "CC: Adresse"
 
@@ -306,7 +306,7 @@ msgstr "Ordner wählen"
 msgid "Cinema"
 msgstr "Kino"
 
-#: src/wx/config_dialog.cc:498
+#: src/wx/config_dialog.cc:478
 msgid "Colour Conversions"
 msgstr "Farbumwandlungen"
 
@@ -315,7 +315,7 @@ msgstr "Farbumwandlungen"
 msgid "Colour conversion"
 msgstr "Farbumwandlung"
 
-#: src/wx/config_dialog.cc:819
+#: src/wx/config_dialog.cc:799
 msgid "Config|Timing"
 msgstr "Timing"
 
@@ -395,19 +395,19 @@ msgstr "DCP-o-matic Ton - %s"
 msgid "Default ISDCF name details"
 msgstr "Standard ISDCF Name Details"
 
-#: src/wx/config_dialog.cc:287
+#: src/wx/config_dialog.cc:283
 msgid "Default JPEG2000 bandwidth"
 msgstr "Standard JPEG2000 Datenrate"
 
-#: src/wx/config_dialog.cc:296
+#: src/wx/config_dialog.cc:292
 msgid "Default audio delay"
 msgstr "Standard Ton Verzögerung (+/-)"
 
-#: src/wx/config_dialog.cc:278
+#: src/wx/config_dialog.cc:274
 msgid "Default container"
 msgstr "Standard Container"
 
-#: src/wx/config_dialog.cc:282
+#: src/wx/config_dialog.cc:278
 msgid "Default content type"
 msgstr "Standard Inhalt Typ"
 
@@ -419,13 +419,9 @@ msgstr "Standard Ordner für neue Projekte"
 msgid "Default duration of still images"
 msgstr "Standard Länge für Standbilder"
 
-#: src/wx/config_dialog.cc:304
+#: src/wx/config_dialog.cc:300
 msgid "Default issuer"
 msgstr "Standard 'issuer' (DCI)"
-
-#: src/wx/config_dialog.cc:274
-msgid "Default scale to"
-msgstr "Standard Skalierung"
 
 #: src/wx/config_dialog.cc:235
 msgid "Defaults"
@@ -500,7 +496,7 @@ msgstr "Encoding Server"
 msgid "Encrypted"
 msgstr "Verschlüsselt (->für KDM Erstellung)"
 
-#: src/wx/config_dialog.cc:817
+#: src/wx/config_dialog.cc:797
 msgid "Errors"
 msgstr "Fehler"
 
@@ -552,7 +548,7 @@ msgstr ""
 msgid "From"
 msgstr "Von"
 
-#: src/wx/config_dialog.cc:675
+#: src/wx/config_dialog.cc:655
 msgid "From address"
 msgstr "Absenderadresse"
 
@@ -581,7 +577,7 @@ msgstr "Abschwächung des Kanals %d im DCP Kanal %d"
 msgid "Gb"
 msgstr "Gb"
 
-#: src/wx/config_dialog.cc:813
+#: src/wx/config_dialog.cc:793
 msgid "General"
 msgstr "Allgemein"
 
@@ -609,11 +605,11 @@ msgstr "Hz"
 msgid "I want to play this back at fader"
 msgstr "Ich möchte bei dieser Faderstellung spielen"
 
-#: src/wx/config_dialog.cc:560
+#: src/wx/config_dialog.cc:540
 msgid "IP address"
 msgstr "IP Adresse"
 
-#: src/wx/config_dialog.cc:456
+#: src/wx/config_dialog.cc:436
 msgid "IP address / host name"
 msgstr "IP Adresse / Host Name"
 
@@ -637,7 +633,7 @@ msgstr "JPEG2000 Datenrate"
 msgid "Join"
 msgstr "Verbinden"
 
-#: src/wx/config_dialog.cc:627
+#: src/wx/config_dialog.cc:607
 msgid "KDM Email"
 msgstr "KDM Email"
 
@@ -677,11 +673,11 @@ msgstr "Linearisiere Eingangs Gamma für niedrige Werte"
 msgid "Load from file..."
 msgstr "Lade aus Datei..."
 
-#: src/wx/config_dialog.cc:807
+#: src/wx/config_dialog.cc:787
 msgid "Log"
 msgstr "Log"
 
-#: src/wx/config_dialog.cc:804
+#: src/wx/config_dialog.cc:784
 msgid "Log:"
 msgstr "In das Log schreiben:"
 
@@ -693,11 +689,11 @@ msgstr "SL"
 msgid "MISSING: "
 msgstr "FEHLT:"
 
-#: src/wx/config_dialog.cc:660
+#: src/wx/config_dialog.cc:640
 msgid "Mail password"
 msgstr "Mail Passwort"
 
-#: src/wx/config_dialog.cc:656
+#: src/wx/config_dialog.cc:636
 msgid "Mail user name"
 msgstr "Mail/SMTP Server Benutzername/Login"
 
@@ -713,11 +709,11 @@ msgstr "Zielhelligkeit (z.B. '4fL' für 3D)"
 msgid "Matrix"
 msgstr "Matrix"
 
-#: src/wx/config_dialog.cc:791
+#: src/wx/config_dialog.cc:771
 msgid "Maximum JPEG2000 bandwidth"
 msgstr "Maximale JPEG2000 Datenrate (Vorsicht!)"
 
-#: src/wx/config_dialog.cc:291 src/wx/config_dialog.cc:795
+#: src/wx/config_dialog.cc:287 src/wx/config_dialog.cc:775
 #: src/wx/film_editor.cc:185
 msgid "Mbit/s"
 msgstr "Mbit/s"
@@ -738,7 +734,7 @@ msgstr "Mehrere Inhalte ausgewählt"
 msgid "My Documents"
 msgstr "Meine Dokumente"
 
-#: src/wx/cinema_dialog.cc:28 src/wx/config_dialog.cc:512
+#: src/wx/cinema_dialog.cc:28 src/wx/config_dialog.cc:492
 #: src/wx/film_editor.cc:113 src/wx/preset_colour_conversion_dialog.cc:38
 #: src/wx/screen_dialog.cc:38
 msgid "Name"
@@ -774,7 +770,7 @@ msgstr "Die Zeitleistendarstellung öffnen."
 msgid "Other"
 msgstr "Andere"
 
-#: src/wx/config_dialog.cc:652
+#: src/wx/config_dialog.cc:632
 msgid "Outgoing mail server"
 msgstr "Ausgehender/SMTP Mail Server"
 
@@ -790,7 +786,7 @@ msgstr "Ziel Gamma"
 msgid "Package Type (e.g. OV)"
 msgstr "DCP Paket Typ (z.B. OV)"
 
-#: src/wx/config_dialog.cc:572
+#: src/wx/config_dialog.cc:552
 msgid "Password"
 msgstr "Passwort"
 
@@ -871,7 +867,7 @@ msgstr "Inhalt wiederholen"
 msgid "Repeat..."
 msgstr "Wiederhole..."
 
-#: src/wx/config_dialog.cc:690
+#: src/wx/config_dialog.cc:670
 msgid "Reset to default text"
 msgstr "Auf Standardtext zurücksetzen"
 
@@ -939,7 +935,7 @@ msgstr "Server Hersteller"
 msgid "Server serial number"
 msgstr "Server Seriennummer"
 
-#: src/wx/config_dialog.cc:438
+#: src/wx/config_dialog.cc:418
 msgid "Servers"
 msgstr "Encoding Server"
 
@@ -983,7 +979,7 @@ msgstr "Spur"
 msgid "Studio (e.g. TCF)"
 msgstr "Studio (z.B. TCF)"
 
-#: src/wx/config_dialog.cc:671
+#: src/wx/config_dialog.cc:651
 msgid "Subject"
 msgstr "Mail Betreff"
 
@@ -995,15 +991,15 @@ msgstr "Untertitel Sprache (z.B. EN)"
 msgid "Subtitles"
 msgstr "Untertitel"
 
-#: src/wx/about_dialog.cc:167
+#: src/wx/about_dialog.cc:168
 msgid "Supported by"
 msgstr "Unterstützt durch"
 
-#: src/wx/config_dialog.cc:542
+#: src/wx/config_dialog.cc:522
 msgid "TMS"
 msgstr "TMS"
 
-#: src/wx/config_dialog.cc:564
+#: src/wx/config_dialog.cc:544
 msgid "Target path"
 msgstr "Zielpfad"
 
@@ -1019,7 +1015,7 @@ msgstr "Gebiet (z.B. UK)"
 msgid "Test version "
 msgstr "Test Version"
 
-#: src/wx/about_dialog.cc:212
+#: src/wx/about_dialog.cc:213
 msgid "Tested by"
 msgstr "Getestet von"
 
@@ -1113,7 +1109,7 @@ msgstr "Update"
 msgid "Use ISDCF name"
 msgstr "ISDCF Name benutzen"
 
-#: src/wx/config_dialog.cc:452
+#: src/wx/config_dialog.cc:432
 msgid "Use all servers"
 msgstr "Alle verfügbaren Server im Subnetz benutzen"
 
@@ -1125,7 +1121,7 @@ msgstr "Beste benutzen"
 msgid "Use preset"
 msgstr "Preset benutzen"
 
-#: src/wx/config_dialog.cc:568
+#: src/wx/config_dialog.cc:548
 msgid "User name"
 msgstr "Benutzer Name"
 
@@ -1141,7 +1137,7 @@ msgstr "Bild"
 msgid "Video frame rate"
 msgstr "Bildwiederholrate"
 
-#: src/wx/config_dialog.cc:815
+#: src/wx/config_dialog.cc:795
 msgid "Warnings"
 msgstr "Warnungen"
 
@@ -1234,7 +1230,7 @@ msgid "dB"
 msgstr "dB"
 
 #. / TRANSLATORS: this is an abbreviation for milliseconds, the unit of time
-#: src/wx/audio_panel.cc:78 src/wx/config_dialog.cc:300
+#: src/wx/audio_panel.cc:78 src/wx/config_dialog.cc:296
 msgid "ms"
 msgstr "ms"
 
@@ -1253,6 +1249,9 @@ msgstr "mal"
 #: src/wx/timeline.cc:241
 msgid "video"
 msgstr "Bild"
+
+#~ msgid "Default scale to"
+#~ msgstr "Standard Skalierung"
 
 #~ msgid "Add folder..."
 #~ msgstr "Ordner hinzufügen..."
