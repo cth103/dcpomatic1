@@ -117,6 +117,7 @@ private:
 
 	AudioMerger<Time, AudioContent::Frame> _audio_merger;
 
+	/** Size of the image in the DCP (e.g. 1998x1080 for flat) */
 	libdcp::Size _video_container_size;
 	boost::shared_ptr<PlayerVideoFrame> _black_frame;
 	std::map<boost::shared_ptr<AudioContent>, boost::shared_ptr<Resampler> > _resamplers;

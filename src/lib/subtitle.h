@@ -58,6 +58,7 @@ private:
 	
 	boost::weak_ptr<Piece> _piece;
 	boost::shared_ptr<Image> _in_image;
+	/** Area of this subtitle as fractions of the containing video frame */
 	dcpomatic::Rect<double> _in_rect;
 	Time _in_from;
 	Time _in_to;
