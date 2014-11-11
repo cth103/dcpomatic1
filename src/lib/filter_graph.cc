@@ -138,8 +138,9 @@ FilterGraph::process (AVFrame* frame)
 {
 	list<pair<shared_ptr<Image>, int64_t> > images;
 
-	if (av_buffersrc_write_frame (_buffer_src_context, frame) < 0) {
-		throw DecodeError (N_("could not push buffer into filter chain."));
+	int r = av_buffersrc_write_frame (_buffer_src_context, frame);
+	if (r < 0) {
+		throw DecodeError (String::compose (N_("could not push buffer into filter chain (%1)."), r));
 	}
 
 	while (true) {
