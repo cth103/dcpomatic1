@@ -30,8 +30,12 @@
 #include "ui_signaller.h"
 #include "exceptions.h"
 #include "safe_stringstream.h"
+#include "film.h"
+#include "log.h"
 
 #include "i18n.h"
+
+#define LOG_ERROR_NC(...)   _film->log()->log (__VA_ARGS__, Log::TYPE_ERROR);
 
 using std::string;
 using std::list;
@@ -280,6 +284,9 @@ Job::error_summary () const
 void
 Job::set_error (string s, string d)
 {
+	LOG_ERROR_NC (s);
+	LOG_ERROR_NC (d);
+	
 	boost::mutex::scoped_lock lm (_state_mutex);
 	_error_summary = s;
 	_error_details = d;
