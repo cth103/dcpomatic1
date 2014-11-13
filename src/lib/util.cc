@@ -351,6 +351,7 @@ dcpomatic_setup ()
 #ifdef DCPOMATIC_WINDOWS
 	boost::filesystem::path p = g_get_user_config_dir ();
 	p /= "backtrace.txt";
+	set_backtrace_file (p);
 	SetUnhandledExceptionFilter (exception_handler);
 
 	/* Dark voodoo which, I think, gets boost::filesystem::path to
