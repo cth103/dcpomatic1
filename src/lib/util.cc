@@ -788,10 +788,9 @@ audio_channel_name (int c)
 {
 	assert (MAX_DCP_AUDIO_CHANNELS == 12);
 
-	/* TRANSLATORS: these are the names of audio channels; Lfe (sub) is the low-frequency
-	   enhancement channel (sub-woofer).  HI is the hearing-impaired audio track and
-	   VI is the visually-impaired audio track (audio describe).
-	*/
+	/// TRANSLATORS: these are the names of audio channels; Lfe (sub) is the low-frequency
+	/// enhancement channel (sub-woofer).  HI is the hearing-impaired audio track and
+	/// VI is the visually-impaired audio track (audio describe).
 	string const channels[] = {
 		_("Left"),
 		_("Right"),
