@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-10 22:26+0000\n"
+"POT-Creation-Date: 2014-11-19 00:12+0000\n"
 "PO-Revision-Date: 2014-10-26 21:20+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
@@ -77,7 +77,7 @@ msgstr "Academy"
 msgid "Advertisement"
 msgstr "Advertisement"
 
-#: src/lib/job.cc:71
+#: src/lib/job.cc:75
 msgid "An error occurred whilst handling the file %1."
 msgstr "Une erreur s'est produite lors du traitement du fichier %1."
 
@@ -105,7 +105,7 @@ msgstr "Bicubique"
 msgid "Bilinear"
 msgstr "Bilinéaire"
 
-#: src/lib/job.cc:323
+#: src/lib/job.cc:330
 msgid "Cancelled"
 msgstr "Annulé"
 
@@ -113,7 +113,7 @@ msgstr "Annulé"
 msgid "Cannot handle pixel format %1 during %2"
 msgstr "Format du pixel %1 non géré par %2"
 
-#: src/lib/util.cc:797
+#: src/lib/util.cc:798
 msgid "Centre"
 msgstr "Centre"
 
@@ -233,7 +233,7 @@ msgstr ""
 "Ne trouve pas d'autres serveurs d'encodage. Une autre instance de DCP-o-"
 "matic est peut-être ouverte."
 
-#: src/lib/job.cc:90
+#: src/lib/job.cc:94
 msgid "Could not open %1"
 msgstr "lecture du fichier %1 impossible"
 
@@ -266,7 +266,7 @@ msgstr "Le DCP sera lu à %1%% de la vitesse du contenu source.\n"
 msgid "DCP will use every other frame of the content.\n"
 msgstr "Le DCP utilisera les autres images de la source.\n"
 
-#: src/lib/job.cc:91
+#: src/lib/job.cc:95
 msgid ""
 "DCP-o-matic could not open the file %1.  Perhaps it does not exist or is in "
 "an unexpected format."
@@ -333,7 +333,7 @@ msgstr "Envoyer KDM par email pour %1"
 msgid "Encoding image data"
 msgstr "encodage des données image"
 
-#: src/lib/job.cc:321
+#: src/lib/job.cc:328
 msgid "Error (%1)"
 msgstr "Erreur (%1)"
 
@@ -369,7 +369,7 @@ msgstr "Gaussien"
 msgid "Gradient debander"
 msgstr "Corrections des bandes par dégradé"
 
-#: src/lib/util.cc:801
+#: src/lib/util.cc:802
 msgid "Hearing impaired"
 msgstr "Déficients Auditifs"
 
@@ -377,7 +377,7 @@ msgstr "Déficients Auditifs"
 msgid "High quality 3D denoiser"
 msgstr "Débruiteur 3D haute qualité"
 
-#: src/lib/job.cc:111 src/lib/job.cc:121
+#: src/lib/job.cc:115 src/lib/job.cc:125
 msgid ""
 "It is not known what caused this error.  Please report the problem to the "
 "DCP-o-matic author (carl@dcpomatic.com)."
@@ -397,23 +397,23 @@ msgstr "Désentrelaceur noyau"
 msgid "Lanczos"
 msgstr "Lanczos"
 
-#: src/lib/util.cc:795
+#: src/lib/util.cc:796
 msgid "Left"
 msgstr "Gauche"
 
-#: src/lib/util.cc:803
+#: src/lib/util.cc:804
 msgid "Left centre"
 msgstr "Centre Gauche"
 
-#: src/lib/util.cc:805
+#: src/lib/util.cc:806
 msgid "Left rear surround"
 msgstr "Surround arrière gauche"
 
-#: src/lib/util.cc:799
+#: src/lib/util.cc:800
 msgid "Left surround"
 msgstr "Arrière gauche"
 
-#: src/lib/util.cc:798
+#: src/lib/util.cc:799
 msgid "Lfe (sub)"
 msgstr "Basses fréquences"
 
@@ -441,7 +441,7 @@ msgstr "Aucun fichier image valide dans ce dossier."
 msgid "Noise reduction"
 msgstr "Réduction de bruit"
 
-#: src/lib/job.cc:319
+#: src/lib/job.cc:326
 msgid "OK (ran for %1)"
 msgstr "OK (processus %1)"
 
@@ -453,7 +453,7 @@ msgstr "Seul le premier contenu à ajouter peut être rogné au point d'entrée.
 msgid "Only the last piece of content to be joined can have an end trim."
 msgstr "Seul le dernier contenu à ajouter peut être rogné au point de sortie."
 
-#: src/lib/job.cc:103
+#: src/lib/job.cc:107
 msgid "Out of memory"
 msgstr "Hors capacité mémoire"
 
@@ -482,19 +482,19 @@ msgstr "Classification"
 msgid "Rec. 709"
 msgstr "Rec. 709"
 
-#: src/lib/util.cc:796
+#: src/lib/util.cc:797
 msgid "Right"
 msgstr "Droite"
 
-#: src/lib/util.cc:804
+#: src/lib/util.cc:805
 msgid "Right centre"
 msgstr "Centre Droit"
 
-#: src/lib/util.cc:806
+#: src/lib/util.cc:807
 msgid "Right rear surround"
 msgstr "Surround arrière droite"
 
-#: src/lib/util.cc:800
+#: src/lib/util.cc:801
 msgid "Right surround"
 msgstr "Arrière droite"
 
@@ -535,7 +535,7 @@ msgstr "Filtre télécinéma"
 msgid "Test"
 msgstr "Test"
 
-#: src/lib/job.cc:77
+#: src/lib/job.cc:81
 msgid ""
 "The drive that the film is stored on is low in disc space.  Free some more "
 "space and try again."
@@ -543,7 +543,7 @@ msgstr ""
 "Le disque contenant le film est presque plein. Libérez de l'espace et "
 "essayez à nouveau."
 
-#: src/lib/job.cc:103
+#: src/lib/job.cc:107
 msgid "There was not enough memory to do this."
 msgstr "Il n'y avait pas assez de mémoire pour faire cela."
 
@@ -585,7 +585,7 @@ msgstr "Contenu de fichier ZIP non géré."
 msgid "Unexpected image type received by server"
 msgstr "Type d'image non conforme reçu par le serveur"
 
-#: src/lib/job.cc:120
+#: src/lib/job.cc:124
 msgid "Unknown error"
 msgstr "Erreur inconnue"
 
@@ -601,7 +601,7 @@ msgstr "Adoucissement et flou Gaussien"
 msgid "Untitled"
 msgstr "Sans titre"
 
-#: src/lib/util.cc:802
+#: src/lib/util.cc:803
 msgid "Visually impaired"
 msgstr "Déficients Visuels"
 
@@ -633,7 +633,7 @@ msgstr "[restant]"
 msgid "cannot contain slashes"
 msgstr "slash interdit"
 
-#: src/lib/util.cc:576
+#: src/lib/util.cc:577
 msgid "connect timed out"
 msgstr "temps de connexion expiré"
 
@@ -715,19 +715,19 @@ msgstr "démarrage de session SSH impossible"
 msgid "could not write to file %1 (%2)"
 msgstr "Écriture vers fichier distant (%1) impossible (%2)"
 
-#: src/lib/util.cc:596
+#: src/lib/util.cc:597
 msgid "error during async_accept (%1)"
 msgstr "erreur pendant async_accept (%1)"
 
-#: src/lib/util.cc:572
+#: src/lib/util.cc:573
 msgid "error during async_connect (%1)"
 msgstr "erreur pendant async_connect (%1)"
 
-#: src/lib/util.cc:645
+#: src/lib/util.cc:646
 msgid "error during async_read (%1)"
 msgstr "erreur pendant async_read (%1)"
 
-#: src/lib/util.cc:617
+#: src/lib/util.cc:618
 msgid "error during async_write (%1)"
 msgstr "erreur pendant async_write (%1)"
 
@@ -751,7 +751,7 @@ msgstr "minute"
 msgid "minutes"
 msgstr "minutes"
 
-#: src/lib/util.cc:717
+#: src/lib/util.cc:718
 msgid "missing key %1 in key-value set"
 msgstr "clé %1 manquante dans le réglage"
 
@@ -777,7 +777,7 @@ msgstr "sous-titres non-bitmap non supportés actuellement"
 
 #. / TRANSLATORS: remaining here follows an amount of time that is remaining
 #. / on an operation.
-#: src/lib/job.cc:316
+#: src/lib/job.cc:323
 msgid "remaining"
 msgstr "restant"
 

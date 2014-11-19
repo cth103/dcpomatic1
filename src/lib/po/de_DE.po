@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-10 22:26+0000\n"
+"POT-Creation-Date: 2014-11-19 00:12+0000\n"
 "PO-Revision-Date: 2014-11-04 13:03+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,7 +78,7 @@ msgstr "Academy"
 msgid "Advertisement"
 msgstr "Werbung"
 
-#: src/lib/job.cc:71
+#: src/lib/job.cc:75
 msgid "An error occurred whilst handling the file %1."
 msgstr "Beim Bearbeiten der Datei %1 trat ein Fehler auf."
 
@@ -106,7 +106,7 @@ msgstr "Bi-Kubisch"
 msgid "Bilinear"
 msgstr "Bi-Linear"
 
-#: src/lib/job.cc:323
+#: src/lib/job.cc:330
 msgid "Cancelled"
 msgstr "Abgebrochen"
 
@@ -114,7 +114,7 @@ msgstr "Abgebrochen"
 msgid "Cannot handle pixel format %1 during %2"
 msgstr "Kann dieses Pixelformat %1 während %2 nicht bearbeiten"
 
-#: src/lib/util.cc:797
+#: src/lib/util.cc:798
 msgid "Centre"
 msgstr "Center"
 
@@ -234,7 +234,7 @@ msgstr ""
 "Konnte keine Encoding Server finden. Ist das Programm vielleicht zweimal "
 "gestartet worden?"
 
-#: src/lib/job.cc:90
+#: src/lib/job.cc:94
 msgid "Could not open %1"
 msgstr "%1 konnte nicht geöffnet werden."
 
@@ -266,7 +266,7 @@ msgstr "DCP läuft mit %1% der Original Geschwindigkeit der Quelle.\n"
 msgid "DCP will use every other frame of the content.\n"
 msgstr "DCP verwendet nur jedes zweite Bild des Quelle.\n"
 
-#: src/lib/job.cc:91
+#: src/lib/job.cc:95
 msgid ""
 "DCP-o-matic could not open the file %1.  Perhaps it does not exist or is in "
 "an unexpected format."
@@ -334,7 +334,7 @@ msgstr "Email KDMs für %1"
 msgid "Encoding image data"
 msgstr "Kodiere Bilddaten"
 
-#: src/lib/job.cc:321
+#: src/lib/job.cc:328
 msgid "Error (%1)"
 msgstr "Fehler (%1)"
 
@@ -370,7 +370,7 @@ msgstr "Gauss Filter"
 msgid "Gradient debander"
 msgstr "Gradient Glätter"
 
-#: src/lib/util.cc:801
+#: src/lib/util.cc:802
 msgid "Hearing impaired"
 msgstr "HI"
 
@@ -378,7 +378,7 @@ msgstr "HI"
 msgid "High quality 3D denoiser"
 msgstr "3D Rauschunterdrückung hoher Qualität"
 
-#: src/lib/job.cc:111 src/lib/job.cc:121
+#: src/lib/job.cc:115 src/lib/job.cc:125
 msgid ""
 "It is not known what caused this error.  Please report the problem to the "
 "DCP-o-matic author (carl@dcpomatic.com)."
@@ -398,23 +398,23 @@ msgstr "Kernel De-Interlacer"
 msgid "Lanczos"
 msgstr "Lanczos"
 
-#: src/lib/util.cc:795
+#: src/lib/util.cc:796
 msgid "Left"
 msgstr "Links"
 
-#: src/lib/util.cc:803
+#: src/lib/util.cc:804
 msgid "Left centre"
 msgstr "Center links"
 
-#: src/lib/util.cc:805
+#: src/lib/util.cc:806
 msgid "Left rear surround"
 msgstr "Surround hinten links"
 
-#: src/lib/util.cc:799
+#: src/lib/util.cc:800
 msgid "Left surround"
 msgstr "Surround links"
 
-#: src/lib/util.cc:798
+#: src/lib/util.cc:799
 msgid "Lfe (sub)"
 msgstr "LFE (Subwoofer)"
 
@@ -442,7 +442,7 @@ msgstr "Keine gültigen Bilddaten gefunden."
 msgid "Noise reduction"
 msgstr "Rauschunterdrückung"
 
-#: src/lib/job.cc:319
+#: src/lib/job.cc:326
 msgid "OK (ran for %1)"
 msgstr "OK (Dauer %1)"
 
@@ -458,7 +458,7 @@ msgstr ""
 "Nur das letzte Segment der zu verbindenden Inhalte kann vom Ende her "
 "beschnitten werden."
 
-#: src/lib/job.cc:103
+#: src/lib/job.cc:107
 msgid "Out of memory"
 msgstr "Zuwenig Speicher"
 
@@ -486,19 +486,19 @@ msgstr "Freigabehinweis"
 msgid "Rec. 709"
 msgstr "Rec. 709"
 
-#: src/lib/util.cc:796
+#: src/lib/util.cc:797
 msgid "Right"
 msgstr "Rechts"
 
-#: src/lib/util.cc:804
+#: src/lib/util.cc:805
 msgid "Right centre"
 msgstr "Center rechts"
 
-#: src/lib/util.cc:806
+#: src/lib/util.cc:807
 msgid "Right rear surround"
 msgstr "Surround hinten rechts"
 
-#: src/lib/util.cc:800
+#: src/lib/util.cc:801
 msgid "Right surround"
 msgstr "Surround rechts"
 
@@ -538,7 +538,7 @@ msgstr "Telecine Filter"
 msgid "Test"
 msgstr "Test"
 
-#: src/lib/job.cc:77
+#: src/lib/job.cc:81
 msgid ""
 "The drive that the film is stored on is low in disc space.  Free some more "
 "space and try again."
@@ -546,7 +546,7 @@ msgstr ""
 "Das Laufwerk, auf dem der Film gespeichert werden soll, hat zu wenig freien "
 "Speicher. Bitte Speicher freigeben und nochmal versuchen."
 
-#: src/lib/job.cc:103
+#: src/lib/job.cc:107
 msgid "There was not enough memory to do this."
 msgstr "Zu wenig Speicher für diese Operation."
 
@@ -589,7 +589,7 @@ msgstr "Ungültiger ZIP Inhalt"
 msgid "Unexpected image type received by server"
 msgstr "Ungültiges Bildformat vom Server erhalten"
 
-#: src/lib/job.cc:120
+#: src/lib/job.cc:124
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
@@ -605,7 +605,7 @@ msgstr "Unscharf Maskieren mit Gaußschem Unschärfefilter"
 msgid "Untitled"
 msgstr "Unbenannt"
 
-#: src/lib/util.cc:802
+#: src/lib/util.cc:803
 msgid "Visually impaired"
 msgstr "VI"
 
@@ -637,7 +637,7 @@ msgstr "[Standbild]"
 msgid "cannot contain slashes"
 msgstr "Darf keine Schrägstriche enthalten"
 
-#: src/lib/util.cc:576
+#: src/lib/util.cc:577
 msgid "connect timed out"
 msgstr "Zeit für Verbindung abgelaufen"
 
@@ -717,19 +717,19 @@ msgstr "SSH Session konnte nicht gestartet werden"
 msgid "could not write to file %1 (%2)"
 msgstr "Datei %1 konnte nicht geschrieben werden (%2)"
 
-#: src/lib/util.cc:596
+#: src/lib/util.cc:597
 msgid "error during async_accept (%1)"
 msgstr "error during async_accept (%1)"
 
-#: src/lib/util.cc:572
+#: src/lib/util.cc:573
 msgid "error during async_connect (%1)"
 msgstr "error during async_connect (%1)"
 
-#: src/lib/util.cc:645
+#: src/lib/util.cc:646
 msgid "error during async_read (%1)"
 msgstr "error during async_read (%1)"
 
-#: src/lib/util.cc:617
+#: src/lib/util.cc:618
 msgid "error during async_write (%1)"
 msgstr "error during async_write (%1)"
 
@@ -753,7 +753,7 @@ msgstr "Minute"
 msgid "minutes"
 msgstr "Minuten"
 
-#: src/lib/util.cc:717
+#: src/lib/util.cc:718
 msgid "missing key %1 in key-value set"
 msgstr "Key %1 in Key-value set fehlt"
 
@@ -779,7 +779,7 @@ msgstr "Nur Bitmap Untertitel werden unterstützt"
 
 #. / TRANSLATORS: remaining here follows an amount of time that is remaining
 #. / on an operation.
-#: src/lib/job.cc:316
+#: src/lib/job.cc:323
 msgid "remaining"
 msgstr "verbleibend"
 
