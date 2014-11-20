@@ -83,7 +83,7 @@ Timecode::Timecode (wxWindow* parent)
 }
 
 void
-Timecode::set (Time t, int fps)
+Timecode::set (Time t, float fps)
 {
 	/* Do this calculation with frames so that we can round
 	   to a frame boundary at the start rather than the end.
