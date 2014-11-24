@@ -35,7 +35,8 @@
 
 #include "i18n.h"
 
-#define LOG_ERROR_NC(...)   _film->log()->log (__VA_ARGS__, Log::TYPE_ERROR);
+#define LOG_ERROR_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_ERROR);
+#define LOG_GENERAL_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_GENERAL);
 
 using std::string;
 using std::list;
@@ -259,7 +260,8 @@ Job::sub (string n)
 		boost::mutex::scoped_lock lm (_progress_mutex);
 		_sub_name = n;
 	}
-	
+
+	LOG_GENERAL_NC ("Job: " + n);
 	set_progress (0, true);
 }
 

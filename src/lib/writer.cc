@@ -43,6 +43,7 @@
 #include "i18n.h"
 
 #define LOG_GENERAL(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_GENERAL);
+#define LOG_GENERAL_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_GENERAL);
 #define LOG_TIMING(...) _film->log()->microsecond_log (String::compose (__VA_ARGS__), Log::TYPE_TIMING);
 #define LOG_WARNING_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_WARNING);
 #define LOG_ERROR(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_ERROR);
@@ -389,9 +390,13 @@ Writer::finish ()
 	if (!_thread) {
 		return;
 	}
+
+	LOG_GENERAL_NC (N_("Terminating writer thread"));
 	
 	terminate_thread (true);
 
+	LOG_GENERAL_NC (N_("Finalizing writers"));
+	
 	_picture_asset_writer->finalize ();
 	if (_sound_asset_writer) {
 		_sound_asset_writer->finalize ();
@@ -402,6 +407,8 @@ Writer::finish ()
 	_picture_asset->set_duration (frames);
 
 	/* Hard-link the video MXF into the DCP */
+	LOG_GENERAL_NC (N_("Hard-linking video MXF into DCP"));
+	
 	boost::filesystem::path video_from;
 	video_from /= _film->internal_video_mxf_dir();
 	video_from /= _film->internal_video_mxf_filename();
@@ -427,6 +434,7 @@ Writer::finish ()
 	_picture_asset->set_file_name (_film->video_mxf_filename ());
 
 	/* Move the audio MXF into the DCP */
+	LOG_GENERAL_NC (N_("Moving audio MXF into DCP"));
 
 	if (_sound_asset) {
 		boost::filesystem::path audio_to;

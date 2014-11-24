@@ -40,6 +40,7 @@
 #include "i18n.h"
 
 #define LOG_GENERAL(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_GENERAL);
+#define LOG_GENERAL_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_GENERAL);
 #define LOG_ERROR(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_ERROR);
 #define LOG_TIMING(...) _film->log()->microsecond_log (String::compose (__VA_ARGS__), Log::TYPE_TIMING);
 
@@ -138,6 +139,8 @@ Encoder::process_end ()
 		
 	_writer->finish ();
 	_writer.reset ();
+
+	LOG_GENERAL_NC (N_("Encoder::process_end finished"));
 }	
 
 /** @return an estimate of the current number of frames we are encoding per second,
