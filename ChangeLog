@@ -1,5 +1,9 @@
 2014-11-25  Carl Hetherington  <cth@carlh.net>
 
+	* Version 1.76.16 released.
+
+2014-11-25  Carl Hetherington  <cth@carlh.net>
+
 	* Speculative fix for hangs at the end of
 	encodes in some cases (with 3D content).
 
