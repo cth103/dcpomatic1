@@ -45,6 +45,7 @@
 #define LOG_GENERAL(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_GENERAL);
 #define LOG_GENERAL_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_GENERAL);
 #define LOG_TIMING(...) _film->log()->microsecond_log (String::compose (__VA_ARGS__), Log::TYPE_TIMING);
+#define LOG_WARNING(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_WARNING);
 #define LOG_WARNING_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_WARNING);
 #define LOG_ERROR(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_ERROR);
 
@@ -257,7 +258,20 @@ try
 			LOG_TIMING (N_("writer wakes with a queue of %1"), _queue.size());
 		}
 
-		if (_finish && _queue.empty()) {
+		/* We stop here if we have been asked to finish, and if either the queue
+		   is empty or we do not have a sequenced image at its head (if this is the
+		   case we will never terminate as no new frames will be sent once
+		   _finish is true).
+		*/
+		if (_finish && (!have_sequenced_image_at_queue_head() || _queue.empty())) {
+			/* (Hopefully temporarily) log anything that was not written */
+			if (!_queue.empty() && !have_sequenced_image_at_queue_head()) {
+				LOG_WARNING (N_("Finishing writer with a left-over queue of %1:"), _queue.size());
+				for (list<QueueItem>::const_iterator i = _queue.begin(); i != _queue.end(); ++i) {
+					LOG_WARNING (N_("- type %1, size %2, frame %3, eyes %4"), i->type, i->size, i->frame, i->eyes);
+				}
+				LOG_WARNING (N_("Last written frame %1, last written eyes %2"), _last_written_frame, _last_written_eyes);
+			}
 			return;
 		}
 
