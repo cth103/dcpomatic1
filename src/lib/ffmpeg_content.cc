@@ -161,11 +161,11 @@ FFmpegContent::as_xml (xmlpp::Node* node) const
 }
 
 void
-FFmpegContent::examine (shared_ptr<Job> job)
+FFmpegContent::examine (shared_ptr<Job> job, bool calculate_digest)
 {
 	job->set_progress_unknown ();
 
-	Content::examine (job);
+	Content::examine (job, calculate_digest);
 
 	shared_ptr<const Film> film = _film.lock ();
 	assert (film);

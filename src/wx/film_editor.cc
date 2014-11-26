@@ -55,6 +55,7 @@
 #include "subtitle_panel.h"
 #include "audio_panel.h"
 #include "video_panel.h"
+#include "image_sequence_dialog.h"
 
 using std::string;
 using std::cout;
@@ -836,7 +837,7 @@ FilmEditor::content_add_file_clicked ()
 	/* XXX: check for lots of files here and do something */
 
 	for (unsigned int i = 0; i < paths.GetCount(); ++i) {
-		_film->examine_and_add_content (content_factory (_film, wx_to_std (paths[i])));
+		_film->examine_and_add_content (content_factory (_film, wx_to_std (paths[i])), true);
 	}
 
 	d->Destroy ();
@@ -846,10 +847,20 @@ void
 FilmEditor::content_add_folder_clicked ()
 {
 	wxDirDialog* d = new wxDirDialog (this, _("Choose a folder"), wxT (""), wxDD_DIR_MUST_EXIST);
-	int const r = d->ShowModal ();
+	int r = d->ShowModal ();
 	boost::filesystem::path const path (wx_to_std (d->GetPath ()));
 	d->Destroy ();
 	
+	if (r != wxID_OK) {
+		return;
+	}
+
+	ImageSequenceDialog* e = new ImageSequenceDialog (this);
+	r = e->ShowModal ();
+	float const frame_rate = e->frame_rate ();
+	bool const digest = e->digest ();
+	e->Destroy ();
+
 	if (r != wxID_OK) {
 		return;
 	}
@@ -863,7 +874,8 @@ FilmEditor::content_add_folder_clicked ()
 		return;
 	}
 
-	_film->examine_and_add_content (ic);
+	ic->set_video_frame_rate (frame_rate);
+	_film->examine_and_add_content (ic, digest);
 }
 
 void
@@ -1094,6 +1106,6 @@ FilmEditor::content_files_dropped (wxDropFilesEvent& event)
 	
 	wxString* paths = event.GetFiles ();
 	for (int i = 0; i < event.GetNumberOfFiles(); i++) {
-		_film->examine_and_add_content (content_factory (_film, wx_to_std (paths[i])));
+		_film->examine_and_add_content (content_factory (_film, wx_to_std (paths[i])), true);
 	}
 }

@@ -55,7 +55,7 @@ public:
 	Content (boost::shared_ptr<const Film>, std::vector<boost::shared_ptr<Content> >);
 	virtual ~Content () {}
 	
-	virtual void examine (boost::shared_ptr<Job>);
+	virtual void examine (boost::shared_ptr<Job>, bool calculate_digest);
 	virtual std::string summary () const = 0;
 	/** @return Technical details of this content; these are written to logs to
 	 *  help with debugging.

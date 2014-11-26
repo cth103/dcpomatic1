@@ -98,10 +98,10 @@ SndfileContent::valid_file (boost::filesystem::path f)
 }
 
 void
-SndfileContent::examine (shared_ptr<Job> job)
+SndfileContent::examine (shared_ptr<Job> job, bool calculate_digest)
 {
 	job->set_progress_unknown ();
-	Content::examine (job);
+	Content::examine (job, calculate_digest);
 
 	shared_ptr<const Film> film = _film.lock ();
 	assert (film);

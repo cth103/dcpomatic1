@@ -59,7 +59,7 @@ ImageContent::ImageContent (shared_ptr<const Film> f, shared_ptr<const cxml::Nod
 	: Content (f, node)
 	, VideoContent (f, node, version)
 {
-	
+
 }
 
 string
@@ -100,10 +100,9 @@ ImageContent::as_xml (xmlpp::Node* node) const
 }
 
 void
-ImageContent::examine (shared_ptr<Job> job)
+ImageContent::examine (shared_ptr<Job> job, bool calculate_digest)
 {
-	job->sub (_("Computing digest"));
-	Content::examine (job);
+	Content::examine (job, calculate_digest);
 
 	shared_ptr<const Film> film = _film.lock ();
 	assert (film);

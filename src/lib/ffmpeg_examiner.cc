@@ -115,7 +115,7 @@ FFmpegExaminer::frame_time (AVStream* s) const
 	return t;
 }
 
-float
+optional<float>
 FFmpegExaminer::video_frame_rate () const
 {
 	AVStream* s = _format_context->streams[_video_stream];
@@ -137,7 +137,7 @@ FFmpegExaminer::video_size () const
 VideoContent::Frame
 FFmpegExaminer::video_length () const
 {
-	VideoContent::Frame const length = (double (_format_context->duration) / AV_TIME_BASE) * video_frame_rate();
+	VideoContent::Frame const length = (double (_format_context->duration) / AV_TIME_BASE) * video_frame_rate().get_value_or (0);
 	return max (1, length);
 }
 
