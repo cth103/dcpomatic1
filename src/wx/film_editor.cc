@@ -847,6 +847,7 @@ FilmEditor::content_add_folder_clicked ()
 {
 	wxDirDialog* d = new wxDirDialog (this, _("Choose a folder"), wxT (""), wxDD_DIR_MUST_EXIST);
 	int const r = d->ShowModal ();
+	boost::filesystem::path const path (wx_to_std (d->GetPath ()));
 	d->Destroy ();
 	
 	if (r != wxID_OK) {
@@ -856,7 +857,7 @@ FilmEditor::content_add_folder_clicked ()
 	shared_ptr<ImageContent> ic;
 	
 	try {
-		ic.reset (new ImageContent (_film, boost::filesystem::path (wx_to_std (d->GetPath ()))));
+		ic.reset (new ImageContent (_film, path));
 	} catch (FileError& e) {
 		error_dialog (this, std_to_wx (e.what ()));
 		return;
