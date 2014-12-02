@@ -1,3 +1,9 @@
+2014-12-02  Carl Hetherington  <cth@carlh.net>
+
+	* Open a dialog box on adding an image sequence
+	so the user can specify the frame rate (#423) and
+	request no calculation of digests (#446).
+
 2014-11-25  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.76.16 released.
