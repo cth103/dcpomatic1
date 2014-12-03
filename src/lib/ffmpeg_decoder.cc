@@ -408,6 +408,7 @@ FFmpegDecoder::decode_audio_packet ()
 
 		int frame_finished;
 		int decode_result = avcodec_decode_audio4 (audio_codec_context(), _frame, &frame_finished, &copy_packet);
+		LOG_WARNING (String::compose ("decode_result=%1", decode_result));
 		if (decode_result < 0) {
 			/* avcodec_decode_audio4 can sometimes return an error even though it has decoded
 			   some valid data; for example dca_subframe_footer can return AVERROR_INVALIDDATA
@@ -425,6 +426,7 @@ FFmpegDecoder::decode_audio_packet ()
 			   we've processed this data.
 			*/
 			decode_result = copy_packet.size;
+			LOG_WARNING (String::compose ("fudged to %1", decode_result));
 		}
 
 		if (frame_finished) {
@@ -454,7 +456,8 @@ FFmpegDecoder::decode_audio_packet ()
 			int const data_size = av_samples_get_buffer_size (
 				0, audio_codec_context()->channels, _frame->nb_samples, audio_sample_format (), 1
 				);
-			
+
+			LOG_WARNING (String::compose ("got data_size=%1", data_size));
 			audio (deinterleave_audio (_frame->data, data_size), _audio_position);
 		}
 			
