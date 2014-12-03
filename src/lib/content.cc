@@ -214,7 +214,7 @@ Content::clone () const
 string
 Content::technical_summary () const
 {
-	return String::compose ("%1 %2 %3", path_summary(), digest(), position());
+	return String::compose ("%1 %2 %3", path_summary(), digest().get_value_or("X"), position());
 }
 
 Time
@@ -240,7 +240,7 @@ Content::identifier () const
 {
 	SafeStringStream s;
 	
-	s << Content::digest()
+	s << Content::digest().get_value_or ("X")
 	  << "_" << position()
 	  << "_" << trim_start()
 	  << "_" << trim_end();
