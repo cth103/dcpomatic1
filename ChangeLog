@@ -1,3 +1,9 @@
+2014-12-03  c.hetherington  <cth@carlh.net>
+
+	* Increase maximum JPEG2000 bandwidth to 1000 Mbit/s
+	and allow the default control in config to go that
+	high when allowed.
+
 2014-12-03  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.76.18 released.
