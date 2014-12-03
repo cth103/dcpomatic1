@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-11-19 00:12+0000\n"
-"PO-Revision-Date: 2014-10-26 21:44+0100\n"
+"PO-Revision-Date: 2014-11-25 07:45+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -31,7 +31,7 @@ msgstr ""
 
 #: src/wx/config_dialog.cc:644
 msgid "(password will be stored on disk in plaintext)"
-msgstr "(le mot de passe sera enregistré sur le disque dur au format texte)"
+msgstr "(le mot de passe sera stocké en clair sur le disque dur)"
 
 #: src/wx/config_dialog.cc:104
 msgid "(restart DCP-o-matic to see language changes)"
@@ -95,6 +95,9 @@ msgid ""
 "a good idea to drop the JPEG2000 bandwidth down to about 200Mbit/s; this is "
 "unlikely to have any visible effect on the image."
 msgstr ""
+"Quelques projecteurs ont des soucis avec la lecture de DCPs à très haut "
+"débit. Mieux vaut baisser la qualité JPEG2000 à environ 200Mbit/s. Cela aura "
+"des conséquences sur l'aspect visuel de l'image."
 
 #: src/wx/update_dialog.cc:34
 msgid "A new version of DCP-o-matic is available."
@@ -133,7 +136,7 @@ msgstr ""
 
 #: src/wx/film_editor.cc:281
 msgid "Add video, image or sound files to the film."
-msgstr "Ajouter des fichiers vidéo, image ou son au projet."
+msgstr "Ajouter de fichiers vidéo, image ou son au projet."
 
 #: src/wx/editable_list.h:62
 msgid "Add..."
@@ -146,11 +149,10 @@ msgid ""
 "frame.  You may prefer to set your DCP's container to Flat (1.85:1) in the "
 "\"DCP\" tab."
 msgstr ""
-"Tous vos contenus sont au format 1:85:1 ou moins larges mais le format image "
-"du DCP est réglé sur Scope (2:39:1). Des bandes noires verticales seront "
-"créées de part et d'autre de votre contenu pour remplir le format final. "
-"Vous pourriez préférer régler le format du DCP sur Flat (1:85:1) dans "
-"l'onglet \"DCP\" ."
+"Tous vos contenus sont au format 1:85:1 ou moins, mais le format du DCP est "
+"réglé sur Scope (2:39:1). Des bandes noires verticales seront créées de part "
+"et d'autre de votre contenu pour remplir le container. Mieux vaudrait régler "
+"le format du DCP sur Flat (1:85:1) dans l'onglet \"DCP\" ."
 
 #: src/wx/hints_dialog.cc:101
 msgid ""
@@ -161,9 +163,8 @@ msgid ""
 msgstr ""
 "Tous vos contenus sont au format Scope (2:39:1) mais le format image du DCP "
 "est réglé sur Flat (1:85:1). Des bandes noires horizontales seront créées au "
-"dessus et en dessous de votre contenu pour remplir le format final. Vous "
-"pourriez préférer régler le format du DCP sur Scope (2:39:1) dans l'onglet "
-"\"DCP\" ."
+"dessus et en dessous de votre contenu pour remplir le container. Mieux "
+"vaudrait régler le format du DCP sur Scope (2:39:1) dans l'onglet \"DCP\" ."
 
 #: src/wx/config_dialog.cc:779
 msgid "Allow any DCP frame rate"
@@ -274,7 +275,7 @@ msgstr "Chaîne"
 
 #: src/wx/audio_gain_dialog.cc:26
 msgid "Channel gain"
-msgstr "Gain Canal"
+msgstr "Gain canal"
 
 #: src/wx/audio_dialog.cc:44
 msgid "Channels"
@@ -290,15 +291,15 @@ msgstr "Recherche de mises à jour au démarrage."
 
 #: src/wx/content_menu.cc:182
 msgid "Choose a file"
-msgstr "Choisissez un fichier"
+msgstr "Choisir un fichier"
 
 #: src/wx/film_editor.cc:825
 msgid "Choose a file or files"
-msgstr "Choisissez un ou plusieurs fichiers"
+msgstr "Choisir un ou plusieurs fichiers"
 
 #: src/wx/content_menu.cc:175 src/wx/film_editor.cc:848
 msgid "Choose a folder"
-msgstr "Choisissez un dossier"
+msgstr "Choisir un dossier"
 
 #: src/wx/dolby_certificate_dialog.cc:43
 msgid "Cinema"
@@ -306,12 +307,12 @@ msgstr "Cinéma"
 
 #: src/wx/config_dialog.cc:478
 msgid "Colour Conversions"
-msgstr "Conversions Couleurs"
+msgstr "Conversions colorimétriques"
 
 #: src/wx/content_colour_conversion_dialog.cc:34
 #: src/wx/preset_colour_conversion_dialog.cc:30 src/wx/video_panel.cc:162
 msgid "Colour conversion"
-msgstr "Espace Couleurs"
+msgstr "Conversion colorimétrique"
 
 #: src/wx/config_dialog.cc:799
 msgid "Config|Timing"
@@ -319,7 +320,7 @@ msgstr "Temps"
 
 #: src/wx/film_editor.cc:134
 msgid "Container"
-msgstr "Format"
+msgstr "Container"
 
 #: src/wx/audio_mapping_view.cc:270 src/wx/film_editor.cc:85
 msgid "Content"
@@ -327,7 +328,7 @@ msgstr "Contenu"
 
 #: src/wx/film_editor.cc:139
 msgid "Content Type"
-msgstr "Type de Contenu"
+msgstr "Type de contenu"
 
 #: src/wx/isdcf_metadata_dialog.cc:32
 msgid "Content version"
@@ -461,20 +462,20 @@ msgstr "Télécharger"
 
 #: src/wx/download_certificate_dialog.cc:27
 msgid "Download certificate"
-msgstr "Téléchargement Certificat"
+msgstr "Télécharger le certificat"
 
 #: src/wx/dolby_certificate_dialog.cc:157
 #: src/wx/doremi_certificate_dialog.cc:54
 msgid "Downloading certificate"
-msgstr "Téléchargement Certificat en cours"
+msgstr "Téléchargement du certificat en cours"
 
 #: src/wx/kdm_dialog.cc:81
 msgid "Edit Cinema..."
-msgstr "Éditer le cinéma"
+msgstr "Éditer le cinéma..."
 
 #: src/wx/kdm_dialog.cc:88
 msgid "Edit Screen..."
-msgstr "Éditer la salle"
+msgstr "Éditer la salle..."
 
 #: src/wx/audio_mapping_view.cc:135 src/wx/config_dialog.cc:271
 #: src/wx/video_panel.cc:155 src/wx/video_panel.cc:174
@@ -488,7 +489,7 @@ msgstr "Adresse email pour l'envoi de KDM"
 
 #: src/wx/servers_list_dialog.cc:30
 msgid "Encoding Servers"
-msgstr "Serveurs Encodage"
+msgstr "Serveurs d'encodage"
 
 #: src/wx/film_editor.cc:162
 msgid "Encrypted"
@@ -583,7 +584,7 @@ msgstr "HI"
 
 #: src/wx/hints_dialog.cc:30
 msgid "Hints"
-msgstr "Conseils"
+msgstr "Avertissements"
 
 #: src/wx/servers_list_dialog.cc:40
 msgid "Host"
@@ -615,7 +616,7 @@ msgstr "Nom ISDCF"
 
 #: src/wx/colour_conversion_editor.cc:44
 msgid "Input gamma"
-msgstr "gamma source"
+msgstr "Gamma d'entrée"
 
 #: src/wx/film_editor.cc:228
 msgid "Interop"
@@ -639,7 +640,7 @@ msgstr "Type de KDM"
 
 #: src/wx/kdm_dialog.cc:99
 msgid "KDM|Timing"
-msgstr "Temps"
+msgstr "Validité KDM"
 
 #: src/wx/timeline_dialog.cc:41
 msgid "Keep video in sequence"
@@ -663,7 +664,7 @@ msgstr "BF"
 
 #: src/wx/colour_conversion_editor.cc:49
 msgid "Linearise input gamma curve for low values"
-msgstr "Courbe gamma d'entrée linéaire pour les bas niveaux"
+msgstr "Linéariser la courbe gamma d'entrée pour les bas niveaux"
 
 #: src/wx/screen_dialog.cc:46
 msgid "Load from file..."
@@ -687,11 +688,11 @@ msgstr "MANQUANT:"
 
 #: src/wx/config_dialog.cc:640
 msgid "Mail password"
-msgstr "Mot de passe Mail"
+msgstr "Mot de passe mail"
 
 #: src/wx/config_dialog.cc:636
 msgid "Mail user name"
-msgstr "Nom Utilisateur Mail"
+msgstr "Nom d'utilisateur mail"
 
 #: src/wx/kdm_dialog.cc:49
 msgid "Make KDMs"
@@ -708,7 +709,7 @@ msgstr "Matrice"
 
 #: src/wx/config_dialog.cc:771
 msgid "Maximum JPEG2000 bandwidth"
-msgstr "Qualité JPEG2000 Maxi"
+msgstr "Qualité JPEG2000 maxi"
 
 #: src/wx/config_dialog.cc:287 src/wx/config_dialog.cc:775
 #: src/wx/film_editor.cc:185
@@ -729,7 +730,7 @@ msgstr "Contenus multiples sélectionnés"
 
 #: src/wx/dir_picker_ctrl.cc:51
 msgid "My Documents"
-msgstr "Mes Documents"
+msgstr "Mes documents"
 
 #: src/wx/cinema_dialog.cc:28 src/wx/config_dialog.cc:492
 #: src/wx/film_editor.cc:113 src/wx/preset_colour_conversion_dialog.cc:38
@@ -739,7 +740,7 @@ msgstr "Nom"
 
 #: src/wx/new_film_dialog.cc:35
 msgid "New Film"
-msgstr "Nouveau Film"
+msgstr "Nouveau film"
 
 #: src/wx/update_dialog.cc:36
 msgid "New versions of DCP-o-matic are available."
@@ -769,7 +770,7 @@ msgstr "Autre"
 
 #: src/wx/config_dialog.cc:632
 msgid "Outgoing mail server"
-msgstr "Serveurs de messagerie sortant"
+msgstr "Serveur de messagerie sortant"
 
 #: src/wx/kdm_dialog.cc:156
 msgid "Output"
@@ -866,7 +867,7 @@ msgstr "Répéter..."
 
 #: src/wx/config_dialog.cc:670
 msgid "Reset to default text"
-msgstr "texte par défaut"
+msgstr "Texte par défaut"
 
 #: src/wx/film_editor.cc:175
 msgid "Resolution"
@@ -902,7 +903,7 @@ msgstr "Mise à l'échelle"
 
 #: src/wx/kdm_dialog.cc:60
 msgid "Screens"
-msgstr "Ecrans"
+msgstr "Salles"
 
 #: src/wx/kdm_dialog.cc:531
 msgid "Select CPL XML file"
@@ -914,11 +915,11 @@ msgstr "Sélectionner le certificat"
 
 #: src/wx/kdm_dialog.cc:185
 msgid "Send by email"
-msgstr "Envoyé par e-mail"
+msgstr "Envoi par e-mail"
 
 #: src/wx/dolby_certificate_dialog.cc:47
 msgid "Serial number"
-msgstr "Numéro de Série"
+msgstr "Numéro de série"
 
 #: src/wx/server_dialog.cc:28
 msgid "Server"
@@ -930,7 +931,7 @@ msgstr "Constructeur du serveur"
 
 #: src/wx/doremi_certificate_dialog.cc:37
 msgid "Server serial number"
-msgstr "Numéro de Série du Serveur"
+msgstr "Numéro de série du serveur"
 
 #: src/wx/config_dialog.cc:418
 msgid "Servers"
@@ -962,7 +963,7 @@ msgstr "Magnetisme"
 
 #: src/wx/update_dialog.cc:43
 msgid "Stable version "
-msgstr "Version Stable"
+msgstr "Version stable"
 
 #: src/wx/film_editor.cc:190
 msgid "Standard"
@@ -1023,16 +1024,16 @@ msgid ""
 "missing content."
 msgstr ""
 "Les fichiers de contenu que vous avez spécifiés ne sont pas les mêmes que "
-"ceux détectés comme manquants. Vous pouvez réessayer avec les contenus "
-"corrects ou supprimer les contenus manquants."
+"ceux détectés comme manquants. Vous pouvez réessayer avec les bons contenus "
+"ou supprimer les contenus manquants."
 
 #: src/wx/hints_dialog.cc:139
 msgid "There are no hints: everything looks good!"
-msgstr "Il n'y a aucun avertissement: tout semble correct!"
+msgstr "Il n'y a aucun avertissement : tout semble correct !"
 
 #: src/wx/film_viewer.cc:134
 msgid "There is not enough free memory to do that."
-msgstr "Il n'y a pas assez de mémoire pour faire cela."
+msgstr "Il n'y a pas assez d'espace libre pour faire cela."
 
 #: src/wx/kdm_dialog.cc:553
 msgid "This is not a valid CPL file"
@@ -1088,7 +1089,7 @@ msgstr "Nom de fichier certificat non conforme "
 
 #: src/wx/screen_dialog.cc:62
 msgid "Unknown"
-msgstr "inconnu."
+msgstr "Inconnu"
 
 #: src/wx/kdm_dialog.cc:112
 msgid "Until"
@@ -1152,7 +1153,7 @@ msgstr "Développé par"
 
 #: src/wx/subtitle_panel.cc:44
 msgid "X Offset"
-msgstr "Position horizontale"
+msgstr "Décalage horizontal"
 
 #: src/wx/subtitle_panel.cc:62
 msgid "X Scale"
@@ -1160,7 +1161,7 @@ msgstr "Echelle horizontale"
 
 #: src/wx/subtitle_panel.cc:53
 msgid "Y Offset"
-msgstr "Position verticale"
+msgstr "Décalage vertical"
 
 #: src/wx/subtitle_panel.cc:71
 msgid "Y Scale"
@@ -1202,13 +1203,11 @@ msgstr ""
 "lecture sur certains projecteurs."
 
 #: src/wx/hints_dialog.cc:80
-#, fuzzy
 msgid ""
 "Your DCP has no audio channels.  This is likely to cause problems on "
 "playback."
 msgstr ""
-"Votre DCP possède un nombre impair de canaux audio.  Cela peut créer des "
-"problèmes de lecture."
+"Votre DCP n'a pas de canaux audio. Cela peut poser des problèmes de lecture."
 
 #: src/wx/timeline.cc:220
 msgid "audio"

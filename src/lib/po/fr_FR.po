@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-11-19 00:12+0000\n"
-"PO-Revision-Date: 2014-10-26 21:20+0100\n"
+"PO-Revision-Date: 2014-11-25 07:03+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: src/lib/video_content.cc:244
 msgid " sample aspect ratio %1:1"
-msgstr ""
+msgstr "ratio d'image %1:1"
 
 #: src/lib/sndfile_content.cc:61
 msgid "%1 [audio]"
@@ -43,7 +43,7 @@ msgstr "%1x%2 pixels (%3:1)"
 
 #: src/lib/video_content.cc:365
 msgid ", sample aspect ratio %1"
-msgstr ""
+msgstr ", ratio d'image %1"
 
 #: src/lib/ratio.cc:34
 msgid "1.19"
@@ -123,19 +123,19 @@ msgstr "Recherche de données images existantes"
 
 #: src/lib/writer.cc:475
 msgid "Computing audio digest"
-msgstr "Fabrication rendu audio"
+msgstr "Calcul de la somme de contrôle audio"
 
 #: src/lib/image_content.cc:105
 msgid "Computing digest"
-msgstr "fabrication rendu"
+msgstr "Calcul des sommes de contrôle"
 
 #: src/lib/writer.cc:471
 msgid "Computing image digest"
-msgstr "Fabrication rendu image"
+msgstr "Calcul de la somme de contrôle image"
 
 #: src/lib/frame_rate_change.cc:86
 msgid "Content and DCP have the same rate.\n"
-msgstr "Le DCP et la source ont la même cadence image.\n"
+msgstr "Le DCP et la source ont la même cadence.\n"
 
 #: src/lib/video_content.cc:528
 msgid "Content frame rate"
@@ -143,66 +143,65 @@ msgstr "Cadence du contenu"
 
 #: src/lib/audio_content.cc:86
 msgid "Content to be joined must have the same audio delay."
-msgstr "Le contenu à ajouter doit présenter le même délais audio"
+msgstr "Le contenu ajouté doit avoir le même délai audio."
 
 #: src/lib/audio_content.cc:82
 msgid "Content to be joined must have the same audio gain."
-msgstr "Le contenu à ajouter doit avoir le même gain audio"
+msgstr "Le contenu ajouté doit avoir le même gain audio."
 
 #: src/lib/video_content.cc:152
 msgid "Content to be joined must have the same colour conversion."
-msgstr "Le contenu à ajouter doit avoir le même type de conversion couleur"
+msgstr "Le contenu ajouté doit avoir la même conversion colorimétrique."
 
 #: src/lib/video_content.cc:144
 msgid "Content to be joined must have the same crop."
-msgstr "le contenu à ajouter doit avoir les mêmes valeurs de rognage"
+msgstr "Le contenu ajouté doit avoir le même rognage."
 
 #: src/lib/video_content.cc:132
 msgid "Content to be joined must have the same picture size."
-msgstr "Le contenu à ajouter doit avoir la même taille d'image"
+msgstr "Le contenu ajouté doit avoir la même taille d'image."
 
 #: src/lib/video_content.cc:148
 msgid "Content to be joined must have the same scale setting."
-msgstr ""
-"Le contenu à ajouter doit avoir les mêmes paramètres de mise à l'échelle"
+msgstr "Le contenu ajouté doit avoir les mêmes paramètres de mise à l'échelle."
 
 #: src/lib/subtitle_content.cc:81
 msgid "Content to be joined must have the same subtitle X offset."
 msgstr ""
-"Le contenu à ajouter doit avoir le même positionnement horizontal des sous-"
-"titres"
+"Le contenu ajouté doit avoir le même positionnement horizontal des sous-"
+"titres."
 
 #: src/lib/subtitle_content.cc:89
 msgid "Content to be joined must have the same subtitle X scale."
 msgstr ""
-"le contenu ajouté doit avoir le même positionnement horizontal de sous-titres"
+"Le contenu ajouté doit avoir le même positionnement horizontal de sous-"
+"titres."
 
 #: src/lib/subtitle_content.cc:85
 msgid "Content to be joined must have the same subtitle Y offset."
 msgstr ""
-"Le contenu à ajouter doit avoir le même positionnement vertical des sous-"
-"titres"
+"Le contenu ajouté doit avoir le même positionnement vertical des sous-titres."
 
 #: src/lib/subtitle_content.cc:93
 msgid "Content to be joined must have the same subtitle Y scale."
 msgstr ""
-"le contenu ajouté doit avoir le même positionnement vertical de sous-titres"
+"Le contenu ajouté doit avoir le même positionnement vertical de sous-titres."
 
 #: src/lib/video_content.cc:136
 msgid "Content to be joined must have the same video frame rate."
-msgstr "Le contenu à ajouter doit avoir la même cadence d'images"
+msgstr "Le contenu ajouté doit avoir la même cadence d'images."
 
 #: src/lib/video_content.cc:140
 msgid "Content to be joined must have the same video frame type."
-msgstr "Le contenu à ajouter doit avoir le même type de trame vidéo"
+msgstr "Le contenu ajouté doit avoir le même type de trame vidéo."
 
 #: src/lib/ffmpeg_content.cc:116
 msgid "Content to be joined must use the same audio stream."
-msgstr "Le contenu à ajouter doit avoir le même flux audio"
+msgstr "Le contenu ajouté doit avoir le même flux audio."
 
 #: src/lib/ffmpeg_content.cc:112
 msgid "Content to be joined must use the same subtitle stream."
-msgstr "Le contenu à ajouter doit avoir le même flux sous titre"
+msgstr "Le contenu ajouté doit avoir le même flux sous-titres."
 
 #: src/lib/video_content.cc:486
 #, fuzzy
@@ -230,12 +229,12 @@ msgid ""
 "Could not listen for remote encode servers.  Perhaps another instance of DCP-"
 "o-matic is running."
 msgstr ""
-"Ne trouve pas d'autres serveurs d'encodage. Une autre instance de DCP-o-"
-"matic est peut-être ouverte."
+"Serveurs d'encodage introuvables. Une autre instance de DCP-o-matic est peut-"
+"être ouverte."
 
 #: src/lib/job.cc:94
 msgid "Could not open %1"
-msgstr "lecture du fichier %1 impossible"
+msgstr "Lecture du fichier %1 impossible"
 
 #: src/lib/scp_dcp_job.cc:177
 msgid "Could not open %1 to send"
@@ -243,7 +242,7 @@ msgstr "Ouverture de %1 pour envoi impossible"
 
 #: src/lib/internet.cc:74
 msgid "Could not open downloaded ZIP file"
-msgstr "Ouverture du fichier Zip téléchargé impossible"
+msgstr "Ouverture du fichier ZIP téléchargé impossible"
 
 #: src/lib/scp_dcp_job.cc:147
 msgid "Could not start SCP session (%1)"
@@ -264,7 +263,7 @@ msgstr "Le DCP sera lu à %1%% de la vitesse du contenu source.\n"
 
 #: src/lib/frame_rate_change.cc:89
 msgid "DCP will use every other frame of the content.\n"
-msgstr "Le DCP utilisera les autres images de la source.\n"
+msgstr "Le DCP utilisera toutes les autres images de la source.\n"
 
 #: src/lib/job.cc:95
 msgid ""
@@ -277,7 +276,7 @@ msgstr ""
 #: src/lib/ffmpeg_content.cc:93
 msgid ""
 "DCP-o-matic no longer supports the `%1' filter, so it has been turned off."
-msgstr "DCP-o-matic ne gère plus le filtre `%1'. Celui-ci a été désactivé."
+msgstr "DCP-o-matic ne gère plus le filtre \"%1\". Celui-ci a été désactivé."
 
 #: src/lib/filter.cc:65 src/lib/filter.cc:66 src/lib/filter.cc:67
 msgid "De-interlacing"
@@ -301,8 +300,8 @@ msgstr ""
 "\n"
 "Veuillez trouver les fichiers KDMs attachés pour $CPL_NAME.\n"
 "\n"
-"Cinema: $CINEMA_NAME\n"
-"Ecran(s): $SCREENS\n"
+"Cinema : $CINEMA_NAME\n"
+"Salle(s): $SCREENS\n"
 "\n"
 "Les KDMs sont valides du $START_TIME au $END_TIME.\n"
 "\n"
@@ -315,11 +314,11 @@ msgstr "Dolby CP650 et CP750"
 
 #: src/lib/internet.cc:67
 msgid "Download failed (%1/%2 error %3)"
-msgstr "Echec de téléchargement (%1/%2 erreur %3)"
+msgstr "Echec du téléchargement (%1/%2 erreur %3)"
 
 #: src/lib/frame_rate_change.cc:91
 msgid "Each content frame will be doubled in the DCP.\n"
-msgstr "Chaque image source sera doublée dans le DCP.\n"
+msgstr "Chaque image source sera dupliquée dans le DCP.\n"
 
 #: src/lib/frame_rate_change.cc:93
 msgid "Each content frame will be repeated %1 more times in the DCP.\n"
@@ -331,7 +330,7 @@ msgstr "Envoyer KDM par email pour %1"
 
 #: src/lib/writer.cc:126
 msgid "Encoding image data"
-msgstr "encodage des données image"
+msgstr "Encodage des données image"
 
 #: src/lib/job.cc:328
 msgid "Error (%1)"
@@ -387,7 +386,7 @@ msgstr ""
 
 #: src/lib/config.cc:188
 msgid "KDM delivery: $CPL_NAME"
-msgstr "Livraison de KDM: $CPL_NAME"
+msgstr "Livraison de KDM : $CPL_NAME"
 
 #: src/lib/filter.cc:66
 msgid "Kernel deinterlacer"
@@ -545,15 +544,15 @@ msgstr ""
 
 #: src/lib/job.cc:107
 msgid "There was not enough memory to do this."
-msgstr "Il n'y avait pas assez de mémoire pour faire cela."
+msgstr "Il n'y avait pas assez de mémoire pour cette opération."
 
 #: src/lib/film.cc:414
 msgid ""
 "This film was created with a newer version of DCP-o-matic, and it cannot be "
 "loaded into this version.  Sorry!"
 msgstr ""
-"Ce film a été créé avec une nouvelle version de DCP-o-matic et il ne peut "
-"être ouvert dans cette version du programme. Désolé!"
+"Ce projet a été créé avec version plus récente de DCP-o-matic et ne peut "
+"être ouvert avec cette version du programme. Désolé !"
 
 #: src/lib/film.cc:406
 msgid ""
@@ -561,8 +560,8 @@ msgid ""
 "unfortunately it cannot be loaded into this version.  You will need to "
 "create a new Film, re-add your content and set it up again.  Sorry!"
 msgstr ""
-"Ce projet a été créé avec une ancienne version de DCP-o-matic, chargement "
-"impossible. Créez un nouveau projet, ajoutez du contenu et reparamétrez. "
+"Ce projet a été créé avec une ancienne version de DCP-o-matic. Chargement "
+"impossible. Créez un nouveau projet, ajoutez un contenu et reparamétrez. "
 "Désolé !"
 
 #: src/lib/dcp_content_type.cc:46
@@ -583,7 +582,7 @@ msgstr "Contenu de fichier ZIP non géré."
 
 #: src/lib/image_proxy.cc:197
 msgid "Unexpected image type received by server"
-msgstr "Type d'image non conforme reçu par le serveur"
+msgstr "Type d'image reçu par le serveur  non conforme"
 
 #: src/lib/job.cc:124
 msgid "Unknown error"
@@ -603,7 +602,7 @@ msgstr "Sans titre"
 
 #: src/lib/util.cc:803
 msgid "Visually impaired"
-msgstr "Déficients Visuels"
+msgstr "Déficients visuels"
 
 #: src/lib/scp_dcp_job.cc:103
 msgid "Waiting"
@@ -623,7 +622,7 @@ msgstr "Ajoutez un contenu pour créer le DCP"
 
 #: src/lib/image_content.cc:73
 msgid "[moving images]"
-msgstr "[Déplacement d'images]"
+msgstr "[déplacement d'images]"
 
 #: src/lib/image_content.cc:71
 msgid "[still]"
@@ -631,7 +630,7 @@ msgstr "[restant]"
 
 #: src/lib/film.cc:259
 msgid "cannot contain slashes"
-msgstr "slash interdit"
+msgstr "Caractère \"slash\" interdit"
 
 #: src/lib/util.cc:577
 msgid "connect timed out"
@@ -655,7 +654,7 @@ msgstr "copie de %1"
 
 #: src/lib/exceptions.cc:36
 msgid "could not create file %1"
-msgstr "Écriture vers fichier distant (%1) impossible"
+msgstr "écriture vers fichier distant (%1) impossible"
 
 #: src/lib/ffmpeg.cc:179
 msgid "could not find audio decoder"
@@ -671,7 +670,7 @@ msgstr "décodeur vidéo introuvable"
 
 #: src/lib/writer.cc:439
 msgid "could not move audio MXF into the DCP (%1)"
-msgstr "ne peut déplacer un MXF son dans le DCP (%1)"
+msgstr "déplacement MXF son impossible dans le DCP (%1)"
 
 #: src/lib/sndfile_decoder.cc:56
 msgid "could not open audio file for reading"
@@ -700,8 +699,7 @@ msgstr "conversion de la fréquence d'échantillonnage impossible"
 #: src/lib/resampler.cc:79
 msgid "could not run sample-rate converter for %1 samples (%2) (%3)"
 msgstr ""
-"n'a pas pu convertir la fréquence d'échantillonnage pour %1 échantillons "
-"(%2) (%3)"
+"fréquence d'échantillonnage non convertie pour %1 échantillons (%2) (%3)"
 
 #: src/lib/scp_dcp_job.cc:88
 msgid "could not start SCP session (%1)"
@@ -753,7 +751,7 @@ msgstr "minutes"
 
 #: src/lib/util.cc:718
 msgid "missing key %1 in key-value set"
-msgstr "clé %1 manquante dans le réglage"
+msgstr "clé %1 manquante dans le paramétrage"
 
 #: src/lib/exceptions.cc:54
 msgid "missing required setting %1"
@@ -765,7 +763,7 @@ msgstr "déplacement"
 
 #: src/lib/ffmpeg_decoder.cc:615
 msgid "multi-part subtitles not yet supported"
-msgstr "sous-titres en plusieurs parties non supportés"
+msgstr "sous-titres en plusieurs parties non supporté"
 
 #: src/lib/film.cc:259 src/lib/film.cc:319
 msgid "name"
@@ -773,7 +771,7 @@ msgstr "nom"
 
 #: src/lib/ffmpeg_decoder.cc:630
 msgid "non-bitmap subtitles not yet supported"
-msgstr "sous-titres non-bitmap non supportés actuellement"
+msgstr "sous-titres non-bitmap non supporté actuellement"
 
 #. / TRANSLATORS: remaining here follows an amount of time that is remaining
 #. / on an operation.
@@ -803,7 +801,7 @@ msgstr "%1 [restant]"
 
 #: src/lib/ffmpeg_examiner.cc:175
 msgid "unknown"
-msgstr "Inconnu"
+msgstr "inconnu"
 
 #~ msgid "Could not read DCP to make KDM for"
 #~ msgstr "DCP illisible pour fabrication de KDM"
