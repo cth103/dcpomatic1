@@ -403,6 +403,8 @@ FFmpegDecoder::decode_audio_packet ()
 	*/
 	
 	AVPacket copy_packet = _packet;
+
+	shared_ptr<const Film> film = _film.lock ();
 	
 	while (copy_packet.size > 0) {
 
