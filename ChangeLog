@@ -1,5 +1,9 @@
 2014-12-04  Carl Hetherington  <cth@carlh.net>
 
+	* Give a nicer error when writing config fails.
+
+2014-12-04  Carl Hetherington  <cth@carlh.net>
+
 	* Version 1.76.21 released.
 
 2014-12-04  c.hetherington  <cth@carlh.net>
