@@ -1,3 +1,8 @@
+2014-12-04  c.hetherington  <cth@carlh.net>
+
+	* Fix crash on dragging things in the timeline the second
+	time it has been opened.
+
 2014-12-03  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.76.20 released.
