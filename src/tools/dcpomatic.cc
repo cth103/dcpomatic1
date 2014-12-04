@@ -819,8 +819,10 @@ class App : public wxApp
 	{
 		try {
 			throw;
+		} catch (FileError& e) {
+			error_dialog (0, wxString::Format (_("An exception occurred: %s in %s.\n\nPlease report this problem to the DCP-o-matic author (carl@dcpomatic.com)."), e.what (), e.file().string().c_str ()));
 		} catch (exception& e) {
-			error_dialog (0, wxString::Format (_("An exception occurred (%s).  Please report this problem to the DCP-o-matic author (carl@dcpomatic.com)."), e.what ()));
+			error_dialog (0, wxString::Format (_("An exception occurred: %s.\n\nPlease report this problem to the DCP-o-matic author (carl@dcpomatic.com)."), e.what ()));
 		} catch (...) {
 			error_dialog (0, _("An unknown exception occurred.  Please report this problem to the DCP-o-matic author (carl@dcpomatic.com)."));
 		}
