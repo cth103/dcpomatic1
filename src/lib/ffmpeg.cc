@@ -173,6 +173,8 @@ FFmpeg::setup_audio ()
 		if (context->codec_type != AVMEDIA_TYPE_AUDIO) {
 			continue;
 		}
+
+		av_opt_set_int (context, "disable_footer", 1, 0);
 		
 		AVCodec* codec = avcodec_find_decoder (context->codec_id);
 		if (codec == 0) {
