@@ -21,6 +21,7 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
+#include <libavutil/opt.h>
 }
 #include <libdcp/raw_convert.h>
 #include "ffmpeg.h"
@@ -174,14 +175,15 @@ FFmpeg::setup_audio ()
 			continue;
 		}
 
-		av_opt_set_int (context, "disable_footer", 1, 0);
-		
 		AVCodec* codec = avcodec_find_decoder (context->codec_id);
 		if (codec == 0) {
 			throw DecodeError (_("could not find audio decoder"));
 		}
+
+		AVDictionary* options = 0;
+		av_dict_set (&options, "disable_footer", "1", 0);
 		
-		if (avcodec_open2 (context, codec, 0) < 0) {
+		if (avcodec_open2 (context, codec, &options) < 0) {
 			throw DecodeError (N_("could not open audio decoder"));
 		}
 	}
