@@ -180,6 +180,10 @@ FFmpeg::setup_audio ()
 			throw DecodeError (_("could not find audio decoder"));
 		}
 
+		/* This option disables decoding of DCA frame footers in our patched version
+		   of FFmpeg.  I believe these footers are of no use to us, and they can cause
+		   problems when FFmpeg fails to decode them (mantis #352).
+		*/
 		AVDictionary* options = 0;
 		av_dict_set (&options, "disable_footer", "1", 0);
 		
