@@ -460,10 +460,6 @@ FFmpegDecoder::decode_audio_packet ()
 				0, audio_codec_context()->channels, _frame->nb_samples, audio_sample_format (), 1
 				);
 
-<<<<<<< HEAD
-=======
-			LOG_WARNING ("got data_size=%1", data_size);
->>>>>>> 5ced60cf10ec31558058fbe118486e471119f231
 			audio (deinterleave_audio (_frame->data, data_size), _audio_position);
 		}
 			
