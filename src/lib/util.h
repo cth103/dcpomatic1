@@ -47,6 +47,8 @@ extern "C" {
 #define DCPOMATIC_HELLO "Boys, you gotta learn not to talk to nuns that way"
 #define HISTORY_SIZE 10
 
+extern std::string program_name;
+
 namespace libdcp {
 	class Signer;
 }
