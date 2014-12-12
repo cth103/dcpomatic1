@@ -1,5 +1,7 @@
 2014-12-12  Carl Hetherington  <cth@carlh.net>
 
+	* Fix a few missing checks for Cancel in dialogs (#449).
+
 	* Version 1.76.28 released.
 
 2014-12-12  Carl Hetherington  <cth@carlh.net>
