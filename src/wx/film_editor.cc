@@ -134,7 +134,7 @@ FilmEditor::make_dcp_panel ()
 
 	add_label_to_grid_bag_sizer (grid, _dcp_panel, _("Container"), true, wxGBPosition (r, 0));
 	_container = new wxChoice (_dcp_panel, wxID_ANY);
-	grid->Add (_container, wxGBPosition (r, 1), wxDefaultSpan, wxEXPAND);
+	grid->Add (_container, wxGBPosition (r, 1), wxDefaultSpan);
 	++r;
 
 	add_label_to_grid_bag_sizer (grid, _dcp_panel, _("Content Type"), true, wxGBPosition (r, 0));
