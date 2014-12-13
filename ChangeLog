@@ -1,3 +1,9 @@
+2014-12-13  Carl Hetherington  <cth@carlh.net>
+
+	* Add "copy to name" button to allow editing
+	of ISDCF names after creation rather than the
+	`replace-on-disable' hack.
+
 2014-12-12  Carl Hetherington  <cth@carlh.net>
 
 	* Fix a few missing checks for Cancel in dialogs (#449).

@@ -80,6 +80,7 @@ private:
 	void name_changed ();
 	void use_isdcf_name_toggled ();
 	void edit_isdcf_button_clicked ();
+	void copy_isdcf_name_button_clicked ();
 	void content_selection_changed ();
 	void content_add_folder_clicked ();
 	void content_remove_clicked ();
@@ -144,6 +145,7 @@ private:
 	wxButton* _content_later;
 	wxButton* _content_timeline;
 	wxButton* _edit_isdcf_button;
+	wxButton* _copy_isdcf_name_button;
 	wxChoice* _scaler;
  	wxSpinCtrl* _j2k_bandwidth;
 	wxChoice* _dcp_content_type;

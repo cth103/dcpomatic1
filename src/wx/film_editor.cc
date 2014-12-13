@@ -123,9 +123,16 @@ FilmEditor::make_dcp_panel ()
 
 	_use_isdcf_name = new wxCheckBox (_dcp_panel, wxID_ANY, _("Use ISDCF name"));
 	grid->Add (_use_isdcf_name, wxGBPosition (r, 0), wxDefaultSpan, flags);
-	_edit_isdcf_button = new wxButton (_dcp_panel, wxID_ANY, _("Details..."));
-	grid->Add (_edit_isdcf_button, wxGBPosition (r, 1), wxDefaultSpan);
-	++r;
+
+	{
+		wxBoxSizer* s = new wxBoxSizer (wxHORIZONTAL);
+		_edit_isdcf_button = new wxButton (_dcp_panel, wxID_ANY, _("Details..."));
+		s->Add (_edit_isdcf_button, 1, wxEXPAND | wxRIGHT, DCPOMATIC_SIZER_X_GAP);
+		_copy_isdcf_name_button = new wxButton (_dcp_panel, wxID_ANY, _("Copy as name"));
+		s->Add (_copy_isdcf_name_button, 1, wxEXPAND | wxLEFT, DCPOMATIC_SIZER_X_GAP);
+		grid->Add (s, wxGBPosition (r, 1), wxDefaultSpan, wxEXPAND);
+		++r;
+	}
 
 	add_label_to_grid_bag_sizer (grid, _dcp_panel, _("DCP Name"), true, wxGBPosition (r, 0));
 	_dcp_name = new wxStaticText (_dcp_panel, wxID_ANY, wxT (""));
@@ -235,6 +242,7 @@ FilmEditor::connect_to_widgets ()
 	_name->Bind		(wxEVT_COMMAND_TEXT_UPDATED, 	      boost::bind (&FilmEditor::name_changed, this));
 	_use_isdcf_name->Bind	(wxEVT_COMMAND_CHECKBOX_CLICKED,      boost::bind (&FilmEditor::use_isdcf_name_toggled, this));
 	_edit_isdcf_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED,	      boost::bind (&FilmEditor::edit_isdcf_button_clicked, this));
+	_copy_isdcf_name_button->Bind (wxEVT_COMMAND_BUTTON_CLICKED,  boost::bind (&FilmEditor::copy_isdcf_name_button_clicked, this));
 	_container->Bind	(wxEVT_COMMAND_CHOICE_SELECTED,	      boost::bind (&FilmEditor::container_changed, this));
 	_content->Bind		(wxEVT_COMMAND_LIST_ITEM_SELECTED,    boost::bind (&FilmEditor::content_selection_changed, this));
 	_content->Bind		(wxEVT_COMMAND_LIST_ITEM_DESELECTED,  boost::bind (&FilmEditor::content_selection_changed, this));
@@ -717,23 +725,8 @@ FilmEditor::use_isdcf_name_toggled ()
 void
 FilmEditor::use_isdcf_name_changed ()
 {
-	bool const i = _film->use_isdcf_name ();
-
-	if (i) {
-		/* We just chose to use the ISDCF name.  The user has probably unticked and re-ticked the box,
-		   so it's fairly likey that the film's name will now be a full ISDCF one.  Based on this guess,
-		   remove anything after the first _ in the film's name here.
-		*/
-		string const n = _film->name ();
-		if (n.find ("_") != string::npos) {
-			_film->set_name (n.substr (0, n.find ("_")));
-		}
-	} else {
-		/* Otherwise set the name to the full ISDCF name */
-		_film->set_name (_film->isdcf_name (true));
-	}
-
-	_edit_isdcf_button->Enable (i);
+	_edit_isdcf_button->Enable (_film->use_isdcf_name ());
+	setup_dcp_name ();
 }
 
 void
@@ -1113,4 +1106,11 @@ FilmEditor::content_files_dropped (wxDropFilesEvent& event)
 	for (int i = 0; i < event.GetNumberOfFiles(); i++) {
 		_film->examine_and_add_content (content_factory (_film, wx_to_std (paths[i])), true);
 	}
+}
+
+void
+FilmEditor::copy_isdcf_name_button_clicked ()
+{
+	_film->set_name (_film->isdcf_name (false));
+	_film->set_use_isdcf_name (false);
 }
