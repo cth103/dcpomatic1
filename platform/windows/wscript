@@ -32,9 +32,9 @@ def write_installer(bits, version, debug):
     """, file=f)
 
     if debug:
-        print('InstallDir "$PROGRAMFILES\\DCP-o-matic Debug"', file=f)
+        print('InstallDir "$PROGRAMFILES%d\\DCP-o-matic Debug"' % bits, file=f)
     else:
-        print('InstallDir "$PROGRAMFILES\\DCP-o-matic"', file=f)
+        print('InstallDir "$PROGRAMFILES%d\\DCP-o-matic"' % bits, file=f)
 
     print("""
 !insertmacro MUI_PAGE_WELCOME
