@@ -672,6 +672,7 @@ FilmEditor::set_general_sensitivity (bool s)
 	_content_earlier->Enable (s);
 	_content_later->Enable (s);
 	_content_timeline->Enable (s);
+	_copy_isdcf_name_button->Enable (s);
 	_dcp_content_type->Enable (s);
 
 	bool si = s;
