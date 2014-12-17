@@ -455,12 +455,14 @@ private:
 
 	void jobs_show_dcp ()
 	{
-#ifdef __WXMSW__
+#ifdef DCPOMATIC_WINDOWS
 		string d = _film->directory().string ();
 		wstring w;
 		w.assign (d.begin(), d.end());
 		ShellExecute (0, L"open", w.c_str(), 0, 0, SW_SHOWDEFAULT);
-#else
+#endif
+
+#ifdef DCPOMATIC_LINUX
 		int r = system ("which nautilus");
 		if (WEXITSTATUS (r) == 0) {
 			r = system (string ("nautilus " + _film->directory().string()).c_str ());
@@ -476,6 +478,13 @@ private:
 				}
 			}
 		}
+#endif
+
+#ifdef DCPOMATIC_OSX
+		int r = system (string ("open " + _film->directory().string()).c_str ());
+			if (WEXITSTATUS (r)) {
+				error_dialog (this, _("Could not show DCP"));
+			}
 #endif		
 	}
 
