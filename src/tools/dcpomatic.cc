@@ -481,7 +481,7 @@ private:
 #endif
 
 #ifdef DCPOMATIC_OSX
-		int r = system (string ("open -R " + _film->dir (_film->dcp_name (false))).c_str ());
+		int r = system (string ("open -R " + _film->dir (_film->dcp_name (false)).string ()).c_str ());
 		if (WEXITSTATUS (r)) {
 			error_dialog (this, _("Could not show DCP"));
 		}
