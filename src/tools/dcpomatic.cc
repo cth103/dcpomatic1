@@ -481,10 +481,10 @@ private:
 #endif
 
 #ifdef DCPOMATIC_OSX
-		int r = system (string ("open " + _film->directory().string()).c_str ());
-			if (WEXITSTATUS (r)) {
-				error_dialog (this, _("Could not show DCP"));
-			}
+		int r = system (string ("open -R " + _film->dir (_film->dcp_name (false))).c_str ());
+		if (WEXITSTATUS (r)) {
+			error_dialog (this, _("Could not show DCP"));
+		}
 #endif		
 	}
 
