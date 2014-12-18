@@ -130,7 +130,7 @@ Film::Film (boost::filesystem::path dir, bool log)
 	/* Make state.directory a complete path without ..s (where possible)
 	   (Code swiped from Adam Bowen on stackoverflow)
 	*/
-	
+
 	boost::filesystem::path p (boost::filesystem::system_complete (dir));
 	boost::filesystem::path result;
 	for (boost::filesystem::path::iterator i = p.begin(); i != p.end(); ++i) {
@@ -145,7 +145,7 @@ Film::Film (boost::filesystem::path dir, bool log)
 		}
 	}
 
-	set_directory (result);
+	set_directory (result.make_preferred ());
 	if (log) {
 		_log.reset (new FileLog (file ("log")));
 	} else {

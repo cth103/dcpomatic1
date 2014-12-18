@@ -1,3 +1,7 @@
+2014-12-17  Carl Hetherington  <cth@carlh.net>
+
+	* Fix "Show DCP" option on OS X and Windows.
+
 2014-12-15  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.76.31 released.

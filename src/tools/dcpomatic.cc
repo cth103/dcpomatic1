@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <boost/filesystem.hpp>
 #ifdef __WXMSW__
 #include <shellapi.h>
@@ -61,9 +62,11 @@
 #include "lib/content_factory.h"
 
 using std::cout;
+using std::wcout;
 using std::string;
 using std::vector;
 using std::wstring;
+using std::wstringstream;
 using std::map;
 using std::make_pair;
 using std::list;
@@ -456,10 +459,10 @@ private:
 	void jobs_show_dcp ()
 	{
 #ifdef DCPOMATIC_WINDOWS
-		string d = _film->directory().string ();
-		wstring w;
-		w.assign (d.begin(), d.end());
-		ShellExecute (0, L"open", w.c_str(), 0, 0, SW_SHOWDEFAULT);
+		wstringstream args;
+		args << "/select," << _film->dir (_film->dcp_name(false));
+		wcout << args.str() << "\n";
+		ShellExecute (0, L"open", L"explorer.exe", args.str().c_str(), 0, SW_SHOWDEFAULT);
 #endif
 
 #ifdef DCPOMATIC_LINUX
