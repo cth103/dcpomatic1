@@ -230,6 +230,12 @@ public:
 	PixelFormatError (std::string o, AVPixelFormat f);
 };
 
+class ProgrammingError : public StringError
+{
+public:
+	ProgrammingError (std::string file, int line);
+};
+
 /** A parent class for classes which have a need to catch and
  *  re-throw exceptions.  This is intended for classes
  *  which run their own thread; they should do something like

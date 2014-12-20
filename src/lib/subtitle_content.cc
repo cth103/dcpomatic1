@@ -72,7 +72,7 @@ SubtitleContent::SubtitleContent (shared_ptr<const Film> f, vector<shared_ptr<Co
 	: Content (f, c)
 {
 	shared_ptr<SubtitleContent> ref = dynamic_pointer_cast<SubtitleContent> (c[0]);
-	assert (ref);
+	DCPOMATIC_ASSERT (ref);
 	
 	for (size_t i = 0; i < c.size(); ++i) {
 		shared_ptr<SubtitleContent> sc = dynamic_pointer_cast<SubtitleContent> (c[i]);

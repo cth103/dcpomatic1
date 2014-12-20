@@ -104,7 +104,7 @@ SndfileContent::examine (shared_ptr<Job> job, bool calculate_digest)
 	Content::examine (job, calculate_digest);
 
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 
 	SndfileDecoder dec (film, shared_from_this());
 
@@ -146,7 +146,7 @@ Time
 SndfileContent::full_length () const
 {
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 
 	FrameRateChange frc = film->active_frame_rate_change (position ());
 

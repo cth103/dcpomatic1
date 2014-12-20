@@ -80,7 +80,7 @@ Writer::Writer (shared_ptr<const Film> f, weak_ptr<Job> j)
 	boost::filesystem::remove_all (_film->dir (_film->dcp_name ()));
 
 	shared_ptr<Job> job = _job.lock ();
-	assert (job);
+	DCPOMATIC_ASSERT (job);
 
 	job->sub (_("Checking existing image data"));
 	check_existing_picture_mxf ();
@@ -324,7 +324,7 @@ try
 			
 			if (_film->length()) {
 				shared_ptr<Job> job = _job.lock ();
-				assert (job);
+				DCPOMATIC_ASSERT (job);
 				int total = _film->time_to_video_frames (_film->length ());
 				if (_film->three_d ()) {
 					/* _full_written and so on are incremented for each eye, so we need to double the total
@@ -348,7 +348,7 @@ try
 				++i;
 			}
 
-			assert (i != _queue.rend());
+			DCPOMATIC_ASSERT (i != _queue.rend());
 			QueueItem qi = *i;
 
 			++_pushed_to_disk;
@@ -488,7 +488,7 @@ Writer::finish ()
 			       ));
 
 	shared_ptr<Job> job = _job.lock ();
-	assert (job);
+	DCPOMATIC_ASSERT (job);
 
 	job->sub (_("Computing image digest"));
 	_picture_asset->compute_digest (boost::bind (&Job::set_progress, job.get(), _1, false));
@@ -594,7 +594,7 @@ Writer::check_existing_picture_mxf ()
 	while (true) {
 
 		shared_ptr<Job> job = _job.lock ();
-		assert (job);
+		DCPOMATIC_ASSERT (job);
 
 		if (N > 0) {
 			job->set_progress (float (_first_nonexistant_frame) / N);

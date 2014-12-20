@@ -154,7 +154,7 @@ FFmpegDecoder::flush ()
 	/* Stop us being asked for any more data */
 	Time const end = _ffmpeg_content->trim_start() + _ffmpeg_content->length_after_trim();
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 	_video_position = film->time_to_video_frames (end);
 	_audio_position = film->time_to_audio_frames (end);
 }
@@ -170,7 +170,7 @@ FFmpegDecoder::pass ()
 			char buf[256];
 			av_strerror (r, buf, sizeof(buf));
 			shared_ptr<const Film> film = _film.lock ();
-			assert (film);
+			DCPOMATIC_ASSERT (film);
 			LOG_ERROR (N_("error on av_read_frame (%1) (%2)"), buf, r);
 		}
 
@@ -179,7 +179,7 @@ FFmpegDecoder::pass ()
 	}
 
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 
 	int const si = _packet.stream_index;
 	
@@ -200,12 +200,12 @@ FFmpegDecoder::pass ()
 shared_ptr<AudioBuffers>
 FFmpegDecoder::deinterleave_audio (uint8_t** data, int size)
 {
-	assert (_ffmpeg_content->audio_channels());
-	assert (bytes_per_audio_sample());
+	DCPOMATIC_ASSERT (_ffmpeg_content->audio_channels());
+	DCPOMATIC_ASSERT (bytes_per_audio_sample());
 
 	/* Deinterleave and convert to float */
 
-	assert ((size % (bytes_per_audio_sample() * _ffmpeg_content->audio_channels())) == 0);
+	DCPOMATIC_ASSERT ((size % (bytes_per_audio_sample() * _ffmpeg_content->audio_channels())) == 0);
 
 	int const total_samples = size / bytes_per_audio_sample();
 	int const frames = total_samples / _ffmpeg_content->audio_channels();
@@ -429,7 +429,7 @@ FFmpegDecoder::decode_audio_packet ()
 			*/
 			
 			shared_ptr<const Film> film = _film.lock ();
-			assert (film);
+			DCPOMATIC_ASSERT (film);
 			LOG_WARNING ("avcodec_decode_audio4 failed (%1)", decode_result);
 
 			/* Fudge decode_result so that we come out of the while loop when
@@ -494,7 +494,7 @@ FFmpegDecoder::decode_video_packet ()
 
 	if (i == _filter_graphs.end ()) {
 		shared_ptr<const Film> film = _film.lock ();
-		assert (film);
+		DCPOMATIC_ASSERT (film);
 
 		graph.reset (new FilterGraph (_ffmpeg_content, libdcp::Size (_frame->width, _frame->height), (AVPixelFormat) _frame->format));
 		_filter_graphs.push_back (graph);
@@ -507,7 +507,7 @@ FFmpegDecoder::decode_video_packet ()
 	list<pair<shared_ptr<Image>, int64_t> > images = graph->process (_frame);
 
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 
 	for (list<pair<shared_ptr<Image>, int64_t> >::iterator i = images.begin(); i != images.end(); ++i) {
 
@@ -544,7 +544,7 @@ FFmpegDecoder::decode_video_packet ()
 					);
 				
 				shared_ptr<const Film> film = _film.lock ();
-				assert (film);
+				DCPOMATIC_ASSERT (film);
 
 				black->make_black ();
 				video (shared_ptr<ImageProxy> (new RawImageProxy (image, film->log())), false, _video_position);
@@ -594,7 +594,7 @@ bool
 FFmpegDecoder::done () const
 {
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 
 	Time const vp = film->video_frames_to_time (_video_position);
 	Time const ap = film->audio_frames_to_time (_audio_position);

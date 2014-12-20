@@ -39,6 +39,7 @@ extern "C" {
 #include "compose.hpp"
 #include "types.h"
 #include "video_content.h"
+#include "exceptions.h"
 
 #undef check
 
@@ -46,6 +47,8 @@ extern "C" {
 #define MAX_DCP_AUDIO_CHANNELS 12
 #define DCPOMATIC_HELLO "Boys, you gotta learn not to talk to nuns that way"
 #define HISTORY_SIZE 10
+
+#define DCPOMATIC_ASSERT(x) if (!(x)) throw ProgrammingError (__FILE__, __LINE__);
 
 extern std::string program_name;
 

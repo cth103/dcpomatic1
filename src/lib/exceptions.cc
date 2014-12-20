@@ -56,8 +56,14 @@ MissingSettingError::MissingSettingError (string s)
 
 }
 
-PixelFormatError::PixelFormatError (std::string o, AVPixelFormat f)
+PixelFormatError::PixelFormatError (string o, AVPixelFormat f)
 	: StringError (String::compose (_("Cannot handle pixel format %1 during %2"), f, o))
+{
+
+}
+
+ProgrammingError::ProgrammingError (string file, int line)
+	: StringError (String::compose (_("Programming error at %1:%2"), file, line))
 {
 
 }

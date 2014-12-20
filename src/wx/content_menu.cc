@@ -120,7 +120,7 @@ ContentMenu::join ()
 		}
 	}
 
-	assert (fc.size() > 1);
+	DCPOMATIC_ASSERT (fc.size() > 1);
 
 	shared_ptr<Film> film = _film.lock ();
 	if (!film) {
@@ -216,8 +216,8 @@ ContentMenu::maybe_found_missing (weak_ptr<Job> j, weak_ptr<Content> oc, weak_pt
 
 	shared_ptr<Content> old_content = oc.lock ();
 	shared_ptr<Content> new_content = nc.lock ();
-	assert (old_content);
-	assert (new_content);
+	DCPOMATIC_ASSERT (old_content);
+	DCPOMATIC_ASSERT (new_content);
 
 	if (new_content->digest() != old_content->digest()) {
 		error_dialog (0, _("The content file(s) you specified are not the same as those that are missing.  Either try again with the correct content file or remove the missing content."));

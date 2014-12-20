@@ -123,7 +123,7 @@ VideoContent::VideoContent (shared_ptr<const Film> f, vector<shared_ptr<Content>
 	, _video_length (0)
 {
 	shared_ptr<VideoContent> ref = dynamic_pointer_cast<VideoContent> (c[0]);
-	assert (ref);
+	DCPOMATIC_ASSERT (ref);
 
 	for (size_t i = 0; i < c.size(); ++i) {
 		shared_ptr<VideoContent> vc = dynamic_pointer_cast<VideoContent> (c[i]);
@@ -386,7 +386,7 @@ VideoContent::video_size_after_3d_split () const
 		return libdcp::Size (s.width, s.height / 2);
 	}
 
-	assert (false);
+	DCPOMATIC_ASSERT (false);
 }
 
 void
@@ -425,7 +425,7 @@ VideoContent::Frame
 VideoContent::time_to_content_video_frames (Time t) const
 {
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 	
 	FrameRateChange frc (video_frame_rate(), film->video_frame_rate());
 
@@ -440,7 +440,7 @@ void
 VideoContent::scale_and_crop_to_fit_width ()
 {
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 
 	set_scale (VideoContentScale (film->container ()));
 
@@ -453,7 +453,7 @@ void
 VideoContent::scale_and_crop_to_fit_height ()
 {
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 
 	set_scale (VideoContentScale (film->container ()));
 
@@ -504,7 +504,7 @@ VideoContent::processing_description () const
 	}
 
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 
 	libdcp::Size const container_size = film->frame_size ();
 	libdcp::Size const scaled = scale().size (dynamic_pointer_cast<const VideoContent> (shared_from_this ()), container_size, container_size);

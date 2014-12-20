@@ -52,7 +52,7 @@ Subtitle::update (shared_ptr<const Film> film, libdcp::Size video_container_size
 	}
 
 	shared_ptr<SubtitleContent> sc = dynamic_pointer_cast<SubtitleContent> (piece->content);
-	assert (sc);
+	DCPOMATIC_ASSERT (sc);
 
 	dcpomatic::Rect<double> in_rect = _in_rect;
 	libdcp::Size scaled_size;

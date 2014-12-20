@@ -145,7 +145,7 @@ Player::pass ()
 
 			if (earliest->decoder->done()) {
 				shared_ptr<AudioContent> ac = dynamic_pointer_cast<AudioContent> (earliest->content);
-				assert (ac);
+				DCPOMATIC_ASSERT (ac);
 				shared_ptr<Resampler> re = resampler (ac, false);
 				if (re) {
 					shared_ptr<const AudioBuffers> b = re->flush ();
@@ -205,7 +205,7 @@ Player::process_video (weak_ptr<Piece> weak_piece, shared_ptr<const ImageProxy> 
 	}
 
 	shared_ptr<VideoContent> content = dynamic_pointer_cast<VideoContent> (piece->content);
-	assert (content);
+	DCPOMATIC_ASSERT (content);
 
 	FrameRateChange frc (content->video_frame_rate(), _film->video_frame_rate());
 	if (frc.skip && (frame % 2) == 1) {
@@ -285,7 +285,7 @@ Player::process_audio (weak_ptr<Piece> weak_piece, shared_ptr<const AudioBuffers
 	}
 
 	shared_ptr<AudioContent> content = dynamic_pointer_cast<AudioContent> (piece->content);
-	assert (content);
+	DCPOMATIC_ASSERT (content);
 
 	if (!already_resampled) {
 		/* Gain */

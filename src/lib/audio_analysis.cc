@@ -19,12 +19,12 @@
 
 #include <stdint.h>
 #include <cmath>
-#include <cassert>
 #include <cstdio>
 #include <iostream>
 #include <boost/filesystem.hpp>
 #include "audio_analysis.h"
 #include "cross.h"
+#include "util.h"
 
 using std::ostream;
 using std::istream;
@@ -117,14 +117,14 @@ AudioAnalysis::AudioAnalysis (boost::filesystem::path filename)
 void
 AudioAnalysis::add_point (int c, AudioPoint const & p)
 {
-	assert (c < channels ());
+	DCPOMATIC_ASSERT (c < channels ());
 	_data[c].push_back (p);
 }
 
 AudioPoint
 AudioAnalysis::get_point (int c, int p) const
 {
-	assert (p < points (c));
+	DCPOMATIC_ASSERT (p < points (c));
 	return _data[c][p];
 }
 
@@ -137,7 +137,7 @@ AudioAnalysis::channels () const
 int
 AudioAnalysis::points (int c) const
 {
-	assert (c < channels ());
+	DCPOMATIC_ASSERT (c < channels ());
 	return _data[c].size ();
 }
 
