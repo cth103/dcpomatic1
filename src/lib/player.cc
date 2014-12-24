@@ -153,7 +153,7 @@ Player::pass ()
 						process_audio (
 							earliest,
 							b,
-							ac->audio_length() * ac->output_audio_frame_rate() / ac->content_audio_frame_rate(),
+							_film->time_to_audio_frames (earliest->audio_position),
 							true
 							);
 					}
