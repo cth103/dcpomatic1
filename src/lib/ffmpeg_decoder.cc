@@ -418,7 +418,6 @@ FFmpegDecoder::decode_audio_packet ()
 
 		int frame_finished;
 		int decode_result = avcodec_decode_audio4 (audio_codec_context(), _frame, &frame_finished, &copy_packet);
-		LOG_WARNING ("decode_result=%1", decode_result);
 		if (decode_result < 0) {
 			/* avcodec_decode_audio4 can sometimes return an error even though it has decoded
 			   some valid data; for example dca_subframe_footer can return AVERROR_INVALIDDATA
@@ -436,7 +435,6 @@ FFmpegDecoder::decode_audio_packet ()
 			   we've processed this data.
 			*/
 			decode_result = copy_packet.size;
-			LOG_WARNING ("fudged to %1", decode_result);
 		}
 
 		if (frame_finished) {
