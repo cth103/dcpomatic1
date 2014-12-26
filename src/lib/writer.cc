@@ -44,6 +44,8 @@
 
 #define LOG_GENERAL(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_GENERAL);
 #define LOG_GENERAL_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_GENERAL);
+#define LOG_DEBUG(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_DEBUG);
+#define LOG_DEBUG_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_DEBUG);
 #define LOG_TIMING(...) _film->log()->microsecond_log (String::compose (__VA_ARGS__), Log::TYPE_TIMING);
 #define LOG_WARNING(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_WARNING);
 #define LOG_WARNING_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_WARNING);
@@ -245,6 +247,9 @@ try
 	{
 		boost::mutex::scoped_lock lock (_mutex);
 
+		/* This is for debugging only */
+		bool done_something = false;
+
 		while (true) {
 			
 			if (_finish || _queued_full_in_memory > _maximum_frames_in_memory || have_sequenced_image_at_queue_head ()) {
@@ -264,6 +269,7 @@ try
 		   _finish is true).
 		*/
 		if (_finish && (!have_sequenced_image_at_queue_head() || _queue.empty())) {
+			done_something = true;
 			/* (Hopefully temporarily) log anything that was not written */
 			if (!_queue.empty() && !have_sequenced_image_at_queue_head()) {
 				LOG_WARNING (N_("Finishing writer with a left-over queue of %1:"), _queue.size());
@@ -277,6 +283,7 @@ try
 
 		/* Write any frames that we can write; i.e. those that are in sequence. */
 		while (have_sequenced_image_at_queue_head ()) {
+			done_something = true;
 			QueueItem qi = _queue.front ();
 			_queue.pop_front ();
 			if (qi.type == QueueItem::FULL && qi.encoded) {
@@ -287,7 +294,7 @@ try
 			switch (qi.type) {
 			case QueueItem::FULL:
 			{
-				LOG_GENERAL (N_("Writer FULL-writes %1 to MXF"), qi.frame);
+				LOG_DEBUG (N_("Writer FULL-writes %1 to MXF"), qi.frame);
 				if (!qi.encoded) {
 					qi.encoded.reset (new EncodedData (_film->j2c_path (qi.frame, qi.eyes, false)));
 				}
@@ -299,14 +306,14 @@ try
 				break;
 			}
 			case QueueItem::FAKE:
-				LOG_GENERAL (N_("Writer FAKE-writes %1 to MXF"), qi.frame);
+				LOG_DEBUG (N_("Writer FAKE-writes %1 to MXF"), qi.frame);
 				_picture_asset_writer->fake_write (qi.size);
 				_last_written[qi.eyes].reset ();
 				++_fake_written;
 				break;
 			case QueueItem::REPEAT:
 			{
-				LOG_GENERAL (N_("Writer REPEAT-writes %1 to MXF"), qi.frame);
+				LOG_DEBUG (N_("Writer REPEAT-writes %1 to MXF"), qi.frame);
 				libdcp::FrameInfo fin = _picture_asset_writer->write (
 					_last_written[qi.eyes]->data(),
 					_last_written[qi.eyes]->size()
@@ -337,6 +344,7 @@ try
 		}
 
 		while (_queued_full_in_memory > _maximum_frames_in_memory) {
+			done_something = true;
 			/* Too many frames in memory which can't yet be written to the stream.
 			   Write some FULL frames to disk.
 			*/
@@ -355,7 +363,7 @@ try
 			
 			lock.unlock ();
 
-			LOG_GENERAL (
+			LOG_DEBUG (
 				"Writer full (awaiting %1 [last eye was %2]); pushes %3 to disk",
 				_last_written_frame + 1,
 				_last_written_eyes, qi.frame
@@ -365,6 +373,14 @@ try
 			lock.lock ();
 			qi.encoded.reset ();
 			--_queued_full_in_memory;
+		}
+
+		if (!done_something) {
+			LOG_DEBUG_NC ("Writer loop ran without doing anything");
+			LOG_DEBUG ("_queued_full_in_memory=%1", _queued_full_in_memory);
+			LOG_DEBUG ("_queue_size=%1", _queue.size ());
+			LOG_DEBUG ("_finish=%1", _finish);
+			LOG_DEBUG ("_last_written_frame=%1", _last_written_frame);
 		}
 
 		/* The queue has probably just gone down a bit; notify anything wait()ing on _full_condition */
@@ -405,11 +421,11 @@ Writer::finish ()
 		return;
 	}
 
-	LOG_GENERAL_NC (N_("Terminating writer thread"));
+	LOG_DEBUG_NC (N_("Terminating writer thread"));
 	
 	terminate_thread (true);
 
-	LOG_GENERAL_NC (N_("Finalizing writers"));
+	LOG_DEBUG_NC (N_("Finalizing writers"));
 	
 	_picture_asset_writer->finalize ();
 	if (_sound_asset_writer) {

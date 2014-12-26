@@ -39,6 +39,7 @@
 #include "frame_rate_change.h"
 
 #define LOG_GENERAL(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_GENERAL);
+#define LOG_DEBUG_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_DEBUG);
 
 using std::list;
 using std::cout;

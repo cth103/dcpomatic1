@@ -803,6 +803,8 @@ public:
 			t->Add (_log_warning, 1, wxEXPAND | wxALL);
 			_log_error = new wxCheckBox (panel, wxID_ANY, _("Errors"));
 			t->Add (_log_error, 1, wxEXPAND | wxALL);
+			_log_debug = new wxCheckBox (panel, wxID_ANY, _("Debugging"));
+			t->Add (_log_debug, 1, wxEXPAND | wxALL);
 			_log_timing = new wxCheckBox (panel, wxID_ANY, S_("Config|Timing"));
 			t->Add (_log_timing, 1, wxEXPAND | wxALL);
 			table->Add (t, 0, wxALL, 6);
@@ -821,6 +823,8 @@ public:
 		_log_warning->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&AdvancedPage::log_changed, this));
 		_log_error->SetValue (config->log_types() & Log::TYPE_ERROR);
 		_log_error->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&AdvancedPage::log_changed, this));
+		_log_debug->SetValue (config->log_types() & Log::TYPE_DEBUG);
+		_log_debug->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&AdvancedPage::log_changed, this));
 		_log_timing->SetValue (config->log_types() & Log::TYPE_TIMING);
 		_log_timing->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&AdvancedPage::log_changed, this));
 		
@@ -851,6 +855,9 @@ private:
 		if (_log_error->GetValue ())  {
 			types |= Log::TYPE_ERROR;
 		}
+		if (_log_debug->GetValue ())  {
+			types |= Log::TYPE_DEBUG;
+		}
 		if (_log_timing->GetValue ()) {
 			types |= Log::TYPE_TIMING;
 		}
@@ -862,6 +869,7 @@ private:
 	wxCheckBox* _log_general;
 	wxCheckBox* _log_warning;
 	wxCheckBox* _log_error;
+	wxCheckBox* _log_debug;
 	wxCheckBox* _log_timing;
 };
 	
