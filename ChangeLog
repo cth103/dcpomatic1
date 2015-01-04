@@ -1,5 +1,9 @@
 2015-01-04  Carl Hetherington  <cth@carlh.net>
 
+	* Version 1.76.34 released.
+
+2015-01-04  Carl Hetherington  <cth@carlh.net>
+
 	* Fix for non-playing of FFmpeg-decoded files
 	that return AVERROR_INVALIDDATA.
 
