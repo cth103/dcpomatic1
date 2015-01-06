@@ -37,7 +37,9 @@ struct FrameRateChange
 		return repeat;
 	}
 
+	/** Source frame rate */
 	float source;
+	/** DCP frame rate */
 	int dcp;
 
 	/** true to skip every other frame */
