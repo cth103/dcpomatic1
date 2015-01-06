@@ -1,3 +1,8 @@
+2015-01-06  c.hetherington  <cth@carlh.net>
+
+	* Fix incorrect lengths of sound files when using
+	very low frame-rate video (#440).
+
 2015-01-04  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.76.34 released.

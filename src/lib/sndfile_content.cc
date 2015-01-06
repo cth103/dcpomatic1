@@ -151,7 +151,7 @@ SndfileContent::full_length () const
 	FrameRateChange frc = film->active_frame_rate_change (position ());
 
 	OutputAudioFrame const len = divide_with_round (
-		audio_length() * output_audio_frame_rate() * frc.source,
+		audio_length() * output_audio_frame_rate() * frc.source * frc.repeat,
 		content_audio_frame_rate() * film->video_frame_rate()
 		);
 	
