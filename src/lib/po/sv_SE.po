@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-07 13:16+0000\n"
+"POT-Creation-Date: 2015-01-07 13:46+0000\n"
 "PO-Revision-Date: 2014-01-19 08:59+0100\n"
 "Last-Translator: Adam Klotblixt <adam.klotblixt@gmail.com>\n"
 "Language-Team: \n"
@@ -17,10 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.6.3\n"
 
-#: src/lib/video_content.cc:246
-msgid " sample aspect ratio %1:1"
-msgstr ""
-
 #: src/lib/sndfile_content.cc:61
 msgid "%1 [audio]"
 msgstr "%1 [ljud]"
@@ -28,22 +24,6 @@ msgstr "%1 [ljud]"
 #: src/lib/ffmpeg_content.cc:211
 msgid "%1 [movie]"
 msgstr "%1 [film]"
-
-#: src/lib/sndfile_content.cc:82
-msgid "%1 channels, %2kHz, %3 samples"
-msgstr "%1 kanaler, %2kHz, %3 sampel"
-
-#: src/lib/ffmpeg_content.cc:246
-msgid "%1 frames; %2 frames per second"
-msgstr "%1 bilder; %2 bilder per sekund"
-
-#: src/lib/video_content.cc:239
-msgid "%1x%2 pixels (%3:1)"
-msgstr "%1x%2 pixlar (%3:1)"
-
-#: src/lib/video_content.cc:367
-msgid ", sample aspect ratio %1"
-msgstr ""
 
 #: src/lib/ratio.cc:34
 msgid "1.19"
@@ -89,12 +69,12 @@ msgstr "Analysera audio"
 msgid "Area"
 msgstr "Yta"
 
-#: src/lib/audio_content.cc:192
+#: src/lib/audio_content.cc:195
 #, fuzzy
 msgid "Audio will be resampled from %1kHz to %2kHz."
 msgstr "Audio kommer att samplas om från %1kHz till %2kHz."
 
-#: src/lib/audio_content.cc:194
+#: src/lib/audio_content.cc:197
 msgid "Audio will not be resampled."
 msgstr ""
 
@@ -138,7 +118,7 @@ msgstr "Beräknar bildsammanfattning"
 msgid "Content and DCP have the same rate.\n"
 msgstr "Källa och DCP har samma bildfrekvens.\n"
 
-#: src/lib/video_content.cc:530
+#: src/lib/video_content.cc:513
 msgid "Content frame rate"
 msgstr "Innehållets bildhastighet"
 
@@ -205,7 +185,7 @@ msgstr "Innehåll som ska sammanfogas måste använda samma audioström."
 msgid "Content to be joined must use the same subtitle stream."
 msgstr "Innehåll som ska sammanfogas måste använda samma undertextström."
 
-#: src/lib/video_content.cc:488
+#: src/lib/video_content.cc:464
 #, fuzzy
 msgid "Content video is %1x%2"
 msgstr "Original-videon är %1x%2"
@@ -254,7 +234,7 @@ msgstr "Kunde inte starta SCP-session (%1)"
 msgid "Could not write to remote file (%1)"
 msgstr "Kunde inte skriva till fjärrfil (%1)"
 
-#: src/lib/video_content.cc:499
+#: src/lib/video_content.cc:482
 #, fuzzy
 msgid "Cropped to %1x%2"
 msgstr "Beskuren till %1x%2"
@@ -464,7 +444,7 @@ msgstr ""
 msgid "Overcomplete wavelet denoiser"
 msgstr "Överkomplett wavelet-brusreducering"
 
-#: src/lib/video_content.cc:523
+#: src/lib/video_content.cc:506
 #, fuzzy
 msgid "Padded with black to %1x%2"
 msgstr "Svarta kanter tillagda för %1x%2"
@@ -510,7 +490,7 @@ msgstr "Höger surround"
 msgid "SSH error (%1)"
 msgstr "SSH fel (%1)"
 
-#: src/lib/video_content.cc:514
+#: src/lib/video_content.cc:497
 #, fuzzy
 msgid "Scaled to %1x%2"
 msgstr "Skalad till %1x%2"
@@ -771,11 +751,6 @@ msgstr "saknad nyckel %1 i nyckel-värde grupp"
 msgid "missing required setting %1"
 msgstr "saknad nödvändig inställning %1"
 
-# Sammanhang?
-#: src/lib/image_content.cc:88
-msgid "moving"
-msgstr "rörlig"
-
 #: src/lib/ffmpeg_decoder.cc:629
 msgid "multi-part subtitles not yet supported"
 msgstr "undertexter i flera delar stöds inte ännu"
@@ -802,6 +777,10 @@ msgstr "sRGB"
 msgid "sRGB non-linearised"
 msgstr "sRGB icke-linjär"
 
+#: src/lib/video_content.cc:472
+msgid "sample aspect ratio"
+msgstr ""
+
 #: src/lib/util.cc:196
 #, fuzzy
 msgid "second"
@@ -811,13 +790,25 @@ msgstr "sekunder"
 msgid "seconds"
 msgstr "sekunder"
 
-#: src/lib/image_content.cc:86
-msgid "still"
-msgstr "stillbild"
-
 #: src/lib/ffmpeg_examiner.cc:179
 msgid "unknown"
 msgstr "okänd"
+
+#~ msgid "%1 channels, %2kHz, %3 samples"
+#~ msgstr "%1 kanaler, %2kHz, %3 sampel"
+
+#~ msgid "%1 frames; %2 frames per second"
+#~ msgstr "%1 bilder; %2 bilder per sekund"
+
+#~ msgid "%1x%2 pixels (%3:1)"
+#~ msgstr "%1x%2 pixlar (%3:1)"
+
+# Sammanhang?
+#~ msgid "moving"
+#~ msgstr "rörlig"
+
+#~ msgid "still"
+#~ msgstr "stillbild"
 
 #~ msgid "Could not read DCP to make KDM for"
 #~ msgstr "Kunde inte läsa DCP för att skapa KDM"

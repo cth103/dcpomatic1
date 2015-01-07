@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IT VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-07 13:16+0000\n"
+"POT-Creation-Date: 2015-01-07 13:46+0000\n"
 "PO-Revision-Date: 2014-02-03 10:48+0100\n"
 "Last-Translator: William Fanelli <william.f@impronte.com>\n"
 "Language-Team: \n"
@@ -17,32 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.6.3\n"
 
-#: src/lib/video_content.cc:246
-msgid " sample aspect ratio %1:1"
-msgstr ""
-
 #: src/lib/sndfile_content.cc:61
 msgid "%1 [audio]"
 msgstr ""
 
 #: src/lib/ffmpeg_content.cc:211
 msgid "%1 [movie]"
-msgstr ""
-
-#: src/lib/sndfile_content.cc:82
-msgid "%1 channels, %2kHz, %3 samples"
-msgstr ""
-
-#: src/lib/ffmpeg_content.cc:246
-msgid "%1 frames; %2 frames per second"
-msgstr "%1 fotogrammi; %2 fotogrammi al secondo"
-
-#: src/lib/video_content.cc:239
-msgid "%1x%2 pixels (%3:1)"
-msgstr ""
-
-#: src/lib/video_content.cc:367
-msgid ", sample aspect ratio %1"
 msgstr ""
 
 #: src/lib/ratio.cc:34
@@ -90,11 +70,11 @@ msgstr "Analizzo l'audio di %1"
 msgid "Area"
 msgstr "Area"
 
-#: src/lib/audio_content.cc:192
+#: src/lib/audio_content.cc:195
 msgid "Audio will be resampled from %1kHz to %2kHz."
 msgstr "L'Audio sarà ricampionato da %1kHz a %2kHz"
 
-#: src/lib/audio_content.cc:194
+#: src/lib/audio_content.cc:197
 msgid "Audio will not be resampled."
 msgstr ""
 
@@ -139,7 +119,7 @@ msgstr ""
 msgid "Content and DCP have the same rate.\n"
 msgstr "Il DCP e il sorgente hanno la stessa frequenza.\n"
 
-#: src/lib/video_content.cc:530
+#: src/lib/video_content.cc:513
 msgid "Content frame rate"
 msgstr ""
 
@@ -207,7 +187,7 @@ msgstr ""
 msgid "Content to be joined must use the same subtitle stream."
 msgstr ""
 
-#: src/lib/video_content.cc:488
+#: src/lib/video_content.cc:464
 msgid "Content video is %1x%2"
 msgstr ""
 
@@ -255,7 +235,7 @@ msgstr "Non posso avviare la sessione SCP (%1)"
 msgid "Could not write to remote file (%1)"
 msgstr "Non posso scrivere il file remoto (%1)"
 
-#: src/lib/video_content.cc:499
+#: src/lib/video_content.cc:482
 msgid "Cropped to %1x%2"
 msgstr ""
 
@@ -466,7 +446,7 @@ msgstr ""
 msgid "Overcomplete wavelet denoiser"
 msgstr "Overcomplete wavelet denoiser"
 
-#: src/lib/video_content.cc:523
+#: src/lib/video_content.cc:506
 msgid "Padded with black to %1x%2"
 msgstr ""
 
@@ -512,7 +492,7 @@ msgstr "Surround destro"
 msgid "SSH error (%1)"
 msgstr "Errore SSH (%1)"
 
-#: src/lib/video_content.cc:514
+#: src/lib/video_content.cc:497
 msgid "Scaled to %1x%2"
 msgstr ""
 
@@ -773,10 +753,6 @@ msgstr "persa la chiave %1 tra i valori chiave"
 msgid "missing required setting %1"
 msgstr "persa la regolazione richiesta %1"
 
-#: src/lib/image_content.cc:88
-msgid "moving"
-msgstr ""
-
 #: src/lib/ffmpeg_decoder.cc:629
 msgid "multi-part subtitles not yet supported"
 msgstr "sottotitoli multi-part non ancora supportati"
@@ -803,6 +779,10 @@ msgstr "sRGB"
 msgid "sRGB non-linearised"
 msgstr "sRGB non linearizzato"
 
+#: src/lib/video_content.cc:472
+msgid "sample aspect ratio"
+msgstr ""
+
 #: src/lib/util.cc:196
 #, fuzzy
 msgid "second"
@@ -812,15 +792,17 @@ msgstr "secondi"
 msgid "seconds"
 msgstr "secondi"
 
-#: src/lib/image_content.cc:86
-#, fuzzy
-msgid "still"
-msgstr "ancora"
-
 #: src/lib/ffmpeg_examiner.cc:179
 #, fuzzy
 msgid "unknown"
 msgstr "Errore sconosciuto"
+
+#~ msgid "%1 frames; %2 frames per second"
+#~ msgstr "%1 fotogrammi; %2 fotogrammi al secondo"
+
+#, fuzzy
+#~ msgid "still"
+#~ msgstr "ancora"
 
 #~ msgid "Cubic interpolating deinterlacer"
 #~ msgstr "Deinterlacciatore cubico interpolato"

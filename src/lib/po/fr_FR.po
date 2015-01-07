@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-07 13:16+0000\n"
+"POT-Creation-Date: 2015-01-07 13:46+0000\n"
 "PO-Revision-Date: 2014-11-25 07:03+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
@@ -17,10 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: src/lib/video_content.cc:246
-msgid " sample aspect ratio %1:1"
-msgstr "ratio d'image %1:1"
-
 #: src/lib/sndfile_content.cc:61
 msgid "%1 [audio]"
 msgstr "%1 [audio]"
@@ -28,22 +24,6 @@ msgstr "%1 [audio]"
 #: src/lib/ffmpeg_content.cc:211
 msgid "%1 [movie]"
 msgstr "%1 [vidéo]"
-
-#: src/lib/sndfile_content.cc:82
-msgid "%1 channels, %2kHz, %3 samples"
-msgstr "%1 canaux, %2kHz, %3 échantillons"
-
-#: src/lib/ffmpeg_content.cc:246
-msgid "%1 frames; %2 frames per second"
-msgstr "%1 images ; %2 images par seconde"
-
-#: src/lib/video_content.cc:239
-msgid "%1x%2 pixels (%3:1)"
-msgstr "%1x%2 pixels (%3:1)"
-
-#: src/lib/video_content.cc:367
-msgid ", sample aspect ratio %1"
-msgstr ", ratio d'image %1"
 
 #: src/lib/ratio.cc:34
 msgid "1.19"
@@ -89,11 +69,11 @@ msgstr "Analyse audio"
 msgid "Area"
 msgstr "Surface"
 
-#: src/lib/audio_content.cc:192
+#: src/lib/audio_content.cc:195
 msgid "Audio will be resampled from %1kHz to %2kHz."
 msgstr "Le son sera ré-échantillonné de %1kHz à %2kHz."
 
-#: src/lib/audio_content.cc:194
+#: src/lib/audio_content.cc:197
 msgid "Audio will not be resampled."
 msgstr "L'audio ne sera pas ré-échantillonné."
 
@@ -137,7 +117,7 @@ msgstr "Calcul de la somme de contrôle image"
 msgid "Content and DCP have the same rate.\n"
 msgstr "Le DCP et la source ont la même cadence.\n"
 
-#: src/lib/video_content.cc:530
+#: src/lib/video_content.cc:513
 msgid "Content frame rate"
 msgstr "Cadence du contenu"
 
@@ -203,7 +183,7 @@ msgstr "Le contenu ajouté doit avoir le même flux audio."
 msgid "Content to be joined must use the same subtitle stream."
 msgstr "Le contenu ajouté doit avoir le même flux sous-titres."
 
-#: src/lib/video_content.cc:488
+#: src/lib/video_content.cc:464
 #, fuzzy
 msgid "Content video is %1x%2"
 msgstr "Le contenu vidéo est %1x%2"
@@ -252,7 +232,7 @@ msgstr "Démarrage de session SCP (%1) impossible"
 msgid "Could not write to remote file (%1)"
 msgstr "Écriture vers fichier distant (%1) impossible"
 
-#: src/lib/video_content.cc:499
+#: src/lib/video_content.cc:482
 #, fuzzy
 msgid "Cropped to %1x%2"
 msgstr "Rognage de %1x%2"
@@ -460,7 +440,7 @@ msgstr "Hors capacité mémoire"
 msgid "Overcomplete wavelet denoiser"
 msgstr "Réduction de bruit par ondelettes"
 
-#: src/lib/video_content.cc:523
+#: src/lib/video_content.cc:506
 #, fuzzy
 msgid "Padded with black to %1x%2"
 msgstr "Enveloppe noire de %1x%2"
@@ -505,7 +485,7 @@ msgstr "Arrière droite"
 msgid "SSH error (%1)"
 msgstr "Erreur SSH (%1)"
 
-#: src/lib/video_content.cc:514
+#: src/lib/video_content.cc:497
 #, fuzzy
 msgid "Scaled to %1x%2"
 msgstr "Mis à l'échelle de %1x%2"
@@ -761,10 +741,6 @@ msgstr "clé %1 manquante dans le paramétrage"
 msgid "missing required setting %1"
 msgstr "paramètre %1 manquant"
 
-#: src/lib/image_content.cc:88
-msgid "moving"
-msgstr "déplacement"
-
 #: src/lib/ffmpeg_decoder.cc:629
 msgid "multi-part subtitles not yet supported"
 msgstr "sous-titres en plusieurs parties non supporté"
@@ -791,6 +767,11 @@ msgstr "sRGB"
 msgid "sRGB non-linearised"
 msgstr "sRGB non linéarisé"
 
+#: src/lib/video_content.cc:472
+#, fuzzy
+msgid "sample aspect ratio"
+msgstr ", ratio d'image %1"
+
 #: src/lib/util.cc:196
 msgid "second"
 msgstr "seconde"
@@ -799,13 +780,27 @@ msgstr "seconde"
 msgid "seconds"
 msgstr "secondes"
 
-#: src/lib/image_content.cc:86
-msgid "still"
-msgstr "%1 [restant]"
-
 #: src/lib/ffmpeg_examiner.cc:179
 msgid "unknown"
 msgstr "inconnu"
+
+#~ msgid " sample aspect ratio %1:1"
+#~ msgstr "ratio d'image %1:1"
+
+#~ msgid "%1 channels, %2kHz, %3 samples"
+#~ msgstr "%1 canaux, %2kHz, %3 échantillons"
+
+#~ msgid "%1 frames; %2 frames per second"
+#~ msgstr "%1 images ; %2 images par seconde"
+
+#~ msgid "%1x%2 pixels (%3:1)"
+#~ msgstr "%1x%2 pixels (%3:1)"
+
+#~ msgid "moving"
+#~ msgstr "déplacement"
+
+#~ msgid "still"
+#~ msgstr "%1 [restant]"
 
 #~ msgid "Could not read DCP to make KDM for"
 #~ msgstr "DCP illisible pour fabrication de KDM"

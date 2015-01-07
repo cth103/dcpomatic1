@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LIBDCPOMATIC\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-07 13:16+0000\n"
+"POT-Creation-Date: 2015-01-07 13:46+0000\n"
 "PO-Revision-Date: 2014-04-20 10:12-0500\n"
 "Last-Translator: Manuel AC <manuel.acevedo@civantos.>\n"
 "Language-Team: Manuel AC <manuel.acevedo@civantos.com>\n"
@@ -17,10 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.6.4\n"
 
-#: src/lib/video_content.cc:246
-msgid " sample aspect ratio %1:1"
-msgstr ""
-
 #: src/lib/sndfile_content.cc:61
 msgid "%1 [audio]"
 msgstr "%1 [audio]"
@@ -28,22 +24,6 @@ msgstr "%1 [audio]"
 #: src/lib/ffmpeg_content.cc:211
 msgid "%1 [movie]"
 msgstr "%1 [película]"
-
-#: src/lib/sndfile_content.cc:82
-msgid "%1 channels, %2kHz, %3 samples"
-msgstr "%1 canales, %2kHz, %3 muestras"
-
-#: src/lib/ffmpeg_content.cc:246
-msgid "%1 frames; %2 frames per second"
-msgstr "%1 imágenes; %2 imágenes per second"
-
-#: src/lib/video_content.cc:239
-msgid "%1x%2 pixels (%3:1)"
-msgstr "%1x%2 pixels (%3:1)"
-
-#: src/lib/video_content.cc:367
-msgid ", sample aspect ratio %1"
-msgstr ""
 
 #: src/lib/ratio.cc:34
 msgid "1.19"
@@ -89,11 +69,11 @@ msgstr "Analizar audio"
 msgid "Area"
 msgstr "Área"
 
-#: src/lib/audio_content.cc:192
+#: src/lib/audio_content.cc:195
 msgid "Audio will be resampled from %1kHz to %2kHz."
 msgstr ""
 
-#: src/lib/audio_content.cc:194
+#: src/lib/audio_content.cc:197
 msgid "Audio will not be resampled."
 msgstr ""
 
@@ -137,7 +117,7 @@ msgstr "Calculando la firma resumen de imagen"
 msgid "Content and DCP have the same rate.\n"
 msgstr "La fuente y el DCP tienen la misma velocidad.\n"
 
-#: src/lib/video_content.cc:530
+#: src/lib/video_content.cc:513
 msgid "Content frame rate"
 msgstr "Velocidad del contenido"
 
@@ -201,7 +181,7 @@ msgstr "Para unir contenido debe usar el mismo tipo de audio."
 msgid "Content to be joined must use the same subtitle stream."
 msgstr "Para unir contenido debe tener el mismo tipo de subtítulos."
 
-#: src/lib/video_content.cc:488
+#: src/lib/video_content.cc:464
 msgid "Content video is %1x%2"
 msgstr "El video es %1x%2"
 
@@ -248,7 +228,7 @@ msgstr "No se pudo iniciar la sesión SCP (%1)"
 msgid "Could not write to remote file (%1)"
 msgstr "No se pudo escribir el fichero remoto (%1)"
 
-#: src/lib/video_content.cc:499
+#: src/lib/video_content.cc:482
 #, fuzzy
 msgid "Cropped to %1x%2"
 msgstr "Recortado a %1x%2"
@@ -456,7 +436,7 @@ msgstr "Falta de memoria"
 msgid "Overcomplete wavelet denoiser"
 msgstr "Overcomplete wavelet denoiser"
 
-#: src/lib/video_content.cc:523
+#: src/lib/video_content.cc:506
 msgid "Padded with black to %1x%2"
 msgstr "Completado con negro hasta %1x%2"
 
@@ -500,7 +480,7 @@ msgstr "Surround derecha"
 msgid "SSH error (%1)"
 msgstr "error SSH (%1)"
 
-#: src/lib/video_content.cc:514
+#: src/lib/video_content.cc:497
 #, fuzzy
 msgid "Scaled to %1x%2"
 msgstr "Redimensionado a %1x%2"
@@ -756,10 +736,6 @@ msgstr "falta la clave %1 en el par clave-valor"
 msgid "missing required setting %1"
 msgstr "falta una configuración obligatoria %1"
 
-#: src/lib/image_content.cc:88
-msgid "moving"
-msgstr "moviendo"
-
 #: src/lib/ffmpeg_decoder.cc:629
 msgid "multi-part subtitles not yet supported"
 msgstr "todavía no se soportan subtítulos en múltiples partes"
@@ -786,6 +762,10 @@ msgstr "sRGB"
 msgid "sRGB non-linearised"
 msgstr "sRGB no-lineal"
 
+#: src/lib/video_content.cc:472
+msgid "sample aspect ratio"
+msgstr ""
+
 #: src/lib/util.cc:196
 #, fuzzy
 msgid "second"
@@ -795,13 +775,24 @@ msgstr "segundos"
 msgid "seconds"
 msgstr "segundos"
 
-#: src/lib/image_content.cc:86
-msgid "still"
-msgstr "imagen fija"
-
 #: src/lib/ffmpeg_examiner.cc:179
 msgid "unknown"
 msgstr "desconocido"
+
+#~ msgid "%1 channels, %2kHz, %3 samples"
+#~ msgstr "%1 canales, %2kHz, %3 muestras"
+
+#~ msgid "%1 frames; %2 frames per second"
+#~ msgstr "%1 imágenes; %2 imágenes per second"
+
+#~ msgid "%1x%2 pixels (%3:1)"
+#~ msgstr "%1x%2 pixels (%3:1)"
+
+#~ msgid "moving"
+#~ msgstr "moviendo"
+
+#~ msgid "still"
+#~ msgstr "imagen fija"
 
 #~ msgid "Could not read DCP to make KDM for"
 #~ msgstr "No se pudo leer el DCP para hacer el KDM"
