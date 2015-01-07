@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: LIBDCPOMATIC\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-01-07 13:46+0000\n"
-"PO-Revision-Date: 2014-04-20 10:12-0500\n"
+"PO-Revision-Date: 2015-01-07 09:06-0500\n"
 "Last-Translator: Manuel AC <manuel.acevedo@civantos.>\n"
 "Language-Team: Manuel AC <manuel.acevedo@civantos.com>\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.4\n"
+"X-Generator: Poedit 1.7.1\n"
 
 #: src/lib/sndfile_content.cc:61
 msgid "%1 [audio]"
@@ -71,11 +71,11 @@ msgstr "Área"
 
 #: src/lib/audio_content.cc:195
 msgid "Audio will be resampled from %1kHz to %2kHz."
-msgstr ""
+msgstr "EL audio será remuestreado de %1kHz a %2kHz."
 
 #: src/lib/audio_content.cc:197
 msgid "Audio will not be resampled."
-msgstr ""
+msgstr "El audio no será remuestreado."
 
 #: src/lib/scaler.cc:62
 msgid "Bicubic"
@@ -151,9 +151,9 @@ msgstr ""
 "Para unir contenido debe tener el mismo desplazamiento de subtítulo en X."
 
 #: src/lib/subtitle_content.cc:89
-#, fuzzy
 msgid "Content to be joined must have the same subtitle X scale."
-msgstr "Para unir contenido debe tener el mismo tamaño de subtítulo."
+msgstr ""
+"Para unir contenido los subtítulos deben tener la misma redimensión en X."
 
 #: src/lib/subtitle_content.cc:85
 msgid "Content to be joined must have the same subtitle Y offset."
@@ -161,9 +161,9 @@ msgstr ""
 "Para unir contenido debe tener el mismo desplazamiento de subtítulo en Y."
 
 #: src/lib/subtitle_content.cc:93
-#, fuzzy
 msgid "Content to be joined must have the same subtitle Y scale."
-msgstr "Para unir contenido debe tener el mismo tamaño de subtítulo."
+msgstr ""
+"Para unir contenido los subtítulos deben tener la misma redimensión en Y."
 
 #: src/lib/video_content.cc:136
 msgid "Content to be joined must have the same video frame rate."
@@ -198,15 +198,16 @@ msgid "Could not create remote directory %1 (%2)"
 msgstr "No se pudo crear la carpeta remota %1 (%2)"
 
 #: src/lib/image_proxy.cc:147
-#, fuzzy
 msgid "Could not decode image file (%1)"
-msgstr "No se pudo crear el fichero (%1)"
+msgstr "No se pudo descodificar el fichero de imagen (%1)"
 
 #: src/lib/server_finder.cc:114
 msgid ""
 "Could not listen for remote encode servers.  Perhaps another instance of DCP-"
 "o-matic is running."
 msgstr ""
+"No se pueden buscar servidores de codificación externos. Quizás haya otro "
+"DCP-o-matic ejecutándose."
 
 #: src/lib/job.cc:95
 msgid "Could not open %1"
@@ -229,7 +230,6 @@ msgid "Could not write to remote file (%1)"
 msgstr "No se pudo escribir el fichero remoto (%1)"
 
 #: src/lib/video_content.cc:482
-#, fuzzy
 msgid "Cropped to %1x%2"
 msgstr "Recortado a %1x%2"
 
@@ -259,7 +259,6 @@ msgid "De-interlacing"
 msgstr "Desentrelazado"
 
 #: src/lib/config.cc:367
-#, fuzzy
 msgid ""
 "Dear Projectionist\n"
 "\n"
@@ -276,6 +275,9 @@ msgstr ""
 "Estimado proyeccionista\n"
 "\n"
 "Adjuntas encontrará las llaves KDM para $CPL_NAME.\n"
+"\n"
+"Cinema: $CINEMA_NAME\n"
+"Screen(s): $SCREENS\n"
 "\n"
 "Estas llaves KDM son válidas desde $START_TIME hasta $END_TIME.\n"
 "\n"
@@ -351,17 +353,16 @@ msgid "High quality 3D denoiser"
 msgstr "Reductor de ruido 3D de alta calidad"
 
 #: src/lib/job.cc:116 src/lib/job.cc:126
-#, fuzzy
 msgid ""
 "It is not known what caused this error.  Please report the problem to the "
 "DCP-o-matic author (carl@dcpomatic.com)."
 msgstr ""
-"Error desconocido. La mejor idea es informar del problema a la lista de "
-"correo de DCP-o-matic (carl@dcpomatic.com)"
+"Error desconocido. Por favor informe del problema al creador de DCP-o-matic "
+"(carl@dcpomatic.com)"
 
 #: src/lib/config.cc:189
 msgid "KDM delivery: $CPL_NAME"
-msgstr ""
+msgstr "Envío de KDM: $CPL_NAME"
 
 #: src/lib/filter.cc:66
 msgid "Kernel deinterlacer"
@@ -409,7 +410,7 @@ msgstr "Sin deformación"
 
 #: src/lib/image_content.cc:50
 msgid "No valid image files were found in the folder."
-msgstr ""
+msgstr "No se encontraron imágenes válidas en la carpeta."
 
 #: src/lib/filter.cc:70 src/lib/filter.cc:71 src/lib/filter.cc:73
 msgid "Noise reduction"
@@ -446,7 +447,7 @@ msgstr "Policy"
 
 #: src/lib/exceptions.cc:66
 msgid "Programming error at %1:%2"
-msgstr ""
+msgstr "Error de programación en %1:%2"
 
 #: src/lib/dcp_content_type.cc:52
 msgid "Public Service Announcement"
@@ -481,7 +482,6 @@ msgid "SSH error (%1)"
 msgstr "error SSH (%1)"
 
 #: src/lib/video_content.cc:497
-#, fuzzy
 msgid "Scaled to %1x%2"
 msgstr "Redimensionado a %1x%2"
 
@@ -562,7 +562,7 @@ msgstr "Contenidos inesperados del fichero ZIP"
 
 #: src/lib/image_proxy.cc:197
 msgid "Unexpected image type received by server"
-msgstr ""
+msgstr "El servidor ha recibido un tipo de imagen inesperado"
 
 #: src/lib/job.cc:125
 msgid "Unknown error"
@@ -764,12 +764,11 @@ msgstr "sRGB no-lineal"
 
 #: src/lib/video_content.cc:472
 msgid "sample aspect ratio"
-msgstr ""
+msgstr "muestra de proporción de aspecto"
 
 #: src/lib/util.cc:196
-#, fuzzy
 msgid "second"
-msgstr "segundos"
+msgstr "segundo"
 
 #: src/lib/util.cc:198
 msgid "seconds"
