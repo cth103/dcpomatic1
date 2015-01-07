@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IT VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-07 13:46+0000\n"
+"POT-Creation-Date: 2015-01-07 15:58+0000\n"
 "PO-Revision-Date: 2014-02-03 10:48+0100\n"
 "Last-Translator: William Fanelli <william.f@impronte.com>\n"
 "Language-Team: \n"
@@ -765,6 +765,10 @@ msgstr "nome"
 msgid "non-bitmap subtitles not yet supported"
 msgstr "sottotitoli non-bitmap non ancora supportati"
 
+#: src/lib/video_content.cc:472
+msgid "pixel aspect ratio"
+msgstr ""
+
 #. / TRANSLATORS: remaining here follows an amount of time that is remaining
 #. / on an operation.
 #: src/lib/job.cc:325
@@ -778,10 +782,6 @@ msgstr "sRGB"
 #: src/lib/config.cc:85
 msgid "sRGB non-linearised"
 msgstr "sRGB non linearizzato"
-
-#: src/lib/video_content.cc:472
-msgid "sample aspect ratio"
-msgstr ""
 
 #: src/lib/util.cc:196
 #, fuzzy

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-07 13:46+0000\n"
+"POT-Creation-Date: 2015-01-07 15:58+0000\n"
 "PO-Revision-Date: 2014-01-19 08:59+0100\n"
 "Last-Translator: Adam Klotblixt <adam.klotblixt@gmail.com>\n"
 "Language-Team: \n"
@@ -763,6 +763,10 @@ msgstr "namn"
 msgid "non-bitmap subtitles not yet supported"
 msgstr "icke-rastergrafiska undertexter stöds inte ännu"
 
+#: src/lib/video_content.cc:472
+msgid "pixel aspect ratio"
+msgstr ""
+
 #. / TRANSLATORS: remaining here follows an amount of time that is remaining
 #. / on an operation.
 #: src/lib/job.cc:325
@@ -776,10 +780,6 @@ msgstr "sRGB"
 #: src/lib/config.cc:85
 msgid "sRGB non-linearised"
 msgstr "sRGB icke-linjär"
-
-#: src/lib/video_content.cc:472
-msgid "sample aspect ratio"
-msgstr ""
 
 #: src/lib/util.cc:196
 #, fuzzy

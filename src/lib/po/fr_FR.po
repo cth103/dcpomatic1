@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-07 13:46+0000\n"
+"POT-Creation-Date: 2015-01-07 15:58+0000\n"
 "PO-Revision-Date: 2014-11-25 07:03+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
@@ -753,6 +753,11 @@ msgstr "nom"
 msgid "non-bitmap subtitles not yet supported"
 msgstr "sous-titres non-bitmap non supporté actuellement"
 
+#: src/lib/video_content.cc:472
+#, fuzzy
+msgid "pixel aspect ratio"
+msgstr ", ratio d'image %1"
+
 #. / TRANSLATORS: remaining here follows an amount of time that is remaining
 #. / on an operation.
 #: src/lib/job.cc:325
@@ -766,11 +771,6 @@ msgstr "sRGB"
 #: src/lib/config.cc:85
 msgid "sRGB non-linearised"
 msgstr "sRGB non linéarisé"
-
-#: src/lib/video_content.cc:472
-#, fuzzy
-msgid "sample aspect ratio"
-msgstr ", ratio d'image %1"
 
 #: src/lib/util.cc:196
 msgid "second"

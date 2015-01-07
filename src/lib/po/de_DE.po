@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-07 13:46+0000\n"
+"POT-Creation-Date: 2015-01-07 15:58+0000\n"
 "PO-Revision-Date: 2014-11-04 13:03+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -757,6 +757,10 @@ msgstr "Name"
 msgid "non-bitmap subtitles not yet supported"
 msgstr "Nur Bitmap Untertitel werden unterstützt"
 
+#: src/lib/video_content.cc:472
+msgid "pixel aspect ratio"
+msgstr ""
+
 #. / TRANSLATORS: remaining here follows an amount of time that is remaining
 #. / on an operation.
 #: src/lib/job.cc:325
@@ -770,10 +774,6 @@ msgstr "sRGB"
 #: src/lib/config.cc:85
 msgid "sRGB non-linearised"
 msgstr "sRGB nicht linearisiert"
-
-#: src/lib/video_content.cc:472
-msgid "sample aspect ratio"
-msgstr ""
 
 #: src/lib/util.cc:196
 msgid "second"
