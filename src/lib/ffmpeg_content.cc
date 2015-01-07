@@ -214,12 +214,12 @@ FFmpegContent::summary () const
 string
 FFmpegContent::technical_summary () const
 {
-	string as = "none";
+	string as = N_("none");
 	if (_audio_stream) {
 		as = _audio_stream->technical_summary ();
 	}
 
-	string ss = "none";
+	string ss = N_("none");
 	if (_subtitle_stream) {
 		ss = _subtitle_stream->technical_summary ();
 	}
@@ -230,7 +230,7 @@ FFmpegContent::technical_summary () const
 		+ VideoContent::technical_summary() + " - "
 		+ AudioContent::technical_summary() + " - "
 		+ String::compose (
-			"ffmpeg: audio %1, subtitle %2, filters %3", as, ss, filt
+			N_("ffmpeg: audio %1, subtitle %2, filters %3"), as, ss, filt
 			);
 }
 

@@ -83,9 +83,9 @@ ImageContent::technical_summary () const
 		+ VideoContent::technical_summary() + " - ";
 
 	if (still ()) {
-		s += _("still");
+		s += N_("still");
 	} else {
-		s += _("moving");
+		s += N_("moving");
 	}
 
 	return s;

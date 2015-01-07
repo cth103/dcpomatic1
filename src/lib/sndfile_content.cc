@@ -66,7 +66,7 @@ SndfileContent::technical_summary () const
 {
 	return Content::technical_summary() + " - "
 		+ AudioContent::technical_summary ()
-		+ " - sndfile";
+		+ N_(" - sndfile");
 }
 
 bool
