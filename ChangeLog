@@ -1,3 +1,7 @@
+2015-01-07  c.hetherington  <cth@carlh.net>
+
+	* Add a little more debugging for 99% hangs.
+
 2015-01-06  c.hetherington  <cth@carlh.net>
 
 	* Fix incorrect lengths of sound files when using

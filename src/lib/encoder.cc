@@ -43,6 +43,8 @@
 #define LOG_GENERAL_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_GENERAL);
 #define LOG_ERROR(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_ERROR);
 #define LOG_TIMING(...) _film->log()->microsecond_log (String::compose (__VA_ARGS__), Log::TYPE_TIMING);
+#define LOG_TIMING_NC(...) _film->log()->microsecond_log (__VA_ARGS__, Log::TYPE_TIMING);
+#define LOG_DEBUG_NC(...) _film->log()->microsecond_log (__VA_ARGS__, Log::TYPE_DEBUG);
 
 using std::pair;
 using std::string;
@@ -187,8 +189,10 @@ Encoder::frame_done ()
 void
 Encoder::process_video (shared_ptr<PlayerVideoFrame> pvf, bool same)
 {
-	_waker.nudge ();
+	LOG_DEBUG_NC ("-> Encoder::process_video");
 	
+	_waker.nudge ();
+
 	boost::mutex::scoped_lock lock (_mutex);
 
 	/* XXX: discard 3D here if required */
@@ -201,6 +205,7 @@ Encoder::process_video (shared_ptr<PlayerVideoFrame> pvf, bool same)
 	}
 
 	if (_terminate) {
+		LOG_DEBUG_NC ("<- Encoder::process_video terminated");
 		return;
 	}
 
@@ -239,6 +244,8 @@ Encoder::process_video (shared_ptr<PlayerVideoFrame> pvf, bool same)
 	if (pvf->eyes() != EYES_LEFT) {
 		++_video_frames_out;
 	}
+
+	LOG_DEBUG_NC ("<- Encoder::process_video");
 }
 
 void
@@ -286,6 +293,7 @@ try
 		}
 
 		if (_terminate) {
+			LOG_TIMING ("[%1] encoder thread terminates", boost::this_thread::get_id());
 			return;
 		}
 
