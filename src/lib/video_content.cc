@@ -473,7 +473,7 @@ VideoContent::processing_description () const
 			ratio *= sample_aspect_ratio().get ();
 		}
 
-		d << " (" << fixed << setprecision(2) << ratio << ":1)\n";
+		d << "\nDisplay aspect ratio " << fixed << setprecision(2) << ratio << ":1\n";
 	}
 
 	if ((crop().left || crop().right || crop().top || crop().bottom) && video_size() != libdcp::Size (0, 0)) {
