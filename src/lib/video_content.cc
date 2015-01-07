@@ -466,11 +466,14 @@ VideoContent::processing_description () const
 			video_size_after_3d_split().height
 			);
 
+		float ratio = video_size_after_3d_split().ratio ();
+
 		if (sample_aspect_ratio ()) {
-			d << ", " << String::compose ("sample aspect ratio %1:1", sample_aspect_ratio().get ());
+			d << ", " << _("sample aspect ratio") << " " << fixed << setprecision(2) << sample_aspect_ratio().get () << ":1";
+			ratio *= sample_aspect_ratio().get ();
 		}
 
-		d << " (" << fixed << setprecision(2) << video_size_after_3d_split().ratio() << ":1)\n";
+		d << " (" << fixed << setprecision(2) << ratio << ":1)\n";
 	}
 
 	if ((crop().left || crop().right || crop().top || crop().bottom) && video_size() != libdcp::Size (0, 0)) {
