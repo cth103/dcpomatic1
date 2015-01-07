@@ -469,7 +469,7 @@ VideoContent::processing_description () const
 		float ratio = video_size_after_3d_split().ratio ();
 
 		if (sample_aspect_ratio ()) {
-			d << ", " << _("sample aspect ratio") << " " << fixed << setprecision(2) << sample_aspect_ratio().get () << ":1";
+			d << ", " << _("pixel aspect ratio") << " " << fixed << setprecision(2) << sample_aspect_ratio().get () << ":1";
 			ratio *= sample_aspect_ratio().get ();
 		}
 
