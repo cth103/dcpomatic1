@@ -69,25 +69,6 @@ SndfileContent::technical_summary () const
 		+ " - sndfile";
 }
 
-string
-SndfileContent::information () const
-{
-	if (_audio_frame_rate == 0) {
-		return "";
-	}
-	
-	SafeStringStream s;
-
-	s << String::compose (
-		_("%1 channels, %2kHz, %3 samples"),
-		audio_channels(),
-		content_audio_frame_rate() / 1000.0,
-		audio_length()
-		);
-	
-	return s.str ();
-}
-
 bool
 SndfileContent::valid_file (boost::filesystem::path f)
 {

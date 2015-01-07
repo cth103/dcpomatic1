@@ -225,30 +225,6 @@ VideoContent::take_from_video_examiner (shared_ptr<VideoExaminer> d)
 	signal_changed (VideoContentProperty::VIDEO_SCALE);
 }
 
-
-string
-VideoContent::information () const
-{
-	if (video_size().width == 0 || video_size().height == 0) {
-		return "";
-	}
-	
-	SafeStringStream s;
-
-	s << String::compose (
-		_("%1x%2 pixels (%3:1)"),
-		video_size().width,
-		video_size().height,
-		setprecision (3), video_size().ratio ()
-		);
-
-	if (sample_aspect_ratio ()) {
-		s << String::compose (_(" sample aspect ratio %1:1"), sample_aspect_ratio().get ());
-	}
-	
-	return s.str ();
-}
-
 void
 VideoContent::set_left_crop (int c)
 {
@@ -489,6 +465,10 @@ VideoContent::processing_description () const
 			video_size_after_3d_split().width,
 			video_size_after_3d_split().height
 			);
+
+		if (sample_aspect_ratio ()) {
+			d << ", " << String::compose ("sample aspect ratio %1:1", sample_aspect_ratio().get ());
+		}
 
 		d << " (" << fixed << setprecision(2) << video_size_after_3d_split().ratio() << ":1)\n";
 	}
