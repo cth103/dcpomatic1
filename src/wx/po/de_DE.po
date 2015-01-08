@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-01-07 15:58+0000\n"
-"PO-Revision-Date: 2014-11-04 14:33+0100\n"
+"PO-Revision-Date: 2015-01-08 03:31+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: de\n"
@@ -24,11 +24,10 @@ msgid "%"
 msgstr "%"
 
 #: src/wx/about_dialog.cc:78
-#, fuzzy
 msgid ""
 "(C) 2012-2015 Carl Hetherington, Terrence Meiczinger, Paul Davis, Ole Laursen"
 msgstr ""
-"(C) 2012-2014 Carl Hetherington, Terrence Meiczinger, Paul Davis, Ole Laursen"
+"(C) 2012-2015 Carl Hetherington, Terrence Meiczinger, Paul Davis, Ole Laursen"
 
 #: src/wx/config_dialog.cc:651
 msgid "(password will be stored on disk in plaintext)"
@@ -98,6 +97,10 @@ msgid ""
 "a good idea to drop the JPEG2000 bandwidth down to about 200Mbit/s; this is "
 "unlikely to have any visible effect on the image."
 msgstr ""
+"Einige Projektionssysteme/Server haben Probleme mit der Wiedergabe von DCPs "
+"mit hohen Bitraten. Im Allgemeinen ist es empfehlenswert, die JPEG2000 "
+"Bitrate nicht höher als 200MBit/s einzustellen; Höhere Bitraten sind nur in "
+"extremen Ausnahmefällen sinnvoll."
 
 #: src/wx/update_dialog.cc:34
 msgid "A new version of DCP-o-matic is available."
@@ -135,7 +138,6 @@ msgstr ""
 "hinzufügen..."
 
 #: src/wx/image_sequence_dialog.cc:27
-#, fuzzy
 msgid "Add image sequence"
 msgstr ""
 "Einzelbildsequenz\n"
@@ -244,6 +246,11 @@ msgid ""
 "so that it knows if they change.  Turning this off will speed up import but "
 "you must not alter the image files after import or strange things may happen."
 msgstr ""
+"Standardmäßig berechnet DCP-o-matic Prüfsummen (hashes) der Bilddaten, um "
+"bei erneuten Durchläufen ggfs. Veränderungen erkennen zu können. Wenn Sie "
+"dies abschalten, erfolgt der Import schneller, jedoch dürfen sie nach dem "
+"erstmaligen Import von Bilddateien keine externen Änderungen mehr an ihnen "
+"durchführen, da sonst Probleme bei der Erstellung des DCPs auftreten können."
 
 #: src/wx/audio_mapping_view.cc:285
 msgid "C"
@@ -266,9 +273,8 @@ msgid "CPL annotation text"
 msgstr "CPL annotation text"
 
 #: src/wx/image_sequence_dialog.cc:31
-#, fuzzy
 msgid "Calculate digests"
-msgstr "Berechne..."
+msgstr "Berechne hashes..."
 
 #: src/wx/audio_panel.cc:63
 msgid "Calculate..."
@@ -354,7 +360,7 @@ msgstr "Inhalt Version"
 
 #: src/wx/film_editor.cc:131
 msgid "Copy as name"
-msgstr ""
+msgstr "Name kopieren"
 
 #: src/wx/editable_list.h:65
 msgid "Copy..."
@@ -409,7 +415,7 @@ msgstr "DCP-o-matic Ton - %s"
 
 #: src/wx/config_dialog.cc:806
 msgid "Debugging"
-msgstr ""
+msgstr "Debugging"
 
 #: src/wx/config_dialog.cc:270
 msgid "Default ISDCF name details"
@@ -551,9 +557,8 @@ msgid "Frame Rate"
 msgstr "Bild Rate"
 
 #: src/wx/image_sequence_dialog.cc:29
-#, fuzzy
 msgid "Frame rate"
-msgstr "Bild Rate"
+msgstr "Bildrate"
 
 #: src/wx/properties_dialog.cc:39
 msgid "Frames"
@@ -1230,13 +1235,13 @@ msgstr ""
 "Problemen führen."
 
 #: src/wx/hints_dialog.cc:80
-#, fuzzy
 msgid ""
 "Your DCP has no audio channels.  This is likely to cause problems on "
 "playback."
 msgstr ""
-"Ihr DCP hat eine ungerade Anzahl an Tonkanälen. Das wird wahrscheinlich zu "
-"Abspielproblemen führen."
+"Ihr DCP wird keine Tonspuren enthalten. Das wird wahrscheinlich zu "
+"Abspielproblemen führen. Bitte stellen Sie mindestens 2 Tonkanäle, jedoch "
+"immer eine geradzahlige Nummer von Tonkanälen für das DCP ein."
 
 #: src/wx/timeline.cc:220
 msgid "audio"

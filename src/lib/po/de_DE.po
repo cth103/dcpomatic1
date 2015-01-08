@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-01-07 15:58+0000\n"
-"PO-Revision-Date: 2014-11-04 13:03+0100\n"
+"PO-Revision-Date: 2015-01-08 03:12+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: de\n"
@@ -456,7 +456,7 @@ msgstr "Vorschrift"
 
 #: src/lib/exceptions.cc:66
 msgid "Programming error at %1:%2"
-msgstr ""
+msgstr "Programmfehler bei %1:%2"
 
 #: src/lib/dcp_content_type.cc:52
 msgid "Public Service Announcement"
@@ -759,7 +759,7 @@ msgstr "Nur Bitmap Untertitel werden unterstützt"
 
 #: src/lib/video_content.cc:472
 msgid "pixel aspect ratio"
-msgstr ""
+msgstr "pixel aspect ratio"
 
 #. / TRANSLATORS: remaining here follows an amount of time that is remaining
 #. / on an operation.

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-01-07 15:58+0000\n"
-"PO-Revision-Date: 2014-11-04 13:58+0100\n"
+"PO-Revision-Date: 2015-01-08 03:18+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: de\n"
@@ -97,24 +97,28 @@ msgid "Add Film..."
 msgstr "Projekt hinzufügen..."
 
 #: src/tools/dcpomatic.cc:844
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An exception occurred: %s in %s.\n"
 "\n"
 "Please report this problem to the DCP-o-matic author (carl@dcpomatic.com)."
 msgstr ""
-"Ein Fehler ((%s) ist aufgetreten. Bitte melden Sie dieses Problem an den "
-"Autor von DCP-o-matic (carl@dcpomatic.com)!"
+"Ein Fehler  %s in %s ist aufgetreten.\n"
+"\n"
+"Bitte melden Sie dieses Problem an den Autor von DCP-o-matic (carl@dcpomatic."
+"com)!"
 
 #: src/tools/dcpomatic.cc:846
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "An exception occurred: %s.\n"
 "\n"
 "Please report this problem to the DCP-o-matic author (carl@dcpomatic.com)."
 msgstr ""
-"Ein Fehler ((%s) ist aufgetreten. Bitte melden Sie dieses Problem an den "
-"Autor von DCP-o-matic (carl@dcpomatic.com)!"
+"Ein Fehler  %s ist aufgetreten.\n"
+" \n"
+"Bitte melden Sie dieses Problem an den Autor von DCP-o-matic (carl@dcpomatic."
+"com)!"
 
 #: src/tools/dcpomatic.cc:432
 msgid "An unknown exception occurred."
@@ -131,7 +135,7 @@ msgstr ""
 #: src/tools/dcpomatic.cc:401
 #, c-format
 msgid "Bad setting for %s (%s)"
-msgstr ""
+msgstr "Falscher Parameter für  %s (%s)"
 
 #: src/tools/dcpomatic.cc:428
 msgid "CPL's content is not encrypted."
@@ -146,9 +150,9 @@ msgid "Could not load film %1 (%2)"
 msgstr "Film %1 (%2) konnte nicht geladen werden"
 
 #: src/tools/dcpomatic.cc:403
-#, fuzzy, c-format
+#, c-format
 msgid "Could not make DCP: %s"
-msgstr "Der Film konnte nicht bei %s (%s) geöffnet werden"
+msgstr "Konnte DCP: %s nicht erstellen"
 
 #: src/tools/dcpomatic.cc:261 src/tools/dcpomatic_batch.cc:175
 #, c-format
@@ -157,7 +161,7 @@ msgstr "Der Film konnte nicht bei %s (%s) geöffnet werden"
 
 #: src/tools/dcpomatic.cc:489
 msgid "Could not show DCP"
-msgstr ""
+msgstr "Konnte DCP nicht anzeigen."
 
 #: src/tools/dcpomatic.cc:480
 msgid "Could not show DCP (could not run konqueror)"
