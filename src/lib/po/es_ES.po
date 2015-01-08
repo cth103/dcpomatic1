@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LIBDCPOMATIC\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-07 15:58+0000\n"
+"POT-Creation-Date: 2015-01-08 10:14+0000\n"
 "PO-Revision-Date: 2015-01-07 09:06-0500\n"
 "Last-Translator: Manuel AC <manuel.acevedo@civantos.>\n"
 "Language-Team: Manuel AC <manuel.acevedo@civantos.com>\n"
@@ -283,6 +283,10 @@ msgstr ""
 "\n"
 "Atentamente,\n"
 "DCP-o-matic"
+
+#: src/lib/video_content.cc:476
+msgid "Display aspect ratio"
+msgstr ""
 
 #: src/lib/dolby_cp750.cc:27
 msgid "Dolby CP650 and CP750"

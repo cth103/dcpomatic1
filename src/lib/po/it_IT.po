@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IT VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-07 15:58+0000\n"
+"POT-Creation-Date: 2015-01-08 10:14+0000\n"
 "PO-Revision-Date: 2014-02-03 10:48+0100\n"
 "Last-Translator: William Fanelli <william.f@impronte.com>\n"
 "Language-Team: \n"
@@ -289,6 +289,10 @@ msgstr ""
 "\n"
 "Distinti saluti,\n"
 "DCP-o-matic"
+
+#: src/lib/video_content.cc:476
+msgid "Display aspect ratio"
+msgstr ""
 
 #: src/lib/dolby_cp750.cc:27
 #, fuzzy
