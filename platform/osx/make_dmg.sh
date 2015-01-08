@@ -125,20 +125,20 @@ done
 # It doesn't matter which build we copy i18n etc. from as they
 # should be both the same: use 32-bit.
 
-cp $ROOT/32/build/platform/osx/Info.plist "$WORK/$approot"
-cp $ROOT/32/icons/dcpomatic.icns "$WORK/$resources/DCP-o-matic.icns"
-cp $ROOT/32/icons/colour_conversions.png "$WORK/$resources"
-cp $ROOT/32/icons/defaults.png "$WORK/$resources"
-cp $ROOT/32/icons/kdm_email.png "$WORK/$resources"
-cp $ROOT/32/icons/servers.png "$WORK/$resources"
-cp $ROOT/32/icons/tms.png "$WORK/$resources"
+cp $ROOT/32/src/dcpomatic/build/platform/osx/Info.plist "$WORK/$approot"
+cp $ROOT/32/src/dcpomatic/icons/dcpomatic.icns "$WORK/$resources/DCP-o-matic.icns"
+cp $ROOT/32/src/dcpomatic/icons/colour_conversions.png "$WORK/$resources"
+cp $ROOT/32/src/dcpomatic/icons/defaults.png "$WORK/$resources"
+cp $ROOT/32/src/dcpomatic/icons/kdm_email.png "$WORK/$resources"
+cp $ROOT/32/src/dcpomatic/icons/servers.png "$WORK/$resources"
+cp $ROOT/32/src/dcpomatic/icons/tms.png "$WORK/$resources"
 
 # i18n: DCP-o-matic .mo files
 for lang in de_DE es_ES fr_FR it_IT sv_SE nl_NL; do
   mkdir -p "$WORK/$resources/$lang/LC_MESSAGES"
-  cp $ROOT/32/build/src/lib/mo/$lang/*.mo "$WORK/$resources/$lang/LC_MESSAGES"
-  cp $ROOT/32/build/src/wx/mo/$lang/*.mo "$WORK/$resources/$lang/LC_MESSAGES"
-  cp $ROOT/32/build/src/tools/mo/$lang/*.mo "$WORK/$resources/$lang/LC_MESSAGES"
+  cp $ROOT/32/src/dcpomatic/build/src/lib/mo/$lang/*.mo "$WORK/$resources/$lang/LC_MESSAGES"
+  cp $ROOT/32/src/dcpomatic/build/src/wx/mo/$lang/*.mo "$WORK/$resources/$lang/LC_MESSAGES"
+  cp $ROOT/32/src/dcpomatic/build/src/tools/mo/$lang/*.mo "$WORK/$resources/$lang/LC_MESSAGES"
 done
 
 # i18n: wxWidgets .mo files
