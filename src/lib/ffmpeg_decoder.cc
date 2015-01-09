@@ -207,7 +207,7 @@ FFmpegDecoder::deinterleave_audio (uint8_t** data, int size)
 	DCPOMATIC_ASSERT (_ffmpeg_content->audio_channels());
 	DCPOMATIC_ASSERT (bytes_per_audio_sample());
 
-	/* Deinterleave and convert to float
+	/* Deinterleave and convert to float */
 
 	/* total_samples and frames will be rounded down here, so if there are stray samples at the end
 	   of the block that do not form a complete sample or frame they will be dropped.
