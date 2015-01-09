@@ -39,41 +39,39 @@ TimingPanel::TimingPanel (FilmEditor* e)
 	wxFlexGridSizer* grid = new wxFlexGridSizer (2, 4, 4);
 	_sizer->Add (grid, 0, wxALL, 8);
 
-	{
-		wxSize size = Timecode::size (this);
-		
-		wxSizer* test = new wxBoxSizer (wxHORIZONTAL);
-		//// TRANSLATORS: this is an abbreviation for "hours"
-		wxStaticText* t = new wxStaticText (this, wxID_ANY, _("h"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
+	wxSize size = Timecode::size (this);
+	
+	wxSizer* labels = new wxBoxSizer (wxHORIZONTAL);
+	//// TRANSLATORS: this is an abbreviation for "hours"
+	wxStaticText* t = new wxStaticText (this, wxID_ANY, _("h"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
 #ifdef DCPOMATIC_LINUX
-		/* Hack to work around failure to centre text on GTK */
-		gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
+	/* Hack to work around failure to centre text on GTK */
+	gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
 #endif		
-		test->Add (t, 1, wxEXPAND);
-		add_label_to_sizer (test, this, wxT (":"), false);
-		//// TRANSLATORS: this is an abbreviation for "minutes"
-		t = new wxStaticText (this, wxID_ANY, _("m"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
+	labels->Add (t, 1, wxEXPAND);
+	add_label_to_sizer (labels, this, wxT (":"), false);
+	//// TRANSLATORS: this is an abbreviation for "minutes"
+	t = new wxStaticText (this, wxID_ANY, _("m"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
 #ifdef DCPOMATIC_LINUX
-		gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
+	gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
 #endif		
-		test->Add (t, 1, wxEXPAND);
-		add_label_to_sizer (test, this, wxT (":"), false);
-		//// TRANSLATORS: this is an abbreviation for "seconds"
-		t = new wxStaticText (this, wxID_ANY, _("s"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
+	labels->Add (t, 1, wxEXPAND);
+	add_label_to_sizer (labels, this, wxT (":"), false);
+	//// TRANSLATORS: this is an abbreviation for "seconds"
+	t = new wxStaticText (this, wxID_ANY, _("s"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
 #ifdef DCPOMATIC_LINUX
-		gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
+	gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
 #endif		
-		test->Add (t, 1, wxEXPAND);
-		add_label_to_sizer (test, this, wxT (":"), false);
-		//// TRANSLATORS: this is an abbreviation for "frames"
-		t = new wxStaticText (this, wxID_ANY, _("f"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
+	labels->Add (t, 1, wxEXPAND);
+	add_label_to_sizer (labels, this, wxT (":"), false);
+	//// TRANSLATORS: this is an abbreviation for "frames"
+	t = new wxStaticText (this, wxID_ANY, _("f"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
 #ifdef DCPOMATIC_LINUX
-		gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
+	gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
 #endif		
-		test->Add (t, 1, wxEXPAND);
-		grid->Add (new wxStaticText (this, wxID_ANY, wxT ("")));
-		grid->Add (test);
-	}
+	labels->Add (t, 1, wxEXPAND);
+	grid->Add (new wxStaticText (this, wxID_ANY, wxT ("")));
+	grid->Add (labels);
 
 	add_label_to_sizer (grid, this, _("Position"), true);
 	_position = new Timecode (this);
