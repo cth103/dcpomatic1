@@ -34,6 +34,8 @@ public:
 
 	boost::signals2::signal<void ()> Changed;
 
+	static wxSize size (wxWindow* parent);
+
 private:
 	void changed ();
 	void set_clicked ();

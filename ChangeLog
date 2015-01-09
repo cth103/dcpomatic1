@@ -1,5 +1,7 @@
 2015-01-09  Carl Hetherington  <cth@carlh.net>
 
+	* Label h:m:s:f in timing panel.
+
 	* Version 1.76.38 released.
 
 2015-01-09  c.hetherington  <cth@carlh.net>
