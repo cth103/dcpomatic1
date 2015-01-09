@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-01-08 10:14+0000\n"
-"PO-Revision-Date: 2015-01-08 03:12+0100\n"
+"PO-Revision-Date: 2015-01-09 18:17+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: de\n"
@@ -40,7 +40,7 @@ msgstr "1.66"
 
 #: src/lib/ratio.cc:39
 msgid "16:9"
-msgstr "16:9"
+msgstr "16:9 (1.78)"
 
 #: src/lib/filter.cc:70
 msgid "3D denoiser"
@@ -56,7 +56,7 @@ msgstr "Academy"
 
 #: src/lib/dcp_content_type.cc:53
 msgid "Advertisement"
-msgstr "Werbung"
+msgstr "Werbung (ADV)"
 
 #: src/lib/job.cc:76
 msgid "An error occurred whilst handling the file %1."
@@ -120,7 +120,7 @@ msgstr "Quelle und DCP haben dieselbe Bildrate. Gut ;-)\n"
 
 #: src/lib/video_content.cc:513
 msgid "Content frame rate"
-msgstr "Inhalt Bildrate"
+msgstr "Inhalt Bildrate (fps)"
 
 #: src/lib/audio_content.cc:86
 msgid "Content to be joined must have the same audio delay."
@@ -292,7 +292,7 @@ msgstr ""
 
 #: src/lib/video_content.cc:476
 msgid "Display aspect ratio"
-msgstr ""
+msgstr "Anzeigeseitenverhältnis (DAR):"
 
 #: src/lib/dolby_cp750.cc:27
 msgid "Dolby CP650 and CP750"
@@ -336,7 +336,7 @@ msgstr "Schneller Bilinearer Filter"
 
 #: src/lib/dcp_content_type.cc:44
 msgid "Feature"
-msgstr "Hauptfilm"
+msgstr "Hauptfilm (FTR)"
 
 #: src/lib/ratio.cc:40
 msgid "Flat"
@@ -452,11 +452,11 @@ msgstr "Überbestimmte Wavelet Entrauschung"
 
 #: src/lib/video_content.cc:506
 msgid "Padded with black to %1x%2"
-msgstr "Mit Schwarz gefüllt auf %1x%2"
+msgstr "...mit Schwarz gefüllt auf %1x%2"
 
 #: src/lib/dcp_content_type.cc:51
 msgid "Policy"
-msgstr "Vorschrift"
+msgstr "Vorschrift (POL)"
 
 #: src/lib/exceptions.cc:66
 msgid "Programming error at %1:%2"
@@ -464,11 +464,11 @@ msgstr "Programmfehler bei %1:%2"
 
 #: src/lib/dcp_content_type.cc:52
 msgid "Public Service Announcement"
-msgstr "Hinweis"
+msgstr "Hinweis (PSA)"
 
 #: src/lib/dcp_content_type.cc:49
 msgid "Rating"
-msgstr "Freigabehinweis"
+msgstr "Freigabehinweis (RTG)"
 
 #: src/lib/config.cc:86 src/lib/config.cc:173
 msgid "Rec. 709"
@@ -496,7 +496,7 @@ msgstr "SSH Fehler (%1)"
 
 #: src/lib/video_content.cc:497
 msgid "Scaled to %1x%2"
-msgstr "Skaliert auf %1x%2"
+msgstr "Inhalt wird skaliert auf %1x%2"
 
 #: src/lib/ratio.cc:41
 msgid "Scope"
@@ -504,7 +504,7 @@ msgstr "Scope"
 
 #: src/lib/dcp_content_type.cc:45
 msgid "Short"
-msgstr "Kurzfilm"
+msgstr "Kurzfilm (SHR)"
 
 #: src/lib/scaler.cc:67
 msgid "Sinc"
@@ -516,7 +516,7 @@ msgstr "Spline"
 
 #: src/lib/dcp_content_type.cc:50
 msgid "Teaser"
-msgstr "Teaser"
+msgstr "Teaser (TSR)"
 
 #: src/lib/filter.cc:72
 msgid "Telecine filter"
@@ -524,7 +524,7 @@ msgstr "Telecine Filter"
 
 #: src/lib/dcp_content_type.cc:47
 msgid "Test"
-msgstr "Test"
+msgstr "Test (TST)"
 
 #: src/lib/job.cc:82
 msgid ""
@@ -559,7 +559,7 @@ msgstr ""
 
 #: src/lib/dcp_content_type.cc:46
 msgid "Trailer"
-msgstr "Trailer"
+msgstr "Trailer (TLR)"
 
 #: src/lib/transcode_job.cc:53
 msgid "Transcode %1"
@@ -567,7 +567,7 @@ msgstr "Wandle %1 um"
 
 #: src/lib/dcp_content_type.cc:48
 msgid "Transitional"
-msgstr "Überleitung"
+msgstr "Überleitung (XSN)"
 
 #: src/lib/internet.cc:79
 msgid "Unexpected ZIP file contents"
@@ -763,7 +763,7 @@ msgstr "Nur Bitmap Untertitel werden unterstützt"
 
 #: src/lib/video_content.cc:472
 msgid "pixel aspect ratio"
-msgstr "pixel aspect ratio"
+msgstr "Pixelseitenverhältnis"
 
 #. / TRANSLATORS: remaining here follows an amount of time that is remaining
 #. / on an operation.
