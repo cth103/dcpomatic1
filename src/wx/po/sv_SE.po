@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-08 10:14+0000\n"
+"POT-Creation-Date: 2015-01-09 21:08+0000\n"
 "PO-Revision-Date: 2014-01-19 09:14+0100\n"
 "Last-Translator: Adam Klotblixt <adam.klotblixt@gmail.com>\n"
 "Language-Team: \n"
@@ -581,7 +581,7 @@ msgstr "IP-adress"
 msgid "Full"
 msgstr "Full"
 
-#: src/wx/timing_panel.cc:45
+#: src/wx/timing_panel.cc:81
 msgid "Full length"
 msgstr "Full längd"
 
@@ -837,7 +837,7 @@ msgstr "Topp"
 msgid "Play"
 msgstr "Spela"
 
-#: src/wx/timing_panel.cc:54
+#: src/wx/timing_panel.cc:90
 msgid "Play length"
 msgstr "Spellängd"
 
@@ -845,7 +845,7 @@ msgstr "Spellängd"
 msgid "Please wait; audio is being analysed..."
 msgstr "Vänligen vänta; audio analyseras..."
 
-#: src/wx/timing_panel.cc:42
+#: src/wx/timing_panel.cc:78
 msgid "Position"
 msgstr "Position"
 
@@ -978,7 +978,7 @@ msgstr ""
 msgid "Servers"
 msgstr "Server"
 
-#: src/wx/timecode.cc:65 src/wx/timing_panel.cc:63
+#: src/wx/timecode.cc:63 src/wx/timing_panel.cc:99
 msgid "Set"
 msgstr "Sätt"
 
@@ -1117,11 +1117,11 @@ msgstr "Övre beskärning"
 msgid "Translated by"
 msgstr "Översatt av"
 
-#: src/wx/timing_panel.cc:51
+#: src/wx/timing_panel.cc:87
 msgid "Trim from end"
 msgstr "Trimma från slut"
 
-#: src/wx/timing_panel.cc:48
+#: src/wx/timing_panel.cc:84
 msgid "Trim from start"
 msgstr "Trimma från start"
 
@@ -1181,7 +1181,7 @@ msgstr "VI"
 msgid "Video"
 msgstr "Video"
 
-#: src/wx/timing_panel.cc:59
+#: src/wx/timing_panel.cc:95
 msgid "Video frame rate"
 msgstr "bildhastighet"
 
@@ -1280,12 +1280,29 @@ msgstr "räknar..."
 msgid "dB"
 msgstr "dB"
 
+#. // TRANSLATORS: this is an abbreviation for "frames"
+#: src/wx/timing_panel.cc:69
+msgid "f"
+msgstr ""
+
+#. // TRANSLATORS: this is an abbreviation for "hours"
+#: src/wx/timing_panel.cc:47
+msgid "h"
+msgstr ""
+
+#. // TRANSLATORS: this is an abbreviation for "minutes"
+#: src/wx/timing_panel.cc:55
+#, fuzzy
+msgid "m"
+msgstr "ms"
+
 #. / TRANSLATORS: this is an abbreviation for milliseconds, the unit of time
 #: src/wx/audio_panel.cc:78 src/wx/config_dialog.cc:296
 msgid "ms"
 msgstr "ms"
 
-#: src/wx/config_dialog.cc:258
+#. // TRANSLATORS: this is an abbreviation for "seconds"
+#: src/wx/config_dialog.cc:258 src/wx/timing_panel.cc:62
 msgid "s"
 msgstr "s"
 

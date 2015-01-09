@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-08 10:14+0000\n"
+"POT-Creation-Date: 2015-01-09 21:08+0000\n"
 "PO-Revision-Date: 2014-01-19 08:59+0100\n"
 "Last-Translator: Adam Klotblixt <adam.klotblixt@gmail.com>\n"
 "Language-Team: \n"
@@ -584,7 +584,7 @@ msgid "Unknown error"
 msgstr "Okänt fel"
 
 # Svengelska
-#: src/lib/ffmpeg_decoder.cc:308
+#: src/lib/ffmpeg_decoder.cc:309
 msgid "Unrecognised audio sample format (%1)"
 msgstr "Okänt audio-sampelformat (%1)"
 
@@ -755,7 +755,7 @@ msgstr "saknad nyckel %1 i nyckel-värde grupp"
 msgid "missing required setting %1"
 msgstr "saknad nödvändig inställning %1"
 
-#: src/lib/ffmpeg_decoder.cc:629
+#: src/lib/ffmpeg_decoder.cc:630
 msgid "multi-part subtitles not yet supported"
 msgstr "undertexter i flera delar stöds inte ännu"
 
@@ -763,7 +763,7 @@ msgstr "undertexter i flera delar stöds inte ännu"
 msgid "name"
 msgstr "namn"
 
-#: src/lib/ffmpeg_decoder.cc:644
+#: src/lib/ffmpeg_decoder.cc:645
 msgid "non-bitmap subtitles not yet supported"
 msgstr "icke-rastergrafiska undertexter stöds inte ännu"
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-08 10:14+0000\n"
+"POT-Creation-Date: 2015-01-09 21:08+0000\n"
 "PO-Revision-Date: 2014-11-25 07:03+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
@@ -576,7 +576,7 @@ msgstr "Type d'image reçu par le serveur  non conforme"
 msgid "Unknown error"
 msgstr "Erreur inconnue"
 
-#: src/lib/ffmpeg_decoder.cc:308
+#: src/lib/ffmpeg_decoder.cc:309
 msgid "Unrecognised audio sample format (%1)"
 msgstr "Échantillonnage audio (%1) inconnu"
 
@@ -745,7 +745,7 @@ msgstr "clé %1 manquante dans le paramétrage"
 msgid "missing required setting %1"
 msgstr "paramètre %1 manquant"
 
-#: src/lib/ffmpeg_decoder.cc:629
+#: src/lib/ffmpeg_decoder.cc:630
 msgid "multi-part subtitles not yet supported"
 msgstr "sous-titres en plusieurs parties non supporté"
 
@@ -753,7 +753,7 @@ msgstr "sous-titres en plusieurs parties non supporté"
 msgid "name"
 msgstr "nom"
 
-#: src/lib/ffmpeg_decoder.cc:644
+#: src/lib/ffmpeg_decoder.cc:645
 msgid "non-bitmap subtitles not yet supported"
 msgstr "sous-titres non-bitmap non supporté actuellement"
 

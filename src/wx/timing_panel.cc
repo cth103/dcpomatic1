@@ -43,6 +43,7 @@ TimingPanel::TimingPanel (FilmEditor* e)
 		wxSize size = Timecode::size (this);
 		
 		wxSizer* test = new wxBoxSizer (wxHORIZONTAL);
+		//// TRANSLATORS: this is an abbreviation for "hours"
 		wxStaticText* t = new wxStaticText (this, wxID_ANY, _("h"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
 #ifdef DCPOMATIC_LINUX
 		/* Hack to work around failure to centre text on GTK */
@@ -50,18 +51,21 @@ TimingPanel::TimingPanel (FilmEditor* e)
 #endif		
 		test->Add (t, 1, wxEXPAND);
 		add_label_to_sizer (test, this, wxT (":"), false);
+		//// TRANSLATORS: this is an abbreviation for "minutes"
 		t = new wxStaticText (this, wxID_ANY, _("m"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
 #ifdef DCPOMATIC_LINUX
 		gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
 #endif		
 		test->Add (t, 1, wxEXPAND);
 		add_label_to_sizer (test, this, wxT (":"), false);
+		//// TRANSLATORS: this is an abbreviation for "seconds"
 		t = new wxStaticText (this, wxID_ANY, _("s"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
 #ifdef DCPOMATIC_LINUX
 		gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
 #endif		
 		test->Add (t, 1, wxEXPAND);
 		add_label_to_sizer (test, this, wxT (":"), false);
+		//// TRANSLATORS: this is an abbreviation for "frames"
 		t = new wxStaticText (this, wxID_ANY, _("f"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
 #ifdef DCPOMATIC_LINUX
 		gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);

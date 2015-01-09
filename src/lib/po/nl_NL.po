@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-08 10:14+0000\n"
+"POT-Creation-Date: 2015-01-09 21:08+0000\n"
 "PO-Revision-Date: 2014-09-04 20:34+0100\n"
 "Last-Translator: Cherif Ben Brahim <firehc@mac.com>\n"
 "Language-Team: UniversalDV <Tkooijmans@universaldv.nl>\n"
@@ -577,7 +577,7 @@ msgstr "Onverwacht beeldtype ontvangen door server"
 msgid "Unknown error"
 msgstr "Onbekende fout"
 
-#: src/lib/ffmpeg_decoder.cc:308
+#: src/lib/ffmpeg_decoder.cc:309
 msgid "Unrecognised audio sample format (%1)"
 msgstr "Niet herkenbaar audio sample formaat (%1)"
 
@@ -745,7 +745,7 @@ msgstr "ontbrekende key %1 in key-value set"
 msgid "missing required setting %1"
 msgstr "ontbrekende verplichte setting %1"
 
-#: src/lib/ffmpeg_decoder.cc:629
+#: src/lib/ffmpeg_decoder.cc:630
 msgid "multi-part subtitles not yet supported"
 msgstr "ondertitels met meerdere delen worden nog niet ondersteund."
 
@@ -753,7 +753,7 @@ msgstr "ondertitels met meerdere delen worden nog niet ondersteund."
 msgid "name"
 msgstr "naam"
 
-#: src/lib/ffmpeg_decoder.cc:644
+#: src/lib/ffmpeg_decoder.cc:645
 msgid "non-bitmap subtitles not yet supported"
 msgstr "non-bitmap ondertitels worden nog niet ondersteund"
 

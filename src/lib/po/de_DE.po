@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-08 10:14+0000\n"
+"POT-Creation-Date: 2015-01-09 21:08+0000\n"
 "PO-Revision-Date: 2015-01-09 18:17+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -581,7 +581,7 @@ msgstr "Ungültiges Bildformat vom Server erhalten"
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
-#: src/lib/ffmpeg_decoder.cc:308
+#: src/lib/ffmpeg_decoder.cc:309
 msgid "Unrecognised audio sample format (%1)"
 msgstr "Ton Sample Format (%1) nicht erkannt."
 
@@ -749,7 +749,7 @@ msgstr "Key %1 in Key-value set fehlt"
 msgid "missing required setting %1"
 msgstr "Benötigte Einstellung %1 fehlt"
 
-#: src/lib/ffmpeg_decoder.cc:629
+#: src/lib/ffmpeg_decoder.cc:630
 msgid "multi-part subtitles not yet supported"
 msgstr "Mehr-Segment Untertitel werden noch nicht unterstützt"
 
@@ -757,7 +757,7 @@ msgstr "Mehr-Segment Untertitel werden noch nicht unterstützt"
 msgid "name"
 msgstr "Name"
 
-#: src/lib/ffmpeg_decoder.cc:644
+#: src/lib/ffmpeg_decoder.cc:645
 msgid "non-bitmap subtitles not yet supported"
 msgstr "Nur Bitmap Untertitel werden unterstützt"
 
