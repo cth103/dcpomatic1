@@ -22,6 +22,8 @@
 #include "compose.hpp"
 #include "film.h"
 #include "player.h"
+#include "log.h"
+#include "compose.hpp"
 
 #include "i18n.h"
 
@@ -30,6 +32,9 @@ using std::max;
 using std::min;
 using std::cout;
 using boost::shared_ptr;
+
+#define LOG_DEBUG_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_DEBUG);
+#define LOG_DEBUG(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_DEBUG);
 
 int const AnalyseAudioJob::_num_points = 1024;
 
@@ -56,6 +61,8 @@ AnalyseAudioJob::run ()
 		return;
 	}
 
+	LOG_DEBUG_NC ("Starting audio analysis");
+
 	shared_ptr<Playlist> playlist (new Playlist);
 	playlist->add (content);
 	shared_ptr<Player> player (new Player (_film, playlist));
@@ -70,11 +77,14 @@ AnalyseAudioJob::run ()
 
 	_done = 0;
 	OutputAudioFrame const len = _film->time_to_audio_frames (_film->length ());
+	LOG_DEBUG ("%1 audio frames to analyse", len);
 	while (!player->pass ()) {
 		set_progress (double (_done) / len);
 	}
 
 	_analysis->write (content->audio_analysis_path ());
+
+	LOG_DEBUG_NC ("Finished audio analysis");
 	
 	set_progress (1);
 	set_state (FINISHED_OK);
@@ -83,6 +93,8 @@ AnalyseAudioJob::run ()
 void
 AnalyseAudioJob::audio (shared_ptr<const AudioBuffers> b, Time)
 {
+	LOG_DEBUG ("Analyse %1 frames", b->frames ());
+	
 	for (int i = 0; i < b->frames(); ++i) {
 		for (int j = 0; j < b->channels(); ++j) {
 			float s = b->data(j)[i];
