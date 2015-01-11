@@ -625,6 +625,12 @@ Player::film_changed (Film::Property p)
 void
 Player::process_subtitle (weak_ptr<Piece> weak_piece, shared_ptr<Image> image, dcpomatic::Rect<double> rect, Time from, Time to)
 {
+	shared_ptr<Piece> piece = weak_piece.lock ();
+	DCPOMATIC_ASSERT (piece);
+
+	from -= piece->content->trim_start ();
+	to -= piece->content->trim_start ();
+
 	if (!image) {
 		/* A null image means that we should stop any current subtitles at `from' */
 		for (list<Subtitle>::iterator i = _subtitles.begin(); i != _subtitles.end(); ++i) {
