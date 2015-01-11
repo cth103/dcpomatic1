@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -378,9 +378,9 @@ Image::alpha_blend (shared_ptr<const Image> other, Position<int> position)
 			uint8_t* op = other->data()[0] + oy * other->stride()[0];
 			for (int tx = start_tx, ox = start_ox; tx < size().width && ox < other->size().width; ++tx, ++ox) {
 				float const alpha = float (op[3]) / 255;
-				tp[0] = op[0] + (tp[0] * (1 - alpha));
-				tp[1] = op[1] + (tp[1] * (1 - alpha));
-				tp[2] = op[2] + (tp[2] * (1 - alpha));
+				tp[0] = op[0] * alpha + tp[0] * (1 - alpha);
+				tp[1] = op[1] * alpha + tp[1] * (1 - alpha);
+				tp[2] = op[2] * alpha + tp[2] * (1 - alpha);
 				
 				tp += this_bpp;
 				op += other_bpp;
@@ -397,10 +397,10 @@ Image::alpha_blend (shared_ptr<const Image> other, Position<int> position)
 			uint8_t* op = other->data()[0] + oy * other->stride()[0];
 			for (int tx = start_tx, ox = start_ox; tx < size().width && ox < other->size().width; ++tx, ++ox) {
 				float const alpha = float (op[3]) / 255;
-				tp[0] = op[0] + (tp[0] * (1 - alpha));
-				tp[1] = op[1] + (tp[1] * (1 - alpha));
-				tp[2] = op[2] + (tp[2] * (1 - alpha));
-				tp[3] = op[3] + (tp[3] * (1 - alpha));
+				tp[0] = op[0] * alpha + (tp[0] * (1 - alpha));
+				tp[1] = op[1] * alpha + (tp[1] * (1 - alpha));
+				tp[2] = op[2] * alpha + (tp[2] * (1 - alpha));
+				tp[3] = op[3] * alpha + (tp[3] * (1 - alpha));
 				
 				tp += this_bpp;
 				op += other_bpp;
@@ -417,9 +417,9 @@ Image::alpha_blend (shared_ptr<const Image> other, Position<int> position)
 			for (int tx = start_tx, ox = start_ox; tx < size().width && ox < other->size().width; ++tx, ++ox) {
 				float const alpha = float (op[3]) / 255;
 				/* Blend high bytes */
-				tp[1] = op[0] + (tp[1] * (1 - alpha));
-				tp[3] = op[1] + (tp[3] * (1 - alpha));
-				tp[5] = op[2] + (tp[5] * (1 - alpha));
+				tp[1] = op[0] * alpha + tp[1] * (1 - alpha);
+				tp[3] = op[1] * alpha + tp[3] * (1 - alpha);
+				tp[5] = op[2] * alpha + tp[5] * (1 - alpha);
 				
 				tp += this_bpp;
 				op += other_bpp;
