@@ -1,5 +1,9 @@
 2015-01-11  Carl Hetherington  <cth@carlh.net>
 
+	* Version 1.76.41 released.
+
+2015-01-11  Carl Hetherington  <cth@carlh.net>
+
 	* Fix for subtitle timing with trim.
 
 2015-01-09  Carl Hetherington  <cth@carlh.net>
