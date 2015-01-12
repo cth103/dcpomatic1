@@ -1,3 +1,8 @@
+2015-01-12  c.hetherington  <cth@carlh.net>
+
+	* Trim whitespace from FTP replies
+	to fix problems with certificate download (#442).
+
 2015-01-11  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.76.41 released.
