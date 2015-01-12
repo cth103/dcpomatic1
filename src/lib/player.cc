@@ -85,8 +85,6 @@ Player::disable_audio ()
 bool
 Player::pass ()
 {
-	LOG_DEBUG_NC ("-> Player::pass");
-	
 	if (!_have_valid_pieces) {
 		setup_pieces ();
 	}
@@ -124,35 +122,28 @@ Player::pass ()
 	}
 
 	if (!earliest) {
-		LOG_DEBUG_NC ("<- Player::pass; no earliest piece: finishing");
 		flush ();
 		return true;
 	}
 
 	switch (type) {
 	case VIDEO:
-		LOG_DEBUG ("Player::pass has video at %1", earliest_t);
 		if (earliest_t > _video_position) {
 			emit_black ();
 		} else {
 			if (earliest->repeating ()) {
 				earliest->repeat (this);
 			} else {
-				LOG_DEBUG_NC ("Player::pass calls pass() on video decoder");
 				earliest->decoder->pass ();
-				LOG_DEBUG_NC ("Player::pass returns from pass() on video decoder");
 			}
 		}
 		break;
 
 	case AUDIO:
-		LOG_DEBUG ("Player::pass has audio at %1", earliest_t);
 		if (earliest_t > _audio_position) {
 			emit_silence (_film->time_to_audio_frames (earliest_t - _audio_position));
 		} else {
-			LOG_DEBUG_NC ("Player::pass calls pass() on audio decoder");
 			earliest->decoder->pass ();
-			LOG_DEBUG_NC ("Player::pass returns from pass() on audio decoder");
 
 			if (earliest->decoder->done()) {
 				shared_ptr<AudioContent> ac = dynamic_pointer_cast<AudioContent> (earliest->content);
@@ -194,7 +185,6 @@ Player::pass ()
 		}
 	}
 		
-	LOG_DEBUG_NC ("<- Player::pass");
 	return false;
 }
 
