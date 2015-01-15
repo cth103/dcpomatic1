@@ -2,6 +2,9 @@
 
 	* Fix update checker.
 
+	* Scan a whole FFmpeg file if no duration is given
+	in its header.
+
 2015-01-20  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.77.0 released.

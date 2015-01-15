@@ -35,6 +35,7 @@ using boost::optional;
 
 FFmpegExaminer::FFmpegExaminer (shared_ptr<const FFmpegContent> c)
 	: FFmpeg (c)
+	, _video_length (0)
 {
 	/* Find audio and subtitle streams */
 
@@ -61,7 +62,15 @@ FFmpegExaminer::FFmpegExaminer (shared_ptr<const FFmpegContent> c)
 		}
 	}
 
-	/* Run through until we find the first audio (for each stream) and video */
+	/* See if the header has duration information in it */
+	bool const need_video_length = _format_context->duration == AV_NOPTS_VALUE;
+	if (!need_video_length) {
+		_video_length = double (_format_context->duration) / AV_TIME_BASE;
+	}
+
+	/* Run through until we find the first audio (for each stream) and video, and also
+	   the video length if need_video_length == true.
+	*/
 
 	while (true) {
 		int r = av_read_frame (_format_context, &_packet);
@@ -73,9 +82,14 @@ FFmpegExaminer::FFmpegExaminer (shared_ptr<const FFmpegContent> c)
 
 		AVCodecContext* context = _format_context->streams[_packet.stream_index]->codec;
 
-		if (_packet.stream_index == _video_stream && !_first_video) {
+		if (_packet.stream_index == _video_stream) {
 			if (avcodec_decode_video2 (context, _frame, &frame_finished, &_packet) >= 0 && frame_finished) {
-				_first_video = frame_time (_format_context->streams[_video_stream]);
+				if (!_first_video) {
+					_first_video = frame_time (_format_context->streams[_video_stream]);
+				}
+				if (need_video_length) {
+					_video_length = frame_time (_format_context->streams[_video_stream]).get_value_or (0);
+				}
 			}
 		} else {
 			for (size_t i = 0; i < _audio_streams.size(); ++i) {
@@ -96,7 +110,7 @@ FFmpegExaminer::FFmpegExaminer (shared_ptr<const FFmpegContent> c)
 
 		av_free_packet (&_packet);
 		
-		if (_first_video && have_all_audio) {
+		if (_first_video && have_all_audio && !need_video_length) {
 			break;
 		}
 	}
@@ -137,8 +151,7 @@ FFmpegExaminer::video_size () const
 VideoContent::Frame
 FFmpegExaminer::video_length () const
 {
-	VideoContent::Frame const length = (double (_format_context->duration) / AV_TIME_BASE) * video_frame_rate().get_value_or (0);
-	return max (1, length);
+	return max (1, int (rint (_video_length * video_frame_rate().get_value_or (0))));
 }
 
 optional<float>

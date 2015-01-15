@@ -55,4 +55,8 @@ private:
 	std::vector<boost::shared_ptr<FFmpegSubtitleStream> > _subtitle_streams;
 	std::vector<boost::shared_ptr<FFmpegAudioStream> > _audio_streams;
 	boost::optional<double> _first_video;
+	/** Video length in seconds, either obtained from the header or derived by running
+	    through the whole file.
+	*/
+	double _video_length;
 };
