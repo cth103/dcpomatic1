@@ -35,6 +35,7 @@ using boost::shared_ptr;
 
 #define LOG_DEBUG_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_DEBUG);
 #define LOG_DEBUG(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_DEBUG);
+#define LOG_TIMING(...) _film->log()->microsecond_log (String::compose (__VA_ARGS__), Log::TYPE_TIMING);
 
 int const AnalyseAudioJob::_num_points = 1024;
 
@@ -79,6 +80,7 @@ AnalyseAudioJob::run ()
 	OutputAudioFrame const len = _film->time_to_audio_frames (_film->length ());
 	LOG_DEBUG ("%1 audio frames to analyse", len);
 	while (!player->pass ()) {
+		LOG_TIMING ("_done = %1", _done);
 		set_progress (double (_done) / len);
 	}
 
