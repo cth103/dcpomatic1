@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-01-09 21:08+0000\n"
-"PO-Revision-Date: 2014-11-25 07:45+0100\n"
+"PO-Revision-Date: 2015-01-16 15:31+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.6.3\n"
 
 #: src/wx/subtitle_panel.cc:48 src/wx/subtitle_panel.cc:57
 #: src/wx/subtitle_panel.cc:66 src/wx/subtitle_panel.cc:75
@@ -23,11 +23,10 @@ msgid "%"
 msgstr "%"
 
 #: src/wx/about_dialog.cc:78
-#, fuzzy
 msgid ""
 "(C) 2012-2015 Carl Hetherington, Terrence Meiczinger, Paul Davis, Ole Laursen"
 msgstr ""
-"(C) 2012-2014 par Carl Hetherington, Terrence Meiczinger, Paul Davis, Ole "
+"(C) 2012-2015 par Carl Hetherington, Terrence Meiczinger, Paul Davis, Ole "
 "Laursen"
 
 #: src/wx/config_dialog.cc:651
@@ -138,11 +137,8 @@ msgstr ""
 "images"
 
 #: src/wx/image_sequence_dialog.cc:27
-#, fuzzy
 msgid "Add image sequence"
-msgstr ""
-"Ajout séquence\n"
-"images"
+msgstr "Ajout séquence images"
 
 #: src/wx/film_editor.cc:290
 msgid "Add video, image or sound files to the film."
@@ -213,9 +209,8 @@ msgstr ""
 "%.1fdB."
 
 #: src/wx/config_dialog.cc:670
-#, fuzzy
 msgid "BCC address"
-msgstr "Adresse CC"
+msgstr "Adresses cachées"
 
 #: src/wx/video_panel.cc:121
 msgid "Bottom crop"
@@ -243,6 +238,9 @@ msgid ""
 "so that it knows if they change.  Turning this off will speed up import but "
 "you must not alter the image files after import or strange things may happen."
 msgstr ""
+"Par défaut, DCP-o-matic analyse vos fichiers images pour savoir s'ils ont "
+"changé à l'ouverture. Désactiver ceci augmentera la vitesse d'import mais ne "
+"modifiez plus vos images après, sous peine de résultats étranges."
 
 #: src/wx/audio_mapping_view.cc:285
 msgid "C"
@@ -265,9 +263,8 @@ msgid "CPL annotation text"
 msgstr "Commentaire CPL"
 
 #: src/wx/image_sequence_dialog.cc:31
-#, fuzzy
 msgid "Calculate digests"
-msgstr "Calcul..."
+msgstr "Calcul signatures"
 
 #: src/wx/audio_panel.cc:63
 msgid "Calculate..."
@@ -353,7 +350,7 @@ msgstr "Version du contenu"
 
 #: src/wx/film_editor.cc:131
 msgid "Copy as name"
-msgstr ""
+msgstr "Copier nom"
 
 #: src/wx/editable_list.h:65
 msgid "Copy..."
@@ -408,7 +405,7 @@ msgstr "Son DCP-o-matic  - %s"
 
 #: src/wx/config_dialog.cc:806
 msgid "Debugging"
-msgstr ""
+msgstr "Déboggage"
 
 #: src/wx/config_dialog.cc:270
 msgid "Default ISDCF name details"
@@ -550,9 +547,8 @@ msgid "Frame Rate"
 msgstr "Cadence image"
 
 #: src/wx/image_sequence_dialog.cc:29
-#, fuzzy
 msgid "Frame rate"
-msgstr "Cadence image"
+msgstr "Vitesse image"
 
 #: src/wx/properties_dialog.cc:39
 msgid "Frames"
@@ -724,9 +720,8 @@ msgid "Make KDMs"
 msgstr "Générer KDMs"
 
 #: src/wx/isdcf_metadata_dialog.cc:71
-#, fuzzy
 msgid "Mastered luminance (e.g. 14fl)"
-msgstr "Luminance masterisée (ex: 4fl)"
+msgstr "Luminance masterisée (e.g. 14fl)"
 
 #: src/wx/colour_conversion_editor.cc:67
 msgid "Matrix"
@@ -1253,18 +1248,17 @@ msgstr "dB"
 #. // TRANSLATORS: this is an abbreviation for "frames"
 #: src/wx/timing_panel.cc:69
 msgid "f"
-msgstr ""
+msgstr "i"
 
 #. // TRANSLATORS: this is an abbreviation for "hours"
 #: src/wx/timing_panel.cc:47
 msgid "h"
-msgstr ""
+msgstr "hres"
 
 #. // TRANSLATORS: this is an abbreviation for "minutes"
 #: src/wx/timing_panel.cc:55
-#, fuzzy
 msgid "m"
-msgstr "ms"
+msgstr "min."
 
 #. / TRANSLATORS: this is an abbreviation for milliseconds, the unit of time
 #: src/wx/audio_panel.cc:78 src/wx/config_dialog.cc:296
