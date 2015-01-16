@@ -170,7 +170,7 @@ FFmpegContent::examine (shared_ptr<Job> job, bool calculate_digest)
 	shared_ptr<const Film> film = _film.lock ();
 	DCPOMATIC_ASSERT (film);
 
-	shared_ptr<FFmpegExaminer> examiner (new FFmpegExaminer (shared_from_this ()));
+	shared_ptr<FFmpegExaminer> examiner (new FFmpegExaminer (shared_from_this (), job));
 
 	VideoContent::Frame video_length = 0;
 	video_length = examiner->video_length ();

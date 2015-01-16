@@ -42,6 +42,7 @@ using std::string;
 using std::list;
 using std::cout;
 using boost::shared_ptr;
+using boost::optional;
 
 Job::Job (shared_ptr<const Film> f)
 	: _film (f)
@@ -226,7 +227,7 @@ Job::elapsed_time () const
 void
 Job::set_progress (float p, bool force)
 {
-	if (!force && fabs (p - progress()) < 0.01) {
+	if (!force && fabs (p - progress().get_value_or(0)) < 0.01) {
 		/* Calm excessive progress reporting */
 		return;
 	}
@@ -245,12 +246,12 @@ Job::set_progress (float p, bool force)
 	}
 }
 
-/** @return fractional progress of the current sub-job, or -1 if not known */
-float
+/** @return fractional progress of the current sub-job, if known */
+optional<float>
 Job::progress () const
 {
 	boost::mutex::scoped_lock lm (_progress_mutex);
-	return _progress.get_value_or (-1);
+	return _progress;
 }
 
 void
@@ -300,26 +301,32 @@ Job::set_progress_unknown ()
 {
 	boost::mutex::scoped_lock lm (_progress_mutex);
 	_progress.reset ();
+	lm.unlock ();
+
+	if (ui_signaller) {
+		ui_signaller->emit (boost::bind (boost::ref (Progress)));
+	}	
 }
 
 /** @return Human-readable status of this job */
 string
 Job::status () const
 {
-	float const p = progress ();
+	optional<float> p = progress ();
 	int const t = elapsed_time ();
 	int const r = remaining_time ();
 
-	int pc = rint (p * 100);
-	if (pc == 100) {
-		/* 100% makes it sound like we've finished when we haven't */
-		pc = 99;
-	}
-
 	SafeStringStream s;
-	if (!finished ()) {
+	if (!finished () && p) {
+		int pc = rint (p.get() * 100);
+		if (pc == 100) {
+			/* 100% makes it sound like we've finished when we haven't */
+			pc = 99;
+		}
+		
 		s << pc << N_("%");
-		if (p >= 0 && t > 10 && r > 0) {
+		
+		if (t > 10 && r > 0) {
 			/// TRANSLATORS: remaining here follows an amount of time that is remaining
 			/// on an operation.
 			s << "; " << seconds_to_approximate_hms (r) << " " << _("remaining");
@@ -339,7 +346,11 @@ Job::status () const
 int
 Job::remaining_time () const
 {
-	return elapsed_time() / progress() - elapsed_time();
+	if (progress().get_value_or(0) == 0) {
+		return elapsed_time ();
+	}
+	
+	return elapsed_time() / progress().get() - elapsed_time();
 }
 
 void

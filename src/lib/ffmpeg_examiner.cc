@@ -23,6 +23,7 @@ extern "C" {
 }
 #include "ffmpeg_examiner.h"
 #include "ffmpeg_content.h"
+#include "job.h"
 #include "safe_stringstream.h"
 
 #include "i18n.h"
@@ -33,7 +34,8 @@ using std::max;
 using boost::shared_ptr;
 using boost::optional;
 
-FFmpegExaminer::FFmpegExaminer (shared_ptr<const FFmpegContent> c)
+/** @param job job that the examiner is operating in, or 0 */
+FFmpegExaminer::FFmpegExaminer (shared_ptr<const FFmpegContent> c, shared_ptr<Job> job)
 	: FFmpeg (c)
 	, _video_length (0)
 {
@@ -66,6 +68,9 @@ FFmpegExaminer::FFmpegExaminer (shared_ptr<const FFmpegContent> c)
 	bool const need_video_length = _format_context->duration == AV_NOPTS_VALUE;
 	if (!need_video_length) {
 		_video_length = double (_format_context->duration) / AV_TIME_BASE;
+	} else if (job) {
+		job->sub (_("Finding length"));
+		job->set_progress_unknown ();
 	}
 
 	/* Run through until we find the first audio (for each stream) and video, and also

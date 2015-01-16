@@ -27,7 +27,7 @@ class FFmpegSubtitleStream;
 class FFmpegExaminer : public FFmpeg, public VideoExaminer
 {
 public:
-	FFmpegExaminer (boost::shared_ptr<const FFmpegContent>);
+	FFmpegExaminer (boost::shared_ptr<const FFmpegContent>, boost::shared_ptr<Job> job = boost::shared_ptr<Job> ());
 	
 	boost::optional<float> video_frame_rate () const;
 	libdcp::Size video_size () const;
