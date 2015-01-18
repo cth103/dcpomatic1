@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
     Copyright (C) 2000-2007 Paul Davis
 
     This program is free software; you can redistribute it and/or modify

@@ -44,6 +44,7 @@ def build(bld):
                  stream_test.cc
                  test.cc
                  threed_test.cc
+                 update_checker_test.cc
                  util_test.cc
                  """
 

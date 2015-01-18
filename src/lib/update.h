@@ -23,6 +23,8 @@
 #include <boost/thread.hpp>
 #include <curl/curl.h>
 
+struct update_checker_test;
+
 class UpdateChecker
 {
 public:
@@ -42,13 +44,15 @@ public:
 		boost::mutex::scoped_lock lm (_data_mutex);
 		return _state;
 	}
-	
-	std::string stable () {
+
+	/** @return new stable version, if there is one */
+	boost::optional<std::string> stable () {
 		boost::mutex::scoped_lock lm (_data_mutex);
 		return _stable;
 	}
 
-	std::string test () {
+	/** @return new test version, if there is one and Config is set to look for it */
+	boost::optional<std::string> test () {
 		boost::mutex::scoped_lock lm (_data_mutex);
 		return _test;
 	}
@@ -66,7 +70,11 @@ public:
 	static UpdateChecker* instance ();
 
 private:	
+	friend struct update_checker_test;
+	
 	static UpdateChecker* _instance;
+
+	static bool version_less_than (std::string const & a, std::string const & b);
 
 	void set_state (State);
 	void thread ();
@@ -78,8 +86,8 @@ private:
 	/** mutex to protect _state, _stable, _test and _emits */
 	mutable boost::mutex _data_mutex;
 	State _state;
-	std::string _stable;
-	std::string _test;
+	boost::optional<std::string> _stable;
+	boost::optional<std::string> _test;
 	int _emits;
 
 	boost::thread* _thread;
