@@ -62,8 +62,6 @@ AnalyseAudioJob::run ()
 		return;
 	}
 
-	LOG_DEBUG_NC ("Starting audio analysis");
-
 	shared_ptr<Playlist> playlist (new Playlist);
 	playlist->add (content);
 	shared_ptr<Player> player (new Player (_film, playlist));
@@ -78,16 +76,12 @@ AnalyseAudioJob::run ()
 
 	_done = 0;
 	OutputAudioFrame const len = _film->time_to_audio_frames (_film->length ());
-	LOG_DEBUG ("%1 audio frames to analyse", len);
 	while (!player->pass ()) {
-		LOG_TIMING ("_done = %1", _done);
 		set_progress (double (_done) / len);
 	}
 
 	_analysis->write (content->audio_analysis_path ());
 
-	LOG_DEBUG_NC ("Finished audio analysis");
-	
 	set_progress (1);
 	set_state (FINISHED_OK);
 }
@@ -95,8 +89,6 @@ AnalyseAudioJob::run ()
 void
 AnalyseAudioJob::audio (shared_ptr<const AudioBuffers> b, Time)
 {
-	LOG_DEBUG ("Analyse %1 frames", b->frames ());
-	
 	for (int i = 0; i < b->frames(); ++i) {
 		for (int j = 0; j < b->channels(); ++j) {
 			float s = b->data(j)[i];
