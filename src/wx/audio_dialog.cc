@@ -21,9 +21,13 @@
 #include "lib/audio_analysis.h"
 #include "lib/film.h"
 #include "lib/audio_content.h"
+#include "lib/log.h"
 #include "audio_dialog.h"
 #include "audio_plot.h"
 #include "wx_util.h"
+
+#define LOG_DEBUG(...) _content->film()->log()->log (String::compose (__VA_ARGS__), Log::TYPE_DEBUG);
+#define LOG_DEBUG_NC(...) _content->film()->log()->log (__VA_ARGS__, Log::TYPE_DEBUG);
 
 using boost::shared_ptr;
 using boost::bind;
@@ -101,20 +105,31 @@ AudioDialog::set_content (shared_ptr<AudioContent> c)
 void
 AudioDialog::try_to_load_analysis ()
 {
+	LOG_DEBUG_NC ("AudioDialog::try_to_load_analysis");
+	
 	if (!IsShown ()) {
+		LOG_DEBUG_NC ("(window not shown)");
 		return;
 	}
 
 	if (!boost::filesystem::exists (_content->audio_analysis_path())) {
+		LOG_DEBUG ("%1 does not exist; starting analysis job", _content->audio_analysis_path());
 		_plot->set_analysis (shared_ptr<AudioAnalysis> ());
 		_analysis_finished_connection = _content->analyse_audio (bind (&AudioDialog::analysis_finished, this));
 		return;
 	}
 	
+	LOG_DEBUG ("%1 exists; loading it", _content->audio_analysis_path ());
+	
 	shared_ptr<AudioAnalysis> a;
 	
 	a.reset (new AudioAnalysis (_content->audio_analysis_path ()));
 	_plot->set_analysis (a);
+
+	LOG_DEBUG ("Loaded %1 channels", a->channels());
+	if (a->channels() > 0) {
+		LOG_DEBUG ("Loaded %1 points on channel 0", a->points(0));
+	}
 
 	/* Set up some defaults if no check boxes are checked */
 	
