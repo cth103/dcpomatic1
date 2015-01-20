@@ -122,11 +122,11 @@ UpdateChecker::thread ()
 				test = doc.string_child ("Test");
 			}
 
-			if (version_less_than (dcpomatic_version, stable)) {
+			if (version_less_than (dcpomatic_version, stable) && version_less_than (stable, "2.0.0")) {
 				_stable = stable;
 			}
 
-			if (Config::instance()->check_for_test_updates() && version_less_than (dcpomatic_version, test)) {
+			if (Config::instance()->check_for_test_updates() && version_less_than (dcpomatic_version, test) && version_less_than (test, "2.0.0")) {
 				_test = test;
 			}
 
