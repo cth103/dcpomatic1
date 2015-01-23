@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Metadata>
-  <Version>8</Version>
+  <Version>10</Version>
   <Name>fred</Name>
-  <UseDCIName>1</UseDCIName>
+  <UseISDCFName>1</UseISDCFName>
   <DCPContentType>SHR</DCPContentType>
   <Container>185</Container>
   <Resolution>2K</Resolution>
   <Scaler>bicubic</Scaler>
   <WithSubtitles>0</WithSubtitles>
   <J2KBandwidth>200000000</J2KBandwidth>
-  <DCIMetadata>
+  <ISDCFMetadata>
     <ContentVersion>1</ContentVersion>
     <AudioLanguage></AudioLanguage>
     <SubtitleLanguage></SubtitleLanguage>
@@ -18,15 +18,21 @@
     <Studio></Studio>
     <Facility></Facility>
     <PackageType></PackageType>
-  </DCIMetadata>
+    <TempVersion>0</TempVersion>
+    <PreRelease>0</PreRelease>
+    <RedBand>0</RedBand>
+    <Chain></Chain>
+    <TwoDVersionOfThreeD>0</TwoDVersionOfThreeD>
+    <MasteredLuminance></MasteredLuminance>
+  </ISDCFMetadata>
   <VideoFrameRate>24</VideoFrameRate>
-  <DCIDate>20130211</DCIDate>
+  <ISDCFDate>20130211</ISDCFDate>
   <AudioChannels>6</AudioChannels>
   <ThreeD>0</ThreeD>
   <SequenceVideo>1</SequenceVideo>
   <Interop>0</Interop>
   <Signed>1</Signed>
   <Encrypted>0</Encrypted>
-  <Key>1366d4b823d07f5b7e6baa80d6715810</Key>
+  <Key>b0d1d4b100c32ebd9f2691c17b5607a4</Key>
   <Playlist/>
 </Metadata>
