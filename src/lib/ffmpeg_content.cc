@@ -161,11 +161,11 @@ FFmpegContent::as_xml (xmlpp::Node* node) const
 }
 
 void
-FFmpegContent::examine (shared_ptr<Job> job, bool calculate_digest)
+FFmpegContent::examine (shared_ptr<Job> job)
 {
 	job->set_progress_unknown ();
 
-	Content::examine (job, calculate_digest);
+	Content::examine (job);
 
 	shared_ptr<const Film> film = _film.lock ();
 	DCPOMATIC_ASSERT (film);
@@ -460,7 +460,7 @@ FFmpegContent::audio_analysis_path () const
 	*/
 
 	boost::filesystem::path p = film->audio_analysis_dir ();
-	string name = digest().get_value_or ("X");
+	string name = digest();
 	if (audio_stream ()) {
 		name += "_" + audio_stream()->identifier ();
 	}

@@ -1,3 +1,11 @@
+2015-01-23  Carl Hetherington  <cth@carlh.net>
+
+	* Only take the MD5 of the first and last megabyte
+	of content files, rather than the whole thing, to speed
+	up content examination (#472).
+
+	* Remove option to disable digest for image files.
+
 2015-01-20  Carl Hetherington  <cth@carlh.net>
 
 	* Fix update checker.

@@ -55,7 +55,7 @@ public:
 	Content (boost::shared_ptr<const Film>, std::vector<boost::shared_ptr<Content> >);
 	virtual ~Content () {}
 	
-	virtual void examine (boost::shared_ptr<Job>, bool calculate_digest);
+	virtual void examine (boost::shared_ptr<Job>);
 	virtual std::string summary () const = 0;
 	/** @return Technical details of this content; these are written to logs to
 	 *  help with debugging, and not presented in the UI.
@@ -88,8 +88,11 @@ public:
 	
 	bool paths_valid () const;
 
-	/** @return MD5 digest of the content's file(s), if one has been calculated */
-	boost::optional<std::string> digest () const {
+	/** @return Digest of the content's file(s).  Note: this is
+	 *  not a complete MD5-or-whatever hash, but a sort of poor
+	 *  man' version (see comments in ::examine).
+	 */
+	std::string digest () const {
 		boost::mutex::scoped_lock lm (_mutex);
 		return _digest;
 	}
@@ -151,7 +154,7 @@ protected:
 	std::vector<boost::filesystem::path> _paths;
 	
 private:
-	boost::optional<std::string> _digest;
+	std::string _digest;
 	Time _position;
 	Time _trim_start;
 	Time _trim_end;

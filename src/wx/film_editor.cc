@@ -836,7 +836,7 @@ FilmEditor::content_add_file_clicked ()
 		if (ic) {
 			ic->set_video_frame_rate (24);
 		}
-		_film->examine_and_add_content (c, true);
+		_film->examine_and_add_content (c);
 	}
 
 	d->Destroy ();
@@ -857,7 +857,6 @@ FilmEditor::content_add_folder_clicked ()
 	ImageSequenceDialog* e = new ImageSequenceDialog (this);
 	r = e->ShowModal ();
 	float const frame_rate = e->frame_rate ();
-	bool const digest = e->digest ();
 	e->Destroy ();
 
 	if (r != wxID_OK) {
@@ -874,7 +873,7 @@ FilmEditor::content_add_folder_clicked ()
 	}
 
 	ic->set_video_frame_rate (frame_rate);
-	_film->examine_and_add_content (ic, digest);
+	_film->examine_and_add_content (ic);
 }
 
 void
@@ -1105,7 +1104,7 @@ FilmEditor::content_files_dropped (wxDropFilesEvent& event)
 	
 	wxString* paths = event.GetFiles ();
 	for (int i = 0; i < event.GetNumberOfFiles(); i++) {
-		_film->examine_and_add_content (content_factory (_film, wx_to_std (paths[i])), true);
+		_film->examine_and_add_content (content_factory (_film, wx_to_std (paths[i])));
 	}
 }
 

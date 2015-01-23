@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE (scaling_test)
 	shared_ptr<ImageContent> imc (new ImageContent (film, "test/data/simple_testcard_640x480.png"));
 	imc->set_video_frame_rate (24);
 
-	film->examine_and_add_content (imc, true);
+	film->examine_and_add_content (imc);
 
 	wait_for_jobs ();
 	

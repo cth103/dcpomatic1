@@ -191,7 +191,7 @@ ContentMenu::find_missing ()
 		return;
 	}
 
-	shared_ptr<Job> j (new ExamineContentJob (film, content, true));
+	shared_ptr<Job> j (new ExamineContentJob (film, content));
 	
 	j->Finished.connect (
 		bind (
