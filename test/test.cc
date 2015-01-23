@@ -62,6 +62,7 @@ struct TestConfig
 		Config::instance()->set_default_isdcf_metadata (ISDCFMetadata ());
 		Config::instance()->set_default_container (static_cast<Ratio*> (0));
 		Config::instance()->set_default_dcp_content_type (static_cast<DCPContentType*> (0));
+		Config::instance()->set_default_j2k_bandwidth (100000000);
 
 		ServerFinder::instance()->disable ();
 
@@ -148,8 +149,11 @@ check_dcp (string ref, string check)
 	options.max_audio_sample_error = 255;
 	options.cpl_names_can_differ = true;
 	options.mxf_names_can_differ = true;
-	
-	BOOST_CHECK (ref_dcp.equals (check_dcp, options, boost::bind (note, _1, _2)));
+
+	if (!ref_dcp.equals (check_dcp, options, boost::bind (note, _1, _2))) {
+		cout << ref << " != " << check << "\n";
+		BOOST_CHECK (false);
+	}
 }
 
 void

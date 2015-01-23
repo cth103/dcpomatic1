@@ -59,6 +59,7 @@ BOOST_AUTO_TEST_CASE (scaling_test)
 	film->set_dcp_content_type (DCPContentType::from_isdcf_name ("FTR"));
 	film->set_name ("scaling_test");
 	shared_ptr<ImageContent> imc (new ImageContent (film, "test/data/simple_testcard_640x480.png"));
+	imc->set_video_frame_rate (24);
 
 	film->examine_and_add_content (imc, true);
 

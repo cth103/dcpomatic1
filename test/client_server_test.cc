@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE (client_server_test_rgb)
 	BOOST_ASSERT (locally_encoded);
 
 	if (!server) {
-		server = new Server (log, true);
+		server = new Server (log, false);
 		new thread (boost::bind (&Server::run, server, 2));
 	}
 
@@ -184,7 +184,7 @@ BOOST_AUTO_TEST_CASE (client_server_test_yuv)
 	BOOST_ASSERT (locally_encoded);
 
 	if (!server) {
-		server = new Server (log, true);
+		server = new Server (log, false);
 		new thread (boost::bind (&Server::run, server, 2));
 	}
 
