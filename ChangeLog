@@ -1,5 +1,9 @@
 2015-01-23  Carl Hetherington  <cth@carlh.net>
 
+	* Version 1.77.1 released.
+
+2015-01-23  Carl Hetherington  <cth@carlh.net>
+
 	* Only take the MD5 of the first and last megabyte
 	of content files, rather than the whole thing, to speed
 	up content examination (#472).
