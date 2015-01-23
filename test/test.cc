@@ -220,8 +220,9 @@ wait_for_jobs ()
 	if (jm->errors ()) {
 		for (list<shared_ptr<Job> >::iterator i = jm->_jobs.begin(); i != jm->_jobs.end(); ++i) {
 			if ((*i)->finished_in_error ()) {
-				cerr << (*i)->error_summary () << "\n"
-				     << (*i)->error_details () << "\n";
+				cerr << (*i)->name() << ":\n"
+				     << "\t" << (*i)->error_summary () << "\n"
+				     << "\t" << (*i)->error_details () << "\n";
 			}
 		}
 	}
