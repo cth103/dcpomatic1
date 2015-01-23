@@ -91,6 +91,7 @@ private:
 	boost::shared_ptr<View> event_to_view (wxMouseEvent &);
 	ContentViewList selected_views () const;
 	ContentList selected_content () const;
+	void maybe_snap (Time a, Time b, boost::optional<Time>& nearest_distance) const;
 
 	FilmEditor* _film_editor;
 	boost::weak_ptr<Film> _film;

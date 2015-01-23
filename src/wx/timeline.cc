@@ -602,6 +602,15 @@ Timeline::right_down (wxMouseEvent& ev)
 }
 
 void
+Timeline::maybe_snap (Time a, Time b, optional<Time>& nearest_distance) const
+{
+	Time const d = a - b;
+	if (!nearest_distance || abs (d) < abs (nearest_distance.get())) {
+		nearest_distance = d;
+	}
+}
+
+void
 Timeline::set_position_from_event (wxMouseEvent& ev)
 {
 	if (!_pixels_per_time_unit) {
@@ -630,10 +639,12 @@ Timeline::set_position_from_event (wxMouseEvent& ev)
 	Time new_position = _down_view_position + (p.x - _down_point.x) / pptu;
 	
 	if (_snap) {
-		
-		bool first = true;
-		Time nearest_distance = TIME_MAX;
-		Time nearest_new_position = TIME_MAX;
+
+		Time const new_end = new_position + _down_view->content()->length_after_trim ();
+		/* Signed `distance' to nearest thing (i.e. negative is left on the timeline,
+		   positive is right).
+		*/
+		optional<Time> nearest_distance;
 		
 		/* Find the nearest content edge; this is inefficient */
 		for (ViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
@@ -641,32 +652,17 @@ Timeline::set_position_from_event (wxMouseEvent& ev)
 			if (!cv || cv == _down_view) {
 				continue;
 			}
-			
-			{
-				/* Snap starts to ends */
-				Time const d = abs (cv->content()->end() - new_position);
-				if (first || d < nearest_distance) {
-					nearest_distance = d;
-					nearest_new_position = cv->content()->end() + 1;
-				}
-			}
-			
-			{
-				/* Snap ends to starts */
-				Time const d = abs (cv->content()->position() - (new_position + _down_view->content()->length_after_trim()));
-				if (d < nearest_distance) {
-					nearest_distance = d;
-					nearest_new_position = cv->content()->position() - _down_view->content()->length_after_trim () - 1;
-				}
-			}
-			
-			first = false;
+
+			maybe_snap (cv->content()->position(), new_position, nearest_distance);
+			maybe_snap (cv->content()->position(), new_end, nearest_distance);
+			maybe_snap (cv->content()->end(), new_position, nearest_distance);
+			maybe_snap (cv->content()->end(), new_end, nearest_distance);
 		}
 		
-		if (!first) {
+		if (nearest_distance) {
 			/* Snap if it's close; `close' means within a proportion of the time on the timeline */
-			if (nearest_distance < (width() / pptu) / 32) {
-				new_position = nearest_new_position;
+			if (abs (nearest_distance.get()) < (width() / pptu) / 64) {
+				new_position += nearest_distance.get();
 			}
 		}
 	}
