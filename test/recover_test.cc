@@ -54,17 +54,17 @@ BOOST_AUTO_TEST_CASE (recover_test)
 	wait_for_jobs ();
 
 	boost::filesystem::copy_file (
-		"build/test/recover_test/video/185_2K_991ced0f8e6f0ba3df2f6606a352ec99_24_bicubic_100000000_P_S_3D.mxf",
+		"build/test/recover_test/video/185_2K_60c75ed44b384a381c8c45c84b341831_24_bicubic_100000000_P_S_3D.mxf",
 		"build/test/recover_test/original.mxf"
 		);
 	
-	boost::filesystem::resize_file ("build/test/recover_test/video/185_2K_991ced0f8e6f0ba3df2f6606a352ec99_24_bicubic_100000000_P_S_3D.mxf", 2 * 1024 * 1024);
+	boost::filesystem::resize_file ("build/test/recover_test/video/185_2K_60c75ed44b384a381c8c45c84b341831_24_bicubic_100000000_P_S_3D.mxf", 2 * 1024 * 1024);
 
 	film->make_dcp ();
 	wait_for_jobs ();
 
 	shared_ptr<libdcp::StereoPictureAsset> A (new libdcp::StereoPictureAsset ("build/test/recover_test", "original.mxf"));
-	shared_ptr<libdcp::StereoPictureAsset> B (new libdcp::StereoPictureAsset ("build/test/recover_test/video", "185_2K_991ced0f8e6f0ba3df2f6606a352ec99_24_bicubic_100000000_P_S_3D.mxf"));
+	shared_ptr<libdcp::StereoPictureAsset> B (new libdcp::StereoPictureAsset ("build/test/recover_test/video", "185_2K_60c75ed44b384a381c8c45c84b341831_24_bicubic_100000000_P_S_3D.mxf"));
 
 	libdcp::EqualityOptions eq;
 	eq.mxf_names_can_differ = true;
