@@ -179,6 +179,10 @@ File "%binaries%/src/lib/mo/nl_NL/libdcpomatic.mo"
 File "%binaries%/src/wx/mo/nl_NL/libdcpomatic-wx.mo"
 File "%binaries%/src/tools/mo/nl_NL/dcpomatic.mo"
 File "%static_deps%/share/locale/nl/LC_MESSAGES/wxstd.mo"
+File "%binaries%/src/lib/mo/ru_RU/libdcpomatic.mo"
+File "%binaries%/src/wx/mo/ru_RU/libdcpomatic-wx.mo"
+File "%binaries%/src/tools/mo/ru_RU/dcpomatic.mo"
+File "%static_deps%/share/locale/ru/LC_MESSAGES/wxstd.mo"
     """, file=f)
 
     if debug:

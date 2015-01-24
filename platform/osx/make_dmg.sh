@@ -134,7 +134,7 @@ cp $ROOT/32/src/dcpomatic/icons/servers.png "$WORK/$resources"
 cp $ROOT/32/src/dcpomatic/icons/tms.png "$WORK/$resources"
 
 # i18n: DCP-o-matic .mo files
-for lang in de_DE es_ES fr_FR it_IT sv_SE nl_NL; do
+for lang in de_DE es_ES fr_FR it_IT sv_SE nl_NL ru_RU; do
   mkdir -p "$WORK/$resources/$lang/LC_MESSAGES"
   cp $ROOT/32/src/dcpomatic/build/src/lib/mo/$lang/*.mo "$WORK/$resources/$lang/LC_MESSAGES"
   cp $ROOT/32/src/dcpomatic/build/src/wx/mo/$lang/*.mo "$WORK/$resources/$lang/LC_MESSAGES"
@@ -142,7 +142,7 @@ for lang in de_DE es_ES fr_FR it_IT sv_SE nl_NL; do
 done
 
 # i18n: wxWidgets .mo files
-for lang in de es fr it sv nl; do
+for lang in de es fr it sv nl ru; do
   mkdir "$WORK/$resources/$lang"
   cp $ENV/64/share/locale/$lang/LC_MESSAGES/wxstd.mo "$WORK/$resources/$lang"
 done
