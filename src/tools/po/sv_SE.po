@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-09 21:08+0000\n"
+"POT-Creation-Date: 2015-01-25 15:44+0000\n"
 "PO-Revision-Date: 2014-01-19 08:59+0100\n"
 "Last-Translator: Adam Klotblixt <adam.klotblixt@gmail.com>\n"
 "Language-Team: \n"
@@ -222,7 +222,7 @@ msgstr ""
 "DCP:n för denna film kommer att uppta ungefär %.1f Gb, och disken du "
 "använder har bara %.1f Gb ledigt. Vill du fortsätta ändå?"
 
-#: src/tools/dcpomatic.cc:895
+#: src/tools/dcpomatic.cc:883
 msgid "The DCP-o-matic download server could not be contacted."
 msgstr "DCP-o-matics nedladdningsserver kunde inte kontaktas."
 
@@ -234,7 +234,7 @@ msgstr ""
 "Foldern %1 finns redan och är inte tom. Är du säker på att du vill använda "
 "den?"
 
-#: src/tools/dcpomatic.cc:890
+#: src/tools/dcpomatic.cc:887
 msgid "There are no new versions of DCP-o-matic available."
 msgstr "Det finns inga nya versioner av DCP-o-matic tillgängligt."
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LIBDCPOMATIC\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-09 21:08+0000\n"
+"POT-Creation-Date: 2015-01-25 15:44+0000\n"
 "PO-Revision-Date: 2015-01-07 09:06-0500\n"
 "Last-Translator: Manuel AC <manuel.acevedo@civantos.>\n"
 "Language-Team: Manuel AC <manuel.acevedo@civantos.com>\n"
@@ -57,11 +57,11 @@ msgstr "Academy"
 msgid "Advertisement"
 msgstr "Publicidad"
 
-#: src/lib/job.cc:76
+#: src/lib/job.cc:77
 msgid "An error occurred whilst handling the file %1."
 msgstr "Ha ocurrido un error con el fichero %1."
 
-#: src/lib/analyse_audio_job.cc:48
+#: src/lib/analyse_audio_job.cc:54
 msgid "Analyse audio"
 msgstr "Analizar audio"
 
@@ -85,7 +85,7 @@ msgstr "Bicúbico"
 msgid "Bilinear"
 msgstr "Bilineal"
 
-#: src/lib/job.cc:332
+#: src/lib/job.cc:339
 msgid "Cancelled"
 msgstr "Cancelado"
 
@@ -93,7 +93,7 @@ msgstr "Cancelado"
 msgid "Cannot handle pixel format %1 during %2"
 msgstr "No se puede usar el formato de pixel %1 para %2"
 
-#: src/lib/util.cc:857
+#: src/lib/util.cc:868
 msgid "Centre"
 msgstr "Centro"
 
@@ -105,7 +105,7 @@ msgstr "Comprobando las imágenes existentes"
 msgid "Computing audio digest"
 msgstr "Calculando la firma resumen del audio"
 
-#: src/lib/content.cc:139
+#: src/lib/content.cc:133
 msgid "Computing digest"
 msgstr "Calculando la firma resumen"
 
@@ -209,7 +209,7 @@ msgstr ""
 "No se pueden buscar servidores de codificación externos. Quizás haya otro "
 "DCP-o-matic ejecutándose."
 
-#: src/lib/job.cc:95
+#: src/lib/job.cc:96
 msgid "Could not open %1"
 msgstr "No se pudo abrir %1"
 
@@ -217,7 +217,7 @@ msgstr "No se pudo abrir %1"
 msgid "Could not open %1 to send"
 msgstr "No se pudo abrir %1 para enviar"
 
-#: src/lib/internet.cc:74
+#: src/lib/internet.cc:77
 msgid "Could not open downloaded ZIP file"
 msgstr "No se puedo abrir el fichero ZIP descargado"
 
@@ -241,7 +241,7 @@ msgstr "El DCP se reproducirá al %1%% de la velocidad de la fuente.\n"
 msgid "DCP will use every other frame of the content.\n"
 msgstr "El DCP usará imágenes alternas de la fuente.\n"
 
-#: src/lib/job.cc:96
+#: src/lib/job.cc:97
 msgid ""
 "DCP-o-matic could not open the file %1.  Perhaps it does not exist or is in "
 "an unexpected format."
@@ -292,7 +292,7 @@ msgstr ""
 msgid "Dolby CP650 and CP750"
 msgstr "Dolby CP650 and CP750"
 
-#: src/lib/internet.cc:67
+#: src/lib/internet.cc:70
 msgid "Download failed (%1/%2 error %3)"
 msgstr "Descarga fallida (%1/%2 error %3)"
 
@@ -312,11 +312,11 @@ msgstr "Enviar por email las KDM para %1"
 msgid "Encoding image data"
 msgstr "Codificando imagen"
 
-#: src/lib/job.cc:330
+#: src/lib/job.cc:337
 msgid "Error (%1)"
 msgstr "Error (%1)"
 
-#: src/lib/examine_content_job.cc:48
+#: src/lib/examine_content_job.cc:47
 msgid "Examine content"
 msgstr "Examinar contenido"
 
@@ -331,6 +331,10 @@ msgstr "Bilineal rápido"
 #: src/lib/dcp_content_type.cc:44
 msgid "Feature"
 msgstr "Película"
+
+#: src/lib/ffmpeg_examiner.cc:72
+msgid "Finding length"
+msgstr ""
 
 #: src/lib/ratio.cc:40
 msgid "Flat"
@@ -348,7 +352,7 @@ msgstr "Gaussiano"
 msgid "Gradient debander"
 msgstr "Gradient debander"
 
-#: src/lib/util.cc:861
+#: src/lib/util.cc:872
 msgid "Hearing impaired"
 msgstr "Sordos"
 
@@ -356,7 +360,7 @@ msgstr "Sordos"
 msgid "High quality 3D denoiser"
 msgstr "Reductor de ruido 3D de alta calidad"
 
-#: src/lib/job.cc:116 src/lib/job.cc:126
+#: src/lib/job.cc:117 src/lib/job.cc:127
 msgid ""
 "It is not known what caused this error.  Please report the problem to the "
 "DCP-o-matic author (carl@dcpomatic.com)."
@@ -376,23 +380,23 @@ msgstr "Kernel deinterlacer"
 msgid "Lanczos"
 msgstr "Lanczos"
 
-#: src/lib/util.cc:855
+#: src/lib/util.cc:866
 msgid "Left"
 msgstr "Izquierda"
 
-#: src/lib/util.cc:863
+#: src/lib/util.cc:874
 msgid "Left centre"
 msgstr "Centro izquierda"
 
-#: src/lib/util.cc:865
+#: src/lib/util.cc:876
 msgid "Left rear surround"
 msgstr "Surround trasero izquierda"
 
-#: src/lib/util.cc:859
+#: src/lib/util.cc:870
 msgid "Left surround"
 msgstr "Surround izquierda"
 
-#: src/lib/util.cc:858
+#: src/lib/util.cc:869
 msgid "Lfe (sub)"
 msgstr "Lfe (bajos)"
 
@@ -420,7 +424,7 @@ msgstr "No se encontraron imágenes válidas en la carpeta."
 msgid "Noise reduction"
 msgstr "Reducción de ruido"
 
-#: src/lib/job.cc:328
+#: src/lib/job.cc:335
 msgid "OK (ran for %1)"
 msgstr "OK (ejecución %1)"
 
@@ -433,7 +437,7 @@ msgstr ""
 msgid "Only the last piece of content to be joined can have an end trim."
 msgstr "Solo la última pieza a ser unida puede tener un recorte en su final."
 
-#: src/lib/job.cc:108
+#: src/lib/job.cc:109
 msgid "Out of memory"
 msgstr "Falta de memoria"
 
@@ -465,19 +469,19 @@ msgstr "Clasificación"
 msgid "Rec. 709"
 msgstr "Rec. 709"
 
-#: src/lib/util.cc:856
+#: src/lib/util.cc:867
 msgid "Right"
 msgstr "Derecha"
 
-#: src/lib/util.cc:864
+#: src/lib/util.cc:875
 msgid "Right centre"
 msgstr "Centro derecha"
 
-#: src/lib/util.cc:866
+#: src/lib/util.cc:877
 msgid "Right rear surround"
 msgstr "Surround trasero derecha"
 
-#: src/lib/util.cc:860
+#: src/lib/util.cc:871
 msgid "Right surround"
 msgstr "Surround derecha"
 
@@ -517,7 +521,7 @@ msgstr "Filtro telecine"
 msgid "Test"
 msgstr "Test"
 
-#: src/lib/job.cc:82
+#: src/lib/job.cc:83
 msgid ""
 "The drive that the film is stored on is low in disc space.  Free some more "
 "space and try again."
@@ -525,7 +529,7 @@ msgstr ""
 "En el dispositivo donde se encuentra la película queda poco espacio. Libere "
 "espacio en el disco y pruebe de nuevo."
 
-#: src/lib/job.cc:108
+#: src/lib/job.cc:109
 msgid "There was not enough memory to do this."
 msgstr "No hubo suficiente memoria para hacer esto."
 
@@ -560,7 +564,7 @@ msgstr "Codificar %1"
 msgid "Transitional"
 msgstr "Transitional"
 
-#: src/lib/internet.cc:79
+#: src/lib/internet.cc:82
 msgid "Unexpected ZIP file contents"
 msgstr "Contenidos inesperados del fichero ZIP"
 
@@ -568,7 +572,7 @@ msgstr "Contenidos inesperados del fichero ZIP"
 msgid "Unexpected image type received by server"
 msgstr "El servidor ha recibido un tipo de imagen inesperado"
 
-#: src/lib/job.cc:125
+#: src/lib/job.cc:126
 msgid "Unknown error"
 msgstr "Error desconocido"
 
@@ -584,7 +588,7 @@ msgstr "Máscara de desenfoque Gaussiano"
 msgid "Untitled"
 msgstr "Sin título"
 
-#: src/lib/util.cc:862
+#: src/lib/util.cc:873
 msgid "Visually impaired"
 msgstr "Ciegos"
 
@@ -616,7 +620,7 @@ msgstr "[imagen fija]"
 msgid "cannot contain slashes"
 msgstr "no puede contener barras"
 
-#: src/lib/util.cc:637
+#: src/lib/util.cc:648
 msgid "connect timed out"
 msgstr "tiempo de conexión agotado"
 
@@ -696,19 +700,19 @@ msgstr "no se pudo abrir la sesión SSH"
 msgid "could not write to file %1 (%2)"
 msgstr "No se pudo escribir en el fichero (%1)"
 
-#: src/lib/util.cc:657
+#: src/lib/util.cc:668
 msgid "error during async_accept (%1)"
 msgstr "error durante async_accept (%1)"
 
-#: src/lib/util.cc:633
+#: src/lib/util.cc:644
 msgid "error during async_connect (%1)"
 msgstr "error durante async_connect (%1)"
 
-#: src/lib/util.cc:706
+#: src/lib/util.cc:717
 msgid "error during async_read (%1)"
 msgstr "error durante async_read (%1)"
 
-#: src/lib/util.cc:678
+#: src/lib/util.cc:689
 msgid "error during async_write (%1)"
 msgstr "error durante async_write (%1)"
 
@@ -732,7 +736,7 @@ msgstr "minuto"
 msgid "minutes"
 msgstr "minutos"
 
-#: src/lib/util.cc:778
+#: src/lib/util.cc:789
 msgid "missing key %1 in key-value set"
 msgstr "falta la clave %1 en el par clave-valor"
 
@@ -758,7 +762,7 @@ msgstr "muestra de proporción de aspecto"
 
 #. / TRANSLATORS: remaining here follows an amount of time that is remaining
 #. / on an operation.
-#: src/lib/job.cc:325
+#: src/lib/job.cc:332
 msgid "remaining"
 msgstr "pendiente"
 
@@ -778,7 +782,7 @@ msgstr "segundo"
 msgid "seconds"
 msgstr "segundos"
 
-#: src/lib/ffmpeg_examiner.cc:179
+#: src/lib/ffmpeg_examiner.cc:197
 msgid "unknown"
 msgstr "desconocido"
 

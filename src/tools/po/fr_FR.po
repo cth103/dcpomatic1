@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-09 21:08+0000\n"
+"POT-Creation-Date: 2015-01-25 15:44+0000\n"
 "PO-Revision-Date: 2015-01-16 15:35+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
@@ -230,7 +230,7 @@ msgstr ""
 "Le DCP de ce film pèsera environ %.1f Go. Le disque que vous utilisez n'a "
 "que %.1f Go disponibles. Souhaitez-vous continuer ?"
 
-#: src/tools/dcpomatic.cc:895
+#: src/tools/dcpomatic.cc:883
 msgid "The DCP-o-matic download server could not be contacted."
 msgstr "Le serveur de téléchargement de DCP-o-matic ne peut être contacté."
 
@@ -241,7 +241,7 @@ msgid ""
 msgstr ""
 "Le dossier %1 existe et n'est pas vide. Etes-vous sûr de vouloir l'utiliser ?"
 
-#: src/tools/dcpomatic.cc:890
+#: src/tools/dcpomatic.cc:887
 msgid "There are no new versions of DCP-o-matic available."
 msgstr "Aucune mise à jour disponible pour DCP-o-matic."
 
