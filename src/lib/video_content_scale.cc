@@ -120,30 +120,33 @@ VideoContentScale::from_id (string id)
 	return VideoContentScale (true);
 }
 		
-/** @param display_container Size of the container that we are displaying this content in.
- *  @param film_container The size of the film's image.
+/** @param display_container Size of the container that we are
+ *  displaying this content in.
  */
 libdcp::Size
 VideoContentScale::size (shared_ptr<const VideoContent> c, libdcp::Size display_container, libdcp::Size film_container) const
 {
+	/* Work out the size of the content if it were put inside film_container */
+
+	libdcp::Size size;
 	if (_ratio) {
-		return fit_ratio_within (_ratio->ratio (), display_container);
+		/* Stretch to fit the requested ratio */
+		size = fit_ratio_within (_ratio->ratio (), film_container);
+	} else if (_scale) {
+		/* Scale, preserving aspect ratio */
+		size = fit_ratio_within (c->video_size_after_crop().ratio(), film_container);
+	} else {
+		/* No stretch nor scale */
+		size = c->video_size_after_crop();
 	}
 
-	libdcp::Size const ac = c->video_size_after_crop ();
-
-	/* Force scale if the film_container is smaller than the content's image */
-	if (_scale || film_container.width < ac.width || film_container.height < ac.height) {
-		return fit_ratio_within (ac.ratio (), display_container);
+	/* Now scale it down if the display container is smaller than the film container */
+	if (display_container != film_container) {
+		size.width = rint (size.width * float (display_container.width) / film_container.width);
+		size.height = rint (size.height * float (display_container.height) / film_container.height);
 	}
-
-	/* Scale the image so that it will be in the right place in film_container, even if display_container is a
-	   different size.
-	*/
-	return libdcp::Size (
-		c->video_size().width  * float(display_container.width)  / film_container.width,
-		c->video_size().height * float(display_container.height) / film_container.height
-		);
+	
+	return size;
 }
 
 void
