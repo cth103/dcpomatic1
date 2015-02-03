@@ -1,3 +1,13 @@
+2015-02-03  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.6 released.
+
+2015-02-03  Carl Hetherington  <cth@carlh.net>
+
+	* Fix crash on cropping a 1920x1080 content top
+	and bottom and then fitting it into a Scope
+	container.
+
 2015-01-25  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.77.5 released.

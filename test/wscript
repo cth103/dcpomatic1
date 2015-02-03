@@ -46,6 +46,7 @@ def build(bld):
                  threed_test.cc
                  update_checker_test.cc
                  util_test.cc
+                 video_content_scale_test.cc
                  """
 
     obj.target = 'unit-tests'
