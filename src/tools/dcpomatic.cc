@@ -807,7 +807,7 @@ class App : public wxApp
 	}
 	catch (exception& e)
 	{
-		error_dialog (0, wxString::Format ("DCP-o-matic could not start: %s", e.what ()));
+		error_dialog (0, wxString::Format ("DCP-o-matic could not start: %s", std_to_wx(e.what()).data()));
 		return true;
 	}
 
@@ -841,9 +841,9 @@ class App : public wxApp
 		try {
 			throw;
 		} catch (FileError& e) {
-			error_dialog (0, wxString::Format (_("An exception occurred: %s in %s.\n\nPlease report this problem to the DCP-o-matic author (carl@dcpomatic.com)."), e.what (), e.file().string().c_str ()));
+			error_dialog (0, wxString::Format (_("An exception occurred: %s in %s.\n\nPlease report this problem to the DCP-o-matic author (carl@dcpomatic.com)."), std_to_wx (e.what()).data(), std_to_wx(e.file().string()).data ()));
 		} catch (exception& e) {
-			error_dialog (0, wxString::Format (_("An exception occurred: %s.\n\nPlease report this problem to the DCP-o-matic author (carl@dcpomatic.com)."), e.what ()));
+			error_dialog (0, wxString::Format (_("An exception occurred: %s.\n\nPlease report this problem to the DCP-o-matic author (carl@dcpomatic.com)."), std_to_wx(e.what()).data ()));
 		} catch (...) {
 			error_dialog (0, _("An unknown exception occurred.  Please report this problem to the DCP-o-matic author (carl@dcpomatic.com)."));
 		}
