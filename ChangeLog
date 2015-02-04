@@ -1,5 +1,9 @@
 2015-02-04  Carl Hetherington  <cth@carlh.net>
 
+	* Version 1.77.7 released.
+
+2015-02-04  Carl Hetherington  <cth@carlh.net>
+
 	* Fix some bad string encodings and another
 	no-scale crash (when content is larger than the
 	container) (possibly #482).
