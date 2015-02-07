@@ -1255,9 +1255,8 @@ msgstr ""
 
 #. // TRANSLATORS: this is an abbreviation for "minutes"
 #: src/wx/timing_panel.cc:54
-#, fuzzy
 msgid "m"
-msgstr "ms"
+msgstr "m"
 
 #. / TRANSLATORS: this is an abbreviation for milliseconds, the unit of time
 #: src/wx/audio_panel.cc:78 src/wx/config_dialog.cc:301
