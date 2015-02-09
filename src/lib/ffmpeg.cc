@@ -33,6 +33,7 @@ extern "C" {
 
 using std::string;
 using std::cout;
+using std::set;
 using boost::shared_ptr;
 using libdcp::raw_convert;
 
@@ -122,24 +123,30 @@ FFmpeg::setup_general ()
 		throw DecodeError (N_("could not find video stream"));
 	}
 
-	/* Hack: if the AVStreams have zero IDs, put some in.  We
-	   use the IDs so that we can cope with VOBs, in which streams
-	   move about in index but remain with the same ID in different
-	   VOBs.  However, some files have all-zero IDs, hence this hack.
+	/* Hack: if the AVStreams have non-unique IDs, make them so.
+	   We use the IDs so that we can cope with VOBs, in which
+	   streams move about in index but remain with the same ID in
+	   different VOBs.  However, some files have all-zero or otherwise
+	   duplicate IDs, hence this hack.
 	*/
-	   
-	uint32_t i = 0;
-	while (i < _format_context->nb_streams && _format_context->streams[i]->id == 0) {
-		++i;
-	}
 
-	if (i == _format_context->nb_streams) {
-		/* Put in our own IDs */
-		for (uint32_t i = 0; i < _format_context->nb_streams; ++i) {
-			_format_context->streams[i]->id = i;
+	set<int> used;
+	for (uint32_t i = 0; i < _format_context->nb_streams; ++i) {
+		int const id = _format_context->streams[i]->id;
+		if (used.find (id) == used.end ()) {
+			used.insert (id);
+		} else {
+			/* Duplicate ID: find a new one */
+			int j = 0;
+			while (j < INT_MAX && used.find (j) != used.end ()) {
+				++j;
+			}
+
+			_format_context->streams[i]->id = j;
+			used.insert (j);
 		}
 	}
-
+	
 	_frame = av_frame_alloc ();
 	if (_frame == 0) {
 		throw DecodeError (N_("could not allocate frame"));
