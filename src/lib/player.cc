@@ -150,12 +150,13 @@ Player::pass ()
 				DCPOMATIC_ASSERT (ac);
 				shared_ptr<Resampler> re = resampler (ac, false);
 				if (re) {
+					LOG_DEBUG("Flushing resampler: earliest->audio_position=%1", earliest->audio_position);
 					shared_ptr<const AudioBuffers> b = re->flush ();
 					if (b->frames ()) {
 						process_audio (
 							earliest,
 							b,
-							_film->time_to_audio_frames (earliest->audio_position),
+							_film->time_to_audio_frames (earliest->audio_position + ac->trim_start() - ac->position()),
 							true
 							);
 					}
@@ -277,7 +278,18 @@ Player::process_video (weak_ptr<Piece> weak_piece, shared_ptr<const ImageProxy> 
 	}
 }
 
-/** @param already_resampled true if this data has already been through the chain up to the resampler */
+/** @param frame Frame position within the piece, starting from its start were it to be untrimmed.
+ *  In ASCII art:
+ *                  /--- position
+ *                  |
+ *   ___________________
+ *  |trimmed  |     |   | 
+ *  \_________|_____|___/
+ *
+ *  <---- frame ---->
+ *
+ *  @param already_resampled true if this data has already been through the chain up to the resampler.
+ */
 void
 Player::process_audio (weak_ptr<Piece> weak_piece, shared_ptr<const AudioBuffers> audio, AudioContent::Frame frame, bool already_resampled)
 {
@@ -312,6 +324,7 @@ Player::process_audio (weak_ptr<Piece> weak_piece, shared_ptr<const AudioBuffers
 		return;
 	}
 
+	/* Compute time in the DCP */
 	Time time = content->position() + (content->audio_delay() * TIME_HZ / 1000) + relative_time - content->trim_start ();
 	
 	/* Remap channels */
