@@ -49,6 +49,7 @@ extern "C" {
 #define LOG_ERROR(...) film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_ERROR);
 #define LOG_WARNING_NC(...) film->log()->log (__VA_ARGS__, Log::TYPE_WARNING);
 #define LOG_WARNING(...) film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_WARNING);
+#define LOG_DEBUG(...) film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_DEBUG);
 
 using std::cout;
 using std::string;
@@ -448,6 +449,8 @@ FFmpegDecoder::decode_audio_packet ()
 				/* Where we are in the source, in seconds */
 				double const pts = av_q2d (_format_context->streams[copy_packet.stream_index]->time_base)
 					* av_frame_get_best_effort_timestamp(_frame) + _pts_offset;
+
+				LOG_DEBUG("FFmpeg audio frame finished at %1 (offset is %2)", pts, _pts_offset);
 
 				if (pts > 0) {
 					/* Emit some silence */
