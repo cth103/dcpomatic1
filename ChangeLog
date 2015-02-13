@@ -1,3 +1,9 @@
+2015-02-13  Carl Hetherington  <cth@carlh.net>
+
+	* Speculative fix for crash on finding a server which
+	may be caused by a failure to disconnect from
+	ServerFinder when an Encoder is destroyed.
+
 2015-02-11  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.77.8 released.

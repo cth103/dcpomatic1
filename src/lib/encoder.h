@@ -118,6 +118,8 @@ private:
 
 	boost::shared_ptr<Writer> _writer;
 	Waker _waker;
+
+	boost::signals2::scoped_connection _server_found_connection;
 };
 
 #endif

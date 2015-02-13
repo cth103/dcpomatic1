@@ -98,7 +98,9 @@ Encoder::process_begin ()
 	}
 
 	_writer.reset (new Writer (_film, _job));
-	ServerFinder::instance()->connect (boost::bind (&Encoder::server_found, this, _1));
+	if (!ServerFinder::instance()->disabled ()) {
+		_server_found_connection = ServerFinder::instance()->connect (boost::bind (&Encoder::server_found, this, _1));
+	}
 }
 
 void

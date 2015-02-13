@@ -23,12 +23,16 @@
 class ServerFinder : public ExceptionStore
 {
 public:
-	void connect (boost::function<void (ServerDescription)>);
+	boost::signals2::connection connect (boost::function<void (ServerDescription)>);
 
 	static ServerFinder* instance ();
 
 	void disable () {
 		_disabled = true;
+	}
+
+	bool disabled () const {
+		return _disabled;
 	}
 
 private:
