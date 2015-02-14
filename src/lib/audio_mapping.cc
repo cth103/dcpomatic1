@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,9 +26,8 @@
 
 using std::list;
 using std::cout;
-using std::make_pair;
-using std::pair;
 using std::string;
+using std::vector;
 using std::min;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
@@ -143,4 +142,20 @@ AudioMapping::digest () const
 	}
 
 	return digester.get ();
+}
+
+bool
+AudioMapping::has_anything_mapped () const
+{
+	static float const minus_96_db = 0.000015849;
+	
+	for (vector<vector<float> >::const_iterator i = _gain.begin(); i != _gain.end(); ++i) {
+		for (vector<float>::const_iterator j = i->begin(); j != i->end(); ++j) {
+			if (abs (*j) > minus_96_db) {
+				return true;
+			}
+		}
+	}
+
+	return false;
 }

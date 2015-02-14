@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -393,7 +393,12 @@ void
 Timeline::playlist_changed ()
 {
 	ensure_ui_thread ();
-	
+	recreate_views ();
+}
+
+void
+Timeline::recreate_views ()
+{
 	shared_ptr<const Film> fl = _film.lock ();
 	if (!fl) {
 		return;
@@ -408,7 +413,9 @@ Timeline::playlist_changed ()
 		if (dynamic_pointer_cast<VideoContent> (*i)) {
 			_views.push_back (shared_ptr<View> (new VideoContentView (*this, *i)));
 		}
-		if (dynamic_pointer_cast<AudioContent> (*i)) {
+
+		shared_ptr<AudioContent> ac = dynamic_pointer_cast<AudioContent> (*i);
+		if (ac && ac->audio_mapping().has_anything_mapped ()) {
 			_views.push_back (shared_ptr<View> (new AudioContentView (*this, *i)));
 		}
 	}
@@ -427,6 +434,8 @@ Timeline::playlist_content_changed (int property)
 		assign_tracks ();
 		setup_pixels_per_time_unit ();
 		Refresh ();
+	} else if (property == AudioContentProperty::AUDIO_MAPPING) {
+		recreate_views ();
 	}
 }
 

@@ -84,6 +84,7 @@ private:
 	void assign_tracks ();
 	void set_position_from_event (wxMouseEvent &);
 	void clear_selection ();
+	void recreate_views ();
 
 	typedef std::vector<boost::shared_ptr<View> > ViewList;
 	typedef std::vector<boost::shared_ptr<ContentView> > ContentViewList;
