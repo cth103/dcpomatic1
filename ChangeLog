@@ -1,3 +1,7 @@
+2015-02-14  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.9 released.
+
 2015-02-13  Carl Hetherington  <cth@carlh.net>
 
 	* Speculative fix for crash on finding a server which
