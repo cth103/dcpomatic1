@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ class Film : public boost::enable_shared_from_this<Film>, public boost::noncopya
 {
 public:
 	Film (boost::filesystem::path, bool log = true);
+	~Film ();
 
 	boost::filesystem::path info_dir () const;
 	boost::filesystem::path j2c_path (int, Eyes, bool) const;
@@ -341,6 +342,10 @@ private:
 
 	/** true if our state has changed since we last saved it */
 	mutable bool _dirty;
+
+	boost::signals2::scoped_connection _playlist_changed_connection;
+	boost::signals2::scoped_connection _playlist_content_changed_connection;
+	std::list<boost::signals2::connection> _job_connections;
 
 	friend class paths_test;
 	friend class film_metadata_test;

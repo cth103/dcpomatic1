@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -348,7 +348,7 @@ public:
 		_issuer->SetValue (std_to_wx (config->dcp_issuer ()));
 		_issuer->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&DefaultsPage::issuer_changed, this));
 
-		config->Changed.connect (boost::bind (&DefaultsPage::config_changed, this));
+		_config_connection = config->Changed.connect (boost::bind (&DefaultsPage::config_changed, this));
 
 		return panel;
 	}
@@ -416,6 +416,8 @@ private:
 	wxChoice* _container;
 	wxChoice* _dcp_content_type;
 	wxTextCtrl* _issuer;
+
+	boost::signals2::scoped_connection _config_connection;
 };
 
 class EncodingServersPage : public wxPreferencesPage, public Page

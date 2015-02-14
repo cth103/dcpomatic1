@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ AnalyseAudioJob::run ()
 	shared_ptr<Player> player (new Player (_film, playlist));
 	player->disable_video ();
 	
-	player->Audio.connect (bind (&AnalyseAudioJob::audio, this, _1, _2));
+	_player_connection = player->Audio.connect (bind (&AnalyseAudioJob::audio, this, _1, _2));
 
 	_samples_per_point = max (int64_t (1), _film->time_to_audio_frames (_film->length()) / _num_points);
 

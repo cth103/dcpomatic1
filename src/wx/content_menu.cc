@@ -193,7 +193,7 @@ ContentMenu::find_missing ()
 
 	shared_ptr<Job> j (new ExamineContentJob (film, content));
 	
-	j->Finished.connect (
+	_job_connection = j->Finished.connect (
 		bind (
 			&ContentMenu::maybe_found_missing,
 			this,

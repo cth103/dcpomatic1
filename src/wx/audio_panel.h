@@ -54,4 +54,6 @@ private:
 	AudioMappingView* _mapping;
 	wxStaticText* _description;
 	AudioDialog* _audio_dialog;
+
+	boost::signals2::scoped_connection _mapping_connection;
 };

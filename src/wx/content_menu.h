@@ -51,6 +51,8 @@ private:
 	wxMenuItem* _join;
 	wxMenuItem* _find_missing;
 	wxMenuItem* _remove;
+
+	boost::signals2::scoped_connection _job_connection;
 };
 
 #endif

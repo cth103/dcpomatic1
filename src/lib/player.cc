@@ -70,6 +70,13 @@ Player::Player (shared_ptr<const Film> f, shared_ptr<const Playlist> p)
 	set_video_container_size (_film->frame_size ());
 }
 
+Player::~Player ()
+{
+	for (list<boost::signals2::connection>::iterator i = _decoder_connections.begin(); i != _decoder_connections.end(); ++i) {
+		i->disconnect ();
+	}
+}
+
 void
 Player::disable_video ()
 {
@@ -433,6 +440,10 @@ Player::setup_pieces ()
 
 	_pieces.clear ();
 
+	for (list<boost::signals2::connection>::iterator i = _decoder_connections.begin(); i != _decoder_connections.end(); ++i) {
+		i->disconnect ();
+	}
+
 	ContentList content = _playlist->content ();
 	sort (content.begin(), content.end(), ContentSorter ());
 
@@ -450,9 +461,15 @@ Player::setup_pieces ()
 		if (fc) {
 			shared_ptr<FFmpegDecoder> fd (new FFmpegDecoder (_film, fc, _video, _audio));
 			
-			fd->Video.connect (bind (&Player::process_video, this, weak_ptr<Piece> (piece), _1, _2, _3, _4, _5, 0));
-			fd->Audio.connect (bind (&Player::process_audio, this, weak_ptr<Piece> (piece), _1, _2, false));
-			fd->Subtitle.connect (bind (&Player::process_subtitle, this, weak_ptr<Piece> (piece), _1, _2, _3, _4));
+			_decoder_connections.push_back (
+				fd->Video.connect (bind (&Player::process_video, this, weak_ptr<Piece> (piece), _1, _2, _3, _4, _5, 0))
+				);
+			_decoder_connections.push_back (
+				fd->Audio.connect (bind (&Player::process_audio, this, weak_ptr<Piece> (piece), _1, _2, false))
+				);
+			_decoder_connections.push_back (
+				fd->Subtitle.connect (bind (&Player::process_subtitle, this, weak_ptr<Piece> (piece), _1, _2, _3, _4))
+				);
 
 			fd->seek (fc->time_to_content_video_frames (fc->trim_start ()), true);
 			piece->decoder = fd;
@@ -473,7 +490,9 @@ Player::setup_pieces ()
 
 			if (!reusing) {
 				shared_ptr<ImageDecoder> id (new ImageDecoder (_film, ic));
-				id->Video.connect (bind (&Player::process_video, this, weak_ptr<Piece> (piece), _1, _2, _3, _4, _5, 0));
+				_decoder_connections.push_back (
+					id->Video.connect (bind (&Player::process_video, this, weak_ptr<Piece> (piece), _1, _2, _3, _4, _5, 0))
+					);
 				piece->decoder = id;
 			}
 		}
@@ -481,7 +500,9 @@ Player::setup_pieces ()
 		shared_ptr<const SndfileContent> sc = dynamic_pointer_cast<const SndfileContent> (*i);
 		if (sc) {
 			shared_ptr<AudioDecoder> sd (new SndfileDecoder (_film, sc));
-			sd->Audio.connect (bind (&Player::process_audio, this, weak_ptr<Piece> (piece), _1, _2, false));
+			_decoder_connections.push_back (
+				sd->Audio.connect (bind (&Player::process_audio, this, weak_ptr<Piece> (piece), _1, _2, false))
+				);
 
 			piece->decoder = sd;
 		}

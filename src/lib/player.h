@@ -49,6 +49,7 @@ class Player : public boost::enable_shared_from_this<Player>, public boost::nonc
 {
 public:
 	Player (boost::shared_ptr<const Film>, boost::shared_ptr<const Playlist>);
+	~Player ();
 
 	void disable_video ();
 	void disable_audio ();
@@ -135,6 +136,7 @@ private:
 	boost::signals2::scoped_connection _playlist_changed_connection;
 	boost::signals2::scoped_connection _playlist_content_changed_connection;
 	boost::signals2::scoped_connection _film_changed_connection;
+	std::list<boost::signals2::connection> _decoder_connections;
 };
 
 #endif

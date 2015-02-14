@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -41,6 +41,8 @@ private:
 	std::vector<AudioPoint> _current;
 
 	boost::shared_ptr<AudioAnalysis> _analysis;
+
+	boost::signals2::scoped_connection _player_connection;
 
 	static const int _num_points;
 };
