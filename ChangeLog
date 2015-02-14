@@ -1,5 +1,8 @@
 2015-02-14  Carl Hetherington  <cth@carlh.net>
 
+	* Remove ^H shortcut to Hints dialog as it clashes
+	with OS X's hide shortcut.
+
 	* Possibly fix a variety of odd crashes caused by
 	dangling connections to signals.
 
