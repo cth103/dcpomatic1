@@ -1,0 +1,77 @@
+\documentclass{article}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage[landscape]{geometry}
+\begin{document}
+
+\section{Overview}
+
+The process of conversion from RGB to XYZ is:
+
+\begin{enumerate}
+\item Convert to linear RGB (i.e.\ apply a gamma curve, or at least an approximation to one).
+\item Convert to XYZ.
+\item Adjust the white point.
+\item Normalize values.
+\item Convert to non-linear XYZ (i.e.\ apply a gamma curve)
+\end{enumerate}
+
+
+\section{Conversion to linear RGB}
+
+This is done using either a `pure' gamma function, so that for some colour value $C_i$ the output colour $C_o$ is given by
+
+\begin{align*}
+C_o &= C_i ^ \gamma
+\end{align*}
+
+or a modified function of the form
+
+\begin{align*}
+C_o &= \left\{
+\begin{array}{ll}
+\frac{C_i}{K} & C_i \leq C_t \\
+\left( \frac{C_i + A}{1 + A} \right)^\zeta & C_i > C_t
+\end{array}
+\right.
+\end{align*}
+
+where $K$, $A$, $C_t$ and $\zeta$ are constants.  This modified function approximates a `pure' gamma function but changes the output for small inputs.
+
+\section{sRGB to XYZ}
+
+\begin{tabular}{|l|c|c|}
+\hline
+& \textbf{DCP-o-matic version 1.x} & \textbf{fnordware}\footnote{\url{https://github.com/fnordware/DCIconverter/tree/master/src}} \\
+
+\hline
+& & \\
+\textbf{Input gamma correction} &
+$C_o = \left\{ \begin{array}{ll} \frac{C_i}{12.92} & C_i \leq 0.04045 \\ \left(\frac{C_i + 0.055}{1.055}\right)^{2.4} & C_i > 0.04045 \end{array} \right.$ &
+$C_o = \left\{ \begin{array}{ll} \frac{C_i}{12.92} & C_i \leq 0.04045 \\ \left(\frac{C_i + 0.055}{1.055}\right)^{2.4} & C_i > 0.04045 \end{array} \right.$ \\
+& & \\
+
+\hline
+& & \\
+\textbf{RGB to XYZ conversion} &
+$\left[\begin{array}{lll} 0.4124564 & 0.3575761 & 0.1804375 \\
+                          0.2126729 & 0.7151522 & 0.0721750 \\
+	                  0.0193339 & 0.1191920 & 0.9503041 \end{array}\right]$ &
+
+$\left[\begin{array}{lll} 0.4124 & 0.3576 & 0.1805 \\
+                          0.2126 & 0.7152 & 0.0722 \\
+                          0.0193 & 0.1192 & 0.9505 \end{array}\right]$ \\[2em]
+
+\hline
+\textbf{Normalisation} &
+\parbox[c][4em][c]{3cm}{ \(\displaystyle C_o = \frac{48 C_i}{52.37}\)} &
+\parbox[c][4em][c]{3cm}{ \(\displaystyle C_o = \frac{48 C_i}{52.37}\)} \\
+
+\hline
+\textbf{Output gamma correction} &
+\parbox[c][4em][c]{3cm}{\(\displaystyle C_o = C_i^{\frac{1}{2.6}} \)} &
+\parbox[c][4em][c]{3cm}{\(\displaystyle C_o = C_i^{\frac{1}{2.6}} \)} \\
+\hline
+
+\end{tabular}
+\end{document}
