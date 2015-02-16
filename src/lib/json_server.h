@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,46 +17,15 @@
 
 */
 
-#include <boost/filesystem.hpp>
-#include "examine_content_job.h"
-#include "log.h"
-#include "content.h"
-#include "film.h"
-
-#include "i18n.h"
-
-using std::string;
-using std::cout;
-using boost::shared_ptr;
-
-ExamineContentJob::ExamineContentJob (shared_ptr<const Film> f, shared_ptr<Content> c)
-	: Job (f)
-	, _content (c)
+class JSONServer
 {
+public:
+	JSONServer (int port);
 
-}
+private:
+	void run (int port);
+	void handle (boost::shared_ptr<boost::asio::ip::tcp::socket> socket);
+	void request (std::string url, boost::shared_ptr<boost::asio::ip::tcp::socket> socket);
+};
 
-ExamineContentJob::~ExamineContentJob ()
-{
 	
-}
-
-string
-ExamineContentJob::name () const
-{
-	return _("Examine content");
-}
-
-string
-ExamineContentJob::json_name () const
-{
-	return N_("examine_content");
-}
-
-void
-ExamineContentJob::run ()
-{
-	_content->examine (shared_from_this ());
-	set_progress (1);
-	set_state (FINISHED_OK);
-}
