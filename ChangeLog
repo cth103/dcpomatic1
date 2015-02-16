@@ -1,3 +1,8 @@
+2015-02-16  Carl Hetherington  <cth@carlh.net>
+
+	* Allow "deletion" of the audio part of a FFmpeg
+	file from the timeline; delete unmaps the audio (#316).
+
 2015-02-14  Carl Hetherington  <cth@carlh.net>
 
 	* Remove ^H shortcut to Hints dialog as it clashes

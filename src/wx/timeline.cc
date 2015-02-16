@@ -82,7 +82,7 @@ Timeline::paint ()
 
 	gc->SetFont (gc->CreateFont (*wxNORMAL_FONT));
 
-	for (ViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
+	for (TimelineViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
 		(*i)->paint (gc);
 	}
 
@@ -142,14 +142,14 @@ Timeline::playlist_content_changed (int property)
 void
 Timeline::assign_tracks ()
 {
-	for (ViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
+	for (TimelineViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
 		shared_ptr<TimelineContentView> c = dynamic_pointer_cast<TimelineContentView> (*i);
 		if (c) {
 			c->unset_track ();
 		}
 	}
 
-	for (ViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
+	for (TimelineViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
 		shared_ptr<TimelineContentView> cv = dynamic_pointer_cast<TimelineContentView> (*i);
 		if (!cv) {
 			continue;
@@ -159,7 +159,7 @@ Timeline::assign_tracks ()
 
 		int t = 0;
 		while (true) {
-			ViewList::iterator j = _views.begin();
+			TimelineViewList::iterator j = _views.begin();
 			while (j != _views.end()) {
 				shared_ptr<TimelineContentView> test = dynamic_pointer_cast<TimelineContentView> (*j);
 				if (!test) {
@@ -217,7 +217,7 @@ Timeline::setup_pixels_per_time_unit ()
 shared_ptr<TimelineView>
 Timeline::event_to_view (wxMouseEvent& ev)
 {
-	ViewList::iterator i = _views.begin();
+	TimelineViewList::iterator i = _views.begin();
 	Position<int> const p (ev.GetX(), ev.GetY());
 	while (i != _views.end() && !(*i)->bbox().contains (p)) {
 		++i;
@@ -243,7 +243,7 @@ Timeline::left_down (wxMouseEvent& ev)
 		_down_view_position = content_view->content()->position ();
 	}
 
-	for (ViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
+	for (TimelineViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
 		shared_ptr<TimelineContentView> cv = dynamic_pointer_cast<TimelineContentView> (*i);
 		if (!cv) {
 			continue;
@@ -307,7 +307,7 @@ Timeline::right_down (wxMouseEvent& ev)
 		cv->set_selected (true);
 	}
 
-	_menu.popup (_film, selected_content (), ev.GetPosition ());
+	_menu.popup (_film, selected_content (), selected_views (), ev.GetPosition ());
 }
 
 void
@@ -356,7 +356,7 @@ Timeline::set_position_from_event (wxMouseEvent& ev)
 		optional<Time> nearest_distance;
 		
 		/* Find the nearest content edge; this is inefficient */
-		for (ViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
+		for (TimelineViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
 			shared_ptr<TimelineContentView> cv = dynamic_pointer_cast<TimelineContentView> (*i);
 			if (!cv || cv == _down_view) {
 				continue;
@@ -408,7 +408,7 @@ Timeline::resized ()
 void
 Timeline::clear_selection ()
 {
-	for (ViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
+	for (TimelineViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
 		shared_ptr<TimelineContentView> cv = dynamic_pointer_cast<TimelineContentView> (*i);
 		if (cv) {
 			cv->set_selected (false);
@@ -416,12 +416,12 @@ Timeline::clear_selection ()
 	}
 }
 
-Timeline::ContentViewList
+TimelineContentViewList
 Timeline::selected_views () const
 {
-	ContentViewList sel;
+	TimelineContentViewList sel;
 	
-	for (ViewList::const_iterator i = _views.begin(); i != _views.end(); ++i) {
+	for (TimelineViewList::const_iterator i = _views.begin(); i != _views.end(); ++i) {
 		shared_ptr<TimelineContentView> cv = dynamic_pointer_cast<TimelineContentView> (*i);
 		if (cv && cv->selected()) {
 			sel.push_back (cv);
@@ -435,9 +435,9 @@ ContentList
 Timeline::selected_content () const
 {
 	ContentList sel;
-	ContentViewList views = selected_views ();
+	TimelineContentViewList views = selected_views ();
 	
-	for (ContentViewList::const_iterator i = views.begin(); i != views.end(); ++i) {
+	for (TimelineContentViewList::const_iterator i = views.begin(); i != views.end(); ++i) {
 		sel.push_back ((*i)->content ());
 	}
 

@@ -159,3 +159,14 @@ AudioMapping::has_anything_mapped () const
 
 	return false;
 }
+
+void
+AudioMapping::unmap_all ()
+{
+	for (vector<vector<float> >::iterator i = _gain.begin(); i != _gain.end(); ++i) {
+		for (vector<float>::iterator j = i->begin(); j != i->end(); ++j) {
+			*j = 0;
+		}
+	}
+}
+	

@@ -1041,7 +1041,7 @@ FilmEditor::set_selection (weak_ptr<Content> wc)
 void
 FilmEditor::content_right_click (wxListEvent& ev)
 {
-	_menu.popup (_film, selected_content (), ev.GetPoint ());
+	_menu.popup (_film, selected_content (), TimelineContentViewList (), ev.GetPoint ());
 }
 
 void

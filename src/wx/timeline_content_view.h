@@ -57,4 +57,6 @@ private:
 	boost::signals2::scoped_connection _content_connection;
 };
 
+typedef std::vector<boost::shared_ptr<TimelineContentView> > TimelineContentViewList;
+
 #endif

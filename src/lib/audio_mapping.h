@@ -60,6 +60,7 @@ public:
 	std::string digest () const;
 
 	bool has_anything_mapped () const;
+	void unmap_all ();
 	
 private:
 	void setup (int);

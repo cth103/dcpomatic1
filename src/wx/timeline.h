@@ -86,17 +86,14 @@ private:
 	void clear_selection ();
 	void recreate_views ();
 
-	typedef std::vector<boost::shared_ptr<TimelineView> > ViewList;
-	typedef std::vector<boost::shared_ptr<TimelineContentView> > ContentViewList;
-
 	boost::shared_ptr<TimelineView> event_to_view (wxMouseEvent &);
-	ContentViewList selected_views () const;
+	TimelineContentViewList selected_views () const;
 	ContentList selected_content () const;
 	void maybe_snap (Time a, Time b, boost::optional<Time>& nearest_distance) const;
 
 	FilmEditor* _film_editor;
 	boost::weak_ptr<Film> _film;
-	ViewList _views;
+	TimelineViewList _views;
 	boost::shared_ptr<TimelineTimeAxisView> _time_axis_view;
 	int _tracks;
 	boost::optional<double> _pixels_per_time_unit;
