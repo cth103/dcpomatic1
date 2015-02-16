@@ -53,7 +53,7 @@ SndfileDecoder::SndfileDecoder (shared_ptr<const Film> f, shared_ptr<const Sndfi
 #endif
 	
 	if (!_sndfile) {
-		throw DecodeError (_("could not open audio file for reading"));
+		throw DecodeError (String::compose (_("could not open audio file for reading (%1)"), sf_strerror (0)));
 	}
 
 	_done = 0;
