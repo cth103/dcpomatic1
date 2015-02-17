@@ -116,7 +116,7 @@ Image::crop_scale_window (Crop crop, libdcp::Size inter_size, libdcp::Size out_s
 		scale_context,
 		sws_getCoefficients (AVCOL_SPC_BT709), 1,
 		sws_getCoefficients (AVCOL_SPC_BT709), 1,
-		1 << 16, 1 << 16, 1 << 16
+		0, 1 << 16, 1 << 16
 		);
 
 	/* Prepare input data pointers with crop */
