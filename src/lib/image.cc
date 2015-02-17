@@ -112,6 +112,13 @@ Image::crop_scale_window (Crop crop, libdcp::Size inter_size, libdcp::Size out_s
 		throw StringError (N_("Could not allocate SwsContext"));
 	}
 
+	sws_setColorspaceDetails (
+		scale_context,
+		sws_getCoefficients (AVCOL_SPC_BT709), 1,
+		sws_getCoefficients (AVCOL_SPC_BT709), 1,
+		1 << 16, 1 << 16, 1 << 16
+		);
+
 	/* Prepare input data pointers with crop */
 	uint8_t* scale_in_data[components()];
 	for (int c = 0; c < components(); ++c) {
