@@ -1,3 +1,8 @@
+2015-02-22  Carl Hetherington  <cth@carlh.net>
+
+	* Add a note to the timing panel to try to stop people
+	changing the video frame rate in the wrong circumstances.
+
 2015-02-16  Carl Hetherington  <cth@carlh.net>
 
 	* Allow "deletion" of the audio part of a FFmpeg
