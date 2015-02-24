@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/thread/mutex.hpp>
 #include <Magick++.h>
 #include <libxml++/libxml++.h>
 
@@ -87,6 +88,8 @@ public:
 private:	
 	Magick::Blob _blob;
 	mutable boost::shared_ptr<Image> _image;
+	/** Mutex to handle simultaneous thread calls to image() */
+	mutable boost::mutex _mutex;
 };
 
 boost::shared_ptr<ImageProxy> image_proxy_factory (boost::shared_ptr<cxml::Node> xml, boost::shared_ptr<Socket> socket, boost::shared_ptr<Log> log);

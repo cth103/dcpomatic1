@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -114,6 +114,8 @@ MagickImageProxy::MagickImageProxy (shared_ptr<cxml::Node>, shared_ptr<Socket> s
 shared_ptr<Image>
 MagickImageProxy::image () const
 {
+	boost::mutex::scoped_lock lm (_mutex);
+	
 	if (_image) {
 		return _image;
 	}
@@ -160,7 +162,7 @@ MagickImageProxy::image () const
 		using namespace MagickCore;
 #else
 		using namespace MagickLib;
-#endif		
+#endif
 		magick_image->write (0, i, size.width, 1, "RGB", CharPixel, p);
 		p += _image->stride()[0];
 	}
