@@ -1,3 +1,7 @@
+2015-02-25  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.12 released.
+
 2015-02-25  c.hetherington  <cth@carlh.net>
 
 	* Fix one cause of hangs right at the end of an encode
