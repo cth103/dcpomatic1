@@ -74,6 +74,7 @@ FFmpegDecoder::FFmpegDecoder (shared_ptr<const Film> f, shared_ptr<const FFmpegC
 	, _decode_audio (audio)
 	, _pts_offset (0)
 	, _just_sought (false)
+	, _stop (false)
 {
 	setup_subtitle ();
 
@@ -153,11 +154,7 @@ FFmpegDecoder::flush ()
 	}
 
 	/* Stop us being asked for any more data */
-	Time const end = _ffmpeg_content->trim_start() + _ffmpeg_content->length_after_trim();
-	shared_ptr<const Film> film = _film.lock ();
-	DCPOMATIC_ASSERT (film);
-	_video_position = film->time_to_video_frames (end);
-	_audio_position = film->time_to_audio_frames (end);
+	_stop = true;
 }
 
 void
@@ -369,6 +366,7 @@ FFmpegDecoder::seek (VideoContent::Frame frame, bool accurate)
 	}
 	
 	_video_position = frame;
+	_stop = false;
 	
 	if (frame == 0 || !accurate) {
 		/* We're already there, or we're as close as we need to be */
@@ -599,6 +597,10 @@ FFmpegDecoder::setup_subtitle ()
 bool
 FFmpegDecoder::done () const
 {
+	if (_stop) {
+		return true;
+	}
+		
 	shared_ptr<const Film> film = _film.lock ();
 	DCPOMATIC_ASSERT (film);
 
@@ -610,7 +612,7 @@ FFmpegDecoder::done () const
 	
 	bool const ad = !_decode_audio || !_ffmpeg_content->audio_stream() ||
 		((ap - _ffmpeg_content->trim_start()) >= _ffmpeg_content->length_after_trim ());
-	
+
 	return vd && ad;
 }
 	
