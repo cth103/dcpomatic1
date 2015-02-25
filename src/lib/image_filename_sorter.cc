@@ -30,7 +30,6 @@ public:
 		boost::optional<int> na = extract_number (a);
 		boost::optional<int> nb = extract_number (b);
 		if (!na || !nb) {
-			std::cout << a << " " << b << " " << (a.string() < b.string()) << "\n";
 			return a.string() < b.string();
 		}
 
@@ -42,21 +41,35 @@ private:
 	{
 		p = p.leaf ();
 		
-		std::string number;
+		std::list<std::string> numbers;
+
+		std::string current;
 		for (size_t i = 0; i < p.string().size(); ++i) {
 			if (isdigit (p.string()[i])) {
-				number += p.string()[i];
+				current += p.string()[i];
 			} else {
-				if (!number.empty ()) {
-					break;
+				if (!current.empty ()) {
+					numbers.push_back (current);
+					current.clear ();
 				}
 			}
 		}
 
-		if (number.empty ()) {
+		if (!current.empty ()) {
+			numbers.push_back (current);
+		}
+
+		std::string longest;
+		for (std::list<std::string>::const_iterator i = numbers.begin(); i != numbers.end(); ++i) {
+			if (i->length() > longest.length()) {
+				longest = *i;
+			}
+		}
+
+		if (longest.empty ()) {
 			return boost::optional<int> ();
 		}
 
-		return libdcp::raw_convert<int> (number);
+		return libdcp::raw_convert<int> (longest);
 	}
 };

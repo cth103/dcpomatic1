@@ -31,6 +31,8 @@ BOOST_AUTO_TEST_CASE (image_filename_sorter_test)
 	BOOST_ASSERT (x ("1", "999"));
 	BOOST_ASSERT (x ("00057.tif", "00166.tif"));
 	BOOST_ASSERT (x ("/my/numeric999/path/00057.tif", "/my/numeric999/path/00166.tif"));
+	BOOST_ASSERT (x ("/my/numeric999/path/00057.tif", "/my/numeric999/path/00166.tif"));
+	BOOST_ASSERT (x ("peabody4.0045937.dpx", "peabody4.0045938.dpx"));
 
 	BOOST_ASSERT (!x ("abc0000000002", "abc0000000001"));
 	BOOST_ASSERT (!x ("2", "1"));
