@@ -450,7 +450,7 @@ Writer::finish ()
 	boost::system::error_code ec;
 	boost::filesystem::create_hard_link (video_from, video_to, ec);
 	if (ec) {
-		LOG_WARNING_NC ("Hard-link failed; copying instead");
+		LOG_WARNING ("Hard-link failed; copying instead (%1)", ec.message ());
 		boost::filesystem::copy_file (video_from, video_to, ec);
 		if (ec) {
 			LOG_ERROR ("Failed to copy video file from %1 to %2 (%3)", video_from.string(), video_to.string(), ec.message ());
