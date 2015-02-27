@@ -62,6 +62,7 @@ public:
 	 */
 	virtual std::string technical_summary () const;
 	virtual void as_xml (xmlpp::Node *) const;
+	/** @return Full length of this content as presented in the DCP */
 	virtual Time full_length () const = 0;
 	virtual std::string identifier () const;
 
