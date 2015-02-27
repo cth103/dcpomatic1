@@ -1,3 +1,8 @@
+2015-02-27  c.hetherington  <cth@carlh.net>
+
+	* Update full/play length in the timing panel when
+	the DCP frame rate is changed.
+
 2015-02-25  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.77.12 released.

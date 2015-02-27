@@ -26,6 +26,7 @@ class TimingPanel : public FilmEditorPanel
 public:
 	TimingPanel (FilmEditor *);
 
+	void film_changed (Film::Property);
 	void film_content_changed (int);
 	void content_selection_changed ();
 	
@@ -37,6 +38,8 @@ private:
 	void play_length_changed ();
 	void video_frame_rate_changed ();
 	void set_video_frame_rate ();
+	void update_full_length ();
+	void update_play_length ();
 	
 	Timecode* _position;
 	Timecode* _full_length;
