@@ -129,8 +129,6 @@ SndfileContent::full_length () const
 	shared_ptr<const Film> film = _film.lock ();
 	DCPOMATIC_ASSERT (film);
 
-	FrameRateChange frc = film->active_frame_rate_change (position ());
-
 	OutputAudioFrame const len = divide_with_round (
 		audio_length() * output_audio_frame_rate(), content_audio_frame_rate()
 		);
