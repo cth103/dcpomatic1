@@ -1,3 +1,8 @@
+2015-03-04  Carl Hetherington  <cth@carlh.net>
+
+	* Fix incorrect timing of sndfile content when
+	video is being sped up or slowed down.
+
 2015-02-27  c.hetherington  <cth@carlh.net>
 
 	* Update full/play length in the timing panel when
