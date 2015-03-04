@@ -1,5 +1,8 @@
 2015-03-04  Carl Hetherington  <cth@carlh.net>
 
+	* Speculative fix to certificate not being
+	recognised by EasyDCP Player.
+
 	* Version 1.77.13 released.
 
 2015-03-04  Carl Hetherington  <cth@carlh.net>
