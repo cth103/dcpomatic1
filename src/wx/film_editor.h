@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -152,7 +152,7 @@ private:
 	wxChoice* _frame_rate_choice;
 	wxSpinCtrl* _frame_rate_spin;
 	wxSizer* _frame_rate_sizer;
-	wxSpinCtrl* _audio_channels;
+	wxChoice* _audio_channels;
 	wxButton* _best_frame_rate;
 	wxCheckBox* _three_d;
 	wxChoice* _resolution;

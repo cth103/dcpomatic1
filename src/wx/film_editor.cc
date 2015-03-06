@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -172,7 +172,10 @@ FilmEditor::make_dcp_panel ()
 	++r;
 
 	add_label_to_grid_bag_sizer (grid, _dcp_panel, _("Audio channels"), true, wxGBPosition (r, 0));
-	_audio_channels = new wxSpinCtrl (_dcp_panel, wxID_ANY);
+	_audio_channels = new wxChoice (_dcp_panel, wxID_ANY);
+	for (int i = 2; i <= 16; i += 2) {
+		_audio_channels->Append (wxString::Format ("%d", i));
+	}
 	grid->Add (_audio_channels, wxGBPosition (r, 1));
 	++r;
 
@@ -225,7 +228,6 @@ FilmEditor::make_dcp_panel ()
 		_frame_rate_choice->Append (std_to_wx (boost::lexical_cast<string> (*i)));
 	}
 
-	_audio_channels->SetRange (0, MAX_DCP_AUDIO_CHANNELS);
 	_j2k_bandwidth->SetRange (1, Config::instance()->maximum_j2k_bandwidth() / 1000000);
 	_frame_rate_spin->SetRange (1, 480);
 
@@ -261,7 +263,7 @@ FilmEditor::connect_to_widgets ()
 	_best_frame_rate->Bind	(wxEVT_COMMAND_BUTTON_CLICKED,	      boost::bind (&FilmEditor::best_frame_rate_clicked, this));
 	_signed->Bind           (wxEVT_COMMAND_CHECKBOX_CLICKED,      boost::bind (&FilmEditor::signed_toggled, this));
 	_encrypted->Bind        (wxEVT_COMMAND_CHECKBOX_CLICKED,      boost::bind (&FilmEditor::encrypted_toggled, this));
-	_audio_channels->Bind	(wxEVT_COMMAND_SPINCTRL_UPDATED,      boost::bind (&FilmEditor::audio_channels_changed, this));
+	_audio_channels->Bind	(wxEVT_COMMAND_CHOICE_SELECTED,       boost::bind (&FilmEditor::audio_channels_changed, this));
 	_j2k_bandwidth->Bind	(wxEVT_COMMAND_SPINCTRL_UPDATED,      boost::bind (&FilmEditor::j2k_bandwidth_changed, this));
 	_resolution->Bind       (wxEVT_COMMAND_CHOICE_SELECTED,       boost::bind (&FilmEditor::resolution_changed, this));
 	_three_d->Bind	 	(wxEVT_COMMAND_CHECKBOX_CLICKED,      boost::bind (&FilmEditor::three_d_changed, this));
@@ -404,7 +406,7 @@ FilmEditor::audio_channels_changed ()
 		return;
 	}
 
-	_film->set_audio_channels (_audio_channels->GetValue ());
+	_film->set_audio_channels ((_audio_channels->GetSelection() + 1) * 2);
 }
 
 void
@@ -517,7 +519,7 @@ FilmEditor::film_changed (Film::Property p)
 		break;
 	}
 	case Film::AUDIO_CHANNELS:
-		checked_set (_audio_channels, _film->audio_channels ());
+		checked_set (_audio_channels, (_film->audio_channels () / 2) - 1);
 		setup_dcp_name ();
 		break;
 	case Film::THREE_D:
