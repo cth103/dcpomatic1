@@ -1,5 +1,7 @@
 2015-03-07  Carl Hetherington  <cth@carlh.net>
 
+	* Ellipsize filters string if it is too long (#475).
+
 	* Version 1.77.15 released.
 
 2015-03-07  Carl Hetherington  <cth@carlh.net>
