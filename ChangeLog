@@ -1,5 +1,9 @@
 2015-03-07  Carl Hetherington  <cth@carlh.net>
 
+	* Version 1.77.15 released.
+
+2015-03-07  Carl Hetherington  <cth@carlh.net>
+
 	* Use the number of mapped audio channels
 	for the DCP name, not the number of channels
 	written to the DCP (#479).
