@@ -115,7 +115,7 @@ Timeline::recreate_views ()
 		}
 
 		shared_ptr<AudioContent> ac = dynamic_pointer_cast<AudioContent> (*i);
-		if (ac && ac->audio_mapping().has_anything_mapped ()) {
+		if (ac && !ac->audio_mapping().mapped_dcp_channels().empty ()) {
 			_views.push_back (shared_ptr<TimelineView> (new TimelineAudioContentView (*this, *i)));
 		}
 	}

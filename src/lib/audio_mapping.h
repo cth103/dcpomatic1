@@ -21,6 +21,7 @@
 #define DCPOMATIC_AUDIO_MAPPING_H
 
 #include <vector>
+#include <list>
 #include <libdcp/types.h>
 #include <boost/shared_ptr.hpp>
 
@@ -59,7 +60,7 @@ public:
 
 	std::string digest () const;
 
-	bool has_anything_mapped () const;
+	std::list<libdcp::Channel> mapped_dcp_channels () const;
 	void unmap_all ();
 	
 private:

@@ -144,20 +144,25 @@ AudioMapping::digest () const
 	return digester.get ();
 }
 
-bool
-AudioMapping::has_anything_mapped () const
+list<libdcp::Channel>
+AudioMapping::mapped_dcp_channels () const
 {
 	static float const minus_96_db = 0.000015849;
+
+	list<libdcp::Channel> mapped;
 	
 	for (vector<vector<float> >::const_iterator i = _gain.begin(); i != _gain.end(); ++i) {
-		for (vector<float>::const_iterator j = i->begin(); j != i->end(); ++j) {
-			if (abs (*j) > minus_96_db) {
-				return true;
+		for (size_t j = 0; j < i->size(); ++j) {
+			if (abs ((*i)[j]) > minus_96_db) {
+				mapped.push_back ((libdcp::Channel) j);
 			}
 		}
 	}
 
-	return false;
+	mapped.sort ();
+	mapped.unique ();
+	
+	return mapped;
 }
 
 void
