@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: LIBDCPOMATIC\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-01-25 15:44+0000\n"
-"PO-Revision-Date: 2015-01-07 09:06-0500\n"
+"PO-Revision-Date: 2015-03-16 19:24-0500\n"
 "Last-Translator: Manuel AC <manuel.acevedo@civantos.>\n"
 "Language-Team: Manuel AC <manuel.acevedo@civantos.com>\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.1\n"
+"X-Generator: Poedit 1.7.4\n"
 
 #: src/lib/sndfile_content.cc:61
 msgid "%1 [audio]"
@@ -286,7 +286,7 @@ msgstr ""
 
 #: src/lib/video_content.cc:476
 msgid "Display aspect ratio"
-msgstr ""
+msgstr "Proporción de aspecto mostrada"
 
 #: src/lib/dolby_cp750.cc:27
 msgid "Dolby CP650 and CP750"
@@ -334,7 +334,7 @@ msgstr "Película"
 
 #: src/lib/ffmpeg_examiner.cc:72
 msgid "Finding length"
-msgstr ""
+msgstr "Buscando la duración"
 
 #: src/lib/ratio.cc:40
 msgid "Flat"
