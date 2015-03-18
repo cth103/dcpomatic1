@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-18 21:14+0000\n"
-"PO-Revision-Date: 2015-01-16 15:35+0100\n"
+"POT-Creation-Date: 2015-01-25 15:44+0000\n"
+"PO-Revision-Date: 2015-03-18 20:49+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -150,7 +150,7 @@ msgstr "Impossible de charger le film %1 (%2)"
 #: src/tools/dcpomatic.cc:403
 #, c-format
 msgid "Could not make DCP: %s"
-msgstr "Impossible de produire le DCP: (%s)"
+msgstr "Impossible de créer le DCP: (%s)"
 
 #: src/tools/dcpomatic.cc:261 src/tools/dcpomatic_batch.cc:175
 #, c-format
@@ -159,7 +159,7 @@ msgstr "Impossible d'ouvrir le film à %s (%s)"
 
 #: src/tools/dcpomatic.cc:489
 msgid "Could not show DCP"
-msgstr "Impossible de montrer le DCP"
+msgstr "Ouverture du DCP impossible"
 
 #: src/tools/dcpomatic.cc:480
 msgid "Could not show DCP (could not run konqueror)"
@@ -186,11 +186,10 @@ msgstr "Serveurs d'encodage"
 #. / project (Film) has been changed since it was last saved.
 #: src/tools/dcpomatic.cc:89
 msgid "Film changed"
-msgstr "Film changé"
+msgstr "Film modifié"
 
 #: src/tools/dcpomatic.cc:660
-#, fuzzy
-msgid "Hints..."
+msgid "Hints...\tCtrl-H"
 msgstr "Avertissements...\tCtrl+H"
 
 #: src/tools/dcpomatic.cc:655
@@ -208,7 +207,7 @@ msgstr "&Voir le DCP"
 #: src/tools/dcpomatic.cc:86
 #, c-format
 msgid "Save changes to film \"%s\" before closing?"
-msgstr "Enregistrer les changements du projet \"%s\" avant de fermer ?"
+msgstr "Enregistrer les modifications au projet \"%s\" avant de fermer ?"
 
 #: src/tools/dcpomatic.cc:651
 msgid "Scale to fit &height"
