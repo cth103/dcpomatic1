@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-25 15:44+0000\n"
+"POT-Creation-Date: 2015-03-18 21:14+0000\n"
 "PO-Revision-Date: 2014-09-04 20:34+0100\n"
 "Last-Translator: Cherif Ben Brahim <firehc@mac.com>\n"
 "Language-Team: UniversalDV <Tkooijmans@universaldv.nl>\n"
@@ -189,15 +189,15 @@ msgstr "Content video is %1x%2"
 msgid "Copy DCP to TMS"
 msgstr "Kopieer DCP to TMS"
 
-#: src/lib/scp_dcp_job.cc:130
+#: src/lib/scp_dcp_job.cc:136
 msgid "Could not connect to server %1 (%2)"
 msgstr "Kan niet verbinden met server %1 (%2)"
 
-#: src/lib/scp_dcp_job.cc:152
+#: src/lib/scp_dcp_job.cc:158
 msgid "Could not create remote directory %1 (%2)"
 msgstr "Kan geen remote map maken %1 (%2)"
 
-#: src/lib/image_proxy.cc:147
+#: src/lib/image_proxy.cc:149
 #, fuzzy
 msgid "Could not decode image file (%1)"
 msgstr "Kan beeldbestand niet decoderen"
@@ -212,7 +212,7 @@ msgstr ""
 msgid "Could not open %1"
 msgstr "Kan niet openen %1"
 
-#: src/lib/scp_dcp_job.cc:177
+#: src/lib/scp_dcp_job.cc:183
 msgid "Could not open %1 to send"
 msgstr "Kan niet openen %1 om te verzenden"
 
@@ -220,11 +220,11 @@ msgstr "Kan niet openen %1 om te verzenden"
 msgid "Could not open downloaded ZIP file"
 msgstr "Kan gedownloade ZIP bestand niet openen"
 
-#: src/lib/scp_dcp_job.cc:147
+#: src/lib/scp_dcp_job.cc:153
 msgid "Could not start SCP session (%1)"
 msgstr "Kan SCP sessie niet starten (%1)"
 
-#: src/lib/scp_dcp_job.cc:191
+#: src/lib/scp_dcp_job.cc:197
 msgid "Could not write to remote file (%1)"
 msgstr "Kan niet schrijven naar bestand op FTP server"
 
@@ -321,7 +321,7 @@ msgstr "Fout (%1)"
 msgid "Examine content"
 msgstr "Controleer content"
 
-#: src/lib/scp_dcp_job.cc:140
+#: src/lib/scp_dcp_job.cc:146
 msgid "Failed to authenticate with server (%1)"
 msgstr "Inlog fout met server (%1)"
 
@@ -409,15 +409,15 @@ msgstr "Diverse"
 msgid "Motion compensating deinterlacer"
 msgstr "Motion compensating deinterlacer"
 
-#: src/lib/video_content_scale.cc:105
+#: src/lib/video_content_scale.cc:108
 msgid "No scale"
 msgstr "Niet vergroten of verkleinen"
 
-#: src/lib/video_content_scale.cc:102
+#: src/lib/video_content_scale.cc:105
 msgid "No stretch"
 msgstr "Niet uitvullen"
 
-#: src/lib/image_content.cc:50
+#: src/lib/image_content.cc:52
 msgid "No valid image files were found in the folder."
 msgstr "Geen geldige beeldbestanden gevonden in deze map."
 
@@ -490,7 +490,7 @@ msgstr "Rechtsachter surround"
 msgid "Right surround"
 msgstr "Rechts surround"
 
-#: src/lib/scp_dcp_job.cc:135
+#: src/lib/scp_dcp_job.cc:141
 msgid "SSH error (%1)"
 msgstr "SSH fout (%1)"
 
@@ -539,7 +539,7 @@ msgstr ""
 msgid "There was not enough memory to do this."
 msgstr "Er was niet genoeg geheugen om dit uit te voeren."
 
-#: src/lib/film.cc:409
+#: src/lib/film.cc:425
 msgid ""
 "This film was created with a newer version of DCP-o-matic, and it cannot be "
 "loaded into this version.  Sorry!"
@@ -547,7 +547,7 @@ msgstr ""
 "Deze film is gemaakt met een nieuwere versie van DCP-o-matic en kan niet "
 "geopend worden. Sorry!"
 
-#: src/lib/film.cc:401
+#: src/lib/film.cc:417
 msgid ""
 "This film was created with an older version of DCP-o-matic, and "
 "unfortunately it cannot be loaded into this version.  You will need to "
@@ -573,7 +573,7 @@ msgstr "Bumper"
 msgid "Unexpected ZIP file contents"
 msgstr "Onverwachte ZIP file inhoud"
 
-#: src/lib/image_proxy.cc:197
+#: src/lib/image_proxy.cc:199
 msgid "Unexpected image type received by server"
 msgstr "Onverwacht beeldtype ontvangen door server"
 
@@ -581,7 +581,7 @@ msgstr "Onverwacht beeldtype ontvangen door server"
 msgid "Unknown error"
 msgstr "Onbekende fout"
 
-#: src/lib/ffmpeg_decoder.cc:309
+#: src/lib/ffmpeg_decoder.cc:307
 msgid "Unrecognised audio sample format (%1)"
 msgstr "Niet herkenbaar audio sample formaat (%1)"
 
@@ -609,19 +609,19 @@ msgstr "X"
 msgid "Yet Another Deinterlacing Filter"
 msgstr "Yet Another Deinterlacing Filter"
 
-#: src/lib/film.cc:306
+#: src/lib/film.cc:322
 msgid "You must add some content to the DCP before creating it"
 msgstr "U moet wat content toevoegen voor het maken van de DCP"
 
-#: src/lib/image_content.cc:73
+#: src/lib/image_content.cc:75
 msgid "[moving images]"
 msgstr "[bewegend beeld]"
 
-#: src/lib/image_content.cc:71
+#: src/lib/image_content.cc:73
 msgid "[still]"
 msgstr "[still]"
 
-#: src/lib/film.cc:259
+#: src/lib/film.cc:267
 msgid "cannot contain slashes"
 msgstr "er mag geen '\" gebruikt worden"
 
@@ -629,19 +629,19 @@ msgstr "er mag geen '\" gebruikt worden"
 msgid "connect timed out"
 msgstr "verbinding timeout"
 
-#: src/lib/scp_dcp_job.cc:121
+#: src/lib/scp_dcp_job.cc:127
 msgid "connecting"
 msgstr "verbinden"
 
-#: src/lib/film.cc:302
+#: src/lib/film.cc:318
 msgid "container"
 msgstr "container"
 
-#: src/lib/film.cc:310
+#: src/lib/film.cc:326
 msgid "content type"
 msgstr "content type"
 
-#: src/lib/scp_dcp_job.cc:170
+#: src/lib/scp_dcp_job.cc:176
 msgid "copying %1"
 msgstr "kopieeren %1"
 
@@ -649,15 +649,15 @@ msgstr "kopieeren %1"
 msgid "could not create file %1"
 msgstr "kan geen bestand maken %1"
 
-#: src/lib/ffmpeg.cc:180
+#: src/lib/ffmpeg.cc:187
 msgid "could not find audio decoder"
 msgstr "kan geen audio decoder vinden"
 
-#: src/lib/ffmpeg.cc:106
+#: src/lib/ffmpeg.cc:107
 msgid "could not find stream information"
 msgstr "kan geen stream informatie vinden"
 
-#: src/lib/ffmpeg.cc:159
+#: src/lib/ffmpeg.cc:166
 msgid "could not find video decoder"
 msgstr "kan geen videodecoder vinden"
 
@@ -666,7 +666,8 @@ msgid "could not move audio MXF into the DCP (%1)"
 msgstr "kan MXF audio niet plaatsen in DCP (%1)"
 
 #: src/lib/sndfile_decoder.cc:56
-msgid "could not open audio file for reading"
+#, fuzzy
+msgid "could not open audio file for reading (%1)"
 msgstr "kan audio bestand niet openen om te lezen"
 
 #: src/lib/exceptions.cc:29
@@ -721,7 +722,7 @@ msgstr "fout met async_lezen (FTP) (%1)"
 msgid "error during async_write (%1)"
 msgstr "fout met async_schrijven (FTP) (%1)"
 
-#: src/lib/transcode_job.cc:97
+#: src/lib/transcode_job.cc:103
 msgid "frames per second"
 msgstr "frames per seconde"
 
@@ -749,15 +750,15 @@ msgstr "ontbrekende key %1 in key-value set"
 msgid "missing required setting %1"
 msgstr "ontbrekende verplichte setting %1"
 
-#: src/lib/ffmpeg_decoder.cc:630
+#: src/lib/ffmpeg_decoder.cc:635
 msgid "multi-part subtitles not yet supported"
 msgstr "ondertitels met meerdere delen worden nog niet ondersteund."
 
-#: src/lib/film.cc:259 src/lib/film.cc:314
+#: src/lib/film.cc:267 src/lib/film.cc:330
 msgid "name"
 msgstr "naam"
 
-#: src/lib/ffmpeg_decoder.cc:645
+#: src/lib/ffmpeg_decoder.cc:650
 msgid "non-bitmap subtitles not yet supported"
 msgstr "non-bitmap ondertitels worden nog niet ondersteund"
 

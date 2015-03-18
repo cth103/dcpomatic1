@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-25 15:44+0000\n"
+"POT-Creation-Date: 2015-03-18 21:14+0000\n"
 "PO-Revision-Date: 2014-01-19 08:59+0100\n"
 "Last-Translator: Adam Klotblixt <adam.klotblixt@gmail.com>\n"
 "Language-Team: \n"
@@ -194,15 +194,15 @@ msgstr "Original-videon är %1x%2"
 msgid "Copy DCP to TMS"
 msgstr "Kopiera DCP till TMS"
 
-#: src/lib/scp_dcp_job.cc:130
+#: src/lib/scp_dcp_job.cc:136
 msgid "Could not connect to server %1 (%2)"
 msgstr "Kunde inte ansluta till server %1 (%2)"
 
-#: src/lib/scp_dcp_job.cc:152
+#: src/lib/scp_dcp_job.cc:158
 msgid "Could not create remote directory %1 (%2)"
 msgstr "Kunde inte skapa fjärrkatalog %1 (%2)"
 
-#: src/lib/image_proxy.cc:147
+#: src/lib/image_proxy.cc:149
 #, fuzzy
 msgid "Could not decode image file (%1)"
 msgstr "kunde inte skapa fil %1"
@@ -217,7 +217,7 @@ msgstr ""
 msgid "Could not open %1"
 msgstr "Kunde inte öppna %1"
 
-#: src/lib/scp_dcp_job.cc:177
+#: src/lib/scp_dcp_job.cc:183
 msgid "Could not open %1 to send"
 msgstr "Kunde inte öppna %1 för att skicka"
 
@@ -226,11 +226,11 @@ msgstr "Kunde inte öppna %1 för att skicka"
 msgid "Could not open downloaded ZIP file"
 msgstr "kunde inte öppna fil %1"
 
-#: src/lib/scp_dcp_job.cc:147
+#: src/lib/scp_dcp_job.cc:153
 msgid "Could not start SCP session (%1)"
 msgstr "Kunde inte starta SCP-session (%1)"
 
-#: src/lib/scp_dcp_job.cc:191
+#: src/lib/scp_dcp_job.cc:197
 msgid "Could not write to remote file (%1)"
 msgstr "Kunde inte skriva till fjärrfil (%1)"
 
@@ -324,7 +324,7 @@ msgstr "Fel (%1)"
 msgid "Examine content"
 msgstr "Undersök innehållet"
 
-#: src/lib/scp_dcp_job.cc:140
+#: src/lib/scp_dcp_job.cc:146
 msgid "Failed to authenticate with server (%1)"
 msgstr "Misslyckades att autentisera med server (%1)"
 
@@ -414,16 +414,16 @@ msgstr "Diverse"
 msgid "Motion compensating deinterlacer"
 msgstr "Rörelsekompenserande avflätare"
 
-#: src/lib/video_content_scale.cc:105
+#: src/lib/video_content_scale.cc:108
 msgid "No scale"
 msgstr ""
 
-#: src/lib/video_content_scale.cc:102
+#: src/lib/video_content_scale.cc:105
 #, fuzzy
 msgid "No stretch"
 msgstr "Flat utan utsträckning"
 
-#: src/lib/image_content.cc:50
+#: src/lib/image_content.cc:52
 msgid "No valid image files were found in the folder."
 msgstr ""
 
@@ -494,7 +494,7 @@ msgstr "Höger surround"
 msgid "Right surround"
 msgstr "Höger surround"
 
-#: src/lib/scp_dcp_job.cc:135
+#: src/lib/scp_dcp_job.cc:141
 msgid "SSH error (%1)"
 msgstr "SSH fel (%1)"
 
@@ -543,7 +543,7 @@ msgstr ""
 msgid "There was not enough memory to do this."
 msgstr ""
 
-#: src/lib/film.cc:409
+#: src/lib/film.cc:425
 #, fuzzy
 msgid ""
 "This film was created with a newer version of DCP-o-matic, and it cannot be "
@@ -553,7 +553,7 @@ msgstr ""
 "inte öppnas i denna version. Du måste skapa en ny Film, lägga till ditt "
 "innehåll och konfigurera allt igen. Ursäkta!"
 
-#: src/lib/film.cc:401
+#: src/lib/film.cc:417
 msgid ""
 "This film was created with an older version of DCP-o-matic, and "
 "unfortunately it cannot be loaded into this version.  You will need to "
@@ -579,7 +579,7 @@ msgstr "Transitional"
 msgid "Unexpected ZIP file contents"
 msgstr ""
 
-#: src/lib/image_proxy.cc:197
+#: src/lib/image_proxy.cc:199
 msgid "Unexpected image type received by server"
 msgstr ""
 
@@ -588,7 +588,7 @@ msgid "Unknown error"
 msgstr "Okänt fel"
 
 # Svengelska
-#: src/lib/ffmpeg_decoder.cc:309
+#: src/lib/ffmpeg_decoder.cc:307
 msgid "Unrecognised audio sample format (%1)"
 msgstr "Okänt audio-sampelformat (%1)"
 
@@ -617,19 +617,19 @@ msgstr "X"
 msgid "Yet Another Deinterlacing Filter"
 msgstr "Yet Another Deinterlacing Filter"
 
-#: src/lib/film.cc:306
+#: src/lib/film.cc:322
 msgid "You must add some content to the DCP before creating it"
 msgstr "Du måste lägga till något innehåll till DCP:n innan du skapar den"
 
-#: src/lib/image_content.cc:73
+#: src/lib/image_content.cc:75
 msgid "[moving images]"
 msgstr "[rörliga bilder]"
 
-#: src/lib/image_content.cc:71
+#: src/lib/image_content.cc:73
 msgid "[still]"
 msgstr "[stillbild]"
 
-#: src/lib/film.cc:259
+#: src/lib/film.cc:267
 msgid "cannot contain slashes"
 msgstr "får inte innehålla snedstreck"
 
@@ -638,19 +638,19 @@ msgstr "får inte innehålla snedstreck"
 msgid "connect timed out"
 msgstr "uppkopplingen tajmade ur"
 
-#: src/lib/scp_dcp_job.cc:121
+#: src/lib/scp_dcp_job.cc:127
 msgid "connecting"
 msgstr "kopplar upp"
 
-#: src/lib/film.cc:302
+#: src/lib/film.cc:318
 msgid "container"
 msgstr "behållare"
 
-#: src/lib/film.cc:310
+#: src/lib/film.cc:326
 msgid "content type"
 msgstr "innehållstyp"
 
-#: src/lib/scp_dcp_job.cc:170
+#: src/lib/scp_dcp_job.cc:176
 msgid "copying %1"
 msgstr "kopierar %1"
 
@@ -658,15 +658,15 @@ msgstr "kopierar %1"
 msgid "could not create file %1"
 msgstr "kunde inte skapa fil %1"
 
-#: src/lib/ffmpeg.cc:180
+#: src/lib/ffmpeg.cc:187
 msgid "could not find audio decoder"
 msgstr "kunde inte hitta audio-avkodare"
 
-#: src/lib/ffmpeg.cc:106
+#: src/lib/ffmpeg.cc:107
 msgid "could not find stream information"
 msgstr "kunde inte hitta information om strömmen"
 
-#: src/lib/ffmpeg.cc:159
+#: src/lib/ffmpeg.cc:166
 msgid "could not find video decoder"
 msgstr "kunde inte hitta video-avkodare"
 
@@ -675,7 +675,8 @@ msgid "could not move audio MXF into the DCP (%1)"
 msgstr "kunde inte flytta audio-MXF in i DCP:n (%1)"
 
 #: src/lib/sndfile_decoder.cc:56
-msgid "could not open audio file for reading"
+#, fuzzy
+msgid "could not open audio file for reading (%1)"
 msgstr "kunde inte öppna audio-fil för läsning"
 
 #: src/lib/exceptions.cc:29
@@ -731,7 +732,7 @@ msgstr "fel vid async_read (%1)"
 msgid "error during async_write (%1)"
 msgstr "fel vid async_write (%1)"
 
-#: src/lib/transcode_job.cc:97
+#: src/lib/transcode_job.cc:103
 msgid "frames per second"
 msgstr "bilder per sekund"
 
@@ -759,15 +760,15 @@ msgstr "saknad nyckel %1 i nyckel-värde grupp"
 msgid "missing required setting %1"
 msgstr "saknad nödvändig inställning %1"
 
-#: src/lib/ffmpeg_decoder.cc:630
+#: src/lib/ffmpeg_decoder.cc:635
 msgid "multi-part subtitles not yet supported"
 msgstr "undertexter i flera delar stöds inte ännu"
 
-#: src/lib/film.cc:259 src/lib/film.cc:314
+#: src/lib/film.cc:267 src/lib/film.cc:330
 msgid "name"
 msgstr "namn"
 
-#: src/lib/ffmpeg_decoder.cc:645
+#: src/lib/ffmpeg_decoder.cc:650
 msgid "non-bitmap subtitles not yet supported"
 msgstr "icke-rastergrafiska undertexter stöds inte ännu"
 

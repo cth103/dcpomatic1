@@ -7,17 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-25 15:46+0000\n"
+"POT-Creation-Date: 2015-03-18 21:14+0000\n"
 "PO-Revision-Date: 2015-01-25 18:28+0200\n"
 "Last-Translator: Igor Voytovich <i.voyt@dual-v-films.com.ua>\n"
 "Language-Team: \n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.7.3\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"Language: ru\n"
 
 #: src/lib/sndfile_content.cc:61
 msgid "%1 [audio]"
@@ -199,15 +199,15 @@ msgstr "Видео-контент %1x%2"
 msgid "Copy DCP to TMS"
 msgstr "Копировать DCP на TMS (Theater Management System)"
 
-#: src/lib/scp_dcp_job.cc:130
+#: src/lib/scp_dcp_job.cc:136
 msgid "Could not connect to server %1 (%2)"
 msgstr "Не удалось подключиться к серверу %1 (%2)"
 
-#: src/lib/scp_dcp_job.cc:152
+#: src/lib/scp_dcp_job.cc:158
 msgid "Could not create remote directory %1 (%2)"
 msgstr "Не удалось создать удалённый каталог %1 (%2)"
 
-#: src/lib/image_proxy.cc:147
+#: src/lib/image_proxy.cc:149
 msgid "Could not decode image file (%1)"
 msgstr "Не удалось декодировать изображение (%1)"
 
@@ -223,7 +223,7 @@ msgstr ""
 msgid "Could not open %1"
 msgstr "Не удалось открыть %1"
 
-#: src/lib/scp_dcp_job.cc:177
+#: src/lib/scp_dcp_job.cc:183
 msgid "Could not open %1 to send"
 msgstr "Не удалось открыть %1 для отправки"
 
@@ -231,11 +231,11 @@ msgstr "Не удалось открыть %1 для отправки"
 msgid "Could not open downloaded ZIP file"
 msgstr "Не удалось открыть загруженный ZIP-архив"
 
-#: src/lib/scp_dcp_job.cc:147
+#: src/lib/scp_dcp_job.cc:153
 msgid "Could not start SCP session (%1)"
 msgstr "Не удалось запустить SCP-сессию (%1)"
 
-#: src/lib/scp_dcp_job.cc:191
+#: src/lib/scp_dcp_job.cc:197
 msgid "Could not write to remote file (%1)"
 msgstr "Не удалось записать в удаленный файл (%1)"
 
@@ -331,7 +331,7 @@ msgstr "Ошибка (%1)"
 msgid "Examine content"
 msgstr "Проверка контента"
 
-#: src/lib/scp_dcp_job.cc:140
+#: src/lib/scp_dcp_job.cc:146
 msgid "Failed to authenticate with server (%1)"
 msgstr "Ошибка аутентификации сервером (%1)"
 
@@ -419,15 +419,15 @@ msgstr "Разное"
 msgid "Motion compensating deinterlacer"
 msgstr "Диентерлейсер компенсации движения"
 
-#: src/lib/video_content_scale.cc:105
+#: src/lib/video_content_scale.cc:108
 msgid "No scale"
 msgstr "Без масштабирования"
 
-#: src/lib/video_content_scale.cc:102
+#: src/lib/video_content_scale.cc:105
 msgid "No stretch"
 msgstr "Без растягивания"
 
-#: src/lib/image_content.cc:50
+#: src/lib/image_content.cc:52
 msgid "No valid image files were found in the folder."
 msgstr "В папке не найдено подходящих изображений."
 
@@ -495,7 +495,7 @@ msgstr "Правое заднее окружение (surround)"
 msgid "Right surround"
 msgstr "Правое окружение (surround)"
 
-#: src/lib/scp_dcp_job.cc:135
+#: src/lib/scp_dcp_job.cc:141
 msgid "SSH error (%1)"
 msgstr "Ошибка SSH (%1)"
 
@@ -543,7 +543,7 @@ msgstr ""
 msgid "There was not enough memory to do this."
 msgstr "Недостаточно памяти, чтобы сделать это."
 
-#: src/lib/film.cc:409
+#: src/lib/film.cc:425
 msgid ""
 "This film was created with a newer version of DCP-o-matic, and it cannot be "
 "loaded into this version.  Sorry!"
@@ -551,7 +551,7 @@ msgstr ""
 "Проект создан более новой версией DCP-o-matic и не быть загружен этой "
 "версией. Извините!"
 
-#: src/lib/film.cc:401
+#: src/lib/film.cc:417
 msgid ""
 "This film was created with an older version of DCP-o-matic, and "
 "unfortunately it cannot be loaded into this version.  You will need to "
@@ -577,7 +577,7 @@ msgstr "Переходный"
 msgid "Unexpected ZIP file contents"
 msgstr "Неожиданное содержание ZIP-файла"
 
-#: src/lib/image_proxy.cc:197
+#: src/lib/image_proxy.cc:199
 msgid "Unexpected image type received by server"
 msgstr "Сервером получен неожиданный тип изображения."
 
@@ -585,7 +585,7 @@ msgstr "Сервером получен неожиданный тип изобр
 msgid "Unknown error"
 msgstr "Неизвестная ошибка"
 
-#: src/lib/ffmpeg_decoder.cc:309
+#: src/lib/ffmpeg_decoder.cc:307
 msgid "Unrecognised audio sample format (%1)"
 msgstr "Нераспознанный формат аудио (%1)"
 
@@ -613,19 +613,19 @@ msgstr "X"
 msgid "Yet Another Deinterlacing Filter"
 msgstr ""
 
-#: src/lib/film.cc:306
+#: src/lib/film.cc:322
 msgid "You must add some content to the DCP before creating it"
 msgstr "Добавьте контент в проект прежде чем создавать DCP"
 
-#: src/lib/image_content.cc:73
+#: src/lib/image_content.cc:75
 msgid "[moving images]"
 msgstr "[подвижный]"
 
-#: src/lib/image_content.cc:71
+#: src/lib/image_content.cc:73
 msgid "[still]"
 msgstr "[статичный]"
 
-#: src/lib/film.cc:259
+#: src/lib/film.cc:267
 msgid "cannot contain slashes"
 msgstr "не может содержать разрезы"
 
@@ -633,19 +633,19 @@ msgstr "не может содержать разрезы"
 msgid "connect timed out"
 msgstr "таймаут соединения"
 
-#: src/lib/scp_dcp_job.cc:121
+#: src/lib/scp_dcp_job.cc:127
 msgid "connecting"
 msgstr "соединение"
 
-#: src/lib/film.cc:302
+#: src/lib/film.cc:318
 msgid "container"
 msgstr "контейнер"
 
-#: src/lib/film.cc:310
+#: src/lib/film.cc:326
 msgid "content type"
 msgstr "тип контента"
 
-#: src/lib/scp_dcp_job.cc:170
+#: src/lib/scp_dcp_job.cc:176
 msgid "copying %1"
 msgstr "копирование %1"
 
@@ -653,15 +653,15 @@ msgstr "копирование %1"
 msgid "could not create file %1"
 msgstr "не удалось создать файл %1"
 
-#: src/lib/ffmpeg.cc:180
+#: src/lib/ffmpeg.cc:187
 msgid "could not find audio decoder"
 msgstr "не удалось найти аудио декодер"
 
-#: src/lib/ffmpeg.cc:106
+#: src/lib/ffmpeg.cc:107
 msgid "could not find stream information"
 msgstr "не удалось найти информацию о потоке"
 
-#: src/lib/ffmpeg.cc:159
+#: src/lib/ffmpeg.cc:166
 msgid "could not find video decoder"
 msgstr "не удалось найти видео декодер"
 
@@ -670,7 +670,8 @@ msgid "could not move audio MXF into the DCP (%1)"
 msgstr "не удалось переместить аудио-MXF в DCP-пакет (%1)"
 
 #: src/lib/sndfile_decoder.cc:56
-msgid "could not open audio file for reading"
+#, fuzzy
+msgid "could not open audio file for reading (%1)"
 msgstr "не удалось открыть аудиофайл для чтения"
 
 #: src/lib/exceptions.cc:29
@@ -725,7 +726,7 @@ msgstr "ошибка во время async_read (%1)"
 msgid "error during async_write (%1)"
 msgstr "ошибка во время async_write (%1)"
 
-#: src/lib/transcode_job.cc:97
+#: src/lib/transcode_job.cc:103
 msgid "frames per second"
 msgstr "кадров в секунду"
 
@@ -754,15 +755,15 @@ msgstr "отсутствует ключ %1 в значении"
 msgid "missing required setting %1"
 msgstr "отсутствует обязательная настройка: <b> %1 </b>"
 
-#: src/lib/ffmpeg_decoder.cc:630
+#: src/lib/ffmpeg_decoder.cc:635
 msgid "multi-part subtitles not yet supported"
 msgstr "субтитры из нескольких частей ещё не поддерживаются"
 
-#: src/lib/film.cc:259 src/lib/film.cc:314
+#: src/lib/film.cc:267 src/lib/film.cc:330
 msgid "name"
 msgstr "название"
 
-#: src/lib/ffmpeg_decoder.cc:645
+#: src/lib/ffmpeg_decoder.cc:650
 msgid "non-bitmap subtitles not yet supported"
 msgstr "нерастровые субтитры ещё не поддерживаются"
 

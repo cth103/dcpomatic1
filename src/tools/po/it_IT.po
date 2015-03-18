@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IT VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-25 15:44+0000\n"
+"POT-Creation-Date: 2015-03-18 21:14+0000\n"
 "PO-Revision-Date: 2015-03-14 17:46+0100\n"
 "Last-Translator: Davide Sanvito <dsanvito@libero.it>\n"
 "Language-Team: \n"
@@ -188,7 +188,8 @@ msgid "Film changed"
 msgstr "Film modificato"
 
 #: src/tools/dcpomatic.cc:660
-msgid "Hints...\tCtrl-H"
+#, fuzzy
+msgid "Hints..."
 msgstr "Suggerimenti...\tCtrl-H"
 
 #: src/tools/dcpomatic.cc:655

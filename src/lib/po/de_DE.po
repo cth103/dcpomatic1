@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-25 15:44+0000\n"
+"POT-Creation-Date: 2015-03-18 21:14+0000\n"
 "PO-Revision-Date: 2015-01-09 18:17+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -194,15 +194,15 @@ msgstr "Inhalt Video ist %1x%2"
 msgid "Copy DCP to TMS"
 msgstr "DCP zu TMS übertragen"
 
-#: src/lib/scp_dcp_job.cc:130
+#: src/lib/scp_dcp_job.cc:136
 msgid "Could not connect to server %1 (%2)"
 msgstr "Keine Verbindung zu Server %1 (%2)"
 
-#: src/lib/scp_dcp_job.cc:152
+#: src/lib/scp_dcp_job.cc:158
 msgid "Could not create remote directory %1 (%2)"
 msgstr "Konnte entfernten Ordner %1 (%2) nicht erstellen."
 
-#: src/lib/image_proxy.cc:147
+#: src/lib/image_proxy.cc:149
 msgid "Could not decode image file (%1)"
 msgstr "Bilddatei (%1) konnte nicht dekodiert werden"
 
@@ -218,7 +218,7 @@ msgstr ""
 msgid "Could not open %1"
 msgstr "%1 konnte nicht geöffnet werden."
 
-#: src/lib/scp_dcp_job.cc:177
+#: src/lib/scp_dcp_job.cc:183
 msgid "Could not open %1 to send"
 msgstr "%1 konnte nicht zum Senden geöffnet werden"
 
@@ -226,11 +226,11 @@ msgstr "%1 konnte nicht zum Senden geöffnet werden"
 msgid "Could not open downloaded ZIP file"
 msgstr "Heruntergeladene ZIP Datei kann nicht geöffnet werden."
 
-#: src/lib/scp_dcp_job.cc:147
+#: src/lib/scp_dcp_job.cc:153
 msgid "Could not start SCP session (%1)"
 msgstr "SCP Session (%1) konnte nicht gestartet werden"
 
-#: src/lib/scp_dcp_job.cc:191
+#: src/lib/scp_dcp_job.cc:197
 msgid "Could not write to remote file (%1)"
 msgstr "Entfernte Datei (%1) konnte nicht gespeichert werden"
 
@@ -326,7 +326,7 @@ msgstr "Fehler (%1)"
 msgid "Examine content"
 msgstr "Inhalt wird überprüft"
 
-#: src/lib/scp_dcp_job.cc:140
+#: src/lib/scp_dcp_job.cc:146
 msgid "Failed to authenticate with server (%1)"
 msgstr "Authentifizierung mit Server (%1) fehlgeschlagen"
 
@@ -414,15 +414,15 @@ msgstr "Verschiedenes"
 msgid "Motion compensating deinterlacer"
 msgstr "Bewegungskompensierender De-Interlacer"
 
-#: src/lib/video_content_scale.cc:105
+#: src/lib/video_content_scale.cc:108
 msgid "No scale"
 msgstr "Unskaliert"
 
-#: src/lib/video_content_scale.cc:102
+#: src/lib/video_content_scale.cc:105
 msgid "No stretch"
 msgstr "Nicht verzerrt"
 
-#: src/lib/image_content.cc:50
+#: src/lib/image_content.cc:52
 msgid "No valid image files were found in the folder."
 msgstr "Keine gültigen Bilddaten gefunden."
 
@@ -494,7 +494,7 @@ msgstr "Surround hinten rechts"
 msgid "Right surround"
 msgstr "Surround rechts"
 
-#: src/lib/scp_dcp_job.cc:135
+#: src/lib/scp_dcp_job.cc:141
 msgid "SSH error (%1)"
 msgstr "SSH Fehler (%1)"
 
@@ -542,7 +542,7 @@ msgstr ""
 msgid "There was not enough memory to do this."
 msgstr "Zu wenig Speicher für diese Operation."
 
-#: src/lib/film.cc:409
+#: src/lib/film.cc:425
 msgid ""
 "This film was created with a newer version of DCP-o-matic, and it cannot be "
 "loaded into this version.  Sorry!"
@@ -551,7 +551,7 @@ msgstr ""
 "kann leider nicht mit dieser älteren Version geladen werden. Sie müssen den "
 "Film neu erstellen. Sorry!"
 
-#: src/lib/film.cc:401
+#: src/lib/film.cc:417
 msgid ""
 "This film was created with an older version of DCP-o-matic, and "
 "unfortunately it cannot be loaded into this version.  You will need to "
@@ -577,7 +577,7 @@ msgstr "Überleitung (XSN)"
 msgid "Unexpected ZIP file contents"
 msgstr "Ungültiger ZIP Inhalt"
 
-#: src/lib/image_proxy.cc:197
+#: src/lib/image_proxy.cc:199
 msgid "Unexpected image type received by server"
 msgstr "Ungültiges Bildformat vom Server erhalten"
 
@@ -585,7 +585,7 @@ msgstr "Ungültiges Bildformat vom Server erhalten"
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
-#: src/lib/ffmpeg_decoder.cc:309
+#: src/lib/ffmpeg_decoder.cc:307
 msgid "Unrecognised audio sample format (%1)"
 msgstr "Ton Sample Format (%1) nicht erkannt."
 
@@ -613,19 +613,19 @@ msgstr "X"
 msgid "Yet Another Deinterlacing Filter"
 msgstr "Und ein weiterer De-Interlacer..."
 
-#: src/lib/film.cc:306
+#: src/lib/film.cc:322
 msgid "You must add some content to the DCP before creating it"
 msgstr "Sie müssen erst Inhalte hinzufügen bevor Sie ein DCP erstellen können!"
 
-#: src/lib/image_content.cc:73
+#: src/lib/image_content.cc:75
 msgid "[moving images]"
 msgstr "[Bewegte Bilder]"
 
-#: src/lib/image_content.cc:71
+#: src/lib/image_content.cc:73
 msgid "[still]"
 msgstr "[Standbild]"
 
-#: src/lib/film.cc:259
+#: src/lib/film.cc:267
 msgid "cannot contain slashes"
 msgstr "Darf keine Schrägstriche enthalten"
 
@@ -633,19 +633,19 @@ msgstr "Darf keine Schrägstriche enthalten"
 msgid "connect timed out"
 msgstr "Zeit für Verbindung abgelaufen"
 
-#: src/lib/scp_dcp_job.cc:121
+#: src/lib/scp_dcp_job.cc:127
 msgid "connecting"
 msgstr "verbinde..."
 
-#: src/lib/film.cc:302
+#: src/lib/film.cc:318
 msgid "container"
 msgstr "Containerformat"
 
-#: src/lib/film.cc:310
+#: src/lib/film.cc:326
 msgid "content type"
 msgstr "Inhaltsbeschreibung"
 
-#: src/lib/scp_dcp_job.cc:170
+#: src/lib/scp_dcp_job.cc:176
 msgid "copying %1"
 msgstr "kopiere %1"
 
@@ -653,15 +653,15 @@ msgstr "kopiere %1"
 msgid "could not create file %1"
 msgstr "Datei %1 konnte nicht erstellt werden."
 
-#: src/lib/ffmpeg.cc:180
+#: src/lib/ffmpeg.cc:187
 msgid "could not find audio decoder"
 msgstr "Ton Dekoder nicht gefunden."
 
-#: src/lib/ffmpeg.cc:106
+#: src/lib/ffmpeg.cc:107
 msgid "could not find stream information"
 msgstr "Keine Spur-Information gefunden"
 
-#: src/lib/ffmpeg.cc:159
+#: src/lib/ffmpeg.cc:166
 msgid "could not find video decoder"
 msgstr "Bild-Dekoder nicht gefunden"
 
@@ -670,7 +670,8 @@ msgid "could not move audio MXF into the DCP (%1)"
 msgstr "Ton MXF kann nicht in das DCP verschoben werden (%1)"
 
 #: src/lib/sndfile_decoder.cc:56
-msgid "could not open audio file for reading"
+#, fuzzy
+msgid "could not open audio file for reading (%1)"
 msgstr "Tondatei kann nicht zum Lesen geöffnet werden."
 
 #: src/lib/exceptions.cc:29
@@ -725,7 +726,7 @@ msgstr "error during async_read (%1)"
 msgid "error during async_write (%1)"
 msgstr "error during async_write (%1)"
 
-#: src/lib/transcode_job.cc:97
+#: src/lib/transcode_job.cc:103
 msgid "frames per second"
 msgstr "Bilder pro Sekunde"
 
@@ -753,15 +754,15 @@ msgstr "Key %1 in Key-value set fehlt"
 msgid "missing required setting %1"
 msgstr "Benötigte Einstellung %1 fehlt"
 
-#: src/lib/ffmpeg_decoder.cc:630
+#: src/lib/ffmpeg_decoder.cc:635
 msgid "multi-part subtitles not yet supported"
 msgstr "Mehr-Segment Untertitel werden noch nicht unterstützt"
 
-#: src/lib/film.cc:259 src/lib/film.cc:314
+#: src/lib/film.cc:267 src/lib/film.cc:330
 msgid "name"
 msgstr "Name"
 
-#: src/lib/ffmpeg_decoder.cc:645
+#: src/lib/ffmpeg_decoder.cc:650
 msgid "non-bitmap subtitles not yet supported"
 msgstr "Nur Bitmap Untertitel werden unterstützt"
 
