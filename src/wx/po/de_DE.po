@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-03-18 21:14+0000\n"
-"PO-Revision-Date: 2015-01-09 18:07+0100\n"
+"PO-Revision-Date: 2015-03-19 15:57+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: de\n"
@@ -96,6 +96,9 @@ msgid ""
 "<i>Only change this if the content's frame rate has been read incorrectly.</"
 "i>"
 msgstr ""
+"<i>Bildrate hier nur ändern wenn die Quelldatei oder Einzelbildsequenz "
+"falsch interpretiert wurde. Die effektive DCP Bildrate muss unter dem 'DCP' "
+"Tab eingestellt werden!</i>"
 
 #: src/wx/hints_dialog.cc:110
 msgid ""
@@ -544,7 +547,7 @@ msgstr "Suche fehlende..."
 
 #: src/wx/film_editor.cc:153
 msgid "Frame Rate"
-msgstr "Bild Rate"
+msgstr "Bildrate"
 
 #: src/wx/image_sequence_dialog.cc:29
 msgid "Frame rate"
@@ -607,7 +610,7 @@ msgstr "HI"
 
 #: src/wx/hints_dialog.cc:30
 msgid "Hints"
-msgstr "Tipps"
+msgstr "Hinweise/Warnungen"
 
 #: src/wx/servers_list_dialog.cc:40
 msgid "Host"
@@ -663,7 +666,7 @@ msgstr "KDM Typ"
 
 #: src/wx/kdm_dialog.cc:99
 msgid "KDM|Timing"
-msgstr "Zeitfenster"
+msgstr "Zeitfenster für Abspiel (lokale Zeit DIESES Rechners!)"
 
 #: src/wx/timeline_dialog.cc:41
 msgid "Keep video in sequence"
@@ -1155,7 +1158,7 @@ msgstr "Bild"
 
 #: src/wx/timing_panel.cc:93
 msgid "Video frame rate"
-msgstr "Bildwiederholrate"
+msgstr "Bildrate der Quelle"
 
 #: src/wx/config_dialog.cc:809
 msgid "Warnings"
@@ -1235,12 +1238,12 @@ msgstr "dB"
 #. // TRANSLATORS: this is an abbreviation for "frames"
 #: src/wx/timing_panel.cc:68
 msgid "f"
-msgstr ""
+msgstr "f"
 
 #. // TRANSLATORS: this is an abbreviation for "hours"
 #: src/wx/timing_panel.cc:46
 msgid "h"
-msgstr ""
+msgstr "h"
 
 #. // TRANSLATORS: this is an abbreviation for "minutes"
 #: src/wx/timing_panel.cc:54

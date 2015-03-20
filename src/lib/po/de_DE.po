@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-03-18 21:14+0000\n"
-"PO-Revision-Date: 2015-01-09 18:17+0100\n"
+"PO-Revision-Date: 2015-03-19 16:22+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: de\n"
@@ -28,19 +28,19 @@ msgstr "%1 [Film]"
 
 #: src/lib/ratio.cc:34
 msgid "1.19"
-msgstr "1.19"
+msgstr "1.19:1"
 
 #: src/lib/ratio.cc:37
 msgid "1.375"
-msgstr "1.375"
+msgstr "1.375:1"
 
 #: src/lib/ratio.cc:38
 msgid "1.66"
-msgstr "1.66"
+msgstr "1.66:1"
 
 #: src/lib/ratio.cc:39
 msgid "16:9"
-msgstr "16:9 (1.78)"
+msgstr "1.78:1 (16:9/HD)"
 
 #: src/lib/filter.cc:70
 msgid "3D denoiser"
@@ -48,11 +48,11 @@ msgstr "3D Rauschunterdrückung"
 
 #: src/lib/ratio.cc:35
 msgid "4:3"
-msgstr "4:3"
+msgstr "1.33:1 (4:3)"
 
 #: src/lib/ratio.cc:36
 msgid "Academy"
-msgstr "Academy"
+msgstr "1.375:1 (Academy)"
 
 #: src/lib/dcp_content_type.cc:53
 msgid "Advertisement"
@@ -72,11 +72,11 @@ msgstr "Bereich"
 
 #: src/lib/audio_content.cc:195
 msgid "Audio will be resampled from %1kHz to %2kHz."
-msgstr "Audio wird von %1kHz auf %2kHz angepasst."
+msgstr "Audioabtastrate wird von %1kHz auf %2kHz angepasst."
 
 #: src/lib/audio_content.cc:197
 msgid "Audio will not be resampled."
-msgstr "Audiospur muss nicht in der Abtastrate verändert werden."
+msgstr "Audioabtastrate wird nicht verändert werden."
 
 #: src/lib/scaler.cc:62
 msgid "Bicubic"
@@ -258,7 +258,7 @@ msgstr ""
 msgid ""
 "DCP-o-matic no longer supports the `%1' filter, so it has been turned off."
 msgstr ""
-"DCP-o-matic unterstützt den `%1' filter nicht mehr, er wird deaktiviert."
+"DCP-o-matic unterstützt den `%1' Filter nicht mehr, er wird deaktiviert."
 
 #: src/lib/filter.cc:65 src/lib/filter.cc:66 src/lib/filter.cc:67
 msgid "De-interlacing"
@@ -340,11 +340,11 @@ msgstr "Hauptfilm (FTR)"
 
 #: src/lib/ffmpeg_examiner.cc:72
 msgid "Finding length"
-msgstr ""
+msgstr "Suche Länge"
 
 #: src/lib/ratio.cc:40
 msgid "Flat"
-msgstr "Flat"
+msgstr "1.85:1 (Flat/BW)"
 
 #: src/lib/ratio.cc:42
 msgid "Full frame"
@@ -504,7 +504,7 @@ msgstr "Inhalt wird skaliert auf %1x%2"
 
 #: src/lib/ratio.cc:41
 msgid "Scope"
-msgstr "Scope"
+msgstr "2.39:1 (Scope)"
 
 #: src/lib/dcp_content_type.cc:45
 msgid "Short"
@@ -670,9 +670,8 @@ msgid "could not move audio MXF into the DCP (%1)"
 msgstr "Ton MXF kann nicht in das DCP verschoben werden (%1)"
 
 #: src/lib/sndfile_decoder.cc:56
-#, fuzzy
 msgid "could not open audio file for reading (%1)"
-msgstr "Tondatei kann nicht zum Lesen geöffnet werden."
+msgstr "Tondatei kann nicht zum Lesen geöffnet werden (%1)."
 
 #: src/lib/exceptions.cc:29
 msgid "could not open file %1"
