@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-03-18 21:14+0000\n"
-"PO-Revision-Date: 2015-03-18 20:45+0100\n"
+"PO-Revision-Date: 2015-03-21 02:37+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -96,6 +96,8 @@ msgid ""
 "<i>Only change this if the content's frame rate has been read incorrectly.</"
 "i>"
 msgstr ""
+"<i>à modifier seulement si la cadence image du contenu n'a pas été "
+"correctement identifiée.</i>"
 
 #: src/wx/hints_dialog.cc:110
 msgid ""
@@ -678,7 +680,7 @@ msgstr "BF"
 
 #: src/wx/colour_conversion_editor.cc:49
 msgid "Linearise input gamma curve for low values"
-msgstr "Linéariser la courbe gamma d'entrée pour les bas niveaux"
+msgstr "Linéariser la courbe d'entrée gamma pour les bas niveaux"
 
 #: src/wx/screen_dialog.cc:46
 msgid "Load from file..."

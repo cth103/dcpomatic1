@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-03-18 21:14+0000\n"
-"PO-Revision-Date: 2015-03-18 20:18+0100\n"
+"PO-Revision-Date: 2015-03-21 02:32+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -347,7 +347,7 @@ msgstr "Flat"
 
 #: src/lib/ratio.cc:42
 msgid "Full frame"
-msgstr "Full frame"
+msgstr "Plein cadre"
 
 #: src/lib/scaler.cc:65
 msgid "Gaussian"
@@ -664,9 +664,8 @@ msgid "could not move audio MXF into the DCP (%1)"
 msgstr "déplacement MXF son impossible dans le DCP (%1)"
 
 #: src/lib/sndfile_decoder.cc:56
-#, fuzzy
 msgid "could not open audio file for reading (%1)"
-msgstr "lecture du fichier audio impossible"
+msgstr "lecture du fichier audio impossible (%1)"
 
 #: src/lib/exceptions.cc:29
 msgid "could not open file %1"

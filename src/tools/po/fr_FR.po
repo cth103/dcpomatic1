@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-03-18 21:14+0000\n"
-"PO-Revision-Date: 2015-03-18 20:49+0100\n"
+"PO-Revision-Date: 2015-03-21 02:40+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -189,9 +189,8 @@ msgid "Film changed"
 msgstr "Film modifié"
 
 #: src/tools/dcpomatic.cc:660
-#, fuzzy
 msgid "Hints..."
-msgstr "Avertissements...\tCtrl+H"
+msgstr "Avertissements..."
 
 #: src/tools/dcpomatic.cc:655
 msgid "Make &KDMs...\tCtrl-K"
@@ -229,7 +228,7 @@ msgid ""
 "using only has %.1f Gb available.  Do you want to continue anyway?"
 msgstr ""
 "Le DCP de ce film pèsera environ %.1f Go. Le disque que vous utilisez n'a "
-"que %.1f Go disponibles. Souhaitez-vous continuer ?"
+"que %.1f Go disponibles. Souhaitez-vous tout de même continuer ?"
 
 #: src/tools/dcpomatic.cc:883
 msgid "The DCP-o-matic download server could not be contacted."
