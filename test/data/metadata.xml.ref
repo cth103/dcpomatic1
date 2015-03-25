@@ -6,7 +6,6 @@
   <DCPContentType>SHR</DCPContentType>
   <Container>185</Container>
   <Resolution>2K</Resolution>
-  <Scaler>bicubic</Scaler>
   <J2KBandwidth>200000000</J2KBandwidth>
   <ISDCFMetadata>
     <ContentVersion>1</ContentVersion>
