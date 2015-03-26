@@ -7,17 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-18 21:14+0000\n"
-"PO-Revision-Date: 2015-01-25 19:02+0200\n"
-"Last-Translator: Igor Voytovich <i.voyt@dual-v-films.com.ua>\n"
-"Language-Team: \n"
-"Language: ru\n"
+"POT-Creation-Date: 2015-01-25 15:46+0000\n"
+"PO-Revision-Date: 2015-03-21 12:53+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.3\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.7.5\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: ru_RU\n"
 
 #: src/wx/subtitle_panel.cc:48 src/wx/subtitle_panel.cc:57
 #: src/wx/subtitle_panel.cc:66 src/wx/subtitle_panel.cc:75
@@ -28,9 +28,9 @@ msgstr "%"
 msgid ""
 "(C) 2012-2015 Carl Hetherington, Terrence Meiczinger, Paul Davis, Ole Laursen"
 msgstr ""
-"(C) 2012-2015 Carl Hetherington, Terrence Meiczinger, Paul Davis, Ole Laursen"
+"© 2012-2015 Carl Hetherington, Terrence Meiczinger, Paul Davis, Ole Laursen"
 
-#: src/wx/config_dialog.cc:658
+#: src/wx/config_dialog.cc:656
 msgid "(password will be stored on disk in plaintext)"
 msgstr "(пароль будет сохранен на диске в виде текста)"
 
@@ -60,11 +60,11 @@ msgstr "2D"
 msgid "2D version of content available in 3D"
 msgstr "2D версия контента, доступного в 3D"
 
-#: src/wx/film_editor.cc:234
+#: src/wx/film_editor.cc:232
 msgid "2K"
 msgstr "2K"
 
-#: src/wx/film_editor.cc:182
+#: src/wx/film_editor.cc:179
 msgid "3D"
 msgstr "3D"
 
@@ -88,17 +88,11 @@ msgstr "3D только правый"
 msgid "3D top/bottom"
 msgstr "3D верх/низ"
 
-#: src/wx/film_editor.cc:235
+#: src/wx/film_editor.cc:233
 msgid "4K"
 msgstr "4K"
 
-#: src/wx/timing_panel.cc:109
-msgid ""
-"<i>Only change this if the content's frame rate has been read incorrectly.</"
-"i>"
-msgstr ""
-
-#: src/wx/hints_dialog.cc:110
+#: src/wx/hints_dialog.cc:119
 msgid ""
 "A few projectors have problems playing back very high bit-rate DCPs.  It is "
 "a good idea to drop the JPEG2000 bandwidth down to about 200Mbit/s; this is "
@@ -110,7 +104,7 @@ msgstr ""
 
 #: src/wx/update_dialog.cc:35
 msgid "A new version of DCP-o-matic is available."
-msgstr "Доступна новая версия DCP-o-matic"
+msgstr "Доступна новая версия DCP-o-matic."
 
 #: src/wx/about_dialog.cc:30
 msgid "About DCP-o-matic"
@@ -124,16 +118,16 @@ msgstr "Добавить кинотеатр..."
 msgid "Add Screen..."
 msgstr "Добавить экран..."
 
-#: src/wx/film_editor.cc:296
+#: src/wx/film_editor.cc:294
 msgid ""
 "Add a directory of image files which will be used as a moving image sequence."
 msgstr "Добавить папку последовательности изображений"
 
-#: src/wx/film_editor.cc:291
+#: src/wx/film_editor.cc:289
 msgid "Add file(s)..."
 msgstr "Добавить файл(ы)..."
 
-#: src/wx/film_editor.cc:295
+#: src/wx/film_editor.cc:293
 msgid ""
 "Add image\n"
 "sequence..."
@@ -145,7 +139,7 @@ msgstr ""
 msgid "Add image sequence"
 msgstr "Добавить изображение последовательность..."
 
-#: src/wx/film_editor.cc:292
+#: src/wx/film_editor.cc:290
 msgid "Add video, image or sound files to the film."
 msgstr "Добавить видео, изображение или звук в проект."
 
@@ -153,8 +147,7 @@ msgstr "Добавить видео, изображение или звук в �
 msgid "Add..."
 msgstr "Добавить..."
 
-#: src/wx/hints_dialog.cc:98
-#, fuzzy
+#: src/wx/hints_dialog.cc:107
 msgid ""
 "All of your content is at 1.85:1 or narrower but your DCP's container is "
 "Scope (2.39:1).  This will pillar-box your content inside a Flat (1.85:1) "
@@ -166,8 +159,7 @@ msgstr ""
 "будут черные области. Вы можете изменить настройки вашего DCP контейнера на "
 "FLAT (1.85:1) на вкладке \"DCP\"."
 
-#: src/wx/hints_dialog.cc:92
-#, fuzzy
+#: src/wx/hints_dialog.cc:101
 msgid ""
 "All of your content is in Scope (2.39:1) but your DCP's container is Flat "
 "(1.85:1).  This will letter-box your content inside a Flat (1.85:1) frame.  "
@@ -179,11 +171,11 @@ msgstr ""
 "можете изменить настройки вашего DCP контейнера на SCOPE (2.39:1) на вкладке "
 "\"DCP\"."
 
-#: src/wx/config_dialog.cc:793
+#: src/wx/config_dialog.cc:791
 msgid "Allow any DCP frame rate"
 msgstr "Разрешить любую частоту кадров DCP"
 
-#: src/wx/about_dialog.cc:114
+#: src/wx/about_dialog.cc:112
 msgid "Artwork by"
 msgstr "Оформление"
 
@@ -215,7 +207,7 @@ msgstr ""
 "Аудио будет переведено из канала %d контента в канал %d DCP с усилением "
 "%.1fdB."
 
-#: src/wx/config_dialog.cc:677
+#: src/wx/config_dialog.cc:675
 msgid "BCC address"
 msgstr "Скрытая копия"
 
@@ -243,7 +235,7 @@ msgstr "Но я должен использовать микшер"
 msgid "C"
 msgstr "C"
 
-#: src/wx/config_dialog.cc:673
+#: src/wx/config_dialog.cc:671
 msgid "CC address"
 msgstr "Кому копия"
 
@@ -296,15 +288,15 @@ msgstr "Проверять тестовые обновления так же, к
 msgid "Check for updates on startup"
 msgstr "Проверять обновления при запуске"
 
-#: src/wx/content_menu.cc:223
+#: src/wx/content_menu.cc:182
 msgid "Choose a file"
 msgstr "Выбрать файл"
 
-#: src/wx/film_editor.cc:822
+#: src/wx/film_editor.cc:820
 msgid "Choose a file or files"
 msgstr "Выбрать файл или файлы"
 
-#: src/wx/content_menu.cc:216 src/wx/film_editor.cc:850
+#: src/wx/content_menu.cc:175 src/wx/film_editor.cc:848
 msgid "Choose a folder"
 msgstr "Выбрать папку"
 
@@ -312,7 +304,7 @@ msgstr "Выбрать папку"
 msgid "Cinema"
 msgstr "Кинотеатр"
 
-#: src/wx/config_dialog.cc:492
+#: src/wx/config_dialog.cc:490
 msgid "Colour Conversions"
 msgstr "Цветовые пространства"
 
@@ -321,7 +313,7 @@ msgstr "Цветовые пространства"
 msgid "Colour conversion"
 msgstr "Конверсия цвета"
 
-#: src/wx/config_dialog.cc:815
+#: src/wx/config_dialog.cc:813
 msgid "Config|Timing"
 msgstr "Конфигурация | Тайминг"
 
@@ -396,7 +388,7 @@ msgstr "DCP-o-matic"
 msgid "DCP-o-matic audio - %s"
 msgstr "Аудио DCP-o-matic  - %s"
 
-#: src/wx/config_dialog.cc:813
+#: src/wx/config_dialog.cc:811
 msgid "Debugging"
 msgstr "Отладка"
 
@@ -410,7 +402,7 @@ msgstr "Стандартная пропускная способность JPEG2
 
 #: src/wx/config_dialog.cc:297
 msgid "Default audio delay"
-msgstr "Стандартное смещение аудио"
+msgstr "Стандартная задержка аудио"
 
 #: src/wx/config_dialog.cc:279
 msgid "Default container"
@@ -438,7 +430,7 @@ msgstr "Стандартные"
 
 #: src/wx/audio_panel.cc:67
 msgid "Delay"
-msgstr "Смещение"
+msgstr "Задержка"
 
 #: src/wx/film_editor.cc:129 src/wx/job_manager_view.cc:76
 msgid "Details..."
@@ -462,7 +454,7 @@ msgstr "Doremi"
 msgid "Doremi serial numbers must have 6 digits"
 msgstr "Серийные номера Doremi должны содержать 6 цифр"
 
-#: src/wx/film_editor.cc:307
+#: src/wx/film_editor.cc:305
 msgid "Down"
 msgstr "Вниз"
 
@@ -505,7 +497,7 @@ msgstr "Сервера кодирования"
 msgid "Encrypted"
 msgstr "Зашифрованный"
 
-#: src/wx/config_dialog.cc:811
+#: src/wx/config_dialog.cc:809
 msgid "Errors"
 msgstr "Ошибки"
 
@@ -531,7 +523,7 @@ msgstr "Название проекта"
 msgid "Filters"
 msgstr "Фильтры"
 
-#: src/wx/content_menu.cc:54
+#: src/wx/content_menu.cc:52
 msgid "Find missing..."
 msgstr "Найти отсутствующее..."
 
@@ -561,7 +553,7 @@ msgstr ""
 msgid "From"
 msgstr "От"
 
-#: src/wx/config_dialog.cc:669
+#: src/wx/config_dialog.cc:667
 msgid "From address"
 msgstr "Отправитель"
 
@@ -590,7 +582,7 @@ msgstr "Усиление для канала %d контента в канале
 msgid "Gb"
 msgstr "Гб"
 
-#: src/wx/config_dialog.cc:807
+#: src/wx/config_dialog.cc:805
 msgid "General"
 msgstr "Основные"
 
@@ -618,35 +610,35 @@ msgstr "Гц"
 msgid "I want to play this back at fader"
 msgstr "Я хочу воспроизвести это в микшере"
 
-#: src/wx/config_dialog.cc:554
+#: src/wx/config_dialog.cc:552
 msgid "IP address"
 msgstr "IP адрес"
 
-#: src/wx/config_dialog.cc:450
+#: src/wx/config_dialog.cc:448
 msgid "IP address / host name"
 msgstr "IP адрес / имя хоста"
 
 #: src/wx/isdcf_metadata_dialog.cc:30
 msgid "ISDCF name"
-msgstr "Имя ISDCF (Inter-Society Digital Cinema Forum)"
+msgstr "Имя ISDCF"
 
 #: src/wx/colour_conversion_editor.cc:44
 msgid "Input gamma"
 msgstr "Гамма ввода"
 
-#: src/wx/film_editor.cc:238
+#: src/wx/film_editor.cc:236
 msgid "Interop"
 msgstr "Interop"
 
-#: src/wx/film_editor.cc:192
+#: src/wx/film_editor.cc:189
 msgid "JPEG2000 bandwidth"
 msgstr "Пропускная способность JPEG2000"
 
-#: src/wx/content_menu.cc:53
+#: src/wx/content_menu.cc:51
 msgid "Join"
 msgstr "Подсоединить"
 
-#: src/wx/config_dialog.cc:621
+#: src/wx/config_dialog.cc:619
 msgid "KDM Email"
 msgstr "Почта KDM"
 
@@ -688,11 +680,11 @@ msgstr "Линеаризировать входные гамма-кривые д
 msgid "Load from file..."
 msgstr "Загрузить из файла..."
 
-#: src/wx/config_dialog.cc:801
+#: src/wx/config_dialog.cc:799
 msgid "Log"
 msgstr "Лог"
 
-#: src/wx/config_dialog.cc:798
+#: src/wx/config_dialog.cc:796
 msgid "Log:"
 msgstr "Лог:"
 
@@ -700,15 +692,15 @@ msgstr "Лог:"
 msgid "Ls"
 msgstr "Ls"
 
-#: src/wx/film_editor.cc:796
+#: src/wx/film_editor.cc:794
 msgid "MISSING: "
 msgstr "ОТСУТСТВУЕТ:"
 
-#: src/wx/config_dialog.cc:654
+#: src/wx/config_dialog.cc:652
 msgid "Mail password"
 msgstr "Пароль почты"
 
-#: src/wx/config_dialog.cc:650
+#: src/wx/config_dialog.cc:648
 msgid "Mail user name"
 msgstr "Пользователь почты"
 
@@ -724,24 +716,24 @@ msgstr "Заданная светимость (напр. 14fl)"
 msgid "Matrix"
 msgstr "Матрица"
 
-#: src/wx/config_dialog.cc:785
+#: src/wx/config_dialog.cc:783
 msgid "Maximum JPEG2000 bandwidth"
 msgstr "Максимальная пропускная способность JPEG2000"
 
-#: src/wx/config_dialog.cc:292 src/wx/config_dialog.cc:789
-#: src/wx/film_editor.cc:196
+#: src/wx/config_dialog.cc:292 src/wx/config_dialog.cc:787
+#: src/wx/film_editor.cc:193
 msgid "Mbit/s"
 msgstr "МБит/с"
 
-#: src/wx/film_editor.cc:304
+#: src/wx/film_editor.cc:302
 msgid "Move the selected piece of content earlier in the film."
 msgstr "Переместить выбранный элемент контента ранее в проекте."
 
-#: src/wx/film_editor.cc:308
+#: src/wx/film_editor.cc:306
 msgid "Move the selected piece of content later in the film."
 msgstr "Переместить выбранный элемент контента позднее в проекте."
 
-#: src/wx/video_panel.cc:298
+#: src/wx/video_panel.cc:295
 msgid "Multiple content selected"
 msgstr "Множественное выделение контента"
 
@@ -749,7 +741,7 @@ msgstr "Множественное выделение контента"
 msgid "My Documents"
 msgstr "Мои документы"
 
-#: src/wx/cinema_dialog.cc:28 src/wx/config_dialog.cc:506
+#: src/wx/cinema_dialog.cc:28 src/wx/config_dialog.cc:504
 #: src/wx/film_editor.cc:114 src/wx/preset_colour_conversion_dialog.cc:38
 #: src/wx/screen_dialog.cc:38
 msgid "Name"
@@ -778,7 +770,7 @@ msgstr "Ничего"
 msgid "Off"
 msgstr "Выключен"
 
-#: src/wx/film_editor.cc:312
+#: src/wx/film_editor.cc:310
 msgid "Open the timeline for the film."
 msgstr "Открыть линейку для проекта."
 
@@ -786,7 +778,7 @@ msgstr "Открыть линейку для проекта."
 msgid "Other"
 msgstr "Другое"
 
-#: src/wx/config_dialog.cc:646
+#: src/wx/config_dialog.cc:644
 msgid "Outgoing mail server"
 msgstr "Исходящий почтовый сервер"
 
@@ -802,7 +794,7 @@ msgstr "Гамма вывода"
 msgid "Package Type (e.g. OV)"
 msgstr "Тип пакета (напр. OV)"
 
-#: src/wx/config_dialog.cc:566
+#: src/wx/config_dialog.cc:564
 msgid "Password"
 msgstr "Пароль"
 
@@ -854,7 +846,7 @@ msgstr "Rc"
 msgid "Red band"
 msgstr "Red band"
 
-#: src/wx/content_menu.cc:56 src/wx/film_editor.cc:299
+#: src/wx/content_menu.cc:54 src/wx/film_editor.cc:297
 #: src/wx/editable_list.h:69
 msgid "Remove"
 msgstr "Убрать"
@@ -867,7 +859,7 @@ msgstr "Убрать кинотеатр"
 msgid "Remove Screen"
 msgstr "Убрать экран"
 
-#: src/wx/film_editor.cc:300
+#: src/wx/film_editor.cc:298
 msgid "Remove the selected piece of content from the film."
 msgstr "Убрать выбранный элемент контента из проекта."
 
@@ -879,15 +871,15 @@ msgstr "Повторить"
 msgid "Repeat Content"
 msgstr "Повторить контент"
 
-#: src/wx/content_menu.cc:52
+#: src/wx/content_menu.cc:50
 msgid "Repeat..."
 msgstr "Повторить..."
 
-#: src/wx/config_dialog.cc:684
+#: src/wx/config_dialog.cc:682
 msgid "Reset to default text"
 msgstr "Сбросить текст по умолчанию"
 
-#: src/wx/film_editor.cc:186
+#: src/wx/film_editor.cc:183
 msgid "Resolution"
 msgstr "Разрешение"
 
@@ -907,7 +899,7 @@ msgstr "Усечение справа"
 msgid "Rs"
 msgstr "Rs"
 
-#: src/wx/film_editor.cc:237
+#: src/wx/film_editor.cc:235
 msgid "SMPTE"
 msgstr "SMPTE"
 
@@ -915,7 +907,7 @@ msgstr "SMPTE"
 msgid "Scale to"
 msgstr "Масштабировать до"
 
-#: src/wx/film_editor.cc:206
+#: src/wx/film_editor.cc:203
 msgid "Scaler"
 msgstr "Масштабирование"
 
@@ -925,11 +917,11 @@ msgstr "Экраны"
 
 #: src/wx/kdm_dialog.cc:530
 msgid "Select CPL XML file"
-msgstr "Выбрать XML-файл CPL"
+msgstr "Выберите XML-файл CPL"
 
 #: src/wx/screen_dialog.cc:102
 msgid "Select Certificate File"
-msgstr "Выбрать файл сертификата"
+msgstr "Выберите файл сертификата"
 
 #: src/wx/kdm_dialog.cc:185
 msgid "Send by email"
@@ -951,7 +943,7 @@ msgstr "Изготовитель сервера"
 msgid "Server serial number"
 msgstr "Серийный номер сервера"
 
-#: src/wx/config_dialog.cc:432
+#: src/wx/config_dialog.cc:430
 msgid "Servers"
 msgstr "Сервера"
 
@@ -984,7 +976,7 @@ msgstr "Снимок"
 msgid "Stable version "
 msgstr "Стабильная версия"
 
-#: src/wx/film_editor.cc:201
+#: src/wx/film_editor.cc:198
 msgid "Standard"
 msgstr "Стандарт"
 
@@ -996,7 +988,7 @@ msgstr "Поток"
 msgid "Studio (e.g. TCF)"
 msgstr "Студия (напр. TCF)"
 
-#: src/wx/config_dialog.cc:665
+#: src/wx/config_dialog.cc:663
 msgid "Subject"
 msgstr "Тема"
 
@@ -1008,15 +1000,15 @@ msgstr "Язык субтитров (напр. EN)"
 msgid "Subtitles"
 msgstr "Субтитры"
 
-#: src/wx/about_dialog.cc:182
+#: src/wx/about_dialog.cc:176
 msgid "Supported by"
 msgstr "Поддержка"
 
-#: src/wx/config_dialog.cc:536
+#: src/wx/config_dialog.cc:534
 msgid "TMS"
-msgstr "TMS (Theater Management System)"
+msgstr "TMS"
 
-#: src/wx/config_dialog.cc:558
+#: src/wx/config_dialog.cc:556
 msgid "Target path"
 msgstr "Целевой путь"
 
@@ -1032,11 +1024,11 @@ msgstr "Территория (напр. UA)"
 msgid "Test version "
 msgstr "Тестовая версия"
 
-#: src/wx/about_dialog.cc:230
+#: src/wx/about_dialog.cc:222
 msgid "Tested by"
 msgstr "Тестирование"
 
-#: src/wx/content_menu.cc:264
+#: src/wx/content_menu.cc:223
 msgid ""
 "The content file(s) you specified are not the same as those that are "
 "missing.  Either try again with the correct content file or remove the "
@@ -1045,7 +1037,7 @@ msgstr ""
 "Файлы, которые вы выбрали - не те, которые отсутствуют. Либо попробуйте "
 "снова, выбрав правильные файлы, либо удалите отсутствующий контент."
 
-#: src/wx/hints_dialog.cc:130
+#: src/wx/hints_dialog.cc:139
 msgid "There are no hints: everything looks good!"
 msgstr "Нет подсказок: похоже всё хорошо!"
 
@@ -1073,7 +1065,7 @@ msgstr "Время"
 msgid "Timeline"
 msgstr "Линейка"
 
-#: src/wx/film_editor.cc:311
+#: src/wx/film_editor.cc:309
 msgid "Timeline..."
 msgstr "Линейка..."
 
@@ -1085,7 +1077,7 @@ msgstr "Тайминг | Тайминг"
 msgid "Top crop"
 msgstr "Усечение сверху"
 
-#: src/wx/about_dialog.cc:110
+#: src/wx/about_dialog.cc:108
 msgid "Translated by"
 msgstr "Перевод"
 
@@ -1113,7 +1105,7 @@ msgstr "Неизвестный"
 msgid "Until"
 msgstr "До"
 
-#: src/wx/film_editor.cc:303
+#: src/wx/film_editor.cc:301
 msgid "Up"
 msgstr "Верх"
 
@@ -1123,9 +1115,9 @@ msgstr "Обновление"
 
 #: src/wx/film_editor.cc:124
 msgid "Use ISDCF name"
-msgstr "Использовать теги ISDCF"
+msgstr "Использовать  ISDCF"
 
-#: src/wx/config_dialog.cc:446
+#: src/wx/config_dialog.cc:444
 msgid "Use all servers"
 msgstr "Использовать все сервера"
 
@@ -1137,7 +1129,7 @@ msgstr "Использовать лучшее"
 msgid "Use preset"
 msgstr "Использовать заготовку"
 
-#: src/wx/config_dialog.cc:562
+#: src/wx/config_dialog.cc:560
 msgid "User name"
 msgstr "Имя пользователя"
 
@@ -1153,7 +1145,7 @@ msgstr "Видео"
 msgid "Video frame rate"
 msgstr "Частота кадров видео"
 
-#: src/wx/config_dialog.cc:809
+#: src/wx/config_dialog.cc:807
 msgid "Warnings"
 msgstr "Предупреждения"
 
@@ -1165,7 +1157,7 @@ msgstr "С субтитрами"
 msgid "Write to"
 msgstr "Сохранить в"
 
-#: src/wx/about_dialog.cc:92
+#: src/wx/about_dialog.cc:91
 msgid "Written by"
 msgstr "Автор"
 
@@ -1185,7 +1177,7 @@ msgstr "Смещение Y"
 msgid "Y Scale"
 msgstr "Размер Y"
 
-#: src/wx/hints_dialog.cc:123
+#: src/wx/hints_dialog.cc:132
 #, fuzzy, c-format
 msgid ""
 "You have %d files that look like they are VOB files from DVD. You should "
@@ -1194,7 +1186,7 @@ msgstr ""
 "Ваши файлы %d похожи на VOB из DVD. Вам необходимо присоединить их, чтобы "
 "гарантировать гладкие соединения между файлами."
 
-#: src/wx/hints_dialog.cc:104
+#: src/wx/hints_dialog.cc:113
 #, c-format
 msgid ""
 "Your DCP frame rate (%d fps) may cause problems in a few (mostly older) "
@@ -1206,13 +1198,29 @@ msgstr ""
 
 #: src/wx/hints_dialog.cc:71
 msgid ""
+"Your DCP has an odd number of audio channels.  This is very likely to cause "
+"problems on playback."
+msgstr ""
+"У Вашего DCP нечетное число аудио каналов. Это, очень вероятно, вызовет "
+"проблемы на воспроизведении."
+
+#: src/wx/hints_dialog.cc:75
+msgid ""
 "Your DCP has fewer than 6 audio channels.  This may cause problems on some "
 "projectors."
 msgstr ""
 "У Вашего DCP меньше 6 аудио каналов. Это может вызвать проблемы на некоторых "
 "проекторах."
 
-#: src/wx/timeline_audio_content_view.cc:34
+#: src/wx/hints_dialog.cc:80
+msgid ""
+"Your DCP has no audio channels.  This is likely to cause problems on "
+"playback."
+msgstr ""
+"У Вашего DCP нет аудио каналов. Это может вызвать проблемы при "
+"воспроизведении."
+
+#: src/wx/timeline.cc:220
 msgid "audio"
 msgstr "аудио"
 
@@ -1253,7 +1261,7 @@ msgstr "мс"
 msgid "s"
 msgstr "с"
 
-#: src/wx/timeline_video_content_view.cc:38
+#: src/wx/timeline.cc:243
 msgid "still"
 msgstr "статичный"
 
@@ -1261,20 +1269,6 @@ msgstr "статичный"
 msgid "times"
 msgstr "раз"
 
-#: src/wx/timeline_video_content_view.cc:36
+#: src/wx/timeline.cc:241
 msgid "video"
 msgstr "видео"
-
-#~ msgid ""
-#~ "Your DCP has an odd number of audio channels.  This is very likely to "
-#~ "cause problems on playback."
-#~ msgstr ""
-#~ "У Вашего DCP нечетное число аудио каналов. Это, очень вероятно, вызовет "
-#~ "проблемы на воспроизведении."
-
-#~ msgid ""
-#~ "Your DCP has no audio channels.  This is likely to cause problems on "
-#~ "playback."
-#~ msgstr ""
-#~ "У Вашего DCP нет аудио каналов. Это может вызвать проблемы при "
-#~ "воспроизведении."
