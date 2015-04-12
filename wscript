@@ -5,7 +5,7 @@ import distutils
 import distutils.spawn
 
 APPNAME = 'dcpomatic'
-VERSION = '1.78.3'
+VERSION = '1.78.3devel'
 
 def options(opt):
     opt.load('compiler_cxx')
