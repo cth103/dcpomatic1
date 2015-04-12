@@ -91,6 +91,11 @@ AboutDialog::AboutDialog (wxWindow* parent)
 	written_by.Add (wxT ("Brecht Sanders"));
 	add_section (_("Written by"), written_by);
 
+	wxArrayString with_help_from;
+	with_help_from.Add (wxT ("David Vignoni"));
+	with_help_from.Add (wxT ("Dennis Couzin"));
+	add_section (_("With help from"), with_help_from);
+
 	wxArrayString translated_by;
 	translated_by.Add (wxT ("Manuel AC"));
 	translated_by.Add (wxT ("Massimiliano Broggi"));
@@ -108,10 +113,6 @@ AboutDialog::AboutDialog (wxWindow* parent)
 	translated_by.Add (wxT ("Igor Voytovich"));
 	translated_by.Add (wxT ("Davide Sanvito"));
 	add_section (_("Translated by"), translated_by);
-
-	wxArrayString artwork_by;
-	artwork_by.Add (wxT ("David Vignoni"));
-	add_section (_("Artwork by"), artwork_by);
 
 	wxArrayString supported_by;
 	supported_by.Add (wxT ("Manual AC"));
