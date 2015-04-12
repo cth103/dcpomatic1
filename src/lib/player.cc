@@ -477,24 +477,24 @@ Player::setup_pieces ()
 		
 		shared_ptr<const ImageContent> ic = dynamic_pointer_cast<const ImageContent> (*i);
 		if (ic) {
-			bool reusing = false;
+			shared_ptr<ImageDecoder> id;
 			
 			/* See if we can re-use an old ImageDecoder */
 			for (list<shared_ptr<Piece> >::const_iterator j = old_pieces.begin(); j != old_pieces.end(); ++j) {
 				shared_ptr<ImageDecoder> imd = dynamic_pointer_cast<ImageDecoder> ((*j)->decoder);
 				if (imd && imd->content() == ic) {
-					piece = *j;
-					reusing = true;
+					id = imd;
 				}
 			}
 
-			if (!reusing) {
-				shared_ptr<ImageDecoder> id (new ImageDecoder (_film, ic));
-				_decoder_connections.push_back (
-					id->Video.connect (bind (&Player::process_video, this, weak_ptr<Piece> (piece), _1, _2, _3, _4, _5, 0))
-					);
-				piece->decoder = id;
+			if (!id) {
+				id.reset (new ImageDecoder (_film, ic));
 			}
+			
+			_decoder_connections.push_back (
+				id->Video.connect (bind (&Player::process_video, this, weak_ptr<Piece> (piece), _1, _2, _3, _4, _5, 0))
+				);
+			piece->decoder = id;
 		}
 
 		shared_ptr<const SndfileContent> sc = dynamic_pointer_cast<const SndfileContent> (*i);

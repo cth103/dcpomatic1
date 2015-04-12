@@ -1,3 +1,8 @@
+2015-04-12  Carl Hetherington  <cth@carlh.net>
+
+	* Possibly fix problems with multiple moving-image
+	content in the same film (#531).
+
 2015-03-26  Carl Hetherington  <cth@carlh.net>
 
 	* Updated ru_RU translation from Igor Voytovich.
