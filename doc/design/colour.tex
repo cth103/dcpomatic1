@@ -1,9 +1,8 @@
 \documentclass{article}
-\usepackage{url}
-\usepackage{amsmath}
+\usepackage{url,amsmath,mathtools}
 \usepackage[landscape]{geometry}
-\title{Comparison of colour conversions in DCP creation software}
-\author{}
+\title{Colour conversions for DCP creation}
+\author{Carl Hetherington, Dennis Couzin}
 \date{}
 \begin{document}
 \maketitle
@@ -42,7 +41,88 @@ C_o &= \left\{
 
 where $K$, $A$, $C_t$ and $\zeta$ are constants.  This modified function approximates a `pure' gamma function but changes the output for small inputs.
 
-\section{sRGB to XYZ}
+
+\section{Conversion to XYZ and white point adjustment}
+
+This is done by multiplying the colours by a $3\times{}3$ matrix.
+This matrix depends on the chromaticities of the RGB primaries and the
+white point.  Note that these are the same for BT709 and sRGB, so the
+corresponding matrices are the same.
+
+The chromaticities for sRGB and BT709 are shown in
+Table~\ref{tab:chromaticities}.  The white point is ($x = 0.3127$, $y
+= 0.329$); this is called D65.
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+& $x$ & $y$ \\
+\hline
+Red & 0.64 & 0.33 \\
+\hline
+Green & 0.3 & 0.6 \\
+\hline
+Blue & 0.15 & 0.06 \\
+\hline
+\end{tabular}
+\end{center}
+\caption{RGB chromaticities for sRGB and BT709}
+\label{tab:chromaticities}
+\end{table}
+
+Let
+
+\begin{align}
+D &= \left|\begin{matrix} R_x - W_x & W_x - B_x \\ R_y - W_y & W_y - B_y \end{matrix} \right| \\
+E &= \left|\begin{matrix} W_x - G_x & R_x - W_x \\ W_y - G_y & R_y - W_y \end{matrix} \right| \\
+F &= \left|\begin{matrix} W_x - G_x & W_x - B_x \\ W_y - G_y & W_y - B_y \end{matrix} \right| \\
+P &= R_y + G_y \frac{D}{F} + B_y \frac{E}{F}
+\end{align}
+
+where:
+
+\begin{itemize}
+\item $R_x$, $R_y$: red point; $R_z = 1 - R_x - R_y$
+\item $G_x$, $G_y$: green point; $G_z = 1 - G_x - G_y$
+\item $B_x$, $B_y$: blue point; $B_z = 1 - B_x - B_y$
+\item $W_x$, $W_y$: white point
+\end{itemize}
+
+Then the conversion matrix $M$ is as follows:
+
+\begin{align}
+M &= \frac{1}{P} \left[\begin{matrix}
+R_x & G_x\dfrac{D}{F} & B_x\dfrac{E}{F} \\[2ex]
+R_y & G_y\dfrac{D}{F} & B_y\dfrac{E}{F} \\[2ex]
+R_z & G_z\dfrac{D}{F} & B_z\dfrac{E}{F} \\[2ex]
+\end{matrix}\right] = \left[\begin{matrix}
+0.4123908 & 0.3575843 & 0.1804808 \\
+0.2126390 & 0.7151687 & 0.0721923 \\
+0.0193308 & 0.1191948 & 0.9505322 \\
+\end{matrix}\right]
+\end{align}
+
+Then to convert RGB to XYZ we do
+
+\begin{align}
+\left[\begin{matrix} X \\ Y \\ Z \\ \end{matrix}\right] &= M \left[\begin{matrix} R \\ G \\ B \\ \end{matrix}\right]
+\intertext{i.e.}
+\left[\begin{matrix} X \\ Y \\ Z \\ \end{matrix}\right] &= \left[\begin{matrix}
+0.4123908 & 0.3575843 & 0.1804808 \\
+0.2126390 & 0.7151687 & 0.0721923 \\
+0.0193308 & 0.1191948 & 0.9505322 \\
+\end{matrix}\right] \left[\begin{matrix} R \\ G \\ B \\ \end{matrix}\right]
+\end{align}
+
+Note: there is also a CIE definition of the D65 white point as ($x =
+0.31272$, $y = 0.32903$), which we do not use.
+
+
+
+\section{Comparing different software}
+
+\subsection{sRGB to XYZ}
 
 \begin{minipage}{\textwidth}
 \begin{tabular}{|l|c|c|c|}
@@ -93,7 +173,7 @@ $\left[\begin{array}{lll} 0.4124 & 0.3576 & 0.1805 \\
 
 
 
-\section{Rec.\ 709 to XYZ}
+\subsection{Rec.\ 709 to XYZ}
 
 \begin{minipage}{\textwidth}
 \begin{tabular}{|l|c|c|c|}
