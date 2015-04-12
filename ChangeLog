@@ -1,5 +1,9 @@
 2015-04-12  Carl Hetherington  <cth@carlh.net>
 
+	* Version 1.78.1 released.
+
+2015-04-12  Carl Hetherington  <cth@carlh.net>
+
 	* Possibly fix problems with multiple moving-image
 	content in the same film (#531).
 
