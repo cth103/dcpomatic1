@@ -1,3 +1,13 @@
+2015-04-13  Carl Hetherington  <cth@carlh.net>
+
+	* Make the matrix used to convert from YUV to RGB configurable, so
+	that the correct one for Rec 601 or 709 can be used.  Add a Rec
+	601 colour conversion preset and change the Rec 709 preset to use
+	the right matrix to convert from YUV to RGB.
+
+	* Remove small (and incorrect) differences between RGB -> XYZ
+	matrices for Rec 709 and sRGB.
+
 2015-04-12  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.78.1 released.
