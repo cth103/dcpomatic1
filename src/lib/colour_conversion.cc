@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -39,12 +39,12 @@ using libdcp::raw_convert;
 ColourConversion::ColourConversion ()
 	: input_gamma (2.4)
 	, input_gamma_linearised (true)
-	, matrix (3, 3)
+	, rgb_to_xyz (3, 3)
 	, output_gamma (2.6)
 {
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
-			matrix (i, j) = libdcp::colour_matrix::srgb_to_xyz[i][j];
+			rgb_to_xyz (i, j) = libdcp::colour_matrix::srgb_to_xyz[i][j];
 		}
 	}
 }
@@ -52,33 +52,37 @@ ColourConversion::ColourConversion ()
 ColourConversion::ColourConversion (double i, bool il, double const m[3][3], double o)
 	: input_gamma (i)
 	, input_gamma_linearised (il)
-	, matrix (3, 3)
+	, rgb_to_xyz (3, 3)
 	, output_gamma (o)
 {
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
-			matrix (i, j) = m[i][j];
+			rgb_to_xyz (i, j) = m[i][j];
 		}
 	}
 }
 
 ColourConversion::ColourConversion (cxml::NodePtr node)
-	: matrix (3, 3)
+	: rgb_to_xyz (3, 3)
 {
 	input_gamma = node->number_child<double> ("InputGamma");
 	input_gamma_linearised = node->bool_child ("InputGammaLinearised");
 
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
-			matrix (i, j) = 0;
+			rgb_to_xyz (i, j) = 0;
 		}
 	}
 
-	list<cxml::NodePtr> m = node->node_children ("Matrix");
+	list<cxml::NodePtr> m = node->node_children ("RGBToXYZ");
+	if (m.empty ()) {
+		/* This is the old name for RGBToXYZ */
+		m = node->node_children ("Matrix");
+	}
 	for (list<cxml::NodePtr>::iterator i = m.begin(); i != m.end(); ++i) {
 		int const ti = (*i)->number_attribute<int> ("i");
 		int const tj = (*i)->number_attribute<int> ("j");
-		matrix(ti, tj) = raw_convert<double> ((*i)->content ());
+		rgb_to_xyz(ti, tj) = raw_convert<double> ((*i)->content ());
 	}
 
 	output_gamma = node->number_child<double> ("OutputGamma");
@@ -102,10 +106,10 @@ ColourConversion::as_xml (xmlpp::Node* node) const
 
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
-			xmlpp::Element* m = node->add_child("Matrix");
+			xmlpp::Element* m = node->add_child("RGBToXYZ");
 			m->set_attribute ("i", raw_convert<string> (i));
 			m->set_attribute ("j", raw_convert<string> (j));
-			m->add_child_text (raw_convert<string> (matrix (i, j)));
+			m->add_child_text (raw_convert<string> (rgb_to_xyz (i, j)));
 		}
 	}
 
@@ -137,7 +141,7 @@ ColourConversion::identifier () const
 	digester.add (input_gamma_linearised);
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
-			digester.add (matrix (i, j));
+			digester.add (rgb_to_xyz (i, j));
 		}
 	}
 	digester.add (output_gamma);
@@ -190,7 +194,7 @@ operator== (ColourConversion const & a, ColourConversion const & b)
 
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
-			if (!about_equal (a.matrix (i, j), b.matrix (i, j))) {
+			if (!about_equal (a.rgb_to_xyz (i, j), b.rgb_to_xyz (i, j))) {
 				return false;
 			}
 		}

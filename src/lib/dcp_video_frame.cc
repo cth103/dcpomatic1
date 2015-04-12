@@ -121,10 +121,10 @@ DCPVideoFrame::encode_locally ()
 		
 		/* XXX: libdcp should probably use boost */
 		
-		double matrix[3][3];
+		double rgb_to_xyz[3][3];
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
-				matrix[i][j] = conversion.matrix (i, j);
+				rgb_to_xyz[i][j] = conversion.rgb_to_xyz (i, j);
 			}
 		}
 		
@@ -132,7 +132,7 @@ DCPVideoFrame::encode_locally ()
 			_frame->image(AV_PIX_FMT_RGB48LE),
 			in_lut,
 			libdcp::GammaLUT::cache.get (16, 1 / conversion.output_gamma),
-			matrix
+			rgb_to_xyz
 			);
 	} else {
 		xyz = libdcp::xyz_to_xyz (_frame->image (AV_PIX_FMT_RGB48LE));

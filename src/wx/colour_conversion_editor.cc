@@ -112,7 +112,7 @@ ColourConversionEditor::set (ColourConversion conversion)
 			SafeStringStream s;
 			s.setf (std::ios::fixed, std::ios::floatfield);
 			s.precision (7);
-			s << conversion.matrix (i, j);
+			s << conversion.rgb_to_xyz (i, j);
 			_matrix[i][j]->SetValue (std_to_wx (s.str ()));
 		}
 	}
@@ -131,9 +131,9 @@ ColourConversionEditor::get () const
 		for (int j = 0; j < 3; ++j) {
 			string const v = wx_to_std (_matrix[i][j]->GetValue ());
 			if (v.empty ()) {
-				conversion.matrix (i, j) = 0;
+				conversion.rgb_to_xyz (i, j) = 0;
 			} else {
-				conversion.matrix (i, j) = lexical_cast<double> (v);
+				conversion.rgb_to_xyz (i, j) = lexical_cast<double> (v);
 			}
 		}
 	}
