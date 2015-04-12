@@ -26,8 +26,8 @@ using std::cout;
 /* Basic test of identifier() for ColourConversion (i.e. a hash of the numbers) */
 BOOST_AUTO_TEST_CASE (colour_conversion_test)
 {
-	ColourConversion A (2.4, true, libdcp::colour_matrix::srgb_to_xyz, 2.6);
-	ColourConversion B (2.4, false, libdcp::colour_matrix::srgb_to_xyz, 2.6);
+	ColourConversion A (2.4, true, YUV_TO_RGB_REC601, libdcp::colour_matrix::srgb_to_xyz, 2.6);
+	ColourConversion B (2.4, false, YUV_TO_RGB_REC601, libdcp::colour_matrix::srgb_to_xyz, 2.6);
 
 	BOOST_CHECK_EQUAL (A.identifier(), "1e720d2d99add654d7816f3b72da815e");
 	BOOST_CHECK_EQUAL (B.identifier(), "18751a247b22682b725bf9c4caf71522");

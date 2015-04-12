@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -81,9 +81,10 @@ Config::Config ()
 	_allowed_dcp_frame_rates.push_back (50);
 	_allowed_dcp_frame_rates.push_back (60);
 
-	_colour_conversions.push_back (PresetColourConversion (_("sRGB"), 2.4, true, libdcp::colour_matrix::srgb_to_xyz, 2.6));
-	_colour_conversions.push_back (PresetColourConversion (_("sRGB non-linearised"), 2.4, false, libdcp::colour_matrix::srgb_to_xyz, 2.6));
-	_colour_conversions.push_back (PresetColourConversion (_("Rec. 709"), 2.2, false, libdcp::colour_matrix::rec709_to_xyz, 2.6));
+	_colour_conversions.push_back (PresetColourConversion (_("sRGB"), 2.4, true, YUV_TO_RGB_REC601, libdcp::colour_matrix::srgb_to_xyz, 2.6));
+	_colour_conversions.push_back (PresetColourConversion (_("sRGB non-linearised"), 2.4, false, YUV_TO_RGB_REC601, libdcp::colour_matrix::srgb_to_xyz, 2.6));
+	_colour_conversions.push_back (PresetColourConversion (_("Rec. 601"), 2.2, false, YUV_TO_RGB_REC601, libdcp::colour_matrix::rec601_to_xyz, 2.6));
+	_colour_conversions.push_back (PresetColourConversion (_("Rec. 709"), 2.2, false, YUV_TO_RGB_REC709, libdcp::colour_matrix::rec709_to_xyz, 2.6));
 
 	reset_kdm_email ();
 }
@@ -164,13 +165,6 @@ Config::read ()
 	
 	for (list<cxml::NodePtr>::iterator i = cc.begin(); i != cc.end(); ++i) {
 		_colour_conversions.push_back (PresetColourConversion (*i));
-	}
-
-	if (!version) {
-		/* Loading version 0 (before Rec. 709 was added as a preset).
-		   Add it in.
-		*/
-		_colour_conversions.push_back (PresetColourConversion (_("Rec. 709"), 2.2, false, libdcp::colour_matrix::rec709_to_xyz, 2.6));
 	}
 
 	list<cxml::NodePtr> cin = f.node_children ("Cinema");

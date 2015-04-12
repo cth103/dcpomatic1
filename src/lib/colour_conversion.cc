@@ -39,6 +39,7 @@ using libdcp::raw_convert;
 ColourConversion::ColourConversion ()
 	: input_gamma (2.4)
 	, input_gamma_linearised (true)
+	, yuv_to_rgb (YUV_TO_RGB_REC601)
 	, rgb_to_xyz (3, 3)
 	, output_gamma (2.6)
 {
@@ -49,15 +50,16 @@ ColourConversion::ColourConversion ()
 	}
 }
 
-ColourConversion::ColourConversion (double i, bool il, double const m[3][3], double o)
+ColourConversion::ColourConversion (double i, bool il, YUVToRGB yuv_to_rgb_, double const rgb_to_xyz_[3][3], double o)
 	: input_gamma (i)
 	, input_gamma_linearised (il)
+	, yuv_to_rgb (yuv_to_rgb_)
 	, rgb_to_xyz (3, 3)
 	, output_gamma (o)
 {
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
-			rgb_to_xyz (i, j) = m[i][j];
+			rgb_to_xyz (i, j) = rgb_to_xyz_[i][j];
 		}
 	}
 }
@@ -67,6 +69,7 @@ ColourConversion::ColourConversion (cxml::NodePtr node)
 {
 	input_gamma = node->number_child<double> ("InputGamma");
 	input_gamma_linearised = node->bool_child ("InputGammaLinearised");
+	yuv_to_rgb = static_cast<YUVToRGB> (node->optional_number_child<int>("YUVToRGB").get_value_or (YUV_TO_RGB_REC601));
 
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
@@ -103,6 +106,7 @@ ColourConversion::as_xml (xmlpp::Node* node) const
 {
 	node->add_child("InputGamma")->add_child_text (raw_convert<string> (input_gamma));
 	node->add_child("InputGammaLinearised")->add_child_text (input_gamma_linearised ? "1" : "0");
+	node->add_child("YUVToRGB")->add_child_text (raw_convert<string> (yuv_to_rgb));
 
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
@@ -139,6 +143,7 @@ ColourConversion::identifier () const
 	
 	digester.add (input_gamma);
 	digester.add (input_gamma_linearised);
+	digester.add (yuv_to_rgb);
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
 			digester.add (rgb_to_xyz (i, j));
@@ -155,9 +160,9 @@ PresetColourConversion::PresetColourConversion ()
 
 }
 
-PresetColourConversion::PresetColourConversion (string n, double i, bool il, double const m[3][3], double o)
+PresetColourConversion::PresetColourConversion (string n, double i, bool il, YUVToRGB yuv_to_rgb, double const rgb_to_xyz[3][3], double o)
 	: name (n)
-	, conversion (i, il, m, o)
+	, conversion (i, il, yuv_to_rgb, rgb_to_xyz, o)
 {
 
 }
@@ -188,6 +193,7 @@ operator== (ColourConversion const & a, ColourConversion const & b)
 	if (
 		!about_equal (a.input_gamma, b.input_gamma) ||
 		a.input_gamma_linearised != b.input_gamma_linearised ||
+		a.yuv_to_rgb != b.yuv_to_rgb ||
 		!about_equal (a.output_gamma, b.output_gamma)) {
 		return false;
 	}

@@ -57,10 +57,12 @@ public:
 	int line_factor (int) const;
 	int lines (int) const;
 
-	boost::shared_ptr<Image> scale (libdcp::Size, Scaler const *, AVPixelFormat, bool aligned) const;
+	boost::shared_ptr<Image> scale (libdcp::Size, Scaler const *, YUVToRGB yuv_to_rgb, AVPixelFormat, bool aligned) const;
 	boost::shared_ptr<Image> crop (Crop c, bool aligned) const;
 
-	boost::shared_ptr<Image> crop_scale_window (Crop c, libdcp::Size, libdcp::Size, Scaler const *, AVPixelFormat, bool aligned) const;
+	boost::shared_ptr<Image> crop_scale_window (
+		Crop c, libdcp::Size, libdcp::Size, Scaler const *, YUVToRGB yuv_to_rgb, AVPixelFormat, bool aligned
+		) const;
 	
 	void make_black ();
 	void alpha_blend (boost::shared_ptr<const Image> image, Position<int> pos);

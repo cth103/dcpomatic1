@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,7 +46,8 @@ private:
 	
 	wxSpinCtrlDouble* _input_gamma;
 	wxCheckBox* _input_gamma_linearised;
-	wxTextCtrl* _matrix[3][3];
+	wxChoice* _yuv_to_rgb;
+	wxTextCtrl* _rgb_to_xyz[3][3];
 	wxSpinCtrlDouble* _output_gamma;
 };
 

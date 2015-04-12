@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -64,12 +64,19 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 
         validator.SetIncludes (list);
 
-	add_label_to_grid_bag_sizer (table, this, _("Matrix"), true, wxGBPosition (r, 0));
+	add_label_to_grid_bag_sizer (table, this, _("YUV to RGB matrix"), true, wxGBPosition (r, 0));
+	_yuv_to_rgb = new wxChoice (this, wxID_ANY);
+	_yuv_to_rgb->Append (_("Rec. 601"));
+	_yuv_to_rgb->Append (_("Rec. 709"));
+	table->Add (_yuv_to_rgb, wxGBPosition (r, 1));
+	++r;
+
+	add_label_to_grid_bag_sizer (table, this, _("RGB to XYZ matrix"), true, wxGBPosition (r, 0));
 	wxFlexGridSizer* matrix_sizer = new wxFlexGridSizer (3, DCPOMATIC_SIZER_X_GAP, DCPOMATIC_SIZER_Y_GAP);
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
-			_matrix[i][j] = new wxTextCtrl (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0, validator);
-			matrix_sizer->Add (_matrix[i][j]);
+			_rgb_to_xyz[i][j] = new wxTextCtrl (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0, validator);
+			matrix_sizer->Add (_rgb_to_xyz[i][j]);
 		}
 	}
 	table->Add (matrix_sizer, wxGBPosition (r, 1));
@@ -96,9 +103,10 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 	_input_gamma_linearised->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&ColourConversionEditor::changed, this));
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
-			_matrix[i][j]->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::changed, this));
+			_rgb_to_xyz[i][j]->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::changed, this));
 		}
 	}
+	_yuv_to_rgb->Bind (wxEVT_COMMAND_CHOICE_SELECTED, boost::bind (&ColourConversionEditor::changed, this));
 	_output_gamma->Bind (wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, boost::bind (&ColourConversionEditor::changed, this, _output_gamma));
 }
 
@@ -107,13 +115,14 @@ ColourConversionEditor::set (ColourConversion conversion)
 {
 	set_spin_ctrl (_input_gamma, conversion.input_gamma);
 	_input_gamma_linearised->SetValue (conversion.input_gamma_linearised);
+	_yuv_to_rgb->SetSelection (conversion.yuv_to_rgb);
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
 			SafeStringStream s;
 			s.setf (std::ios::fixed, std::ios::floatfield);
 			s.precision (7);
 			s << conversion.rgb_to_xyz (i, j);
-			_matrix[i][j]->SetValue (std_to_wx (s.str ()));
+			_rgb_to_xyz[i][j]->SetValue (std_to_wx (s.str ()));
 		}
 	}
 	set_spin_ctrl (_output_gamma, conversion.output_gamma);
@@ -126,10 +135,11 @@ ColourConversionEditor::get () const
 	
 	conversion.input_gamma = _input_gamma->GetValue ();
 	conversion.input_gamma_linearised = _input_gamma_linearised->GetValue ();
+	conversion.yuv_to_rgb = static_cast<YUVToRGB> (_yuv_to_rgb->GetSelection ());
 
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
-			string const v = wx_to_std (_matrix[i][j]->GetValue ());
+			string const v = wx_to_std (_rgb_to_xyz[i][j]->GetValue ());
 			if (v.empty ()) {
 				conversion.rgb_to_xyz (i, j) = 0;
 			} else {

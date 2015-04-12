@@ -189,7 +189,9 @@ VideoContent::set_default_colour_conversion (bool signal)
 {
 	{
 		boost::mutex::scoped_lock lm (_mutex);
-		_colour_conversion = PresetColourConversion (_("sRGB"), 2.4, true, libdcp::colour_matrix::srgb_to_xyz, 2.6).conversion;
+		_colour_conversion = PresetColourConversion (
+			_("Rec. 709"), 2.2, false, YUV_TO_RGB_REC709, libdcp::colour_matrix::rec709_to_xyz, 2.6
+			).conversion;
 	}
 
 	if (signal) {

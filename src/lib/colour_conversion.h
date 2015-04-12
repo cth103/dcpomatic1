@@ -34,11 +34,17 @@ namespace xmlpp {
 	class Node;
 }
 
+enum YUVToRGB {
+	YUV_TO_RGB_REC601,
+	YUV_TO_RGB_REC709,
+	YUV_TO_RGB_COUNT
+};
+
 class ColourConversion
 {
 public:
 	ColourConversion ();
-	ColourConversion (double, bool, double const matrix[3][3], double);
+	ColourConversion (double, bool, YUVToRGB yuv_to_rgb, double const rgb_to_xyz[3][3], double);
 	ColourConversion (cxml::NodePtr);
 
 	virtual void as_xml (xmlpp::Node *) const;
@@ -50,6 +56,7 @@ public:
 
 	double input_gamma;
 	bool input_gamma_linearised;
+	YUVToRGB yuv_to_rgb;
 	boost::numeric::ublas::matrix<double> rgb_to_xyz;
 	double output_gamma;
 };
@@ -58,7 +65,7 @@ class PresetColourConversion
 {
 public:
 	PresetColourConversion ();
-	PresetColourConversion (std::string, double, bool, double const matrix[3][3], double);
+	PresetColourConversion (std::string, double, bool, YUVToRGB yuv_to_rgb, double const rgb_to_xyz[3][3], double);
 	PresetColourConversion (cxml::NodePtr);
 
 	void as_xml (xmlpp::Node *) const;

@@ -83,7 +83,9 @@ Image::components () const
 
 /** Crop this image, scale it to `inter_size' and then place it in a black frame of `out_size' */
 shared_ptr<Image>
-Image::crop_scale_window (Crop crop, libdcp::Size inter_size, libdcp::Size out_size, Scaler const * scaler, AVPixelFormat out_format, bool out_aligned) const
+Image::crop_scale_window (
+	Crop crop, libdcp::Size inter_size, libdcp::Size out_size, Scaler const * scaler, YUVToRGB yuv_to_rgb, AVPixelFormat out_format, bool out_aligned
+	) const
 {
 	DCPOMATIC_ASSERT (scaler);
 	/* Empirical testing suggests that sws_scale() will crash if
@@ -112,10 +114,16 @@ Image::crop_scale_window (Crop crop, libdcp::Size inter_size, libdcp::Size out_s
 		throw StringError (N_("Could not allocate SwsContext"));
 	}
 
+	DCPOMATIC_ASSERT (yuv_to_rgb < YUV_TO_RGB_COUNT);
+	int const lut[YUV_TO_RGB_COUNT] = {
+		SWS_CS_ITU601,
+		SWS_CS_ITU709
+	};
+
 	sws_setColorspaceDetails (
 		scale_context,
-		sws_getCoefficients (SWS_CS_ITU709), 0,
-		sws_getCoefficients (SWS_CS_ITU709), 0,
+		sws_getCoefficients (lut[yuv_to_rgb]), 0,
+		sws_getCoefficients (lut[yuv_to_rgb]), 0,
 		0, 1 << 16, 1 << 16
 		);
 
@@ -146,7 +154,7 @@ Image::crop_scale_window (Crop crop, libdcp::Size inter_size, libdcp::Size out_s
 }
 
 shared_ptr<Image>
-Image::scale (libdcp::Size out_size, Scaler const * scaler, AVPixelFormat out_format, bool out_aligned) const
+Image::scale (libdcp::Size out_size, Scaler const * scaler, YUVToRGB yuv_to_rgb, AVPixelFormat out_format, bool out_aligned) const
 {
 	DCPOMATIC_ASSERT (scaler);
 	/* Empirical testing suggests that sws_scale() will crash if
@@ -162,6 +170,23 @@ Image::scale (libdcp::Size out_size, Scaler const * scaler, AVPixelFormat out_fo
 		scaler->ffmpeg_id (), 0, 0, 0
 		);
 
+	if (!scale_context) {
+		throw StringError (N_("Could not allocate SwsContext"));
+	}
+
+	DCPOMATIC_ASSERT (yuv_to_rgb < YUV_TO_RGB_COUNT);
+	int const lut[YUV_TO_RGB_COUNT] = {
+		SWS_CS_ITU601,
+		SWS_CS_ITU709
+	};
+
+	sws_setColorspaceDetails (
+		scale_context,
+		sws_getCoefficients (lut[yuv_to_rgb]), 0,
+		sws_getCoefficients (lut[yuv_to_rgb]), 0,
+		0, 1 << 16, 1 << 16
+		);
+	
 	sws_scale (
 		scale_context,
 		data(), stride(),

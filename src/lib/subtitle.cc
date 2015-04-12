@@ -85,6 +85,7 @@ Subtitle::update (shared_ptr<const Film> film, libdcp::Size video_container_size
 	_out_image = _in_image->scale (
 		scaled_size,
 		Scaler::from_id ("bicubic"),
+		YUV_TO_RGB_REC601,
 		_in_image->pixel_format (),
 		true
 		);

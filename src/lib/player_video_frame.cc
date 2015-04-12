@@ -105,8 +105,13 @@ PlayerVideoFrame::image (AVPixelFormat pixel_format) const
 	default:
 		break;
 	}
+
+	YUVToRGB yuv_to_rgb = YUV_TO_RGB_REC601;
+	if (_colour_conversion) {
+		yuv_to_rgb = _colour_conversion.get().yuv_to_rgb;
+	}
 		
-	shared_ptr<Image> out = im->crop_scale_window (total_crop, _inter_size, _out_size, _scaler, pixel_format, false);
+	shared_ptr<Image> out = im->crop_scale_window (total_crop, _inter_size, _out_size, _scaler, yuv_to_rgb, pixel_format, false);
 
 	if (_subtitle_image) {
 		out->alpha_blend (_subtitle_image, _subtitle_position);
