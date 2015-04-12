@@ -29,6 +29,7 @@ using std::cout;
 using std::string;
 using std::vector;
 using std::min;
+using std::abs;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
 using libdcp::raw_convert;
