@@ -43,6 +43,8 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 
 	int r = 0;
 
+	subhead (table, this, _("Input gamma correction"), r);
+
 	add_label_to_grid_bag_sizer (table, this, _("Input gamma"), true, wxGBPosition (r, 0));
 	_input_gamma = new wxSpinCtrlDouble (this);
 	table->Add (_input_gamma, wxGBPosition (r, 1), wxGBSpan (1, 2));
@@ -66,12 +68,16 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 
         validator.SetIncludes (list);
 
+	subhead (table, this, _("YUV to RGB conversion"), r);
+	
 	add_label_to_grid_bag_sizer (table, this, _("YUV to RGB matrix"), true, wxGBPosition (r, 0));
 	_yuv_to_rgb = new wxChoice (this, wxID_ANY);
 	_yuv_to_rgb->Append (_("Rec. 601"));
 	_yuv_to_rgb->Append (_("Rec. 709"));
 	table->Add (_yuv_to_rgb, wxGBPosition (r, 1));
 	++r;
+
+	subhead (table, this, _("RGB to XYZ conversion"), r);
 
 	add_label_to_grid_bag_sizer (table, this, _("x"), false, wxGBPosition (r, 1));
 	add_label_to_grid_bag_sizer (table, this, _("y"), false, wxGBPosition (r, 2));
@@ -119,6 +125,8 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 	table->Add (matrix_sizer, wxGBPosition (r, 1), wxGBSpan (1, 2));
 	++r;
 
+	subhead (table, this, _("Output gamma correction"), r);
+
 	add_label_to_grid_bag_sizer (table, this, _("Output gamma"), true, wxGBPosition (r, 0));
 	wxBoxSizer* output_sizer = new wxBoxSizer (wxHORIZONTAL);
 	/// TRANSLATORS: this means the mathematical reciprocal operation, i.e. we are dividing 1 by the control that
@@ -148,6 +156,15 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 	_white_y->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::chromaticity_changed, this));
 	_yuv_to_rgb->Bind (wxEVT_COMMAND_CHOICE_SELECTED, boost::bind (&ColourConversionEditor::changed, this));
 	_output_gamma->Bind (wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, boost::bind (&ColourConversionEditor::changed, this, _output_gamma));
+}
+
+void
+ColourConversionEditor::subhead (wxGridBagSizer* sizer, wxWindow* parent, wxString text, int& row) const
+{
+	wxStaticText* m = new wxStaticText (parent, wxID_ANY, wxT (""));
+	m->SetLabelMarkup ("<b>" + text + "</b>");
+	sizer->Add (m, wxGBPosition (row, 0), wxGBSpan (1, 3), wxALIGN_CENTER_VERTICAL | wxTOP, 12);
+	++row;
 }
 
 void

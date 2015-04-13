@@ -41,6 +41,7 @@ private:
 	void changed (wxSpinCtrlDouble *);
 	void chromaticity_changed ();
 	void update_rgb_to_xyz ();
+	void subhead (wxGridBagSizer* sizer, wxWindow* parent, wxString text, int& row) const;
 
 	void set_spin_ctrl (wxSpinCtrlDouble *, double);
 

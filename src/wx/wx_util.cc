@@ -53,7 +53,8 @@ add_label_to_sizer (wxSizer* s, wxWindow* p, wxString t, bool, int prop)
 		t += wxT (":");
 	}
 #endif	
-	wxStaticText* m = new wxStaticText (p, wxID_ANY, t);
+	wxStaticText* m = new wxStaticText (p, wxID_ANY, wxT (""));
+	m->SetLabelMarkup (t);
 	s->Add (m, prop, flags, 6);
 	return m;
 }
@@ -72,7 +73,8 @@ add_label_to_grid_bag_sizer (wxGridBagSizer* s, wxWindow* p, wxString t, bool, w
 		t += wxT (":");
 	}
 #endif	
-	wxStaticText* m = new wxStaticText (p, wxID_ANY, t);
+	wxStaticText* m = new wxStaticText (p, wxID_ANY, wxT (""));
+	m->SetLabelMarkup (t);
 	s->Add (m, pos, span, flags);
 	return m;
 }
