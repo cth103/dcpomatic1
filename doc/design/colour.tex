@@ -13,14 +13,14 @@ The process of conversion from RGB to XYZ is:
 
 \begin{enumerate}
 \item Convert to linear RGB (i.e.\ apply a gamma curve, or at least an approximation to one).
-\item Convert to XYZ.
+\item Convert to XYZ (preserving the white point).
 \item Adjust the white point.
 \item Normalize values.
 \item Convert to non-linear XYZ (i.e.\ apply a gamma curve)
 \end{enumerate}
 
 
-\section{Conversion to linear RGB}
+\section{Convert to linear RGB}
 
 This is done using either a `pure' gamma function, so that for some colour value $C_i$ the output colour $C_o$ is given by
 
@@ -42,7 +42,7 @@ C_o &= \left\{
 where $K$, $A$, $C_t$ and $\zeta$ are constants.  This modified function approximates a `pure' gamma function but changes the output for small inputs.
 
 
-\section{Conversion to XYZ and white point adjustment}
+\section{Convert to XYZ}
 
 This is done by multiplying the colours by a $3\times{}3$ matrix.
 This matrix depends on the chromaticities of the RGB primaries and the
@@ -89,10 +89,10 @@ where:
 \item $W_x$, $W_y$: white point
 \end{itemize}
 
-Then the conversion matrix $M$ is as follows:
+Then the conversion matrix $\mathbf{C}$ is as follows:
 
 \begin{align}
-M &= \frac{1}{P} \left[\begin{matrix}
+\mathbf{C} &= \frac{1}{P} \left[\begin{matrix}
 R_x & G_x\dfrac{D}{F} & B_x\dfrac{E}{F} \\[2ex]
 R_y & G_y\dfrac{D}{F} & B_y\dfrac{E}{F} \\[2ex]
 R_z & G_z\dfrac{D}{F} & B_z\dfrac{E}{F} \\[2ex]
@@ -106,7 +106,7 @@ R_z & G_z\dfrac{D}{F} & B_z\dfrac{E}{F} \\[2ex]
 Then to convert RGB to XYZ we do
 
 \begin{align}
-\left[\begin{matrix} X \\ Y \\ Z \\ \end{matrix}\right] &= M \left[\begin{matrix} R \\ G \\ B \\ \end{matrix}\right]
+\left[\begin{matrix} X \\ Y \\ Z \\ \end{matrix}\right] &= \mathbf{C} \left[\begin{matrix} R \\ G \\ B \\ \end{matrix}\right]
 \intertext{i.e.}
 \left[\begin{matrix} X \\ Y \\ Z \\ \end{matrix}\right] &= \left[\begin{matrix}
 0.4123908 & 0.3575843 & 0.1804808 \\
@@ -118,6 +118,56 @@ Then to convert RGB to XYZ we do
 Note: there is also a CIE definition of the D65 white point as ($x =
 0.31272$, $y = 0.32903$), which we do not use.
 
+
+\section{Adjust the white point}
+
+If required we can adjust the white point of the colours from one
+white point $\mathbf{S_1}$ to another $\mathbf{S_2}$.  This is done by multiplication by
+a Bradford matrix, $\mathbf{B}$.  To calculate it, we start with the
+Bradford chromatic adaption transform matrix $\mathbf{M}$, taken from
+S\"usstrunk et al., \textit{Chromatic adaption performance of
+  different RGB sensors}, IS&T/SPIE Electronic Imaging, SPIE
+Vol.\ 4300 (2001).
+
+\begin{align}
+\mathbf{M} &= \left[\begin{matrix}
+0.8951 & 0.2664 & -0.1614 \\
+-0.7502 & 1.7135 & 0.0367 \\
+0.0389 & -0.0685 & 1.0296 \\
+\end{matrix}\right]
+\end{align}
+
+The inverse of $\mathbf{M}$ is
+\begin{align}
+\mathbf{M}^{-1} &= \left[\begin{matrix}
+0.9869929055 & -0.1470542564 & 0.1599626517 \\
+0.4323052697 & 0.5183602715 & 0.0492912282 \\
+-0.0085286646 & 0.0400428217 & 0.9684866958 \\
+\end{matrix}\right]
+\end{align}
+
+Next, compute $\mathbf{G}$ and $\mathbf{H}$ as follows
+
+\begin{align}
+\mathbf{G} &= \mathbf{M} \left[\begin{matrix} \dfrac{S_{1x}}{S_{1y}} \\[2ex] 1 \\ \dfrac{1 - S_{1x} - S_{1y}}{S_{1y}} \\[2ex] \end{matrix}\right] \\
+\mathbf{H} &= \mathbf{M} \left[\begin{matrix} \dfrac{S_{2x}}{S_{2y}} \\[2ex] 1 \\ \dfrac{1 - S_{2x} - S_{2y}}{S_{2y}} \\[2ex] \end{matrix}\right]
+\end{align}
+
+Then the Bradford matrix $\mathbf{B}$ is given by
+
+\begin{align}
+\mathbf{B} &= \mathbf{M}^{-1}
+\left(\left[\begin{matrix} \dfrac{H_1}{G_1} & 0 & 0 \\ 0 & \dfrac{H_2}{G_2} & 0 \\ 0 & 0 & \dfrac{H_3}{G_3} \\ \end{matrix}\right] \mathbf{M}\right) \\
+\end{align}
+
+
+\section{Normalize values}
+
+TO DO.
+
+\section{Convert to non-linear XYZ}
+
+TO DO.
 
 
 \section{Comparing different software}
