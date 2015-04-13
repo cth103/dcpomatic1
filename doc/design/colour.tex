@@ -280,19 +280,9 @@ R_y &= \frac{C_{21}}{C_{11} + C_{21} + C_{31}} \\
 G_x &= \frac{C_{12}}{C_{12} + C_{22} + C_{32}} \\
 G_y &= \frac{C_{22}}{C_{12} + C_{22} + C_{32}} \\
 B_x &= \frac{C_{13}}{C_{13} + C_{23} + C_{33}} \\
-B_y &= \frac{C_{23}}{C_{13} + C_{23} + C_{33}}
+B_y &= \frac{C_{23}}{C_{13} + C_{23} + C_{33}} \\
+W_x &= \frac{C_{11} + C_{12} + C_{13}}{C_{11} + C_{12} + C_{13} + C_{21} + C_{22} + C_{23} + C_{31} + C_{32} + C_{33}} \\
+W_y &= \frac{C_{21} + C_{22} + C_{23}}{C_{11} + C_{12} + C_{13} + C_{21} + C_{22} + C_{23} + C_{31} + C_{32} + C_{33}}
 \end{align}
-
-Let
-\begin{align}
-U &= \frac{C_{12}}{G_x} \\
-V &= \frac{C_{13}}{B_x}
-\intertext{then}
-W_x &= \frac{U(G_yR_x - G_xR_y) + V(B_yR_x - B_xR_y) - R_x}{U(G_y - R_y) + VB_y - VR_y - 1} \\
-    &= \frac{R_x(C_{22} - C_{23} - 1) - R_y(C_{12} + C_{13})}{C_{22} + C_{23} - 1 - R_y(C_{12} + C_{22} + C_{32} + C_{13} + C_{23} + C_{33})} \\
-W_y &= \frac{-R_y}{U(G_y - R_y) + VB_y - VR_y - 1}
-\end{align}
-
-TO DO: simplify the expressions for $W_x$, $W_y$.
 
 \end{document}
