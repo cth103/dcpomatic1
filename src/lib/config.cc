@@ -108,8 +108,7 @@ Config::set_defaults ()
 	_colour_conversions.push_back (
 		PresetColourConversion (
 			_("Rec. 601"), 2.2, false, YUV_TO_RGB_REC601,
-			/* XXX: THESE ARE WRONG */
-			Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
+			Chromaticity (0.63, 0.34), Chromaticity (0.31, 0.595), Chromaticity (0.155, 0.07), Chromaticity (0.3127, 0.329), 2.6
 			)
 		);
 
