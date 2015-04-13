@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 #include "lib/colour_conversion.h"
 
 using std::cout;
+using std::string;
+using boost::shared_ptr;
 
 /* Basic test of identifier() for ColourConversion (i.e. a hash of the numbers) */
 BOOST_AUTO_TEST_CASE (colour_conversion_test)
@@ -55,3 +57,35 @@ BOOST_AUTO_TEST_CASE (colour_conversion_matrix_test)
 	BOOST_CHECK_CLOSE (m(2, 1), 0.1191948, 0.01);
 	BOOST_CHECK_CLOSE (m(2, 2), 0.9505322, 0.01);
 }
+
+/* Check the reverse calculation */
+BOOST_AUTO_TEST_CASE (colour_conversion_reverse_test)
+{
+	string const s = "<Frobozz>"
+		    "<InputGamma>2.2</InputGamma>"
+                    "<InputGammaLinearised>true</InputGammaLinearised>"
+                    "<YUVToRGB>0</YUVToRGB>"
+                    "<Matrix i=\"0\" j=\"0\">0.4123908</Matrix>"
+                    "<Matrix i=\"0\" j=\"1\">0.3575843</Matrix>"
+                    "<Matrix i=\"0\" j=\"2\">0.1804808</Matrix>"
+		    "<Matrix i=\"1\" j=\"0\">0.2126390</Matrix>"
+		    "<Matrix i=\"1\" j=\"1\">0.7151687</Matrix>"
+		    "<Matrix i=\"1\" j=\"2\">0.0721923</Matrix>"
+		    "<Matrix i=\"2\" j=\"0\">0.0193308</Matrix>"
+		    "<Matrix i=\"2\" j=\"1\">0.1191948</Matrix>"
+		    "<Matrix i=\"2\" j=\"2\">0.9505322</Matrix>"
+		    "<OutputGamma>2.6</OutputGamma>"
+		    "</Frobozz>";
+
+	shared_ptr<cxml::Document> d (new cxml::Document);
+	d->read_string (s);
+
+	ColourConversion c (d);
+	BOOST_CHECK_CLOSE (c.red.x, 0.64, 0.01);
+	BOOST_CHECK_CLOSE (c.red.y, 0.33, 0.01);
+	BOOST_CHECK_CLOSE (c.green.x, 0.3, 0.01);
+	BOOST_CHECK_CLOSE (c.green.y, 0.6, 0.01);
+	BOOST_CHECK_CLOSE (c.blue.x, 0.15, 0.01);
+	BOOST_CHECK_CLOSE (c.blue.y, 0.06, 0.01);
+}
+

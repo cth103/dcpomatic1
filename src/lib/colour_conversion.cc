@@ -72,12 +72,31 @@ ColourConversion::ColourConversion (cxml::NodePtr node)
 	input_gamma_linearised = node->bool_child ("InputGammaLinearised");
 	yuv_to_rgb = static_cast<YUVToRGB> (node->optional_number_child<int>("YUVToRGB").get_value_or (YUV_TO_RGB_REC601));
 
-	/* XXX: load in old matrices and convert to chromaticities */
-	
-	red = Chromaticity (node->number_child<double> ("RedX"), node->number_child<double> ("RedY"));
-	green = Chromaticity (node->number_child<double> ("GreenX"), node->number_child<double> ("GreenY"));
-	blue = Chromaticity (node->number_child<double> ("BlueX"), node->number_child<double> ("BlueY"));
-	white = Chromaticity (node->number_child<double> ("WhiteX"), node->number_child<double> ("WhiteY"));
+	list<cxml::NodePtr> m = node->node_children ("Matrix");
+	if (!m.empty ()) {
+		/* Read in old <Matrix> nodes and convert them to chromaticities */
+		boost::numeric::ublas::matrix<double> C (3, 3);
+		for (list<cxml::NodePtr>::iterator i = m.begin(); i != m.end(); ++i) {
+			int const ti = (*i)->number_attribute<int> ("i");
+			int const tj = (*i)->number_attribute<int> ("j");
+			C(ti, tj) = raw_convert<double> ((*i)->content ());
+		}
+
+		double const rd = C(0, 0) + C(1, 0) + C(2, 0);
+		red = Chromaticity (C(0, 0) / rd, C(1, 0) / rd);
+		double const gd = C(0, 1) + C(1, 1) + C(2, 1);
+		green = Chromaticity (C(0, 1) / gd, C(1, 1) / gd);
+		double const bd = C(0, 2) + C(1, 2) + C(2, 2);
+		blue = Chromaticity (C(0, 2) / bd, C(1, 2) / bd);
+		double const wd = C(0, 0) + C(0, 1) + C(0, 2) + C(1, 0) + C(1, 1) + C(1, 2) + C(2, 0) + C(2, 1) + C(2, 2);
+		white = Chromaticity ((C(0, 0) + C(0, 1) + C(0, 2)) / wd, (C(1, 0) + C(1, 1) + C(1, 2)) / wd);
+	} else {
+		/* New-style chromaticities */
+		red = Chromaticity (node->number_child<double> ("RedX"), node->number_child<double> ("RedY"));
+		green = Chromaticity (node->number_child<double> ("GreenX"), node->number_child<double> ("GreenY"));
+		blue = Chromaticity (node->number_child<double> ("BlueX"), node->number_child<double> ("BlueY"));
+		white = Chromaticity (node->number_child<double> ("WhiteX"), node->number_child<double> ("WhiteY"));
+	}
 
 	output_gamma = node->number_child<double> ("OutputGamma");
 }
