@@ -20,6 +20,7 @@
 #include <boost/lexical_cast.hpp>
 #include <wx/spinctrl.h>
 #include <wx/gbsizer.h>
+#include <libdcp/raw_convert.h>
 #include "lib/colour_conversion.h"
 #include "lib/safe_stringstream.h"
 #include "wx_util.h"
@@ -27,6 +28,7 @@
 
 using std::string;
 using std::cout;
+using libdcp::raw_convert;
 using boost::shared_ptr;
 using boost::lexical_cast;
 
@@ -43,15 +45,15 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 
 	add_label_to_grid_bag_sizer (table, this, _("Input gamma"), true, wxGBPosition (r, 0));
 	_input_gamma = new wxSpinCtrlDouble (this);
-	table->Add (_input_gamma, wxGBPosition (r, 1));
+	table->Add (_input_gamma, wxGBPosition (r, 1), wxGBSpan (1, 2));
 	++r;
 
 	_input_gamma_linearised = new wxCheckBox (this, wxID_ANY, _("Linearise input gamma curve for low values"));
-	table->Add (_input_gamma_linearised, wxGBPosition (r, 0), wxGBSpan (1, 2));
+	table->Add (_input_gamma_linearised, wxGBPosition (r, 0), wxGBSpan (1, 3));
 	++r;
 
         wxClientDC dc (parent);
-        wxSize size = dc.GetTextExtent (wxT ("-0.12345678901"));
+        wxSize size = dc.GetTextExtent (wxT ("-0.123456"));
         size.SetHeight (-1);
 
         wxTextValidator validator (wxFILTER_INCLUDE_CHAR_LIST);
@@ -71,15 +73,50 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 	table->Add (_yuv_to_rgb, wxGBPosition (r, 1));
 	++r;
 
+	add_label_to_grid_bag_sizer (table, this, _("x"), false, wxGBPosition (r, 1));
+	add_label_to_grid_bag_sizer (table, this, _("y"), false, wxGBPosition (r, 2));
+	++r;
+
+	add_label_to_grid_bag_sizer (table, this, _("Red chromaticity"), true, wxGBPosition (r, 0));
+	_red_x = new wxTextCtrl (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0, validator);
+	table->Add (_red_x, wxGBPosition (r, 1));
+	_red_y = new wxTextCtrl (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0, validator);
+	table->Add (_red_y, wxGBPosition (r, 2));
+	++r;
+
+	add_label_to_grid_bag_sizer (table, this, _("Green chromaticity"), true, wxGBPosition (r, 0));
+	_green_x = new wxTextCtrl (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0, validator);
+	table->Add (_green_x, wxGBPosition (r, 1));
+	_green_y = new wxTextCtrl (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0, validator);
+	table->Add (_green_y, wxGBPosition (r, 2));
+	++r;
+
+	add_label_to_grid_bag_sizer (table, this, _("Blue chromaticity"), true, wxGBPosition (r, 0));
+	_blue_x = new wxTextCtrl (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0, validator);
+	table->Add (_blue_x, wxGBPosition (r, 1));
+	_blue_y = new wxTextCtrl (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0, validator);
+	table->Add (_blue_y, wxGBPosition (r, 2));
+	++r;
+
+	add_label_to_grid_bag_sizer (table, this, _("White point"), true, wxGBPosition (r, 0));
+	_white_x = new wxTextCtrl (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0, validator);
+	table->Add (_white_x, wxGBPosition (r, 1));
+	_white_y = new wxTextCtrl (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0, validator);
+	table->Add (_white_y, wxGBPosition (r, 2));
+	++r;
+
+        size = dc.GetTextExtent (wxT ("0.12345678"));
+        size.SetHeight (-1);
+	
 	add_label_to_grid_bag_sizer (table, this, _("RGB to XYZ matrix"), true, wxGBPosition (r, 0));
 	wxFlexGridSizer* matrix_sizer = new wxFlexGridSizer (3, DCPOMATIC_SIZER_X_GAP, DCPOMATIC_SIZER_Y_GAP);
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
-			_rgb_to_xyz[i][j] = new wxTextCtrl (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0, validator);
+			_rgb_to_xyz[i][j] = new wxStaticText (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0);
 			matrix_sizer->Add (_rgb_to_xyz[i][j]);
 		}
 	}
-	table->Add (matrix_sizer, wxGBPosition (r, 1));
+	table->Add (matrix_sizer, wxGBPosition (r, 1), wxGBSpan (1, 2));
 	++r;
 
 	add_label_to_grid_bag_sizer (table, this, _("Output gamma"), true, wxGBPosition (r, 0));
@@ -89,7 +126,7 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 	add_label_to_sizer (output_sizer, this, _("1 / "), false);
 	_output_gamma = new wxSpinCtrlDouble (this);
 	output_sizer->Add (_output_gamma);
-	table->Add (output_sizer, wxGBPosition (r, 1));
+	table->Add (output_sizer, wxGBPosition (r, 1), wxGBSpan (1, 2));
 	++r;
 
 	_input_gamma->SetRange (0.1, 4.0);
@@ -101,11 +138,14 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 
 	_input_gamma->Bind (wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, boost::bind (&ColourConversionEditor::changed, this, _input_gamma));
 	_input_gamma_linearised->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&ColourConversionEditor::changed, this));
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			_rgb_to_xyz[i][j]->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::changed, this));
-		}
-	}
+	_red_x->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::chromaticity_changed, this));
+	_red_y->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::chromaticity_changed, this));
+	_green_x->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::chromaticity_changed, this));
+	_green_y->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::chromaticity_changed, this));
+	_blue_x->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::chromaticity_changed, this));
+	_blue_y->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::chromaticity_changed, this));
+	_white_x->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::chromaticity_changed, this));
+	_white_y->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::chromaticity_changed, this));
 	_yuv_to_rgb->Bind (wxEVT_COMMAND_CHOICE_SELECTED, boost::bind (&ColourConversionEditor::changed, this));
 	_output_gamma->Bind (wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, boost::bind (&ColourConversionEditor::changed, this, _output_gamma));
 }
@@ -116,15 +156,43 @@ ColourConversionEditor::set (ColourConversion conversion)
 	set_spin_ctrl (_input_gamma, conversion.input_gamma);
 	_input_gamma_linearised->SetValue (conversion.input_gamma_linearised);
 	_yuv_to_rgb->SetSelection (conversion.yuv_to_rgb);
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			SafeStringStream s;
-			s.setf (std::ios::fixed, std::ios::floatfield);
-			s.precision (7);
-			s << conversion.rgb_to_xyz (i, j);
-			_rgb_to_xyz[i][j]->SetValue (std_to_wx (s.str ()));
-		}
-	}
+
+	SafeStringStream s;
+	s.setf (std::ios::fixed, std::ios::floatfield);
+	s.precision (4);
+
+	s << conversion.red.x;
+	_red_x->SetValue (std_to_wx (s.str ()));
+
+	s.str ("");
+	s << conversion.red.y;
+	_red_y->SetValue (std_to_wx (s.str ()));
+
+	s.str ("");
+	s << conversion.green.x;
+	_green_x->SetValue (std_to_wx (s.str ()));
+
+	s.str ("");
+	s << conversion.green.y;
+	_green_y->SetValue (std_to_wx (s.str ()));
+
+	s.str ("");
+	s << conversion.blue.x;
+	_blue_x->SetValue (std_to_wx (s.str ()));
+
+	s.str ("");
+	s << conversion.blue.y;
+	_blue_y->SetValue (std_to_wx (s.str ()));
+
+	s.str ("");
+	s << conversion.white.x;
+	_white_x->SetValue (std_to_wx (s.str ()));
+
+	s.str ("");
+	s << conversion.white.y;
+	_white_y->SetValue (std_to_wx (s.str ()));
+
+	update_rgb_to_xyz ();
 	set_spin_ctrl (_output_gamma, conversion.output_gamma);
 }
 
@@ -137,17 +205,15 @@ ColourConversionEditor::get () const
 	conversion.input_gamma_linearised = _input_gamma_linearised->GetValue ();
 	conversion.yuv_to_rgb = static_cast<YUVToRGB> (_yuv_to_rgb->GetSelection ());
 
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			string const v = wx_to_std (_rgb_to_xyz[i][j]->GetValue ());
-			if (v.empty ()) {
-				conversion.rgb_to_xyz (i, j) = 0;
-			} else {
-				conversion.rgb_to_xyz (i, j) = lexical_cast<double> (v);
-			}
-		}
-	}
-	
+	conversion.red.x = raw_convert<double> (wx_to_std (_red_x->GetValue ()));
+	conversion.red.y = raw_convert<double> (wx_to_std (_red_y->GetValue ()));
+	conversion.green.x = raw_convert<double> (wx_to_std (_green_x->GetValue ()));
+	conversion.green.y = raw_convert<double> (wx_to_std (_green_y->GetValue ()));
+	conversion.blue.x = raw_convert<double> (wx_to_std (_blue_x->GetValue ()));
+	conversion.blue.y = raw_convert<double> (wx_to_std (_blue_y->GetValue ()));
+	conversion.white.x = raw_convert<double> (wx_to_std (_white_x->GetValue ()));
+	conversion.white.y = raw_convert<double> (wx_to_std (_white_y->GetValue ()));
+
 	conversion.output_gamma = _output_gamma->GetValue ();
 
 	return conversion;
@@ -157,6 +223,29 @@ void
 ColourConversionEditor::changed ()
 {
 	Changed ();
+}
+
+void
+ColourConversionEditor::chromaticity_changed ()
+{
+	update_rgb_to_xyz ();
+	changed ();
+}
+
+void
+ColourConversionEditor::update_rgb_to_xyz ()
+{
+	ColourConversion conversion = get ();
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			SafeStringStream s;
+			s.setf (std::ios::fixed, std::ios::floatfield);
+			s.precision (7);
+			boost::numeric::ublas::matrix<double> m = conversion.rgb_to_xyz ();
+			s << m (i, j);
+			_rgb_to_xyz[i][j]->SetLabel (std_to_wx (s.str ()));
+		}
+	}
 }
 
 void

@@ -40,11 +40,34 @@ enum YUVToRGB {
 	YUV_TO_RGB_COUNT
 };
 
+class Chromaticity
+{
+public:
+	Chromaticity ()
+		: x (0)
+		, y (0)
+	{}
+
+	Chromaticity (double x_, double y_)
+		: x (x_)
+		, y (y_)
+	{}
+		
+	double x;
+	double y;
+
+	double z () const {
+		return 1 - x - y;
+	}
+};
+
 class ColourConversion
 {
 public:
 	ColourConversion ();
-	ColourConversion (double, bool, YUVToRGB yuv_to_rgb, double const rgb_to_xyz[3][3], double);
+	ColourConversion (
+		double, bool, YUVToRGB yuv_to_rgb_, Chromaticity red_, Chromaticity green_, Chromaticity blue_, Chromaticity white_, double
+		);
 	ColourConversion (cxml::NodePtr);
 
 	virtual void as_xml (xmlpp::Node *) const;
@@ -57,15 +80,22 @@ public:
 	double input_gamma;
 	bool input_gamma_linearised;
 	YUVToRGB yuv_to_rgb;
-	boost::numeric::ublas::matrix<double> rgb_to_xyz;
+	Chromaticity red;
+	Chromaticity green;
+	Chromaticity blue;
+	Chromaticity white;
 	double output_gamma;
+
+	boost::numeric::ublas::matrix<double> rgb_to_xyz () const;
 };
 
 class PresetColourConversion
 {
 public:
 	PresetColourConversion ();
-	PresetColourConversion (std::string, double, bool, YUVToRGB yuv_to_rgb, double const rgb_to_xyz[3][3], double);
+	PresetColourConversion (
+		std::string, double, bool, YUVToRGB yuv_to_rgb_, Chromaticity red_, Chromaticity green_, Chromaticity blue_, Chromaticity white_, double
+		);
 	PresetColourConversion (cxml::NodePtr);
 
 	void as_xml (xmlpp::Node *) const;

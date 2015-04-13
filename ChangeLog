@@ -1,3 +1,8 @@
+2015-04-13  Carl Hetherington  <cth@carlh.net>
+
+	* Define colour conversions using red/green/blue chromaticities
+	and white point rather than a matrix.
+
 2015-04-13  c.hetherington  <cth@carlh.net>
 
 	* Add menu option to reset default preferences.

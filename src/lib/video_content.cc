@@ -190,7 +190,8 @@ VideoContent::set_default_colour_conversion (bool signal)
 	{
 		boost::mutex::scoped_lock lm (_mutex);
 		_colour_conversion = PresetColourConversion (
-			_("Rec. 709"), 2.2, false, YUV_TO_RGB_REC709, libdcp::colour_matrix::rec709_to_xyz, 2.6
+			_("Rec. 709"), 2.2, false, YUV_TO_RGB_REC709,
+			Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
 			).conversion;
 	}
 

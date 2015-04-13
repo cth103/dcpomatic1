@@ -338,7 +338,6 @@ public:
 	}
 	
 	void set_kdm_email (std::string e) {
-		std::cout << "set kdm email `" << e << "'\n";
 		maybe_set (_kdm_email, e);
 	}
 

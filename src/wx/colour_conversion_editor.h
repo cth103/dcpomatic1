@@ -39,15 +39,25 @@ public:
 private:
 	void changed ();
 	void changed (wxSpinCtrlDouble *);
+	void chromaticity_changed ();
+	void update_rgb_to_xyz ();
 
 	void set_spin_ctrl (wxSpinCtrlDouble *, double);
 
 	std::map<wxSpinCtrlDouble*, double> _last_spin_ctrl_value;
-	
+
 	wxSpinCtrlDouble* _input_gamma;
 	wxCheckBox* _input_gamma_linearised;
 	wxChoice* _yuv_to_rgb;
-	wxTextCtrl* _rgb_to_xyz[3][3];
+	wxTextCtrl* _red_x;
+	wxTextCtrl* _red_y;
+	wxTextCtrl* _green_x;
+	wxTextCtrl* _green_y;
+	wxTextCtrl* _blue_x;
+	wxTextCtrl* _blue_y;
+	wxTextCtrl* _white_x;
+	wxTextCtrl* _white_y;
+	wxStaticText* _rgb_to_xyz[3][3];
 	wxSpinCtrlDouble* _output_gamma;
 };
 

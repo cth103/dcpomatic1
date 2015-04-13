@@ -91,11 +91,35 @@ Config::set_defaults ()
 	_allowed_dcp_frame_rates.push_back (50);
 	_allowed_dcp_frame_rates.push_back (60);
 
-	_colour_conversions.push_back (PresetColourConversion (_("sRGB"), 2.4, true, YUV_TO_RGB_REC601, libdcp::colour_matrix::srgb_to_xyz, 2.6));
-	_colour_conversions.push_back (PresetColourConversion (_("sRGB non-linearised"), 2.4, false, YUV_TO_RGB_REC601, libdcp::colour_matrix::srgb_to_xyz, 2.6));
-	_colour_conversions.push_back (PresetColourConversion (_("Rec. 601"), 2.2, false, YUV_TO_RGB_REC601, libdcp::colour_matrix::rec601_to_xyz, 2.6));
-	_colour_conversions.push_back (PresetColourConversion (_("Rec. 709"), 2.2, false, YUV_TO_RGB_REC709, libdcp::colour_matrix::rec709_to_xyz, 2.6));
+	_colour_conversions.push_back (
+		PresetColourConversion (
+			_("sRGB"), 2.4, true, YUV_TO_RGB_REC601,
+			Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
+			)
+		);
 
+	_colour_conversions.push_back (
+		PresetColourConversion (
+			_("sRGB non-linearised"), 2.4, false, YUV_TO_RGB_REC601,
+			Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
+			)
+		);
+	
+	_colour_conversions.push_back (
+		PresetColourConversion (
+			_("Rec. 601"), 2.2, false, YUV_TO_RGB_REC601,
+			/* XXX: THESE ARE WRONG */
+			Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
+			)
+		);
+
+	_colour_conversions.push_back (
+		PresetColourConversion (
+			_("Rec. 709"), 2.2, false, YUV_TO_RGB_REC709,
+			Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
+			)
+		);
+	
 	reset_kdm_email ();
 }
 

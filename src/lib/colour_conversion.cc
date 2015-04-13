@@ -40,53 +40,44 @@ ColourConversion::ColourConversion ()
 	: input_gamma (2.4)
 	, input_gamma_linearised (true)
 	, yuv_to_rgb (YUV_TO_RGB_REC601)
-	, rgb_to_xyz (3, 3)
+	  /* sRGB and Rec709 chromaticities */
+	, red (0.64, 0.33)
+	, green (0.3, 0.6)
+	, blue (0.15, 0.06)
+	  /* D65 */
+	, white (0.3127, 0.329)
 	, output_gamma (2.6)
 {
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			rgb_to_xyz (i, j) = libdcp::colour_matrix::srgb_to_xyz[i][j];
-		}
-	}
+
 }
 
-ColourConversion::ColourConversion (double i, bool il, YUVToRGB yuv_to_rgb_, double const rgb_to_xyz_[3][3], double o)
+ColourConversion::ColourConversion (
+	double i, bool il, YUVToRGB yuv_to_rgb_, Chromaticity red_, Chromaticity green_, Chromaticity blue_, Chromaticity white_, double o
+	)
 	: input_gamma (i)
 	, input_gamma_linearised (il)
 	, yuv_to_rgb (yuv_to_rgb_)
-	, rgb_to_xyz (3, 3)
+	, red (red_)
+	, green (green_)
+	, blue (blue_)
+	, white (white_)
 	, output_gamma (o)
 {
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			rgb_to_xyz (i, j) = rgb_to_xyz_[i][j];
-		}
-	}
+	
 }
 
 ColourConversion::ColourConversion (cxml::NodePtr node)
-	: rgb_to_xyz (3, 3)
 {
 	input_gamma = node->number_child<double> ("InputGamma");
 	input_gamma_linearised = node->bool_child ("InputGammaLinearised");
 	yuv_to_rgb = static_cast<YUVToRGB> (node->optional_number_child<int>("YUVToRGB").get_value_or (YUV_TO_RGB_REC601));
 
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			rgb_to_xyz (i, j) = 0;
-		}
-	}
-
-	list<cxml::NodePtr> m = node->node_children ("RGBToXYZ");
-	if (m.empty ()) {
-		/* This is the old name for RGBToXYZ */
-		m = node->node_children ("Matrix");
-	}
-	for (list<cxml::NodePtr>::iterator i = m.begin(); i != m.end(); ++i) {
-		int const ti = (*i)->number_attribute<int> ("i");
-		int const tj = (*i)->number_attribute<int> ("j");
-		rgb_to_xyz(ti, tj) = raw_convert<double> ((*i)->content ());
-	}
+	/* XXX: load in old matrices and convert to chromaticities */
+	
+	red = Chromaticity (node->number_child<double> ("RedX"), node->number_child<double> ("RedY"));
+	green = Chromaticity (node->number_child<double> ("GreenX"), node->number_child<double> ("GreenY"));
+	blue = Chromaticity (node->number_child<double> ("BlueX"), node->number_child<double> ("BlueY"));
+	white = Chromaticity (node->number_child<double> ("WhiteX"), node->number_child<double> ("WhiteY"));
 
 	output_gamma = node->number_child<double> ("OutputGamma");
 }
@@ -108,14 +99,14 @@ ColourConversion::as_xml (xmlpp::Node* node) const
 	node->add_child("InputGammaLinearised")->add_child_text (input_gamma_linearised ? "1" : "0");
 	node->add_child("YUVToRGB")->add_child_text (raw_convert<string> (yuv_to_rgb));
 
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			xmlpp::Element* m = node->add_child("RGBToXYZ");
-			m->set_attribute ("i", raw_convert<string> (i));
-			m->set_attribute ("j", raw_convert<string> (j));
-			m->add_child_text (raw_convert<string> (rgb_to_xyz (i, j)));
-		}
-	}
+	node->add_child("RedX")->add_child_text (raw_convert<string> (red.x));
+	node->add_child("RedY")->add_child_text (raw_convert<string> (red.y));
+	node->add_child("GreenX")->add_child_text (raw_convert<string> (green.x));
+	node->add_child("GreenY")->add_child_text (raw_convert<string> (green.y));
+	node->add_child("BlueX")->add_child_text (raw_convert<string> (blue.x));
+	node->add_child("BlueY")->add_child_text (raw_convert<string> (blue.y));
+	node->add_child("WhiteX")->add_child_text (raw_convert<string> (white.x));
+	node->add_child("WhiteY")->add_child_text (raw_convert<string> (white.y));
 
 	node->add_child("OutputGamma")->add_child_text (raw_convert<string> (output_gamma));
 }
@@ -144,14 +135,42 @@ ColourConversion::identifier () const
 	digester.add (input_gamma);
 	digester.add (input_gamma_linearised);
 	digester.add (yuv_to_rgb);
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			digester.add (rgb_to_xyz (i, j));
-		}
-	}
+	
+	digester.add (red.x);
+	digester.add (red.y);
+	digester.add (green.x);
+	digester.add (green.y);
+	digester.add (blue.x);
+	digester.add (blue.y);
+	digester.add (white.x);
+	digester.add (white.y);
+
 	digester.add (output_gamma);
 	
 	return digester.get ();
+}
+
+boost::numeric::ublas::matrix<double>
+ColourConversion::rgb_to_xyz () const
+{
+	/* See doc/design/colour.tex */
+
+	double const D = (red.x - white.x) * (white.y - blue.y) - (white.x - blue.x) * (red.y - white.y);
+	double const E = (white.x - green.x) * (red.y - white.y) - (red.x - white.x) * (white.y - green.y);
+	double const F = (white.x - green.x) * (white.y - blue.y) - (white.x - blue.x) * (white.y - green.y);
+	double const P = red.y + green.y * D / F + blue.y * E / F;
+
+	boost::numeric::ublas::matrix<double> C (3, 3);
+	C(0, 0) = red.x / P;
+	C(0, 1) = green.x * D / (F * P);
+	C(0, 2) = blue.x * E / (F * P);
+	C(1, 0) = red.y / P;
+	C(1, 1) = green.y * D / (F * P);
+	C(1, 2) = blue.y * E / (F * P);
+	C(2, 0) = red.z() / P;
+	C(2, 1) = green.z() * D / (F * P);
+	C(2, 2) = blue.z() * E / (F * P);
+	return C;
 }
 
 PresetColourConversion::PresetColourConversion ()
@@ -160,9 +179,11 @@ PresetColourConversion::PresetColourConversion ()
 
 }
 
-PresetColourConversion::PresetColourConversion (string n, double i, bool il, YUVToRGB yuv_to_rgb, double const rgb_to_xyz[3][3], double o)
+PresetColourConversion::PresetColourConversion (
+	string n, double i, bool il, YUVToRGB yuv_to_rgb, Chromaticity red, Chromaticity green, Chromaticity blue, Chromaticity white, double o
+	)
 	: name (n)
-	, conversion (i, il, yuv_to_rgb, rgb_to_xyz, o)
+	, conversion (i, il, yuv_to_rgb, red, green, blue, white, o)
 {
 
 }
@@ -194,16 +215,16 @@ operator== (ColourConversion const & a, ColourConversion const & b)
 		!about_equal (a.input_gamma, b.input_gamma) ||
 		a.input_gamma_linearised != b.input_gamma_linearised ||
 		a.yuv_to_rgb != b.yuv_to_rgb ||
+		!about_equal (a.red.x, b.red.x) ||
+		!about_equal (a.red.y, b.red.y) ||
+		!about_equal (a.green.x, b.green.x) ||
+		!about_equal (a.green.y, b.green.y) ||
+		!about_equal (a.blue.x, b.blue.x) ||
+		!about_equal (a.blue.y, b.blue.y) ||
+		!about_equal (a.white.x, b.white.x) ||
+		!about_equal (a.white.y, b.white.y) ||
 		!about_equal (a.output_gamma, b.output_gamma)) {
 		return false;
-	}
-
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			if (!about_equal (a.rgb_to_xyz (i, j), b.rgb_to_xyz (i, j))) {
-				return false;
-			}
-		}
 	}
 
 	return true;

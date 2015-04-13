@@ -120,11 +120,12 @@ DCPVideoFrame::encode_locally ()
 		}
 		
 		/* XXX: libdcp should probably use boost */
-		
+
+		boost::numeric::ublas::matrix<double> boost = conversion.rgb_to_xyz ();
 		double rgb_to_xyz[3][3];
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
-				rgb_to_xyz[i][j] = conversion.rgb_to_xyz (i, j);
+				rgb_to_xyz[i][j] = boost (i, j);
 			}
 		}
 		
