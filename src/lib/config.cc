@@ -58,22 +58,32 @@ Config* Config::_instance = 0;
 
 /** Construct default configuration */
 Config::Config ()
-	: _num_local_encoding_threads (max (2U, boost::thread::hardware_concurrency()))
-	, _server_port_base (6192)
-	, _use_any_servers (true)
-	, _tms_path (".")
-	, _sound_processor (SoundProcessor::from_id (N_("dolby_cp750")))
-	, _allow_any_dcp_frame_rate (false)
-	, _default_still_length (10)
-	, _default_container (Ratio::from_id ("185"))
-	, _default_dcp_content_type (DCPContentType::from_isdcf_name ("FTR"))
-	, _default_j2k_bandwidth (100000000)
-	, _default_audio_delay (0)
-	, _check_for_updates (false)
-	, _check_for_test_updates (false)
-	, _maximum_j2k_bandwidth (250000000)
-	, _log_types (Log::TYPE_GENERAL | Log::TYPE_WARNING | Log::TYPE_ERROR)
 {
+	set_defaults ();
+}
+
+void
+Config::set_defaults ()
+{
+	_num_local_encoding_threads = max (2U, boost::thread::hardware_concurrency());
+	_server_port_base = 6192;
+	_use_any_servers = true;
+	_tms_path = ".";
+	_sound_processor = SoundProcessor::from_id (N_("dolby_cp750"));
+	_allow_any_dcp_frame_rate = false;
+	_default_still_length = 10;
+	_default_container = Ratio::from_id ("185");
+	_default_dcp_content_type = DCPContentType::from_isdcf_name ("FTR");
+	_default_j2k_bandwidth = 100000000;
+	_default_audio_delay = 0;
+	_check_for_updates = false;
+	_check_for_test_updates = false;
+	_maximum_j2k_bandwidth = 250000000;
+	_log_types = Log::TYPE_GENERAL | Log::TYPE_WARNING | Log::TYPE_ERROR;
+
+	_allowed_dcp_frame_rates.clear ();
+	_colour_conversions.clear ();
+
 	_allowed_dcp_frame_rates.push_back (24);
 	_allowed_dcp_frame_rates.push_back (25);
 	_allowed_dcp_frame_rates.push_back (30);
@@ -87,6 +97,13 @@ Config::Config ()
 	_colour_conversions.push_back (PresetColourConversion (_("Rec. 709"), 2.2, false, YUV_TO_RGB_REC709, libdcp::colour_matrix::rec709_to_xyz, 2.6));
 
 	reset_kdm_email ();
+}
+
+void
+Config::restore_defaults ()
+{
+	Config::instance()->set_defaults ();
+	Config::instance()->changed ();
 }
 
 void
@@ -365,6 +382,7 @@ Config::reset_kdm_email ()
 		"The KDMs are valid from $START_TIME until $END_TIME.\n\n"
 		"Best regards,\nDCP-o-matic"
 		);
+	changed ();
 }
 
 void

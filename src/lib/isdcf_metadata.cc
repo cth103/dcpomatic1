@@ -86,3 +86,22 @@ ISDCFMetadata::read_old_metadata (string k, string v)
 		package_type = v;
 	}
 }	
+
+bool
+operator== (ISDCFMetadata const & a, ISDCFMetadata const & b)
+{
+	return a.content_version == b.content_version &&
+		a.audio_language == b.audio_language &&
+		a.subtitle_language == b.subtitle_language &&
+		a.territory == b.territory &&
+		a.rating == b.rating &&
+		a.studio == b.studio &&
+		a.facility == b.facility &&
+		a.package_type == b.package_type &&
+		a.temp_version == b.temp_version &&
+		a.pre_release == b.pre_release &&
+		a.red_band == b.red_band &&
+		a.chain == b.chain &&
+		a.two_d_version_of_three_d == b.two_d_version_of_three_d &&
+		a.mastered_luminance == b.mastered_luminance;
+}

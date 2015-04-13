@@ -71,10 +71,7 @@ public:
 			table->Add (s, 0);
 		}
 
-		std::vector<T> current = _get ();
-		for (typename std::vector<T>::iterator i = current.begin (); i != current.end(); ++i) {
-			add_to_control (*i);
-		}
+		refresh ();
 
 		_add->Bind (wxEVT_COMMAND_BUTTON_CLICKED, boost::bind (&EditableList::add_clicked, this));
 		_copy->Bind (wxEVT_COMMAND_BUTTON_CLICKED, boost::bind (&EditableList::copy_clicked, this));
@@ -86,6 +83,16 @@ public:
 		_list->Bind (wxEVT_SIZE, boost::bind (&EditableList::resized, this, _1));
 		selection_changed ();
 
+	}
+
+	void refresh ()
+	{
+		_list->DeleteAllItems ();
+		
+		std::vector<T> current = _get ();
+		for (typename std::vector<T>::iterator i = current.begin (); i != current.end(); ++i) {
+			add_to_control (*i);
+		}
 	}
 
 private:	
