@@ -40,7 +40,9 @@ private:
 	void changed ();
 	void changed (wxSpinCtrlDouble *);
 	void chromaticity_changed ();
+	void adjusted_white_changed ();
 	void update_rgb_to_xyz ();
+	void update_bradford ();
 	void subhead (wxGridBagSizer* sizer, wxWindow* parent, wxString text, int& row) const;
 
 	void set_spin_ctrl (wxSpinCtrlDouble *, double);
@@ -58,7 +60,11 @@ private:
 	wxTextCtrl* _blue_y;
 	wxTextCtrl* _white_x;
 	wxTextCtrl* _white_y;
+	wxCheckBox* _adjust_white;
+	wxTextCtrl* _adjusted_white_x;
+	wxTextCtrl* _adjusted_white_y;
 	wxStaticText* _rgb_to_xyz[3][3];
+	wxStaticText* _bradford[3][3];
 	wxSpinCtrlDouble* _output_gamma;
 };
 

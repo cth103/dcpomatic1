@@ -84,9 +84,12 @@ public:
 	Chromaticity green;
 	Chromaticity blue;
 	Chromaticity white;
+	/** White point that we are adjusting to using a Bradford matrix */
+	boost::optional<Chromaticity> adjusted_white;
 	double output_gamma;
 
 	boost::numeric::ublas::matrix<double> rgb_to_xyz () const;
+	boost::numeric::ublas::matrix<double> bradford () const;
 };
 
 class PresetColourConversion

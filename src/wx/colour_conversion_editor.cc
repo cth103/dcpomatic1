@@ -43,6 +43,8 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 
 	int r = 0;
 
+	/* Input gamma */
+
 	subhead (table, this, _("Input gamma correction"), r);
 
 	add_label_to_grid_bag_sizer (table, this, _("Input gamma"), true, wxGBPosition (r, 0));
@@ -53,6 +55,8 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 	_input_gamma_linearised = new wxCheckBox (this, wxID_ANY, _("Linearise input gamma curve for low values"));
 	table->Add (_input_gamma_linearised, wxGBPosition (r, 0), wxGBSpan (1, 3));
 	++r;
+
+	/* Validator and size for numeric input */
 
         wxClientDC dc (parent);
         wxSize size = dc.GetTextExtent (wxT ("-0.123456"));
@@ -68,6 +72,8 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 
         validator.SetIncludes (list);
 
+	/* YUV to RGB conversion */
+
 	subhead (table, this, _("YUV to RGB conversion"), r);
 	
 	add_label_to_grid_bag_sizer (table, this, _("YUV to RGB matrix"), true, wxGBPosition (r, 0));
@@ -76,6 +82,8 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 	_yuv_to_rgb->Append (_("Rec. 709"));
 	table->Add (_yuv_to_rgb, wxGBPosition (r, 1));
 	++r;
+
+	/* RGB to XYZ conversion */
 
 	subhead (table, this, _("RGB to XYZ conversion"), r);
 
@@ -115,14 +123,46 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
         size = dc.GetTextExtent (wxT ("0.12345678"));
         size.SetHeight (-1);
 	
-	wxFlexGridSizer* matrix_sizer = new wxFlexGridSizer (3, DCPOMATIC_SIZER_X_GAP, DCPOMATIC_SIZER_Y_GAP);
+	wxFlexGridSizer* rgb_to_xyz_sizer = new wxFlexGridSizer (3, DCPOMATIC_SIZER_X_GAP, DCPOMATIC_SIZER_Y_GAP);
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
 			_rgb_to_xyz[i][j] = new wxStaticText (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0);
-			matrix_sizer->Add (_rgb_to_xyz[i][j]);
+			rgb_to_xyz_sizer->Add (_rgb_to_xyz[i][j]);
 		}
 	}
-	table->Add (matrix_sizer, wxGBPosition (r - 4, 3), wxGBSpan (4, 1));
+	table->Add (rgb_to_xyz_sizer, wxGBPosition (r - 4, 3), wxGBSpan (4, 1));
+
+	/* White point adjustment */
+
+        size = dc.GetTextExtent (wxT ("-0.123456"));
+        size.SetHeight (-1);
+	
+	subhead (table, this, _("White point adjustment"), r);
+
+	_adjust_white = new wxCheckBox (this, wxID_ANY, _("Adjust white point to"));
+	table->Add (_adjust_white, wxGBPosition (r, 0));
+	_adjusted_white_x = new wxTextCtrl (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0, validator);
+	table->Add (_adjusted_white_x, wxGBPosition (r, 1));
+	_adjusted_white_y = new wxTextCtrl (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0, validator);
+	table->Add (_adjusted_white_y, wxGBPosition (r, 2));
+	++r;
+
+	add_label_to_grid_bag_sizer (table, this, wxT (""), false, wxGBPosition (r, 0));
+	++r;
+
+        size = dc.GetTextExtent (wxT ("0.12345678"));
+        size.SetHeight (-1);
+	
+	wxFlexGridSizer* bradford_sizer = new wxFlexGridSizer (3, DCPOMATIC_SIZER_X_GAP, DCPOMATIC_SIZER_Y_GAP);
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			_bradford[i][j] = new wxStaticText (this, wxID_ANY, wxT (""), wxDefaultPosition, size, 0);
+			bradford_sizer->Add (_bradford[i][j]);
+		}
+	}
+	table->Add (bradford_sizer, wxGBPosition (r - 2, 3), wxGBSpan (2, 1));
+
+	/* Output gamma correction */
 
 	subhead (table, this, _("Output gamma correction"), r);
 
@@ -153,6 +193,9 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 	_blue_y->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::chromaticity_changed, this));
 	_white_x->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::chromaticity_changed, this));
 	_white_y->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::chromaticity_changed, this));
+	_adjust_white->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&ColourConversionEditor::adjusted_white_changed, this));
+	_adjusted_white_x->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::adjusted_white_changed, this));
+	_adjusted_white_y->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ColourConversionEditor::adjusted_white_changed, this));
 	_yuv_to_rgb->Bind (wxEVT_COMMAND_CHOICE_SELECTED, boost::bind (&ColourConversionEditor::changed, this));
 	_output_gamma->Bind (wxEVT_COMMAND_SPINCTRLDOUBLE_UPDATED, boost::bind (&ColourConversionEditor::changed, this, _output_gamma));
 }
@@ -208,7 +251,20 @@ ColourConversionEditor::set (ColourConversion conversion)
 	s << conversion.white.y;
 	_white_y->SetValue (std_to_wx (s.str ()));
 
+	if (conversion.adjusted_white) {
+		_adjust_white->SetValue (true);
+		s.str ("");
+		s << conversion.adjusted_white.get().x;
+		_adjusted_white_x->SetValue (std_to_wx (s.str ()));
+		s.str ("");
+		s << conversion.adjusted_white.get().y;
+		_adjusted_white_y->SetValue (std_to_wx (s.str ()));
+	} else {
+		_adjust_white->SetValue (false);
+	}
+
 	update_rgb_to_xyz ();
+	update_bradford ();
 	set_spin_ctrl (_output_gamma, conversion.output_gamma);
 }
 
@@ -230,6 +286,15 @@ ColourConversionEditor::get () const
 	conversion.white.x = raw_convert<double> (wx_to_std (_white_x->GetValue ()));
 	conversion.white.y = raw_convert<double> (wx_to_std (_white_y->GetValue ()));
 
+	if (_adjust_white->GetValue ()) {
+		conversion.adjusted_white = Chromaticity (
+			raw_convert<double> (wx_to_std (_adjusted_white_x->GetValue ())),
+			raw_convert<double> (wx_to_std (_adjusted_white_y->GetValue ()))
+			);
+	} else {
+		conversion.adjusted_white = boost::optional<Chromaticity> ();
+	}
+
 	conversion.output_gamma = _output_gamma->GetValue ();
 
 	return conversion;
@@ -249,15 +314,38 @@ ColourConversionEditor::chromaticity_changed ()
 }
 
 void
-ColourConversionEditor::update_rgb_to_xyz ()
+ColourConversionEditor::adjusted_white_changed ()
 {
-	ColourConversion conversion = get ();
+	update_bradford ();
+}
+
+void
+ColourConversionEditor::update_bradford ()
+{
+	_adjusted_white_x->Enable (_adjust_white->GetValue ());
+	_adjusted_white_y->Enable (_adjust_white->GetValue ());
+	
+	boost::numeric::ublas::matrix<double> m = get().bradford ();
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
 			SafeStringStream s;
 			s.setf (std::ios::fixed, std::ios::floatfield);
 			s.precision (7);
-			boost::numeric::ublas::matrix<double> m = conversion.rgb_to_xyz ();
+			s << m (i, j);
+			_bradford[i][j]->SetLabel (std_to_wx (s.str ()));
+		}
+	}
+}
+
+void
+ColourConversionEditor::update_rgb_to_xyz ()
+{
+	boost::numeric::ublas::matrix<double> m = get().rgb_to_xyz ();
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			SafeStringStream s;
+			s.setf (std::ios::fixed, std::ios::floatfield);
+			s.precision (7);
 			s << m (i, j);
 			_rgb_to_xyz[i][j]->SetLabel (std_to_wx (s.str ()));
 		}

@@ -192,6 +192,64 @@ ColourConversion::rgb_to_xyz () const
 	return C;
 }
 
+boost::numeric::ublas::matrix<double>
+ColourConversion::bradford () const
+{
+	if (!adjusted_white || fabs (adjusted_white.get().x) < 1e-6 || fabs (adjusted_white.get().y) < 1e-6) {
+		boost::numeric::ublas::matrix<double> B = boost::numeric::ublas::zero_matrix<double> (3, 3);
+		B(0, 0) = 1;
+		B(1, 1) = 1;
+		B(2, 2) = 1;
+		return B;
+	}
+
+	/* See doc/design/colour.tex */
+
+	boost::numeric::ublas::matrix<double> M (3, 3);
+	M(0, 0) = 0.8951;
+	M(0, 1) = 0.2664;
+	M(0, 2) = -0.1614;
+	M(1, 0) = -0.7502;
+	M(1, 1) = 1.7135;
+	M(1, 2) = 0.0367;
+	M(2, 0) = 0.0389;
+	M(2, 1) = -0.0685;
+	M(2, 2) = 1.0296;
+
+	boost::numeric::ublas::matrix<double> Mi (3, 3);
+	Mi(0, 0) = 0.9869929055;
+	Mi(0, 1) = -0.1470542564;
+	Mi(0, 2) = 0.1599626517;
+	Mi(1, 0) = 0.4323052697;
+	Mi(1, 1) = 0.5183602715;
+	Mi(1, 2) = 0.0492912282;
+	Mi(2, 0) = -0.0085286646;
+	Mi(2, 1) = 0.0400428217;
+	Mi(2, 2) = 0.9684866958;
+
+	boost::numeric::ublas::matrix<double> Gp (3, 1);
+	Gp(0, 0) = white.x / white.y;
+	Gp(1, 0) = 1;
+	Gp(2, 0) = (1 - white.x - white.y) / white.y;
+
+	boost::numeric::ublas::matrix<double> G = boost::numeric::ublas::prod (M, Gp);
+
+	boost::numeric::ublas::matrix<double> Hp (3, 1);
+	Hp(0, 0) = adjusted_white.get().x / adjusted_white.get().y;
+	Hp(1, 0) = 1;
+	Hp(2, 0) = (1 - adjusted_white.get().x - adjusted_white.get().y) / adjusted_white.get().y;
+
+	boost::numeric::ublas::matrix<double> H = boost::numeric::ublas::prod (M, Hp);
+
+	boost::numeric::ublas::matrix<double> C = boost::numeric::ublas::zero_matrix<double> (3, 3);
+	C(0, 0) = H(0, 0) / G(0, 0);
+	C(1, 1) = H(1, 0) / G(1, 0);
+	C(2, 2) = H(2, 0) / G(2, 0);
+
+	boost::numeric::ublas::matrix<double> CM = boost::numeric::ublas::prod (C, M);
+	return boost::numeric::ublas::prod (Mi, CM);
+}
+
 PresetColourConversion::PresetColourConversion ()
 	: name (_("Untitled"))
 {

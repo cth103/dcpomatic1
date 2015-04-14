@@ -121,11 +121,21 @@ DCPVideoFrame::encode_locally ()
 		
 		/* XXX: libdcp should probably use boost */
 
-		boost::numeric::ublas::matrix<double> boost = conversion.rgb_to_xyz ();
+		boost::numeric::ublas::matrix<double> A = conversion.rgb_to_xyz ();
+		
 		double rgb_to_xyz[3][3];
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
-				rgb_to_xyz[i][j] = boost (i, j);
+				rgb_to_xyz[i][j] = A (i, j);
+			}
+		}
+
+		boost::numeric::ublas::matrix<double> B = conversion.bradford ();
+
+		double bradford[3][3];
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				bradford[i][j] = B (i, j);
 			}
 		}
 		
@@ -133,7 +143,8 @@ DCPVideoFrame::encode_locally ()
 			_frame->image(AV_PIX_FMT_RGB48LE),
 			in_lut,
 			libdcp::GammaLUT::cache.get (16, 1 / conversion.output_gamma),
-			rgb_to_xyz
+			rgb_to_xyz,
+			bradford
 			);
 	} else {
 		xyz = libdcp::xyz_to_xyz (_frame->image (AV_PIX_FMT_RGB48LE));
