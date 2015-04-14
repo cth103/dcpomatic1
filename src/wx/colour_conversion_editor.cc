@@ -81,6 +81,7 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 
 	add_label_to_grid_bag_sizer (table, this, _("x"), false, wxGBPosition (r, 1));
 	add_label_to_grid_bag_sizer (table, this, _("y"), false, wxGBPosition (r, 2));
+	add_label_to_grid_bag_sizer (table, this, _("Matrix"), false, wxGBPosition (r, 3));
 	++r;
 
 	add_label_to_grid_bag_sizer (table, this, _("Red chromaticity"), true, wxGBPosition (r, 0));
@@ -114,7 +115,6 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
         size = dc.GetTextExtent (wxT ("0.12345678"));
         size.SetHeight (-1);
 	
-	add_label_to_grid_bag_sizer (table, this, _("RGB to XYZ matrix"), true, wxGBPosition (r, 0));
 	wxFlexGridSizer* matrix_sizer = new wxFlexGridSizer (3, DCPOMATIC_SIZER_X_GAP, DCPOMATIC_SIZER_Y_GAP);
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
@@ -122,8 +122,7 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 			matrix_sizer->Add (_rgb_to_xyz[i][j]);
 		}
 	}
-	table->Add (matrix_sizer, wxGBPosition (r, 1), wxGBSpan (1, 2));
-	++r;
+	table->Add (matrix_sizer, wxGBPosition (r - 4, 3), wxGBSpan (4, 1));
 
 	subhead (table, this, _("Output gamma correction"), r);
 
