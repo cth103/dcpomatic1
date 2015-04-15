@@ -118,6 +118,8 @@ private:
 	void active_jobs_changed (bool);
 	void config_changed ();
 
+	void add_files (std::list<std::string> paths);
+
 	FilmEditorPanel* _video_panel;
 	FilmEditorPanel* _audio_panel;
 	FilmEditorPanel* _subtitle_panel;

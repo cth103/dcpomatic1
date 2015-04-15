@@ -57,6 +57,8 @@
 #include "video_panel.h"
 #include "image_sequence_dialog.h"
 
+#include "lib/image_filename_sorter.cc"
+
 using std::string;
 using std::cout;
 using std::pair;
@@ -829,19 +831,34 @@ FilmEditor::content_add_file_clicked ()
 
 	wxArrayString paths;
 	d->GetPaths (paths);
+	list<string> path_list;
+	for (unsigned int i = 0; i < paths.GetCount(); i++) {
+		path_list.push_back (wx_to_std (paths[i]));
+	}
+	add_files (path_list);
+
+	d->Destroy ();
+}
+
+void
+FilmEditor::add_files (list<string> path_list)
+{
+	/* It has been reported that the paths returned from e.g. wxFileDialog are not always sorted;
+	   I can't reproduce that, but sort them anyway.
+	*/
+	
+	path_list.sort (ImageFilenameSorter ());
 
 	/* XXX: check for lots of files here and do something */
 
-	for (unsigned int i = 0; i < paths.GetCount(); ++i) {
-		shared_ptr<Content> c = content_factory (_film, wx_to_std (paths[i]));
+	for (list<string>::const_iterator i = path_list.begin(); i != path_list.end(); ++i) {
+		shared_ptr<Content> c = content_factory (_film, *i);
 		shared_ptr<ImageContent> ic = dynamic_pointer_cast<ImageContent> (c);
 		if (ic) {
 			ic->set_video_frame_rate (24);
 		}
 		_film->examine_and_add_content (c);
 	}
-
-	d->Destroy ();
 }
 
 void
@@ -1105,14 +1122,12 @@ FilmEditor::content_files_dropped (wxDropFilesEvent& event)
 	}
 	
 	wxString* paths = event.GetFiles ();
+	list<string> path_list;
 	for (int i = 0; i < event.GetNumberOfFiles(); i++) {
-		shared_ptr<Content> c = content_factory (_film, wx_to_std (paths[i]));
-		shared_ptr<ImageContent> ic = dynamic_pointer_cast<ImageContent> (c);
-		if (ic) {
-			ic->set_video_frame_rate (24);
-		}
-		_film->examine_and_add_content (c);
+		path_list.push_back (wx_to_std (paths[i]));
 	}
+
+	add_files (path_list);				     
 }
 
 void

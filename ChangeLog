@@ -1,5 +1,8 @@
 2015-04-15  c.hetherington  <cth@carlh.net>
 
+	* Sort filenames when they are imported with "add files" or
+	drag-and-drop.
+
 	* Fix incorrect import of files with drag-and-drop.
 
 2015-04-14  Carl Hetherington  <cth@carlh.net>
