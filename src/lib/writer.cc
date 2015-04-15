@@ -179,6 +179,10 @@ Writer::fake_write (int frame, Eyes eyes)
 	}
 	
 	FILE* ifi = fopen_boost (_film->info_path (frame, eyes), "r");
+	if (!ifi) {
+		throw ReadFileError (_film->info_path (frame, eyes));
+	}
+	
 	libdcp::FrameInfo info (ifi);
 	fclose (ifi);
 	
