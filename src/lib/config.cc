@@ -119,7 +119,7 @@ Config::set_defaults ()
 			)
 		);
 	
-	reset_kdm_email ();
+	set_kdm_email_to_default ();
 }
 
 void
@@ -395,7 +395,7 @@ Config::changed ()
 }
 
 void
-Config::reset_kdm_email ()
+Config::set_kdm_email_to_default ()
 {
 	_kdm_email = _(
 		"Dear Projectionist\n\n"
@@ -405,6 +405,12 @@ Config::reset_kdm_email ()
 		"The KDMs are valid from $START_TIME until $END_TIME.\n\n"
 		"Best regards,\nDCP-o-matic"
 		);
+}	
+
+void
+Config::reset_kdm_email ()
+{
+	set_kdm_email_to_default ();
 	changed ();
 }
 

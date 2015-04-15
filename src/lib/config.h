@@ -381,6 +381,7 @@ private:
 	void read ();
 	void write () const;
 	void set_defaults ();
+	void set_kdm_email_to_default ();
 	
 	template<class T>
 	void maybe_set (T& member, T new_value) {
