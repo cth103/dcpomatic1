@@ -1106,7 +1106,12 @@ FilmEditor::content_files_dropped (wxDropFilesEvent& event)
 	
 	wxString* paths = event.GetFiles ();
 	for (int i = 0; i < event.GetNumberOfFiles(); i++) {
-		_film->examine_and_add_content (content_factory (_film, wx_to_std (paths[i])));
+		shared_ptr<Content> c = content_factory (_film, wx_to_std (paths[i]));
+		shared_ptr<ImageContent> ic = dynamic_pointer_cast<ImageContent> (c);
+		if (ic) {
+			ic->set_video_frame_rate (24);
+		}
+		_film->examine_and_add_content (c);
 	}
 }
 

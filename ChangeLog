@@ -1,3 +1,7 @@
+2015-04-15  c.hetherington  <cth@carlh.net>
+
+	* Fix incorrect import of files with drag-and-drop.
+
 2015-04-14  Carl Hetherington  <cth@carlh.net>
 
 	* Allow adjustment of white point using a Bradford matrix.
