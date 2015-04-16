@@ -20,7 +20,7 @@
 #include <iomanip>
 #include <libcxml/cxml.h>
 #include <libdcp/colour_matrix.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "video_content.h"
 #include "video_examiner.h"
 #include "compose.hpp"
@@ -54,7 +54,6 @@ using std::scientific;
 using boost::shared_ptr;
 using boost::optional;
 using boost::dynamic_pointer_cast;
-using libdcp::raw_convert;
 
 VideoContent::VideoContent (shared_ptr<const Film> f)
 	: Content (f)

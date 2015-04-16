@@ -19,7 +19,7 @@
 
 #include <libxml++/libxml++.h>
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "types.h"
 #include "util.h"
 
@@ -27,7 +27,6 @@ using std::max;
 using std::min;
 using std::string;
 using boost::shared_ptr;
-using libdcp::raw_convert;
 
 bool operator== (Crop const & a, Crop const & b)
 {

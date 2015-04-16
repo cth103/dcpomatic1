@@ -18,7 +18,7 @@
 */
 
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "audio_content.h"
 #include "analyse_audio_job.h"
 #include "job_manager.h"
@@ -37,7 +37,6 @@ using std::setprecision;
 using std::stringstream;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
-using libdcp::raw_convert;
 
 int const AudioContentProperty::AUDIO_CHANNELS = 200;
 int const AudioContentProperty::AUDIO_LENGTH = 201;

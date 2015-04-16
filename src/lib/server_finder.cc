@@ -18,7 +18,7 @@
 */
 
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "server_finder.h"
 #include "exceptions.h"
 #include "util.h"
@@ -34,7 +34,6 @@ using std::vector;
 using std::cout;
 using boost::shared_ptr;
 using boost::scoped_array;
-using libdcp::raw_convert;
 
 ServerFinder* ServerFinder::_instance = 0;
 

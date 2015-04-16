@@ -19,14 +19,13 @@
 
 #include <iostream>
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "isdcf_metadata.h"
 
 #include "i18n.h"
 
 using std::string;
 using boost::shared_ptr;
-using libdcp::raw_convert;
 
 ISDCFMetadata::ISDCFMetadata (shared_ptr<const cxml::Node> node)
 {

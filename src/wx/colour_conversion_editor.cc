@@ -20,7 +20,7 @@
 #include <boost/lexical_cast.hpp>
 #include <wx/spinctrl.h>
 #include <wx/gbsizer.h>
-#include <libdcp/raw_convert.h>
+#include "lib/raw_convert.h"
 #include "lib/colour_conversion.h"
 #include "lib/safe_stringstream.h"
 #include "wx_util.h"
@@ -28,7 +28,6 @@
 
 using std::string;
 using std::cout;
-using libdcp::raw_convert;
 using boost::shared_ptr;
 using boost::lexical_cast;
 

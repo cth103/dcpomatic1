@@ -20,7 +20,7 @@
 #include <iostream>
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 
 class ImageFilenameSorter
 {
@@ -70,6 +70,6 @@ private:
 			return boost::optional<int> ();
 		}
 
-		return libdcp::raw_convert<int> (longest);
+		return raw_convert<int> (longest);
 	}
 };

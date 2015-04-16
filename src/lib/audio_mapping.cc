@@ -19,7 +19,7 @@
 
 #include <libxml++/libxml++.h>
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "audio_mapping.h"
 #include "util.h"
 #include "md5_digester.h"
@@ -32,7 +32,6 @@ using std::min;
 using std::abs;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
-using libdcp::raw_convert;
 
 AudioMapping::AudioMapping ()
 	: _content_channels (0)

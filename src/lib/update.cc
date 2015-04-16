@@ -21,7 +21,7 @@
 #include <boost/algorithm/string.hpp>
 #include <curl/curl.h>
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "update.h"
 #include "version.h"
 #include "ui_signaller.h"
@@ -35,7 +35,6 @@ using std::cout;
 using std::min;
 using std::string;
 using std::vector;
-using libdcp::raw_convert;
 using boost::is_any_of;
 using boost::algorithm::ends_with;
 

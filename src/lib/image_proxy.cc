@@ -19,7 +19,7 @@
 
 #include <Magick++.h>
 #include <libdcp/util.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "image_proxy.h"
 #include "image.h"
 #include "exceptions.h"
@@ -68,9 +68,9 @@ void
 RawImageProxy::add_metadata (xmlpp::Node* node) const
 {
 	node->add_child("Type")->add_child_text (N_("Raw"));
-	node->add_child("Width")->add_child_text (libdcp::raw_convert<string> (_image->size().width));
-	node->add_child("Height")->add_child_text (libdcp::raw_convert<string> (_image->size().height));
-	node->add_child("PixelFormat")->add_child_text (libdcp::raw_convert<string> (_image->pixel_format ()));
+	node->add_child("Width")->add_child_text (raw_convert<string> (_image->size().width));
+	node->add_child("Height")->add_child_text (raw_convert<string> (_image->size().height));
+	node->add_child("PixelFormat")->add_child_text (raw_convert<string> (_image->pixel_format ()));
 }
 
 void

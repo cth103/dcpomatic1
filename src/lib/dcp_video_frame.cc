@@ -47,8 +47,8 @@
 #include <libdcp/xyz_frame.h>
 #include <libdcp/rgb_xyz.h>
 #include <libdcp/colour_matrix.h>
-#include <libdcp/raw_convert.h>
 #include <libcxml/cxml.h>
+#include "raw_convert.h"
 #include "film.h"
 #include "dcp_video_frame.h"
 #include "config.h"
@@ -69,7 +69,6 @@ using std::string;
 using std::cout;
 using boost::shared_ptr;
 using libdcp::Size;
-using libdcp::raw_convert;
 
 #define DCI_COEFFICENT (48.0 / 52.37)
 

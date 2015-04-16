@@ -17,11 +17,9 @@
 
 */
 
-#include <libdcp/raw_convert.h>
+#include "lib/raw_convert.h"
 #include "wx_util.h"
 #include "image_sequence_dialog.h"
-
-using libdcp::raw_convert;
 
 ImageSequenceDialog::ImageSequenceDialog (wxWindow* parent)
 	: TableDialog (parent, _("Add image sequence"), 2, true)

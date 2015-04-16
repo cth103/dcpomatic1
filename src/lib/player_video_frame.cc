@@ -17,7 +17,7 @@
 
 */
 
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "player_video_frame.h"
 #include "image.h"
 #include "image_proxy.h"
@@ -26,7 +26,6 @@
 using std::string;
 using std::cout;
 using boost::shared_ptr;
-using libdcp::raw_convert;
 
 PlayerVideoFrame::PlayerVideoFrame (
 	shared_ptr<const ImageProxy> in,

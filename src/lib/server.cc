@@ -28,7 +28,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/scoped_array.hpp>
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "server.h"
 #include "util.h"
 #include "scaler.h"
@@ -62,7 +62,6 @@ using boost::bind;
 using boost::scoped_array;
 using boost::optional;
 using libdcp::Size;
-using libdcp::raw_convert;
 
 Server::Server (shared_ptr<Log> log, bool verbose)
 	: _log (log)

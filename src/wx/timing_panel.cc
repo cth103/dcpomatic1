@@ -17,7 +17,7 @@
 
 */
 
-#include <libdcp/raw_convert.h>
+#include "lib/raw_convert.h"
 #include "lib/content.h"
 #include "lib/image_content.h"
 #include "timing_panel.h"
@@ -30,7 +30,6 @@ using std::string;
 using std::set;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
-using libdcp::raw_convert;
 
 TimingPanel::TimingPanel (FilmEditor* e)
 	/* horrid hack for apparent lack of context support with wxWidgets i18n code */

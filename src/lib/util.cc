@@ -55,7 +55,6 @@
 #include <libdcp/util.h>
 #include <libdcp/signer_chain.h>
 #include <libdcp/signer.h>
-#include <libdcp/raw_convert.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -63,6 +62,7 @@ extern "C" {
 #include <libavfilter/avfiltergraph.h>
 #include <libavutil/pixfmt.h>
 }
+#include "raw_convert.h"
 #include "util.h"
 #include "exceptions.h"
 #include "scaler.h"
@@ -103,7 +103,6 @@ using boost::shared_ptr;
 using boost::thread;
 using boost::optional;
 using libdcp::Size;
-using libdcp::raw_convert;
 
 /** Path to our executable, required by the stacktrace stuff and filled
  *  in during App::onInit().

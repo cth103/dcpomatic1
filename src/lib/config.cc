@@ -23,8 +23,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include <libdcp/colour_matrix.h>
-#include <libdcp/raw_convert.h>
 #include <libcxml/cxml.h>
+#include "raw_convert.h"
 #include "config.h"
 #include "server.h"
 #include "scaler.h"
@@ -52,7 +52,6 @@ using boost::optional;
 using boost::algorithm::is_any_of;
 using boost::algorithm::split;
 using boost::algorithm::trim;
-using libdcp::raw_convert;
 
 Config* Config::_instance = 0;
 

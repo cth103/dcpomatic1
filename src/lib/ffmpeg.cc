@@ -23,7 +23,7 @@ extern "C" {
 #include <libswscale/swscale.h>
 #include <libavutil/opt.h>
 }
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "ffmpeg.h"
 #include "ffmpeg_content.h"
 #include "exceptions.h"
@@ -35,7 +35,6 @@ using std::string;
 using std::cout;
 using std::set;
 using boost::shared_ptr;
-using libdcp::raw_convert;
 
 boost::mutex FFmpeg::_mutex;
 

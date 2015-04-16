@@ -19,8 +19,8 @@
 
 #include <libxml++/libxml++.h>
 #include <libdcp/colour_matrix.h>
-#include <libdcp/raw_convert.h>
 #include <libcxml/cxml.h>
+#include "raw_convert.h"
 #include "config.h"
 #include "colour_conversion.h"
 #include "util.h"
@@ -34,7 +34,6 @@ using std::cout;
 using std::vector;
 using boost::shared_ptr;
 using boost::optional;
-using libdcp::raw_convert;
 
 ColourConversion::ColourConversion ()
 	: input_gamma (2.4)
