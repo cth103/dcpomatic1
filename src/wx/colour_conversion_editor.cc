@@ -58,7 +58,7 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 	/* Validator and size for numeric input */
 
         wxClientDC dc (parent);
-        wxSize size = dc.GetTextExtent (wxT ("-0.123456"));
+        wxSize size = dc.GetTextExtent (wxT ("-0.12345678"));
         size.SetHeight (-1);
 
         wxTextValidator validator (wxFILTER_INCLUDE_CHAR_LIST);
@@ -217,7 +217,7 @@ ColourConversionEditor::set (ColourConversion conversion)
 
 	SafeStringStream s;
 	s.setf (std::ios::fixed, std::ios::floatfield);
-	s.precision (4);
+	s.precision (6);
 
 	s << conversion.red.x;
 	_red_x->SetValue (std_to_wx (s.str ()));

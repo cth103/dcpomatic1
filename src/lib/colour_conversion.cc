@@ -134,7 +134,7 @@ ColourConversion::preset () const
 {
 	vector<PresetColourConversion> presets = Config::instance()->colour_conversions ();
 	size_t i = 0;
-	while (i < presets.size() && (presets[i].conversion != *this)) {
+	while (i < presets.size() && presets[i].conversion != *this) {
 		++i;
 	}
 
@@ -303,7 +303,20 @@ operator== (ColourConversion const & a, ColourConversion const & b)
 		return false;
 	}
 
-	return true;
+	if (!a.adjusted_white && !b.adjusted_white) {
+		return true;
+	}
+
+	if (
+		a.adjusted_white && b.adjusted_white &&
+		about_equal (a.adjusted_white.get().x, b.adjusted_white.get().x) &&
+		about_equal (a.adjusted_white.get().y, b.adjusted_white.get().y)
+		) {
+		return true;
+	}
+
+	/* Otherwise one has an adjusted white and the other hasn't, or they both have but different */
+	return false;
 }
 
 bool
