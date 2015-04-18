@@ -84,9 +84,6 @@ Writer::Writer (shared_ptr<const Film> f, weak_ptr<Job> j)
 	shared_ptr<Job> job = _job.lock ();
 	DCPOMATIC_ASSERT (job);
 
-	job->sub (_("Checking existing image data"));
-	check_existing_picture_mxf ();
-
 	/* Create our picture asset in a subdirectory, named according to those
 	   film's parameters which affect the video output.  We will hard-link
 	   it into the DCP later.
@@ -97,6 +94,9 @@ Writer::Writer (shared_ptr<const Film> f, weak_ptr<Job> j)
 	} else {
 		_picture_asset.reset (new libdcp::MonoPictureAsset (_film->internal_video_mxf_dir (), _film->internal_video_mxf_filename ()));
 	}
+
+	job->sub (_("Checking existing image data"));
+	check_existing_picture_mxf ();
 
 	_picture_asset->set_edit_rate (_film->video_frame_rate ());
 	_picture_asset->set_size (_film->frame_size ());
@@ -443,10 +443,8 @@ Writer::finish ()
 	/* Hard-link the video MXF into the DCP */
 	LOG_GENERAL_NC (N_("Hard-linking video MXF into DCP"));
 	
-	boost::filesystem::path video_from;
-	video_from /= _film->internal_video_mxf_dir();
-	video_from /= _film->internal_video_mxf_filename();
-	
+	boost::filesystem::path video_from = _picture_asset->path ();
+
 	boost::filesystem::path video_to;
 	video_to /= _film->dir (_film->dcp_name());
 	video_to /= _film->video_mxf_filename ();
@@ -597,12 +595,9 @@ void
 Writer::check_existing_picture_mxf ()
 {
 	/* Try to open the existing MXF */
-	boost::filesystem::path p;
-	p /= _film->internal_video_mxf_dir ();
-	p /= _film->internal_video_mxf_filename ();
-	FILE* mxf = fopen_boost (p, "rb");
+	FILE* mxf = fopen_boost (_picture_asset->path(), "rb");
 	if (!mxf) {
-		LOG_GENERAL ("Could not open existing MXF at %1 (errno=%2)", p.string(), errno);
+		LOG_GENERAL ("Could not open existing MXF at %1 (errno=%2)", _picture_asset->path().string(), errno);
 		return;
 	}
 
