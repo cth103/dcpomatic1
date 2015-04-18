@@ -267,6 +267,8 @@ FilmEditor::connect_to_widgets ()
 	_encrypted->Bind        (wxEVT_COMMAND_CHECKBOX_CLICKED,      boost::bind (&FilmEditor::encrypted_toggled, this));
 	_audio_channels->Bind	(wxEVT_COMMAND_CHOICE_SELECTED,       boost::bind (&FilmEditor::audio_channels_changed, this));
 	_j2k_bandwidth->Bind	(wxEVT_COMMAND_SPINCTRL_UPDATED,      boost::bind (&FilmEditor::j2k_bandwidth_changed, this));
+	/* Also listen to wxEVT_COMMAND_TEXT_UPDATED so that typing numbers directly in is always noticed */
+	_j2k_bandwidth->Bind	(wxEVT_COMMAND_TEXT_UPDATED,          boost::bind (&FilmEditor::j2k_bandwidth_changed, this));
 	_resolution->Bind       (wxEVT_COMMAND_CHOICE_SELECTED,       boost::bind (&FilmEditor::resolution_changed, this));
 	_three_d->Bind	 	(wxEVT_COMMAND_CHECKBOX_CLICKED,      boost::bind (&FilmEditor::three_d_changed, this));
 	_standard->Bind         (wxEVT_COMMAND_CHOICE_SELECTED,       boost::bind (&FilmEditor::standard_changed, this));

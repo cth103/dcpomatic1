@@ -1,3 +1,9 @@
+2015-04-18  Carl Hetherington  <cth@carlh.net>
+
+	* Attempt to fix confusion with the JPEG2000 bandwidth
+	control when a user enters a value directly rather than
+	using the spin arrows.
+
 2015-04-17  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.78.4 released.
