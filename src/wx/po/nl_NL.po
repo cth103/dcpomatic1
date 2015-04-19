@@ -208,7 +208,7 @@ msgid ""
 "%.1fdB."
 msgstr ""
 "Audio wordt doorgestuurd van content kanaal %d naar DCP kanaal %d met gain "
-"%1fdB."
+"%.1fdB."
 
 #: src/wx/config_dialog.cc:731
 msgid "BCC address"

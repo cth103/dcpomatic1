@@ -763,7 +763,7 @@ msgstr "sous-titres non-bitmap non supportés actuellement"
 
 #: src/lib/video_content.cc:474
 msgid "pixel aspect ratio"
-msgstr "format d'image de %1"
+msgstr "format d'image"
 
 #. / TRANSLATORS: remaining here follows an amount of time that is remaining
 #. / on an operation.

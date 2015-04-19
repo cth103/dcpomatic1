@@ -142,7 +142,7 @@ msgstr "Buscar actualizaciones"
 
 #: src/tools/dcpomatic.cc:792 src/tools/dcpomatic_batch.cc:238
 msgid "Could not load film %1 (%2)"
-msgstr "No se pudo cargar la película %s (%s)"
+msgstr "No se pudo cargar la película %1 (%2)"
 
 #: src/tools/dcpomatic.cc:410
 #, c-format

@@ -664,7 +664,7 @@ msgstr "no s puedo mover el audio MXF en el DCP (%1)"
 #: src/lib/sndfile_decoder.cc:56
 #, fuzzy
 msgid "could not open audio file for reading (%1)"
-msgstr "no se pudo abrir el fichero de audio para lectura"
+msgstr "no se pudo abrir el fichero de audio para lectura (%1)"
 
 #: src/lib/exceptions.cc:29
 msgid "could not open file %1"
@@ -688,7 +688,7 @@ msgstr "no se pudo ejecutar el conversor de velocidad"
 
 #: src/lib/resampler.cc:79
 msgid "could not run sample-rate converter for %1 samples (%2) (%3)"
-msgstr "no se pudo ejecutar el conversor de velocidad"
+msgstr "no se pudo ejecutar el conversor de velocidad (%1) (%2) (%3)"
 
 #: src/lib/scp_dcp_job.cc:88
 msgid "could not start SCP session (%1)"
@@ -700,7 +700,7 @@ msgstr "no se pudo abrir la sesión SSH"
 
 #: src/lib/exceptions.cc:48
 msgid "could not write to file %1 (%2)"
-msgstr "No se pudo escribir en el fichero (%1)"
+msgstr "No se pudo escribir en el fichero %1 (%2)"
 
 #: src/lib/util.cc:667
 msgid "error during async_accept (%1)"

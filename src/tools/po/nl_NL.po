@@ -103,7 +103,7 @@ msgid ""
 "\n"
 "Please report this problem to the DCP-o-matic author (carl@dcpomatic.com)."
 msgstr ""
-"Een ongekende fout is opgetreden. AUB meld deze aan de maker van DCP-o-matic "
+"Een ongekende fout is opgetreden (%s: %s). AUB meld deze aan de maker van DCP-o-matic "
 "(carl@dcpomatic.com)."
 
 #: src/tools/dcpomatic.cc:855
@@ -113,7 +113,7 @@ msgid ""
 "\n"
 "Please report this problem to the DCP-o-matic author (carl@dcpomatic.com)."
 msgstr ""
-"Een ongekende fout is opgetreden. AUB meld deze aan de maker van DCP-o-matic "
+"Een ongekende fout is opgetreden (%s). AUB meld deze aan de maker van DCP-o-matic "
 "(carl@dcpomatic.com)."
 
 #: src/tools/dcpomatic.cc:439
@@ -148,12 +148,12 @@ msgstr "Kan film niet openen %1 (%2)"
 #: src/tools/dcpomatic.cc:410
 #, fuzzy, c-format
 msgid "Could not make DCP: %s"
-msgstr "Kan film niet openen in  %s (%s)"
+msgstr "Kan film niet openen: %s"
 
 #: src/tools/dcpomatic.cc:263 src/tools/dcpomatic_batch.cc:175
 #, c-format
 msgid "Could not open film at %s (%s)"
-msgstr "Kan film niet openen in  %s (%s)"
+msgstr "Kan film niet openen in %s (%s)"
 
 #: src/tools/dcpomatic.cc:496
 msgid "Could not show DCP"

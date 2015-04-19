@@ -60,7 +60,7 @@ msgstr "Errore durante l'elaborazione del file %1."
 #: src/lib/analyse_audio_job.cc:54
 #, fuzzy
 msgid "Analyse audio"
-msgstr "Analizzo l'audio di %1"
+msgstr "Analizzo l'audio"
 
 #: src/lib/scaler.cc:64
 msgid "Area"
@@ -221,7 +221,7 @@ msgstr "Non posso aprire %1 da inviare"
 #: src/lib/internet.cc:77
 #, fuzzy
 msgid "Could not open downloaded ZIP file"
-msgstr "non riesco ad aprire %1"
+msgstr "non riesco ad aprire"
 
 #: src/lib/scp_dcp_job.cc:153
 msgid "Could not start SCP session (%1)"
@@ -679,7 +679,7 @@ msgstr ""
 #: src/lib/sndfile_decoder.cc:56
 #, fuzzy
 msgid "could not open audio file for reading (%1)"
-msgstr "non riesco ad aprire il file in lettura"
+msgstr "non riesco ad aprire il file in lettura (%1)"
 
 #: src/lib/exceptions.cc:29
 msgid "could not open file %1"
@@ -705,7 +705,7 @@ msgstr "non riesco a eseguire il convertitore della frequenza di campionamento"
 #: src/lib/resampler.cc:79
 #, fuzzy
 msgid "could not run sample-rate converter for %1 samples (%2) (%3)"
-msgstr "non riesco a eseguire il convertitore della frequenza di campionamento"
+msgstr "non riesco a eseguire il convertitore della frequenza di campionamento (%1) (%2) (%3)"
 
 #: src/lib/scp_dcp_job.cc:88
 msgid "could not start SCP session (%1)"
@@ -717,7 +717,7 @@ msgstr "non posso avviare la sessione SSH"
 
 #: src/lib/exceptions.cc:48
 msgid "could not write to file %1 (%2)"
-msgstr "non posso scrivere il file (%1)"
+msgstr "non posso scrivere il file %1 (%2)"
 
 #: src/lib/util.cc:667
 msgid "error during async_accept (%1)"
