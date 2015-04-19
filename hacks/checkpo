@@ -1,0 +1,70 @@
+#!/usr/bin/python
+#
+# Read .po files and print out any messages
+# whose translations don't have the same specifiers
+# as the original string.
+
+import sys
+import os
+
+def get_specifiers(x):
+    specs = []
+    for i in range(0, len(x)):
+        if x[i] == '%' and len(x) > (i + 1):
+            specs.append(x[i] + x[i + 1])
+
+    return specs
+
+def check_message(k, v):
+    if get_specifiers(k) != get_specifiers(v) and v != '':
+        print "K: %s" % k
+        print "V: %s" % v
+
+def check_file(name):
+    f = open(name)
+    msgid = None
+    msgstr = None
+    while True:
+        l = f.readline()
+        if l == '':
+            break
+
+        l = l.strip()
+
+        # print "LINE: `%s`" % l
+
+        if l.startswith('#'):
+            continue
+
+        if len(l) == 0:
+            if msgid is not None and msgstr is not None and len(msgid) > 0:
+                check_message(msgid, msgstr)
+                msgid = None
+                msgstr = None
+            continue
+        
+        if l.startswith('msgid'):
+            msgid = l[7:-1]
+        elif l.startswith('msgstr'):
+            msgstr = l[8:-1]
+        elif msgstr is not None:
+            msgstr += l[1:-1]
+        else:
+            msgid += l[1:-1]
+
+    if msgid is not None and msgstr is not None:
+        check_message(msgid, msgstr)
+        msgid = None
+        msgstr = None
+
+def check_dir(dir):
+    for f in os.listdir(dir):
+        if f.endswith('.po'):
+            print '\n%s/%s:' % (dir, f)
+            check_file(os.path.join(dir, f))
+
+#check_dir('.')
+check_dir('src/lib/po')
+check_dir('src/wx/po')
+check_dir('src/tools/po')
+
