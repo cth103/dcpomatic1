@@ -1,5 +1,9 @@
 2015-04-20  Carl Hetherington  <cth@carlh.net>
 
+	* Version 1.78.6 released.
+
+2015-04-20  Carl Hetherington  <cth@carlh.net>
+
 	* Use a single binary file for keeping frame information
 	rather than a file per frame (#444).
 
