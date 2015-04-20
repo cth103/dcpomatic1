@@ -566,8 +566,6 @@ Writer::check_existing_picture_mxf_frame (FILE* mxf, int f, Eyes eyes)
 	libdcp::FrameInfo info = read_frame_info (file, f, eyes);
 	fclose (file);
 
-	cout << info.offset << " " << info.size << " " << info.hash << "\n";
-	
 	/* Read the data from the MXF and hash it */
 	dcpomatic_fseek (mxf, info.offset, SEEK_SET);
 	EncodedData data (info.size);
@@ -580,7 +578,6 @@ Writer::check_existing_picture_mxf_frame (FILE* mxf, int f, Eyes eyes)
 	MD5Digester digester;
 	digester.add (data.data(), data.size());
 	if (digester.get() != info.hash) {
-		cout << "\tHASH IS WRONG.\n";
 		LOG_GENERAL ("Existing frame %1 failed hash check", f);
 		return false;
 	}
