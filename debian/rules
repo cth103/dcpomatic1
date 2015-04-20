@@ -14,7 +14,7 @@
 
 override_dh_auto_configure:
 	LINKFLAGS=$(CDIST_LINKFLAGS) CXXFLAGS="$(CXXFLAGS) $(CDIST_CXXFLAGS)" PKG_CONFIG_PATH=$(CDIST_PKG_CONFIG_PATH) \
-		 ./waf --nocache configure --prefix=/usr --target-debian --enable-debug $(CDIST_EXTRA_CONFIGURE)
+		 ./waf --nocache configure --prefix=/usr --target-debian $(CDIST_ENABLE_DEBUG) $(CDIST_DEBIAN_UNSTABLE)
 
 override_dh_auto_build:
 	./waf --nocache build
@@ -36,4 +36,4 @@ override_dh_auto_install:
 
 .PHONY: override_dh_strip
 override_dh_strip:
-	dh_strip
+	dh_strip $(CDIST_DEBUG_PACKAGE)

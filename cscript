@@ -209,7 +209,10 @@ def package_debian(target, cpu, version):
     target.set('CDIST_CXXFLAGS', target.get('CXXFLAGS'))
     target.set('CDIST_PKG_CONFIG_PATH', target.get('PKG_CONFIG_PATH'))
     if target.version == 'unstable':
-        target.set('CDIST_EXTRA_CONFIGURE', '--debian-unstable')
+        target.set('CDIST_DEBIAN_UNSTABLE', '--debian-unstable')
+    if target.debug:
+        target.set('CDIST_ENABLE_DEBUG', '--enable-debug')
+        target.set('CDIST_DEBUG_PACKAGE', '--dbg-package=dcpomatic-dbg')
     target.command('dpkg-buildpackage -uc -us')
     
     debs = []
