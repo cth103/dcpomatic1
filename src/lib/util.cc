@@ -570,7 +570,7 @@ md5_digest_head_tail (vector<boost::filesystem::path> files, boost::uintmax_t si
 		}
 
 		boost::uintmax_t this_time = min (to_do, boost::filesystem::file_size (files[i]));
-		fseek (f, -this_time, SEEK_END);
+		dcpomatic_fseek (f, -this_time, SEEK_END);
 		fread (p, 1, this_time, f);
 		p += this_time;
 		to_do -= this_time;
@@ -1037,6 +1037,50 @@ divide_with_round (int64_t a, int64_t b)
 	} else {
 		return a / b;
 	}
+}
+
+long
+frame_info_position (int frame, Eyes eyes)
+{
+	static int const info_size = 48;
+	
+	switch (eyes) {
+	case EYES_BOTH:
+		return frame * info_size;
+	case EYES_LEFT:
+		return frame * info_size * 2;
+	case EYES_RIGHT:
+		return frame * info_size * 2 + info_size;
+	default:
+		DCPOMATIC_ASSERT (false);
+	}
+
+	DCPOMATIC_ASSERT (false);
+}
+
+libdcp::FrameInfo
+read_frame_info (FILE* file, int frame, Eyes eyes)
+{
+	libdcp::FrameInfo info;
+	dcpomatic_fseek (file, frame_info_position (frame, eyes), SEEK_SET);
+	fread (&info.offset, sizeof (info.offset), 1, file);
+	fread (&info.size, sizeof (info.size), 1, file);
+	
+	char hash_buffer[33];
+	fread (hash_buffer, 1, 32, file);
+	hash_buffer[32] = '\0';
+	info.hash = hash_buffer;
+
+	return info;
+}
+
+void
+write_frame_info (FILE* file, int frame, Eyes eyes, libdcp::FrameInfo info)
+{
+	dcpomatic_fseek (file, frame_info_position (frame, eyes), SEEK_SET);
+	fwrite (&info.offset, sizeof (info.offset), 1, file);
+	fwrite (&info.size, sizeof (info.size), 1, file);
+	fwrite (info.hash.c_str(), 1, info.hash.size(), file);
 }
 
 ScopedTemporary::ScopedTemporary ()

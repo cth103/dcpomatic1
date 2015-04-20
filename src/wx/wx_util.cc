@@ -119,50 +119,6 @@ std_to_wx (string s)
 	return wxString (s.c_str(), wxConvUTF8);
 }
 
-int const ThreadedStaticText::_update_event_id = 10000;
-
-/** @param parent Parent for the wxStaticText.
- *  @param initial Initial text for the wxStaticText while the computation is being run.
- *  @param fn Function which works out what the wxStaticText content should be and returns it.
- */
-ThreadedStaticText::ThreadedStaticText (wxWindow* parent, wxString initial, function<string ()> fn)
-	: wxStaticText (parent, wxID_ANY, initial)
-{
-	Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ThreadedStaticText::thread_finished, this, _1), _update_event_id);
-	_thread = new thread (bind (&ThreadedStaticText::run, this, fn));
-}
-
-ThreadedStaticText::~ThreadedStaticText ()
-{
-	_thread->interrupt ();
-	_thread->join ();
-	delete _thread;
-}
-
-/** Run our thread and post the result to the GUI thread via AddPendingEvent */
-void
-ThreadedStaticText::run (function<string ()> fn)
-try
-{
-	wxCommandEvent ev (wxEVT_COMMAND_TEXT_UPDATED, _update_event_id);
-	ev.SetString (std_to_wx (fn ()));
-	GetEventHandler()->AddPendingEvent (ev);
-}
-catch (...)
-{
-	/* Ignore exceptions; marginally better than the program quitting, but
-	   only marginally.
-	*/
-}
-
-/** Called in the GUI thread when our worker thread has finished */
-void
-ThreadedStaticText::thread_finished (wxCommandEvent& ev)
-{
-	SetLabel (ev.GetString ());
-	Finished ();
-}
-
 string
 string_client_data (wxClientData* o)
 {

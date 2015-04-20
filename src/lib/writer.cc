@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -178,13 +178,12 @@ Writer::fake_write (int frame, Eyes eyes)
 		_full_condition.wait (lock);
 	}
 	
-	FILE* ifi = fopen_boost (_film->info_path (frame, eyes), "r");
-	if (!ifi) {
-		throw ReadFileError (_film->info_path (frame, eyes));
+	FILE* file = fopen_boost (_film->info_file (), "rb");
+	if (!file) {
+		throw ReadFileError (_film->info_file ());
 	}
-	
-	libdcp::FrameInfo info (ifi);
-	fclose (ifi);
+	libdcp::FrameInfo info = read_frame_info (file, frame, eyes);
+	fclose (file);
 	
 	QueueItem qi;
 	qi.type = QueueItem::FAKE;
@@ -559,18 +558,15 @@ bool
 Writer::check_existing_picture_mxf_frame (FILE* mxf, int f, Eyes eyes)
 {
 	/* Read the frame info as written */
-	FILE* ifi = fopen_boost (_film->info_path (f, eyes), "r");
-	if (!ifi) {
+	FILE* file = fopen_boost (_film->info_file (), "rb");
+	if (!file) {
 		LOG_GENERAL ("Existing frame %1 has no info file", f);
 		return false;
 	}
-	
-	libdcp::FrameInfo info (ifi);
-	fclose (ifi);
-	if (info.size == 0) {
-		LOG_GENERAL ("Existing frame %1 has no info file", f);
-		return false;
-	}
+	libdcp::FrameInfo info = read_frame_info (file, f, eyes);
+	fclose (file);
+
+	cout << info.offset << " " << info.size << " " << info.hash << "\n";
 	
 	/* Read the data from the MXF and hash it */
 	dcpomatic_fseek (mxf, info.offset, SEEK_SET);
@@ -584,6 +580,7 @@ Writer::check_existing_picture_mxf_frame (FILE* mxf, int f, Eyes eyes)
 	MD5Digester digester;
 	digester.add (data.data(), data.size());
 	if (digester.get() != info.hash) {
+		cout << "\tHASH IS WRONG.\n";
 		LOG_GENERAL ("Existing frame %1 failed hash check", f);
 		return false;
 	}
@@ -601,19 +598,12 @@ Writer::check_existing_picture_mxf ()
 		return;
 	}
 
-	int N = 0;
-	for (boost::filesystem::directory_iterator i (_film->info_dir ()); i != boost::filesystem::directory_iterator (); ++i) {
-		++N;
-	}
-
 	while (true) {
 
 		shared_ptr<Job> job = _job.lock ();
 		DCPOMATIC_ASSERT (job);
 
-		if (N > 0) {
-			job->set_progress (float (_first_nonexistant_frame) / N);
-		}
+		job->set_progress_unknown ();
 
 		if (_film->three_d ()) {
 			if (!check_existing_picture_mxf_frame (mxf, _first_nonexistant_frame, EYES_LEFT)) {

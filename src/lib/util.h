@@ -32,6 +32,7 @@
 #include <boost/optional.hpp>
 #include <boost/filesystem.hpp>
 #include <libdcp/util.h>
+#include <libdcp/picture_asset_writer.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavfilter/avfilter.h>
@@ -89,6 +90,8 @@ extern std::string get_optional_string (std::multimap<std::string, std::string> 
 extern void* wrapped_av_malloc (size_t);
 extern int64_t divide_with_round (int64_t a, int64_t b);
 extern void set_backtrace_file (boost::filesystem::path);
+extern libdcp::FrameInfo read_frame_info (FILE* file, int frame, Eyes eyes);
+extern void write_frame_info (FILE* file, int frame, Eyes eyes, libdcp::FrameInfo info);
 
 /** @class Socket
  *  @brief A class to wrap a boost::asio::ip::tcp::socket with some things

@@ -389,15 +389,14 @@ EncodedData::write (shared_ptr<const Film> film, int frame, Eyes eyes) const
 }
 
 void
-EncodedData::write_info (shared_ptr<const Film> film, int frame, Eyes eyes, libdcp::FrameInfo fin) const
+EncodedData::write_info (shared_ptr<const Film> film, int frame, Eyes eyes, libdcp::FrameInfo info) const
 {
-	boost::filesystem::path const info = film->info_path (frame, eyes);
-	FILE* h = fopen_boost (info, "w");
-	if (!h) {
-		throw OpenFileError (info);
+	FILE* file = fopen_boost (film->info_file(), "ab");
+	if (!file) {
+		throw OpenFileError (film->info_file ());
 	}
-	fin.write (h);
-	fclose (h);
+	write_frame_info (file, frame, eyes, info);
+	fclose (file);
 }
 
 /** Send this data to a socket.
