@@ -279,7 +279,7 @@ FFmpegContent::audio_channels () const
 		return 0;
 	}
 
-	return _audio_stream->channels;
+	return _audio_stream->channels ();
 }
 
 int
@@ -291,7 +291,7 @@ FFmpegContent::content_audio_frame_rate () const
 		return 0;
 	}
 
-	return _audio_stream->frame_rate;
+	return _audio_stream->frame_rate ();
 }
 
 bool
@@ -322,10 +322,8 @@ FFmpegStream::as_xml (xmlpp::Node* root) const
 
 FFmpegAudioStream::FFmpegAudioStream (shared_ptr<const cxml::Node> node, int version)
 	: FFmpegStream (node)
-	, mapping (node->node_child ("Mapping"), version)
+	, AudioStream (node->number_child<int> ("FrameRate"), AudioMapping (node->node_child ("Mapping"), version))
 {
-	frame_rate = node->number_child<int> ("FrameRate");
-	channels = node->number_child<int64_t> ("Channels");
 	first_audio = node->optional_number_child<double> ("FirstAudio");
 }
 
@@ -333,12 +331,11 @@ void
 FFmpegAudioStream::as_xml (xmlpp::Node* root) const
 {
 	FFmpegStream::as_xml (root);
-	root->add_child("FrameRate")->add_child_text (raw_convert<string> (frame_rate));
-	root->add_child("Channels")->add_child_text (raw_convert<string> (channels));
+	root->add_child("FrameRate")->add_child_text (raw_convert<string> (frame_rate ()));
+	mapping().as_xml (root->add_child("Mapping"));
 	if (first_audio) {
 		root->add_child("FirstAudio")->add_child_text (raw_convert<string> (first_audio.get ()));
 	}
-	mapping.as_xml (root->add_child("Mapping"));
 }
 
 bool
@@ -405,7 +402,7 @@ FFmpegContent::audio_mapping () const
 		return AudioMapping ();
 	}
 
-	return _audio_stream->mapping;
+	return _audio_stream->mapping ();
 }
 
 void
@@ -422,7 +419,7 @@ FFmpegContent::set_filters (vector<Filter const *> const & filters)
 void
 FFmpegContent::set_audio_mapping (AudioMapping m)
 {
-	audio_stream()->mapping = m;
+	audio_stream()->set_mapping (m);
 	signal_changed (AudioContentProperty::AUDIO_MAPPING);
 }
 

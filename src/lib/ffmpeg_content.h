@@ -25,6 +25,7 @@
 #include "audio_content.h"
 #include "subtitle_content.h"
 #include "audio_mapping.h"
+#include "audio_stream.h"
 
 struct AVFormatContext;
 struct AVStream;
@@ -68,25 +69,18 @@ private:
 	int _id;
 };
 
-class FFmpegAudioStream : public FFmpegStream
+class FFmpegAudioStream : public FFmpegStream, public AudioStream
 {
 public:
-	FFmpegAudioStream (std::string n, int i, int f, int c)
+	FFmpegAudioStream (std::string n, int i, int frame_rate, int channels)
 		: FFmpegStream (n, i)
-		, frame_rate (f)
-		, channels (c)
-		, mapping (c)
-	{
-		mapping.make_default ();
-	}
+		, AudioStream (frame_rate, channels)
+	{}
 
 	FFmpegAudioStream (boost::shared_ptr<const cxml::Node>, int);
 
 	void as_xml (xmlpp::Node *) const;
 
-	int frame_rate;
-	int channels;
-	AudioMapping mapping;
 	boost::optional<double> first_audio;
 
 private:
@@ -95,9 +89,7 @@ private:
 	/* Constructor for tests */
 	FFmpegAudioStream ()
 		: FFmpegStream ("", 0)
-		, frame_rate (0)
-		, channels (0)
-		, mapping (1)
+		, AudioStream (0, 0)
 	{}
 };
 
