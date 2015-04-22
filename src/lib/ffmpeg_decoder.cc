@@ -25,6 +25,7 @@
 #include <vector>
 #include <iomanip>
 #include <iostream>
+#include <boost/foreach.hpp>
 #include <stdint.h>
 #include <sndfile.h>
 extern "C" {
@@ -57,6 +58,7 @@ using std::vector;
 using std::list;
 using std::min;
 using std::pair;
+using std::max;
 using boost::shared_ptr;
 using boost::optional;
 using boost::dynamic_pointer_cast;
@@ -92,16 +94,20 @@ FFmpegDecoder::FFmpegDecoder (shared_ptr<const Film> f, shared_ptr<const FFmpegC
 	     video_pts_to_use = video_pts_from_ffmpeg + pts_offset;
 	*/
 
-	bool const have_video = video && c->first_video();
-	bool const have_audio = audio && c->audio_stream() && c->audio_stream()->first_audio;
-
 	/* First, make one of them start at 0 */
-	if (have_audio && have_video) {
-		_pts_offset = - min (c->first_video().get(), c->audio_stream()->first_audio.get());
-	} else if (have_video) {
-		_pts_offset = - c->first_video().get();
-	} else if (have_audio) {
-		_pts_offset = - c->audio_stream()->first_audio.get();
+
+	vector<shared_ptr<FFmpegAudioStream> > streams = c->audio_streams ();
+
+	_pts_offset = -DBL_MAX;
+
+	if (video && c->first_video ()) {
+		_pts_offset = - c->first_video().get ();
+	}
+
+	BOOST_FOREACH (shared_ptr<FFmpegAudioStream> i, streams) {
+		if (i->first_audio) {
+			_pts_offset = max (_pts_offset, - i->first_audio.get ());
+		}
 	}
 
 	/* If _pts_offset is positive we would be pushing things from a -ve PTS to be played.
@@ -112,8 +118,8 @@ FFmpegDecoder::FFmpegDecoder (shared_ptr<const Film> f, shared_ptr<const FFmpegC
 		_pts_offset = 0;
 	}
 
-	/* Now adjust both so that the video pts starts on a frame */
-	if (have_video && have_audio) {
+	/* Now adjust so that the video pts starts on a frame */
+	if (video && c->first_video ()) {
 		double first_video = c->first_video().get() + _pts_offset;
 		double const old_first_video = first_video;
 		
@@ -149,7 +155,7 @@ FFmpegDecoder::flush ()
 		while (decode_video_packet ()) {}
 	}
 	
-	if (_ffmpeg_content->audio_stream() && _decode_audio) {
+	if (_decode_audio) {
 		decode_audio_packet ();
 	}
 
@@ -187,7 +193,7 @@ FFmpegDecoder::pass ()
 	
 	if (si == _video_stream && _decode_video) {
 		decode_video_packet ();
-	} else if (_ffmpeg_content->audio_stream() && _ffmpeg_content->audio_stream()->uses_index (_format_context, si) && _decode_audio) {
+	} else if (_decode_audio) {
 		decode_audio_packet ();
 	} else if (_ffmpeg_content->subtitle_stream() && _ffmpeg_content->subtitle_stream()->uses_index (_format_context, si) && film->with_subtitles ()) {
 		decode_subtitle_packet ();
@@ -200,21 +206,21 @@ FFmpegDecoder::pass ()
  *  Only the first buffer will be used for non-planar data, otherwise there will be one per channel.
  */
 shared_ptr<AudioBuffers>
-FFmpegDecoder::deinterleave_audio (uint8_t** data, int size)
+FFmpegDecoder::deinterleave_audio (shared_ptr<const FFmpegAudioStream> stream, uint8_t** data, int size)
 {
 	DCPOMATIC_ASSERT (_ffmpeg_content->audio_channels());
-	DCPOMATIC_ASSERT (bytes_per_audio_sample());
+	DCPOMATIC_ASSERT (bytes_per_audio_sample (stream));
 
 	/* Deinterleave and convert to float */
 
 	/* total_samples and frames will be rounded down here, so if there are stray samples at the end
 	   of the block that do not form a complete sample or frame they will be dropped.
 	*/
-	int const total_samples = size / bytes_per_audio_sample();
+	int const total_samples = size / bytes_per_audio_sample (stream);
 	int const frames = total_samples / _ffmpeg_content->audio_channels();
 	shared_ptr<AudioBuffers> audio (new AudioBuffers (_ffmpeg_content->audio_channels(), frames));
 
-	switch (audio_sample_format()) {
+	switch (audio_sample_format (stream)) {
 	case AV_SAMPLE_FMT_U8:
 	{
 		uint8_t* p = reinterpret_cast<uint8_t *> (data[0]);
@@ -304,26 +310,22 @@ FFmpegDecoder::deinterleave_audio (uint8_t** data, int size)
 	break;
 
 	default:
-		throw DecodeError (String::compose (_("Unrecognised audio sample format (%1)"), static_cast<int> (audio_sample_format())));
+		throw DecodeError (String::compose (_("Unrecognised audio sample format (%1)"), static_cast<int> (audio_sample_format (stream))));
 	}
 
 	return audio;
 }
 
 AVSampleFormat
-FFmpegDecoder::audio_sample_format () const
+FFmpegDecoder::audio_sample_format (shared_ptr<const FFmpegAudioStream> stream) const
 {
-	if (!_ffmpeg_content->audio_stream()) {
-		return (AVSampleFormat) 0;
-	}
-	
-	return audio_codec_context()->sample_fmt;
+	return stream->stream (_format_context)->codec->sample_fmt;
 }
 
 int
-FFmpegDecoder::bytes_per_audio_sample () const
+FFmpegDecoder::bytes_per_audio_sample (shared_ptr<const FFmpegAudioStream> stream) const
 {
-	return av_get_bytes_per_sample (audio_sample_format ());
+	return av_get_bytes_per_sample (audio_sample_format (stream));
 }
 
 void
@@ -446,7 +448,14 @@ FFmpegDecoder::decode_audio_packet ()
 	
 	AVPacket copy_packet = _packet;
 
-	AudioStreamPtr stream = ffmpeg_content()->audio_stream ();
+	/* BXXX: inefficient */
+	vector<shared_ptr<FFmpegAudioStream> > streams = ffmpeg_content()->audio_streams ();
+	vector<shared_ptr<FFmpegAudioStream> >::const_iterator stream = streams.begin ();
+	while (stream != streams.end () && (*stream)->uses_index (_format_context, copy_packet.stream_index)) {
+		++stream;
+	}
+
+	DCPOMATIC_ASSERT (stream != streams.end ());
 
 	/* This is just for LOG_WARNING */
 	shared_ptr<const Film> film = _film.lock ();
@@ -454,7 +463,7 @@ FFmpegDecoder::decode_audio_packet ()
 	while (copy_packet.size > 0) {
 
 		int frame_finished;
-		int decode_result = avcodec_decode_audio4 (audio_codec_context(), _frame, &frame_finished, &copy_packet);
+		int decode_result = avcodec_decode_audio4 ((*stream)->stream (_format_context)->codec, _frame, &frame_finished, &copy_packet);
 		if (decode_result < 0) {
 			/* avcodec_decode_audio4 can sometimes return an error even though it has decoded
 			   some valid data; for example dca_subframe_footer can return AVERROR_INVALIDDATA
@@ -485,26 +494,26 @@ FFmpegDecoder::decode_audio_packet ()
 
 				if (pts > 0) {
 					/* Emit some silence */
-					int64_t frames = pts * _ffmpeg_content->content_audio_frame_rate ();
+					int64_t frames = pts * (*stream)->frame_rate ();
 					while (frames > 0) {
-						int64_t const this_time = min (frames, (int64_t) _ffmpeg_content->content_audio_frame_rate() / 2);
+						int64_t const this_time = min (frames, (int64_t) (*stream)->frame_rate() / 2);
 						
 						shared_ptr<AudioBuffers> silence (
 							new AudioBuffers (_ffmpeg_content->audio_channels(), this_time)
 							);
 					
 						silence->make_silent ();
-						audio (silence, stream, _audio_position);
+						audio (silence, *stream, _audio_position);
 						frames -= this_time;
 					}
 				}
 			}
 			
 			int const data_size = av_samples_get_buffer_size (
-				0, audio_codec_context()->channels, _frame->nb_samples, audio_sample_format (), 1
+				0, (*stream)->stream(_format_context)->codec->channels, _frame->nb_samples, audio_sample_format (*stream), 1
 				);
 
-			audio (deinterleave_audio (_frame->data, data_size), stream, _audio_position);
+			audio (deinterleave_audio (*stream, _frame->data, data_size), *stream, _audio_position);
 		}
 			
 		copy_packet.data += decode_result;
@@ -643,7 +652,7 @@ FFmpegDecoder::done () const
 	bool const vd = !_decode_video ||
 		((vp - _ffmpeg_content->trim_start()) >= _ffmpeg_content->length_after_trim ());
 	
-	bool const ad = !_decode_audio || !_ffmpeg_content->audio_stream() ||
+	bool const ad = !_decode_audio ||
 		((ap - _ffmpeg_content->trim_start()) >= _ffmpeg_content->length_after_trim ());
 
 	return vd && ad;

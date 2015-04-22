@@ -40,17 +40,13 @@ public:
 private:
 	void gain_calculate_button_clicked ();
 	void show_clicked ();
-	void stream_changed ();
 	void mapping_changed (AudioMapping);
 	void setup_description ();
-	void setup_stream_description ();
 
 	ContentSpinCtrlDouble<AudioContent>* _gain;
 	wxButton* _gain_calculate_button;
 	wxButton* _show;
 	ContentSpinCtrl<AudioContent>* _delay;
-	wxChoice* _stream;
-	wxStaticText* _stream_description;
 	AudioMappingView* _mapping;
 	wxStaticText* _description;
 	AudioDialog* _audio_dialog;

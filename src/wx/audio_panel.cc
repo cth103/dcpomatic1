@@ -80,12 +80,6 @@ AudioPanel::AudioPanel (FilmEditor* e)
 	add_label_to_grid_bag_sizer (grid, this, _("ms"), false, wxGBPosition (r, 2));
 	++r;
 
-	add_label_to_grid_bag_sizer (grid, this, _("Stream"), true, wxGBPosition (r, 0));
-	_stream = new wxChoice (this, wxID_ANY);
-	grid->Add (_stream, wxGBPosition (r, 1));
-	_stream_description = add_label_to_grid_bag_sizer (grid, this, "", false, wxGBPosition (r, 3));
-	++r;
-	
 	_mapping = new AudioMappingView (this);
 	_sizer->Add (_mapping, 1, wxEXPAND | wxALL, 6);
 	++r;
@@ -103,7 +97,6 @@ AudioPanel::AudioPanel (FilmEditor* e)
 	_gain->wrapped()->SetIncrement (0.5);
 	_delay->wrapped()->SetRange (-1000, 1000);
 
-	_stream->Bind                (wxEVT_COMMAND_CHOICE_SELECTED,  boost::bind (&AudioPanel::stream_changed, this));
 	_show->Bind                  (wxEVT_COMMAND_BUTTON_CLICKED,   boost::bind (&AudioPanel::show_clicked, this));
 	_gain_calculate_button->Bind (wxEVT_COMMAND_BUTTON_CLICKED,   boost::bind (&AudioPanel::gain_calculate_button_clicked, this));
 
@@ -143,25 +136,8 @@ AudioPanel::film_content_changed (int property)
 		_sizer->Layout ();
 	} else if (property == AudioContentProperty::AUDIO_FRAME_RATE) {
 		setup_description ();
-	} else if (property == FFmpegContentProperty::AUDIO_STREAM) {
-		setup_stream_description ();
-		_mapping->set (acs ? acs->audio_mapping () : AudioMapping ());
-		_sizer->Layout ();
 	} else if (property == FFmpegContentProperty::AUDIO_STREAMS) {
-		if (fcs) {
-			vector<pair<string, string> > data;
-			BOOST_FOREACH (shared_ptr<FFmpegAudioStream> i, fcs->audio_streams ()) {
-				data.push_back (make_pair (i->name, i->identifier ()));
-			}
-			checked_set (_stream, data);
-			
-			if (fcs->audio_stream()) {
-				checked_set (_stream, fcs->audio_stream()->identifier ());
-				setup_stream_description ();
-			}
-		} else {
-			_stream->Clear ();
-		}
+		_mapping->set (acs ? acs->audio_mapping () : AudioMapping ());
 	}
 }
 
@@ -210,34 +186,6 @@ AudioPanel::show_clicked ()
 }
 
 void
-AudioPanel::stream_changed ()
-{
-	FFmpegContentList fc = _editor->selected_ffmpeg_content ();
-	if (fc.size() != 1) {
-		return;
-	}
-
-	shared_ptr<FFmpegContent> fcs = fc.front ();
-	
-	if (_stream->GetSelection() == -1) {
-		return;
-	}
-	
-	vector<shared_ptr<FFmpegAudioStream> > a = fcs->audio_streams ();
-	vector<shared_ptr<FFmpegAudioStream> >::iterator i = a.begin ();
-	string const s = string_client_data (_stream->GetClientObject (_stream->GetSelection ()));
-	while (i != a.end() && (*i)->identifier () != s) {
-		++i;
-	}
-
-	if (i != a.end ()) {
-		fcs->set_audio_stream (*i);
-	}
-
-	setup_stream_description ();
-}
-
-void
 AudioPanel::setup_description ()
 {
 	AudioContentList ac = _editor->selected_audio_content ();
@@ -247,31 +195,6 @@ AudioPanel::setup_description ()
 	}
 
 	_description->SetLabel (std_to_wx (ac.front()->processing_description ()));
-}
-
-void
-AudioPanel::setup_stream_description ()
-{
-	FFmpegContentList fc = _editor->selected_ffmpeg_content ();
-	if (fc.size() != 1) {
-		checked_set (_stream_description, wxT (""));
-		return;
-	}
-
-	shared_ptr<FFmpegContent> fcs = fc.front ();
-
-	if (!fcs->audio_stream ()) {
-		_stream_description->SetLabel (wxT (""));
-	} else {
-		wxString s;
-		if (fcs->audio_channels() == 1) {
-			s << _("1 channel");
-		} else {
-			s << fcs->audio_channels() << wxT (" ") << _("channels");
-		}
-		s << wxT (", ") << fcs->content_audio_frame_rate() << _("Hz");
-		checked_set (_stream_description, s);
-	}
 }
 
 void
@@ -296,11 +219,9 @@ AudioPanel::content_selection_changed ()
 	_delay->set_content (sel);
 
 	_show->Enable (sel.size() == 1);
-	_stream->Enable (sel.size() == 1);
 	_mapping->Enable (sel.size() == 1);
 
 	film_content_changed (AudioContentProperty::AUDIO_MAPPING);
 	film_content_changed (AudioContentProperty::AUDIO_FRAME_RATE);
-	film_content_changed (FFmpegContentProperty::AUDIO_STREAM);
 	film_content_changed (FFmpegContentProperty::AUDIO_STREAMS);
 }

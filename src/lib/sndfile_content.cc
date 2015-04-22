@@ -107,7 +107,8 @@ SndfileContent::as_xml (xmlpp::Node* node) const
 
 	node->add_child("AudioChannels")->add_child_text (raw_convert<string> (audio_channels ()));
 	node->add_child("AudioLength")->add_child_text (raw_convert<string> (audio_length ()));
-	node->add_child("AudioFrameRate")->add_child_text (raw_convert<string> (content_audio_frame_rate ()));
+	/* BXXX: locking of _audio_stream */
+	node->add_child("AudioFrameRate")->add_child_text (raw_convert<string> (_audio_stream->frame_rate ()));
 	audio_mapping().as_xml (node->add_child("AudioMapping"));
 }
 
@@ -117,8 +118,9 @@ SndfileContent::full_length () const
 	shared_ptr<const Film> film = _film.lock ();
 	DCPOMATIC_ASSERT (film);
 
+	/* BXXX: locking of _audio_stream */
 	OutputAudioFrame const len = divide_with_round (
-		audio_length() * output_audio_frame_rate(), content_audio_frame_rate()
+		audio_length() * output_audio_frame_rate(), _audio_stream->frame_rate()
 		);
 	
 	return film->audio_frames_to_time (len);
@@ -141,13 +143,6 @@ SndfileContent::audio_channels () const
 	boost::mutex::scoped_lock lm (_mutex);
 	return _audio_stream->channels ();
 }
-	
-int
-SndfileContent::content_audio_frame_rate () const
-{
-	boost::mutex::scoped_lock lm (_mutex);
-	return _audio_stream->frame_rate ();
-}
 
 AudioMapping
 SndfileContent::audio_mapping () const
@@ -162,3 +157,11 @@ SndfileContent::audio_length () const
 	boost::mutex::scoped_lock lm (_mutex);
 	return _audio_length;
 }
+
+bool
+SndfileContent::has_rate_above_48k () const
+{
+	return _audio_stream->frame_rate() > 48000;
+}
+
+	

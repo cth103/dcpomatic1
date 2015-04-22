@@ -151,8 +151,8 @@ string
 AudioContent::technical_summary () const
 {
 	return String::compose (
-		N_("audio: channels %1, length %2, raw rate %3, out rate %4"),
-		audio_channels(), audio_length(), content_audio_frame_rate(), output_audio_frame_rate()
+		N_("audio: channels %1, length %2, out rate %3"),
+		audio_channels(), audio_length(), output_audio_frame_rate()
 		);
 }
 
@@ -163,7 +163,7 @@ AudioContent::output_audio_frame_rate () const
 	DCPOMATIC_ASSERT (film);
 	
 	/* Resample to a DCI-approved sample rate */
-	double t = dcp_audio_frame_rate (content_audio_frame_rate ());
+	double t = has_rate_above_48k() ? 96000 : 48000;
 
 	FrameRateChange frc = film->active_frame_rate_change (position ());
 
@@ -184,6 +184,8 @@ string
 AudioContent::processing_description () const
 {
 	stringstream d;
+
+	/*
 	
 	if (content_audio_frame_rate() != output_audio_frame_rate ()) {
 		stringstream from;
@@ -195,6 +197,10 @@ AudioContent::processing_description () const
 	} else {
 		d << _("Audio will not be resampled.");
 	}
+
+	*/
+
+	d << "BXXX: this depends on the stream";
 
 	return d.str ();
 }

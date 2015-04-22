@@ -80,7 +80,6 @@ extern boost::shared_ptr<const libdcp::Signer> make_signer ();
 extern libdcp::Size fit_ratio_within (float ratio, libdcp::Size);
 extern std::string entities_to_text (std::string e);
 extern std::map<std::string, std::string> split_get_request (std::string url);
-extern int dcp_audio_frame_rate (int);
 extern int stride_round_up (int, int const *, int);
 extern std::multimap<std::string, std::string> read_key_value (std::istream& s);
 extern int get_required_int (std::multimap<std::string, std::string> const & kv, std::string k);

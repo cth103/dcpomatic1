@@ -218,12 +218,6 @@ FFmpeg::video_codec_context () const
 	return _format_context->streams[_video_stream]->codec;
 }
 
-AVCodecContext *
-FFmpeg::audio_codec_context () const
-{
-	return _ffmpeg_content->audio_stream()->stream(_format_context)->codec;
-}
-
 int
 FFmpeg::avio_read (uint8_t* buffer, int const amount)
 {

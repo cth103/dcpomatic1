@@ -53,10 +53,10 @@ public:
 
 	virtual int audio_channels () const = 0;
 	virtual AudioContent::Frame audio_length () const = 0;
-	virtual int content_audio_frame_rate () const = 0;
 	virtual AudioMapping audio_mapping () const = 0;
 	virtual void set_audio_mapping (AudioMapping) = 0;
 	virtual boost::filesystem::path audio_analysis_path () const;
+	virtual bool has_rate_above_48k () const = 0;
 
 	int output_audio_frame_rate () const;
 	

@@ -47,19 +47,20 @@ public:
 	std::string technical_summary () const;
 	void as_xml (xmlpp::Node *) const;
 	Time full_length () const;
+	bool has_rate_above_48k () const;
 
 	/* AudioContent */
 	int audio_channels () const;
 	AudioContent::Frame audio_length () const;
-	int content_audio_frame_rate () const;
 	AudioMapping audio_mapping () const;
 
 	void set_audio_mapping (AudioMapping);
 
+	/* BXXX: locking of this */
 	AudioStreamPtr audio_stream () const {
 		return _audio_stream;
 	}
-	
+
 	static bool valid_file (boost::filesystem::path);
 
 private:

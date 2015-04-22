@@ -596,9 +596,7 @@ FilmEditor::film_content_changed (int property)
 		(*i)->film_content_changed (property);
 	}
 
-	if (property == FFmpegContentProperty::AUDIO_STREAM) {
-		setup_dcp_name ();
-	} else if (property == ContentProperty::PATH) {
+	if (property == ContentProperty::PATH) {
 		setup_content ();
 	} else if (property == ContentProperty::POSITION) {
 		setup_content ();

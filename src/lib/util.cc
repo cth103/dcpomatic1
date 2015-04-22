@@ -586,19 +586,6 @@ md5_digest_head_tail (vector<boost::filesystem::path> files, boost::uintmax_t si
 	return digester.get ();
 }
 
-/** @param An arbitrary audio frame rate.
- *  @return The appropriate DCP-approved frame rate (48kHz or 96kHz).
- */
-int
-dcp_audio_frame_rate (int fs)
-{
-	if (fs <= 48000) {
-		return 48000;
-	}
-
-	return 96000;
-}
-
 Socket::Socket (int timeout)
 	: _deadline (_io_service)
 	, _socket (_io_service)

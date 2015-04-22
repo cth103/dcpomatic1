@@ -39,6 +39,7 @@ extern "C" {
 
 class Film;
 class FilterGraph;
+class FFmpegAudioStream;
 class ffmpeg_pts_offset_test;
 
 /** @class FFmpegDecoder
@@ -63,15 +64,15 @@ private:
 
 	void setup_subtitle ();
 
-	AVSampleFormat audio_sample_format () const;
-	int bytes_per_audio_sample () const;
+	AVSampleFormat audio_sample_format (boost::shared_ptr<const FFmpegAudioStream> stream) const;
+	int bytes_per_audio_sample (boost::shared_ptr<const FFmpegAudioStream> stream) const;
 
 	bool decode_video_packet ();
 	void decode_audio_packet ();
 	void decode_subtitle_packet ();
 
 	void maybe_add_subtitle ();
-	boost::shared_ptr<AudioBuffers> deinterleave_audio (uint8_t** data, int size);
+	boost::shared_ptr<AudioBuffers> deinterleave_audio (boost::shared_ptr<const FFmpegAudioStream> stream, uint8_t** data, int size);
 
 	AVCodecContext* _subtitle_codec_context; ///< may be 0 if there is no subtitle
 	AVCodec* _subtitle_codec;		 ///< may be 0 if there is no subtitle

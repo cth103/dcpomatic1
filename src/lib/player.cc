@@ -330,7 +330,7 @@ Player::process_audio (
 		}
 		
 		/* Resample */
-		if (content->content_audio_frame_rate() != content->output_audio_frame_rate()) {
+		if (stream->frame_rate() != content->output_audio_frame_rate()) {
 			shared_ptr<Resampler> r = resampler (content, stream, true);
 			pair<shared_ptr<const AudioBuffers>, AudioContent::Frame> ro = r->run (audio, frame);
 			audio = ro.first;
@@ -612,14 +612,14 @@ Player::resampler (shared_ptr<AudioContent> content, AudioStreamPtr stream, bool
 	}
 
 	LOG_GENERAL (
-		"Creating new resampler for %1 to %2 with %3 channels",
-		content->content_audio_frame_rate(),
+		"Creating new resampler from %1 to %2 with %3 channels",
+		stream->frame_rate(),
 		content->output_audio_frame_rate(),
 		content->audio_channels()
 		);
 
 	shared_ptr<Resampler> r (
-		new Resampler (content->content_audio_frame_rate(), content->output_audio_frame_rate(), content->audio_channels())
+		new Resampler (stream->frame_rate(), content->output_audio_frame_rate(), content->audio_channels())
 		);
 	
 	_resamplers[make_pair(content, stream)] = r;
