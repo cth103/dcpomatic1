@@ -377,6 +377,7 @@ public:
 
 private:
 	Config ();
+	boost::filesystem::path base_directory () const;
 	boost::filesystem::path file () const;
 	void read ();
 	void write () const;

@@ -239,16 +239,29 @@ Config::read ()
 	}
 }
 
+boost::filesystem::path
+Config::base_directory () const
+{
+	boost::filesystem::path p;
+#ifdef DCPOMATIC_OSX
+	p /= g_get_home_dir ();
+	p /= "Library";
+	p /= "Preferences";
+	p /= "com.dcpomatic";
+#else	
+	p /= g_get_user_config_dir ();
+	p /= "dcpomatic";
+#endif
+	boost::system::error_code ec;
+	boost::filesystem::create_directories (p, ec);
+	return p;
+}
+
 /** @return Filename to write configuration to */
 boost::filesystem::path
 Config::file () const
 {
-	boost::filesystem::path p;
-	p /= g_get_user_config_dir ();
-	boost::system::error_code ec;
-	boost::filesystem::create_directory (p, ec);
-	p /= "dcpomatic";
-	boost::filesystem::create_directory (p, ec);
+	boost::filesystem::path p = base_directory ();
 	p /= "config.xml";
 	return p;
 }
@@ -256,9 +269,7 @@ Config::file () const
 boost::filesystem::path
 Config::signer_chain_directory () const
 {
-	boost::filesystem::path p;
-	p /= g_get_user_config_dir ();
-	p /= "dcpomatic";
+	boost::filesystem::path p = base_directory ();
 	p /= "crypt";
 	boost::filesystem::create_directories (p);
 	return p;
@@ -359,7 +370,7 @@ Config::write () const
 	} catch (xmlpp::exception& e) {
 		string s = e.what ();
 		trim (s);
-		throw FileError (s, file());
+		std::cerr << "dcpomatic: failed to save configuration (" << s << ")\n";
 	}
 }
 
