@@ -26,6 +26,7 @@
 #include "job.h"
 #include "util.h"
 #include "safe_stringstream.h"
+#include "audio_stream.h"
 
 #include "i18n.h"
 
@@ -36,9 +37,7 @@ using boost::shared_ptr;
 SndfileContent::SndfileContent (shared_ptr<const Film> f, boost::filesystem::path p)
 	: Content (f, p)
 	, AudioContent (f, p)
-	, _audio_channels (0)
 	, _audio_length (0)
-	, _audio_frame_rate (0)
 {
 
 }
@@ -46,11 +45,10 @@ SndfileContent::SndfileContent (shared_ptr<const Film> f, boost::filesystem::pat
 SndfileContent::SndfileContent (shared_ptr<const Film> f, shared_ptr<const cxml::Node> node, int version)
 	: Content (f, node)
 	, AudioContent (f, node)
-	, _audio_mapping (node->node_child ("AudioMapping"), version)
+	, _audio_stream (new AudioStream (node->number_child<int> ("AudioFrameRate"), AudioMapping (node->node_child ("AudioMapping"), version)))
+	, _audio_length (node->number_child<AudioContent::Frame> ("AudioLength"))
 {
-	_audio_channels = node->number_child<int> ("AudioChannels");
-	_audio_length = node->number_child<AudioContent::Frame> ("AudioLength");
-	_audio_frame_rate = node->number_child<int> ("AudioFrameRate");
+	
 }
 
 string
@@ -90,22 +88,13 @@ SndfileContent::examine (shared_ptr<Job> job)
 
 	{
 		boost::mutex::scoped_lock lm (_mutex);
-		_audio_channels = dec.audio_channels ();
 		_audio_length = dec.audio_length ();
-		_audio_frame_rate = dec.audio_frame_rate ();
+		_audio_stream.reset (new AudioStream (dec.audio_length (), dec.audio_channels ()));
 	}
-
+	
 	signal_changed (AudioContentProperty::AUDIO_CHANNELS);
 	signal_changed (AudioContentProperty::AUDIO_LENGTH);
 	signal_changed (AudioContentProperty::AUDIO_FRAME_RATE);
-
-	{
-		boost::mutex::scoped_lock lm (_mutex);
-		/* XXX: do this in signal_changed...? */
-		_audio_mapping = AudioMapping (_audio_channels);
-		_audio_mapping.make_default ();
-	}
-	
 	signal_changed (AudioContentProperty::AUDIO_MAPPING);
 }
 
@@ -119,7 +108,7 @@ SndfileContent::as_xml (xmlpp::Node* node) const
 	node->add_child("AudioChannels")->add_child_text (raw_convert<string> (audio_channels ()));
 	node->add_child("AudioLength")->add_child_text (raw_convert<string> (audio_length ()));
 	node->add_child("AudioFrameRate")->add_child_text (raw_convert<string> (content_audio_frame_rate ()));
-	_audio_mapping.as_xml (node->add_child("AudioMapping"));
+	audio_mapping().as_xml (node->add_child("AudioMapping"));
 }
 
 Time
@@ -140,8 +129,36 @@ SndfileContent::set_audio_mapping (AudioMapping m)
 {
 	{
 		boost::mutex::scoped_lock lm (_mutex);
-		_audio_mapping = m;
+		_audio_stream->set_mapping (m);
 	}
 
 	signal_changed (AudioContentProperty::AUDIO_MAPPING);
+}
+
+int
+SndfileContent::audio_channels () const
+{
+	boost::mutex::scoped_lock lm (_mutex);
+	return _audio_stream->channels ();
+}
+	
+int
+SndfileContent::content_audio_frame_rate () const
+{
+	boost::mutex::scoped_lock lm (_mutex);
+	return _audio_stream->frame_rate ();
+}
+
+AudioMapping
+SndfileContent::audio_mapping () const
+{
+	boost::mutex::scoped_lock lm (_mutex);
+	return _audio_stream->mapping ();
+}
+
+AudioContent::Frame
+SndfileContent::audio_length () const
+{
+	boost::mutex::scoped_lock lm (_mutex);
+	return _audio_length;
 }

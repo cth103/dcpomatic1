@@ -29,6 +29,8 @@ namespace cxml {
 	class Node;
 }
 
+class AudioStream;
+
 class SndfileContent : public AudioContent
 {
 public:
@@ -46,35 +48,18 @@ public:
 	Time full_length () const;
 
 	/* AudioContent */
-	int audio_channels () const {
-		boost::mutex::scoped_lock lm (_mutex);
-		return _audio_channels;
-	}
-	
-	AudioContent::Frame audio_length () const {
-		boost::mutex::scoped_lock lm (_mutex);
-		return _audio_length;
-	}
-	
-	int content_audio_frame_rate () const {
-		boost::mutex::scoped_lock lm (_mutex);
-		return _audio_frame_rate;
-	}
-
-	AudioMapping audio_mapping () const {
-		boost::mutex::scoped_lock lm (_mutex);
-		return _audio_mapping;
-	}
+	int audio_channels () const;
+	AudioContent::Frame audio_length () const;
+	int content_audio_frame_rate () const;
+	AudioMapping audio_mapping () const;
 
 	void set_audio_mapping (AudioMapping);
 	
 	static bool valid_file (boost::filesystem::path);
 
 private:
-	int _audio_channels;
+	boost::shared_ptr<AudioStream> _audio_stream;
 	AudioContent::Frame _audio_length;
-	int _audio_frame_rate;
-	AudioMapping _audio_mapping;
 };
 
 #endif
