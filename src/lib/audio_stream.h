@@ -17,6 +17,9 @@
 
 */
 
+#ifndef DCPOMATIC_AUDIO_STREAM_H
+#define DCPOMATIC_AUDIO_STREAM_H
+
 #include "audio_mapping.h"
 
 class AudioStream
@@ -43,3 +46,7 @@ private:
 	int _frame_rate;
 	AudioMapping _mapping;
 };
+
+typedef boost::shared_ptr<const AudioStream> AudioStreamPtr;
+
+#endif
