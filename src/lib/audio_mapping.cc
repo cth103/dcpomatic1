@@ -56,6 +56,8 @@ AudioMapping::setup (int c)
 	for (int i = 0; i < _content_channels; ++i) {
 		_gain[i].resize (MAX_DCP_AUDIO_CHANNELS);
 	}
+
+	_name.resize (_content_channels);
 }
 
 void
@@ -175,3 +177,8 @@ AudioMapping::unmap_all ()
 	}
 }
 	
+void
+AudioMapping::set_name (int channel, string name)
+{
+	_name[channel] = name;
+}

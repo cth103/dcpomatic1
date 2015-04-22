@@ -360,14 +360,17 @@ FFmpegContent::audio_mapping () const
 	boost::mutex::scoped_lock lm (_mutex);
 
 	int c = 0;
+	int s = 0;
 	BOOST_FOREACH (shared_ptr<FFmpegAudioStream> i, _audio_streams) {
 		AudioMapping mapping = i->mapping ();
 		for (int j = 0; j < mapping.content_channels(); ++j) {
+			merged.set_name (c, String::compose ("%1:%2", s + 1, j + 1));
 			for (int k = 0; k < MAX_DCP_AUDIO_CHANNELS; ++k) {
 				merged.set (c, static_cast<libdcp::Channel> (k), mapping.get (j, static_cast<libdcp::Channel> (k)));
 			}
 			++c;
 		}
+		++s;
 	}
 
 	return merged;

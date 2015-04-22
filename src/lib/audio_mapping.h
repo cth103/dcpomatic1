@@ -58,6 +58,11 @@ public:
 		return _content_channels;
 	}
 
+	void set_name (int channel, std::string name);
+	std::string name (int channel) const {
+		return _name[channel];
+	}
+
 	std::string digest () const;
 
 	std::list<libdcp::Channel> mapped_dcp_channels () const;
@@ -68,6 +73,7 @@ private:
 	
 	int _content_channels;
 	std::vector<std::vector<float> > _gain;
+	std::vector<std::string> _name;
 };
 
 #endif

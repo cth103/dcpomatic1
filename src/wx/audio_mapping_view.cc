@@ -236,7 +236,7 @@ AudioMappingView::update_cells ()
 	}
 	
 	for (int i = 0; i < _map.content_channels(); ++i) {
-		_grid->SetCellValue (i, 0, wxString::Format (wxT("%d"), i + 1));
+		_grid->SetCellValue (i, 0, std_to_wx (_map.name (i)));
 
 		for (int j = 1; j < _grid->GetNumberCols(); ++j) {
 			_grid->SetCellValue (i, j, std_to_wx (raw_convert<string> (_map.get (i, static_cast<libdcp::Channel> (j - 1)))));
