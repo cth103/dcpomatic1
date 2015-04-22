@@ -171,8 +171,8 @@ ColourConversion::identifier () const
 	digester.add (white.y);
 
 	if (adjusted_white) {
-		digester.add (adjusted_white.x);
-		digester.add (adjusted_white.y);
+		digester.add (adjusted_white.get().x);
+		digester.add (adjusted_white.get().y);
 	}
 	
 	digester.add (output_gamma);

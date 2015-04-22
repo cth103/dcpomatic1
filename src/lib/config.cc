@@ -117,6 +117,13 @@ Config::set_defaults ()
 			Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
 			)
 		);
+
+	_colour_conversions.push_back (
+		PresetColourConversion (
+			_("P3 (from SMPTE RP 431-2)"), 2.6, false, YUV_TO_RGB_REC709,
+			Chromaticity (0.68, 0.32), Chromaticity (0.265, 0.69), Chromaticity (0.15, 0.06), Chromaticity (0.314, 0.351), 2.6
+			)
+		);
 	
 	set_kdm_email_to_default ();
 }

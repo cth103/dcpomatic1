@@ -133,7 +133,7 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 
 	/* White point adjustment */
 
-        size = dc.GetTextExtent (wxT ("-0.123456"));
+        size = dc.GetTextExtent (wxT ("-0.12345678"));
         size.SetHeight (-1);
 	
 	subhead (table, this, _("White point adjustment"), r);
