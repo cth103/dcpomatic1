@@ -1,3 +1,9 @@
+2015-04-22  Carl Hetherington  <cth@carlh.net>
+
+	* Use ~/Library/Preferences to store preferences on OS X,
+	and don't give a fatal error if saving configuration fails
+	(#509).
+
 2015-04-20  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.78.6 released.
