@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ using std::max;
 using std::vector;
 using std::pair;
 using std::map;
+using std::make_pair;
 using boost::shared_ptr;
 using boost::weak_ptr;
 using boost::dynamic_pointer_cast;
@@ -155,21 +156,27 @@ Player::pass ()
 			if (earliest->decoder->done()) {
 				shared_ptr<AudioContent> ac = dynamic_pointer_cast<AudioContent> (earliest->content);
 				DCPOMATIC_ASSERT (ac);
-				shared_ptr<Resampler> re = resampler (ac, false);
-				if (re) {
-					LOG_DEBUG("Flushing resampler: earliest->audio_position=%1", earliest->audio_position);
-					shared_ptr<const AudioBuffers> b = re->flush ();
-					if (b->frames ()) {
-						process_audio (
-							earliest,
-							b,
-							_film->time_to_audio_frames (
-								earliest->audio_position +
-								ac->trim_start() -
-								ac->position() -
-								ac->audio_delay() * TIME_HZ / 1000),
-							true
-							);
+				for (
+					map<pair<shared_ptr<AudioContent>, AudioStreamPtr>, shared_ptr<Resampler> >::const_iterator i = _resamplers.begin();
+					i != _resamplers.end();
+					++i) {
+
+					if (i->first.first == ac) {
+						LOG_DEBUG("Flushing resampler: earliest->audio_position=%1", earliest->audio_position);
+						shared_ptr<const AudioBuffers> b = i->second->flush ();
+						if (b->frames ()) {
+							process_audio (
+								earliest,
+								b,
+								i->first.second,
+								_film->time_to_audio_frames (
+									earliest->audio_position +
+									ac->trim_start() -
+									ac->position() -
+									ac->audio_delay() * TIME_HZ / 1000),
+								true
+								);
+						}
 					}
 				}
 			}
@@ -302,7 +309,9 @@ Player::process_video (weak_ptr<Piece> weak_piece, shared_ptr<const ImageProxy> 
  *  @param already_resampled true if this data has already been through the chain up to the resampler.
  */
 void
-Player::process_audio (weak_ptr<Piece> weak_piece, shared_ptr<const AudioBuffers> audio, AudioContent::Frame frame, bool already_resampled)
+Player::process_audio (
+	weak_ptr<Piece> weak_piece, shared_ptr<const AudioBuffers> audio, AudioStreamPtr stream, AudioContent::Frame frame, bool already_resampled
+	)
 {
 	shared_ptr<Piece> piece = weak_piece.lock ();
 	if (!piece) {
@@ -322,7 +331,7 @@ Player::process_audio (weak_ptr<Piece> weak_piece, shared_ptr<const AudioBuffers
 		
 		/* Resample */
 		if (content->content_audio_frame_rate() != content->output_audio_frame_rate()) {
-			shared_ptr<Resampler> r = resampler (content, true);
+			shared_ptr<Resampler> r = resampler (content, stream, true);
 			pair<shared_ptr<const AudioBuffers>, AudioContent::Frame> ro = r->run (audio, frame);
 			audio = ro.first;
 			frame = ro.second;
@@ -469,7 +478,7 @@ Player::setup_pieces ()
 				fd->Video.connect (bind (&Player::process_video, this, weak_ptr<Piece> (piece), _1, _2, _3, _4, _5, 0))
 				);
 			_decoder_connections.push_back (
-				fd->Audio.connect (bind (&Player::process_audio, this, weak_ptr<Piece> (piece), _1, _2, false))
+				fd->Audio.connect (bind (&Player::process_audio, this, weak_ptr<Piece> (piece), _1, _2, _3, false))
 				);
 			_decoder_connections.push_back (
 				fd->Subtitle.connect (bind (&Player::process_subtitle, this, weak_ptr<Piece> (piece), _1, _2, _3, _4))
@@ -505,7 +514,7 @@ Player::setup_pieces ()
 		if (sc) {
 			shared_ptr<AudioDecoder> sd (new SndfileDecoder (_film, sc));
 			_decoder_connections.push_back (
-				sd->Audio.connect (bind (&Player::process_audio, this, weak_ptr<Piece> (piece), _1, _2, false))
+				sd->Audio.connect (bind (&Player::process_audio, this, weak_ptr<Piece> (piece), _1, _2, _3, false))
 				);
 
 			piece->decoder = sd;
@@ -591,9 +600,9 @@ Player::set_video_container_size (libdcp::Size s)
 }
 
 shared_ptr<Resampler>
-Player::resampler (shared_ptr<AudioContent> c, bool create)
+Player::resampler (shared_ptr<AudioContent> content, AudioStreamPtr stream, bool create)
 {
-	map<shared_ptr<AudioContent>, shared_ptr<Resampler> >::iterator i = _resamplers.find (c);
+	map<pair<shared_ptr<AudioContent>, AudioStreamPtr>, shared_ptr<Resampler> >::iterator i = _resamplers.find (make_pair (content, stream));
 	if (i != _resamplers.end ()) {
 		return i->second;
 	}
@@ -603,11 +612,17 @@ Player::resampler (shared_ptr<AudioContent> c, bool create)
 	}
 
 	LOG_GENERAL (
-		"Creating new resampler for %1 to %2 with %3 channels", c->content_audio_frame_rate(), c->output_audio_frame_rate(), c->audio_channels()
+		"Creating new resampler for %1 to %2 with %3 channels",
+		content->content_audio_frame_rate(),
+		content->output_audio_frame_rate(),
+		content->audio_channels()
 		);
 
-	shared_ptr<Resampler> r (new Resampler (c->content_audio_frame_rate(), c->output_audio_frame_rate(), c->audio_channels()));
-	_resamplers[c] = r;
+	shared_ptr<Resampler> r (
+		new Resampler (content->content_audio_frame_rate(), content->output_audio_frame_rate(), content->audio_channels())
+		);
+	
+	_resamplers[make_pair(content, stream)] = r;
 	return r;
 }
 

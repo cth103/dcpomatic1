@@ -24,6 +24,7 @@ extern "C" {
 #include <libavutil/audioconvert.h>
 }
 #include "audio_content.h"
+#include "audio_stream.h"
 
 namespace cxml {
 	class Node;
@@ -54,6 +55,10 @@ public:
 	AudioMapping audio_mapping () const;
 
 	void set_audio_mapping (AudioMapping);
+
+	AudioStreamPtr audio_stream () const {
+		return _audio_stream;
+	}
 	
 	static bool valid_file (boost::filesystem::path);
 

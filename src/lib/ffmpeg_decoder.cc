@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -446,6 +446,8 @@ FFmpegDecoder::decode_audio_packet ()
 	
 	AVPacket copy_packet = _packet;
 
+	AudioStreamPtr stream = ffmpeg_content()->audio_stream ();
+
 	/* This is just for LOG_WARNING */
 	shared_ptr<const Film> film = _film.lock ();
 	
@@ -492,7 +494,7 @@ FFmpegDecoder::decode_audio_packet ()
 							);
 					
 						silence->make_silent ();
-						audio (silence, _audio_position);
+						audio (silence, stream, _audio_position);
 						frames -= this_time;
 					}
 				}
@@ -502,7 +504,7 @@ FFmpegDecoder::decode_audio_packet ()
 				0, audio_codec_context()->channels, _frame->nb_samples, audio_sample_format (), 1
 				);
 
-			audio (deinterleave_audio (_frame->data, data_size), _audio_position);
+			audio (deinterleave_audio (_frame->data, data_size), stream, _audio_position);
 		}
 			
 		copy_packet.data += decode_result;

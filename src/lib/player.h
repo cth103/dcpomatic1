@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -88,7 +88,7 @@ private:
 	friend class Piece;
 
 	void process_video (boost::weak_ptr<Piece>, boost::shared_ptr<const ImageProxy>, Eyes, Part, bool, VideoContent::Frame, Time);
-	void process_audio (boost::weak_ptr<Piece>, boost::shared_ptr<const AudioBuffers>, AudioContent::Frame, bool);
+	void process_audio (boost::weak_ptr<Piece>, boost::shared_ptr<const AudioBuffers>, AudioStreamPtr stream, AudioContent::Frame, bool);
 	void process_subtitle (boost::weak_ptr<Piece>, boost::shared_ptr<Image>, dcpomatic::Rect<double>, Time, Time);
 	void setup_pieces ();
 	void playlist_changed ();
@@ -97,7 +97,7 @@ private:
 	void flush ();
 	void emit_black ();
 	void emit_silence (OutputAudioFrame);
-	boost::shared_ptr<Resampler> resampler (boost::shared_ptr<AudioContent>, bool);
+	boost::shared_ptr<Resampler> resampler (boost::shared_ptr<AudioContent>, AudioStreamPtr stream, bool);
 	void film_changed (Film::Property);
 	void update_subtitle ();
 
@@ -121,7 +121,7 @@ private:
 	/** Size of the image in the DCP (e.g. 1998x1080 for flat) */
 	libdcp::Size _video_container_size;
 	boost::shared_ptr<PlayerVideoFrame> _black_frame;
-	std::map<boost::shared_ptr<AudioContent>, boost::shared_ptr<Resampler> > _resamplers;
+	std::map<std::pair<boost::shared_ptr<AudioContent>, AudioStreamPtr>, boost::shared_ptr<Resampler> > _resamplers;
 
 	std::list<Subtitle> _subtitles;
 

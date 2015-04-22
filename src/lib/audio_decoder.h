@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 #include "decoder.h"
 #include "content.h"
 #include "audio_content.h"
+#include "audio_stream.h"
 
 class AudioBuffers;
 
@@ -41,11 +42,11 @@ public:
 	bool has_audio () const;
 
 	/** Emitted when some audio data is ready */
-	boost::signals2::signal<void (boost::shared_ptr<const AudioBuffers>, AudioContent::Frame)> Audio;
+	boost::signals2::signal<void (boost::shared_ptr<const AudioBuffers>, AudioStreamPtr stream, AudioContent::Frame)> Audio;
 
 protected:
 
-	void audio (boost::shared_ptr<const AudioBuffers>, AudioContent::Frame);
+	void audio (boost::shared_ptr<const AudioBuffers>, AudioStreamPtr stream, AudioContent::Frame);
 	boost::shared_ptr<const AudioContent> _audio_content;
 	AudioContent::Frame _audio_position;
 };

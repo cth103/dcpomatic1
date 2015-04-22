@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -41,9 +41,9 @@ AudioDecoder::AudioDecoder (shared_ptr<const Film> film, shared_ptr<const AudioC
 }
 
 void
-AudioDecoder::audio (shared_ptr<const AudioBuffers> data, AudioContent::Frame frame)
+AudioDecoder::audio (shared_ptr<const AudioBuffers> data, AudioStreamPtr stream, AudioContent::Frame frame)
 {
-	Audio (data, frame);
+	Audio (data, stream, frame);
 	_audio_position = frame + data->frames ();
 }
 

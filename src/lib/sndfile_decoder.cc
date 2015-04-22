@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -101,7 +101,7 @@ SndfileDecoder::pass ()
 	}
 		
 	data->set_frames (this_time);
-	audio (data, _done);
+	audio (data, _sndfile_content->audio_stream(), _done);
 	_done += this_time;
 	_remaining -= this_time;
 }
