@@ -95,6 +95,9 @@ ColourConversion::ColourConversion (cxml::NodePtr node)
 		green = Chromaticity (node->number_child<double> ("GreenX"), node->number_child<double> ("GreenY"));
 		blue = Chromaticity (node->number_child<double> ("BlueX"), node->number_child<double> ("BlueY"));
 		white = Chromaticity (node->number_child<double> ("WhiteX"), node->number_child<double> ("WhiteY"));
+		if (node->optional_node_child ("AdjustedWhiteX")) {
+			adjusted_white = Chromaticity (node->number_child<double> ("AdjustedWhiteX"), node->number_child<double> ("AdjustedWhiteY"));
+		}
 	}
 
 	output_gamma = node->number_child<double> ("OutputGamma");
@@ -125,6 +128,10 @@ ColourConversion::as_xml (xmlpp::Node* node) const
 	node->add_child("BlueY")->add_child_text (raw_convert<string> (blue.y));
 	node->add_child("WhiteX")->add_child_text (raw_convert<string> (white.x));
 	node->add_child("WhiteY")->add_child_text (raw_convert<string> (white.y));
+	if (adjusted_white) {
+		node->add_child("AdjustedWhiteX")->add_child_text (raw_convert<string> (adjusted_white.get().x));
+		node->add_child("AdjustedWhiteY")->add_child_text (raw_convert<string> (adjusted_white.get().y));
+	}
 
 	node->add_child("OutputGamma")->add_child_text (raw_convert<string> (output_gamma));
 }
@@ -163,6 +170,11 @@ ColourConversion::identifier () const
 	digester.add (white.x);
 	digester.add (white.y);
 
+	if (adjusted_white) {
+		digester.add (adjusted_white.x);
+		digester.add (adjusted_white.y);
+	}
+	
 	digester.add (output_gamma);
 	
 	return digester.get ();

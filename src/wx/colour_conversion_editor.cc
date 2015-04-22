@@ -316,6 +316,7 @@ void
 ColourConversionEditor::adjusted_white_changed ()
 {
 	update_bradford ();
+	changed ();
 }
 
 void
