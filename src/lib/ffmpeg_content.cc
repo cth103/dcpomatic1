@@ -181,6 +181,12 @@ FFmpegContent::examine (shared_ptr<Job> job)
 
 	take_from_video_examiner (examiner);
 
+	if (!_audio_streams.empty ()) {
+		AudioMapping m (audio_channels ());
+		m.make_default (_audio_streams.front()->channels ());
+		set_audio_mapping (m);
+	}
+
 	signal_changed (ContentProperty::LENGTH);
 	signal_changed (FFmpegContentProperty::SUBTITLE_STREAMS);
 	signal_changed (FFmpegContentProperty::SUBTITLE_STREAM);
@@ -390,18 +396,20 @@ FFmpegContent::set_filters (vector<Filter const *> const & filters)
 void
 FFmpegContent::set_audio_mapping (AudioMapping mapping)
 {
-	boost::mutex::scoped_lock lm (_mutex);
-
-	int c = 0;
-	BOOST_FOREACH (shared_ptr<FFmpegAudioStream> i, _audio_streams) {
-		AudioMapping stream_mapping (i->channels ());
-		for (int j = 0; j < i->channels(); ++j) {
-			for (int k = 0; k < MAX_DCP_AUDIO_CHANNELS; ++k) {
-				stream_mapping.set (j, static_cast<libdcp::Channel> (k), mapping.get (c, static_cast<libdcp::Channel> (k)));
+	{
+		boost::mutex::scoped_lock lm (_mutex);
+		
+		int c = 0;
+		BOOST_FOREACH (shared_ptr<FFmpegAudioStream> i, _audio_streams) {
+			AudioMapping stream_mapping (i->channels ());
+			for (int j = 0; j < i->channels(); ++j) {
+				for (int k = 0; k < MAX_DCP_AUDIO_CHANNELS; ++k) {
+					stream_mapping.set (j, static_cast<libdcp::Channel> (k), mapping.get (c, static_cast<libdcp::Channel> (k)));
+				}
+				++c;
 			}
-			++c;
+			i->set_mapping (stream_mapping);
 		}
-		i->set_mapping (stream_mapping);
 	}
 		
 	signal_changed (AudioContentProperty::AUDIO_MAPPING);

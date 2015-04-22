@@ -52,7 +52,6 @@ AudioStream::set_channels (int channels)
 {
 	boost::mutex::scoped_lock lm (_mutex);
 	_mapping = AudioMapping (channels);
-	_mapping.make_default ();
 }
 
 int

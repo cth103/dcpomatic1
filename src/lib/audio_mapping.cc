@@ -58,23 +58,32 @@ AudioMapping::setup (int c)
 	}
 
 	_name.resize (_content_channels);
+
+	make_zero ();
 }
 
 void
-AudioMapping::make_default ()
+AudioMapping::make_zero ()
 {
 	for (int i = 0; i < _content_channels; ++i) {
 		for (int j = 0; j < MAX_DCP_AUDIO_CHANNELS; ++j) {
 			_gain[i][j] = 0;
 		}
 	}
+}
 
-	if (_content_channels == 1) {
+/** Set up the default mapping for the first `use' channels of this mapping */
+void
+AudioMapping::make_default (int use)
+{
+	make_zero ();
+	
+	if (use == 1) {
 		/* Mono -> Centre */
 		set (0, libdcp::CENTRE, 1);
 	} else {
 		/* 1:1 mapping */
-		for (int i = 0; i < min (_content_channels, MAX_DCP_AUDIO_CHANNELS); ++i) {
+		for (int i = 0; i < min (use, MAX_DCP_AUDIO_CHANNELS); ++i) {
 			set (i, static_cast<libdcp::Channel> (i), 1);
 		}
 	}

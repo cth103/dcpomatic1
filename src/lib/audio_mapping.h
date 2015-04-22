@@ -49,7 +49,7 @@ public:
 	
 	void as_xml (xmlpp::Node *) const;
 
-	void make_default ();
+	void make_default (int use);
 
 	void set (int, libdcp::Channel, float);
 	float get (int, libdcp::Channel) const;
@@ -70,6 +70,7 @@ public:
 	
 private:
 	void setup (int);
+	void make_zero ();
 	
 	int _content_channels;
 	std::vector<std::vector<float> > _gain;

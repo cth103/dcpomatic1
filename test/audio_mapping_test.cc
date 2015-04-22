@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE (audio_mapping_test)
 
 	AudioMapping four (4);
 	BOOST_CHECK_EQUAL (four.content_channels(), 4);
-	four.make_default ();
+	four.make_default (4);
 
 	for (int i = 0; i < 4; ++i) {
 		for (int j = 0; j < MAX_DCP_AUDIO_CHANNELS; ++j) {
