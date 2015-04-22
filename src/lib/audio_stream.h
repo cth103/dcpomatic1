@@ -21,6 +21,7 @@
 #define DCPOMATIC_AUDIO_STREAM_H
 
 #include "audio_mapping.h"
+#include <boost/thread/mutex.hpp>
 
 class AudioStream
 {
@@ -33,14 +34,19 @@ public:
 	void set_channels (int channels);
 
 	int frame_rate () const {
+		boost::mutex::scoped_lock lm (_mutex);
 		return _frame_rate;
 	}
 
 	AudioMapping mapping () const {
+		boost::mutex::scoped_lock lm (_mutex);
 		return _mapping;
 	}
 	
 	int channels () const;
+
+protected:
+	mutable boost::mutex _mutex;
 
 private:
 	int _frame_rate;

@@ -81,6 +81,8 @@ public:
 
 	void as_xml (xmlpp::Node *) const;
 
+	/* BXXX: this should probably be locked */
+
 	boost::optional<double> first_audio;
 
 private:

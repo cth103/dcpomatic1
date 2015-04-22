@@ -47,16 +47,14 @@ public:
 	std::string technical_summary () const;
 	void as_xml (xmlpp::Node *) const;
 	Time full_length () const;
-	bool has_rate_above_48k () const;
 
 	/* AudioContent */
 	int audio_channels () const;
 	AudioContent::Frame audio_length () const;
 	AudioMapping audio_mapping () const;
-
 	void set_audio_mapping (AudioMapping);
+	bool has_rate_above_48k () const;
 
-	/* BXXX: locking of this */
 	AudioStreamPtr audio_stream () const {
 		return _audio_stream;
 	}

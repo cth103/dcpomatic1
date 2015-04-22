@@ -36,18 +36,21 @@ AudioStream::AudioStream (int frame_rate, AudioMapping mapping)
 void
 AudioStream::set_mapping (AudioMapping mapping)
 {
+	boost::mutex::scoped_lock lm (_mutex);
 	_mapping = mapping;
 }
 
 void
 AudioStream::set_frame_rate (int frame_rate)
 {
+	boost::mutex::scoped_lock lm (_mutex);
 	_frame_rate = frame_rate;
 }
 
 void
 AudioStream::set_channels (int channels)
 {
+	boost::mutex::scoped_lock lm (_mutex);
 	_mapping = AudioMapping (channels);
 	_mapping.make_default ();
 }
@@ -55,5 +58,6 @@ AudioStream::set_channels (int channels)
 int
 AudioStream::channels () const
 {
+	boost::mutex::scoped_lock lm (_mutex);
 	return _mapping.content_channels ();
 }
