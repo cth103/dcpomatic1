@@ -355,16 +355,18 @@ FFmpegContent::full_length () const
 AudioMapping
 FFmpegContent::audio_mapping () const
 {
+	AudioMapping merged (audio_channels ());
+	
 	boost::mutex::scoped_lock lm (_mutex);
 
-	AudioMapping merged (audio_channels ());
 	int c = 0;
 	BOOST_FOREACH (shared_ptr<FFmpegAudioStream> i, _audio_streams) {
 		AudioMapping mapping = i->mapping ();
 		for (int j = 0; j < mapping.content_channels(); ++j) {
 			for (int k = 0; k < MAX_DCP_AUDIO_CHANNELS; ++k) {
-				merged.set (c++, static_cast<libdcp::Channel> (k), mapping.get (j, static_cast<libdcp::Channel> (k)));
+				merged.set (c, static_cast<libdcp::Channel> (k), mapping.get (j, static_cast<libdcp::Channel> (k)));
 			}
+			++c;
 		}
 	}
 
@@ -392,8 +394,9 @@ FFmpegContent::set_audio_mapping (AudioMapping mapping)
 		AudioMapping stream_mapping (i->channels ());
 		for (int j = 0; j < i->channels(); ++j) {
 			for (int k = 0; k < MAX_DCP_AUDIO_CHANNELS; ++k) {
-				stream_mapping.set (j, static_cast<libdcp::Channel> (k), mapping.get (c++, static_cast<libdcp::Channel> (k)));
+				stream_mapping.set (j, static_cast<libdcp::Channel> (k), mapping.get (c, static_cast<libdcp::Channel> (k)));
 			}
+			++c;
 		}
 		i->set_mapping (stream_mapping);
 	}
