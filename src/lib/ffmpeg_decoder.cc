@@ -209,7 +209,7 @@ FFmpegDecoder::pass ()
 shared_ptr<AudioBuffers>
 FFmpegDecoder::deinterleave_audio (shared_ptr<const FFmpegAudioStream> stream, uint8_t** data, int size)
 {
-	DCPOMATIC_ASSERT (_ffmpeg_content->audio_channels());
+	DCPOMATIC_ASSERT (stream->channels());
 	DCPOMATIC_ASSERT (bytes_per_audio_sample (stream));
 
 	/* Deinterleave and convert to float */
@@ -218,8 +218,8 @@ FFmpegDecoder::deinterleave_audio (shared_ptr<const FFmpegAudioStream> stream, u
 	   of the block that do not form a complete sample or frame they will be dropped.
 	*/
 	int const total_samples = size / bytes_per_audio_sample (stream);
-	int const frames = total_samples / _ffmpeg_content->audio_channels();
-	shared_ptr<AudioBuffers> audio (new AudioBuffers (_ffmpeg_content->audio_channels(), frames));
+	int const frames = total_samples / stream->channels();
+	shared_ptr<AudioBuffers> audio (new AudioBuffers (stream->channels(), frames));
 
 	switch (audio_sample_format (stream)) {
 	case AV_SAMPLE_FMT_U8:
@@ -231,7 +231,7 @@ FFmpegDecoder::deinterleave_audio (shared_ptr<const FFmpegAudioStream> stream, u
 			audio->data(channel)[sample] = float(*p++) / (1 << 23);
 
 			++channel;
-			if (channel == _ffmpeg_content->audio_channels()) {
+			if (channel == stream->channels()) {
 				channel = 0;
 				++sample;
 			}
@@ -248,7 +248,7 @@ FFmpegDecoder::deinterleave_audio (shared_ptr<const FFmpegAudioStream> stream, u
 			audio->data(channel)[sample] = float(*p++) / (1 << 15);
 
 			++channel;
-			if (channel == _ffmpeg_content->audio_channels()) {
+			if (channel == stream->channels()) {
 				channel = 0;
 				++sample;
 			}
@@ -259,7 +259,7 @@ FFmpegDecoder::deinterleave_audio (shared_ptr<const FFmpegAudioStream> stream, u
 	case AV_SAMPLE_FMT_S16P:
 	{
 		int16_t** p = reinterpret_cast<int16_t **> (data);
-		for (int i = 0; i < _ffmpeg_content->audio_channels(); ++i) {
+		for (int i = 0; i < stream->channels(); ++i) {
 			for (int j = 0; j < frames; ++j) {
 				audio->data(i)[j] = static_cast<float>(p[i][j]) / (1 << 15);
 			}
@@ -276,7 +276,7 @@ FFmpegDecoder::deinterleave_audio (shared_ptr<const FFmpegAudioStream> stream, u
 			audio->data(channel)[sample] = static_cast<float>(*p++) / (1 << 31);
 
 			++channel;
-			if (channel == _ffmpeg_content->audio_channels()) {
+			if (channel == stream->channels()) {
 				channel = 0;
 				++sample;
 			}
@@ -293,7 +293,7 @@ FFmpegDecoder::deinterleave_audio (shared_ptr<const FFmpegAudioStream> stream, u
 			audio->data(channel)[sample] = *p++;
 
 			++channel;
-			if (channel == _ffmpeg_content->audio_channels()) {
+			if (channel == stream->channels()) {
 				channel = 0;
 				++sample;
 			}
@@ -304,7 +304,7 @@ FFmpegDecoder::deinterleave_audio (shared_ptr<const FFmpegAudioStream> stream, u
 	case AV_SAMPLE_FMT_FLTP:
 	{
 		float** p = reinterpret_cast<float**> (data);
-		for (int i = 0; i < _ffmpeg_content->audio_channels(); ++i) {
+		for (int i = 0; i < stream->channels(); ++i) {
 			memcpy (audio->data(i), p[i], frames * sizeof(float));
 		}
 	}

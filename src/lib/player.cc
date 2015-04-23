@@ -121,10 +121,12 @@ Player::pass ()
 		}
 
 		if (_audio && ad && ad->has_audio ()) {
-			if ((*i)->audio_position < earliest_t) {
-				earliest_t = (*i)->audio_position;
-				earliest = *i;
-				type = AUDIO;
+			for (map<AudioStreamPtr, Time>::const_iterator j = (*i)->audio_position.begin(); j != (*i)->audio_position.end(); ++j) {
+				if (j->second < earliest_t) {
+					earliest_t = j->second;
+					earliest = *i;
+					type = AUDIO;
+				}
 			}
 		}
 	}
@@ -162,7 +164,7 @@ Player::pass ()
 					++i) {
 
 					if (i->first.first == ac) {
-						LOG_DEBUG("Flushing resampler: earliest->audio_position=%1", earliest->audio_position);
+						LOG_DEBUG("Flushing resampler: earliest->audio_position=%1", earliest->audio_position[i->first.second]);
 						shared_ptr<const AudioBuffers> b = i->second->flush ();
 						if (b->frames ()) {
 							process_audio (
@@ -170,7 +172,7 @@ Player::pass ()
 								b,
 								i->first.second,
 								_film->time_to_audio_frames (
-									earliest->audio_position +
+									earliest->audio_position[i->first.second] +
 									ac->trim_start() -
 									ac->position() -
 									ac->audio_delay() * TIME_HZ / 1000),
@@ -193,7 +195,9 @@ Player::pass ()
 
 			shared_ptr<AudioDecoder> ad = dynamic_pointer_cast<AudioDecoder> ((*i)->decoder);
 			if (ad && ad->has_audio ()) {
-				audio_done_up_to = min (audio_done_up_to.get_value_or (TIME_MAX), (*i)->audio_position);
+			for (map<AudioStreamPtr, Time>::const_iterator j = (*i)->audio_position.begin(); j != (*i)->audio_position.end(); ++j) {
+					audio_done_up_to = min (audio_done_up_to.get_value_or (TIME_MAX), j->second);
+				}
 			}
 		}
 
@@ -351,9 +355,9 @@ Player::process_audio (
 	shared_ptr<AudioBuffers> dcp_mapped (new AudioBuffers (_film->audio_channels(), audio->frames()));
 	dcp_mapped->make_silent ();
 
-	AudioMapping map = content->audio_mapping ();
+	AudioMapping map = stream->mapping ();
 	for (int i = 0; i < map.content_channels(); ++i) {
-		for (int j = 0; j < _film->audio_channels(); ++j) {
+		for (int j = 0; j < stream->channels(); ++j) {
 			if (map.get (i, static_cast<libdcp::Channel> (j)) > 0) {
 				dcp_mapped->accumulate_channel (
 					audio.get(),
@@ -382,7 +386,7 @@ Player::process_audio (
 	}
 
 	_audio_merger.push (audio, time);
-	piece->audio_position += _film->audio_frames_to_time (audio->frames ());
+	piece->audio_position[stream] += _film->audio_frames_to_time (audio->frames ());
 }
 
 void
@@ -431,7 +435,10 @@ Player::seek (Time t, bool accurate)
 		s = min (vc->length_after_trim(), s);
 
 		/* Hence set the piece positions to the `global' time */
-		(*i)->video_position = (*i)->audio_position = vc->position() + s;
+		(*i)->video_position = vc->position() + s;
+		for (map<AudioStreamPtr, Time>::iterator j = (*i)->audio_position.begin(); j != (*i)->audio_position.end(); ++j) {
+			j->second = vc->position() + s;
+		}
 
 		/* And seek the decoder */
 		dynamic_pointer_cast<VideoDecoder>((*i)->decoder)->seek (

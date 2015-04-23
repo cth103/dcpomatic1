@@ -234,13 +234,14 @@ FFmpegContent::set_subtitle_stream (shared_ptr<FFmpegSubtitleStream> s)
 AudioContent::Frame
 FFmpegContent::audio_length () const
 {
+	float const vfr = video_frame_rate ();
+	VideoContent::Frame const vl = video_length_after_3d_combine ();
+	
 	boost::mutex::scoped_lock lm (_mutex);
 
 	AudioContent::Frame length = 0;
 	BOOST_FOREACH (shared_ptr<FFmpegAudioStream> i, _audio_streams) {
 		int const cafr = i->frame_rate ();
-		float const vfr = video_frame_rate ();
-		VideoContent::Frame const vl = video_length_after_3d_combine ();
 		length = max (length, video_frames_to_audio_frames (vl, cafr, vfr));
 	}
 

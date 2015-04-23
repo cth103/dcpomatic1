@@ -19,28 +19,38 @@
 
 #include "piece.h"
 #include "player.h"
+#include <boost/foreach.hpp>
 
 using boost::shared_ptr;
+using boost::dynamic_pointer_cast;
 
 Piece::Piece (shared_ptr<Content> c)
 	: content (c)
 	, video_position (c->position ())
-	, audio_position (c->position ())
 	, repeat_to_do (0)
 	, repeat_done (0)
 {
-
+	shared_ptr<AudioContent> ac = dynamic_pointer_cast<AudioContent> (c);
+	if (ac) {
+		BOOST_FOREACH (AudioStreamPtr i, ac->audio_streams ()) {
+			audio_position[i] = c->position ();
+		}
+	}
 }
 
 Piece::Piece (shared_ptr<Content> c, shared_ptr<Decoder> d)
 	: content (c)
 	, decoder (d)
 	, video_position (c->position ())
-	, audio_position (c->position ())
 	, repeat_to_do (0)
 	, repeat_done (0)
 {
-
+	shared_ptr<AudioContent> ac = dynamic_pointer_cast<AudioContent> (c);
+	if (ac) {
+		BOOST_FOREACH (AudioStreamPtr i, ac->audio_streams ()) {
+			audio_position[i] = c->position ();
+		}
+	}
 }
 
 /** Set this piece to repeat a video frame a given number of times */

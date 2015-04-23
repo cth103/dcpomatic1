@@ -22,6 +22,7 @@
 
 #include "types.h"
 #include "video_content.h"
+#include "audio_stream.h"
 
 class Content;
 class Decoder;
@@ -55,8 +56,8 @@ public:
 	boost::shared_ptr<Decoder> decoder;
 	/** Time of the last video we emitted relative to the start of the DCP */
 	Time video_position;
-	/** Time of the last audio we emitted relative to the start of the DCP */
-	Time audio_position;
+	/** Time of the last audio we emitted from each stream relative to the start of the DCP */
+	std::map<AudioStreamPtr, Time> audio_position;
 
 	IncomingVideo repeat_video;
 	int repeat_to_do;
