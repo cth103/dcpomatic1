@@ -49,11 +49,8 @@ public:
 	Time full_length () const;
 
 	/* AudioContent */
-	int audio_channels () const;
 	AudioContent::Frame audio_length () const;
-	AudioMapping audio_mapping () const;
-	void set_audio_mapping (AudioMapping);
-	bool has_rate_above_48k () const;
+	std::vector<AudioStreamPtr> audio_streams () const;
 
 	AudioStreamPtr audio_stream () const {
 		return _audio_stream;

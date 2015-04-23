@@ -53,6 +53,6 @@ private:
 	AudioMapping _mapping;
 };
 
-typedef boost::shared_ptr<const AudioStream> AudioStreamPtr;
+typedef boost::shared_ptr<AudioStream> AudioStreamPtr;
 
 #endif

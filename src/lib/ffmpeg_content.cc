@@ -44,6 +44,7 @@ using std::vector;
 using std::list;
 using std::cout;
 using std::pair;
+using std::back_inserter;
 using std::max;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
@@ -112,7 +113,7 @@ FFmpegContent::FFmpegContent (shared_ptr<const Film> f, vector<boost::shared_ptr
 
 	_subtitle_streams = ref->subtitle_streams ();
 	_subtitle_stream = ref->subtitle_stream ();
-	_audio_streams = ref->audio_streams ();
+	_audio_streams = ref->ffmpeg_audio_streams ();
 	_first_video = ref->_first_video;
 }
 
@@ -246,19 +247,6 @@ FFmpegContent::audio_length () const
 	return length;
 }
 
-int
-FFmpegContent::audio_channels () const
-{
-	boost::mutex::scoped_lock lm (_mutex);
-
-	int channels = 0;
-	BOOST_FOREACH (shared_ptr<FFmpegAudioStream> i, _audio_streams) {
-		channels += i->channels ();
-	}
-
-	return channels;
-}
-
 bool
 operator== (FFmpegStream const & a, FFmpegStream const & b)
 {
@@ -358,30 +346,6 @@ FFmpegContent::full_length () const
 	return video_length_after_3d_combine() * frc.factor() * TIME_HZ / film->video_frame_rate ();
 }
 
-AudioMapping
-FFmpegContent::audio_mapping () const
-{
-	AudioMapping merged (audio_channels ());
-	
-	boost::mutex::scoped_lock lm (_mutex);
-
-	int c = 0;
-	int s = 0;
-	BOOST_FOREACH (shared_ptr<FFmpegAudioStream> i, _audio_streams) {
-		AudioMapping mapping = i->mapping ();
-		for (int j = 0; j < mapping.content_channels(); ++j) {
-			merged.set_name (c, String::compose ("%1:%2", s + 1, j + 1));
-			for (int k = 0; k < MAX_DCP_AUDIO_CHANNELS; ++k) {
-				merged.set (c, static_cast<libdcp::Channel> (k), mapping.get (j, static_cast<libdcp::Channel> (k)));
-			}
-			++c;
-		}
-		++s;
-	}
-
-	return merged;
-}
-
 void
 FFmpegContent::set_filters (vector<Filter const *> const & filters)
 {
@@ -391,28 +355,6 @@ FFmpegContent::set_filters (vector<Filter const *> const & filters)
 	}
 
 	signal_changed (FFmpegContentProperty::FILTERS);
-}
-
-void
-FFmpegContent::set_audio_mapping (AudioMapping mapping)
-{
-	{
-		boost::mutex::scoped_lock lm (_mutex);
-		
-		int c = 0;
-		BOOST_FOREACH (shared_ptr<FFmpegAudioStream> i, _audio_streams) {
-			AudioMapping stream_mapping (i->channels ());
-			for (int j = 0; j < i->channels(); ++j) {
-				for (int k = 0; k < MAX_DCP_AUDIO_CHANNELS; ++k) {
-					stream_mapping.set (j, static_cast<libdcp::Channel> (k), mapping.get (c, static_cast<libdcp::Channel> (k)));
-				}
-				++c;
-			}
-			i->set_mapping (stream_mapping);
-		}
-	}
-		
-	signal_changed (AudioContentProperty::AUDIO_MAPPING);
 }
 
 string
@@ -435,16 +377,14 @@ FFmpegContent::identifier () const
 	return s.str ();
 }
 
-bool
-FFmpegContent::has_rate_above_48k () const
+vector<AudioStreamPtr>
+FFmpegContent::audio_streams () const
 {
 	boost::mutex::scoped_lock lm (_mutex);
 	
-	BOOST_FOREACH (shared_ptr<FFmpegAudioStream> i, _audio_streams) {
-		if (i->frame_rate() > 48000) {
-			return true;
-		}
-	}
-
-	return false;
+	vector<AudioStreamPtr> s;
+	copy (_audio_streams.begin(), _audio_streams.end(), back_inserter (s));
+	return s;
 }
+
+	

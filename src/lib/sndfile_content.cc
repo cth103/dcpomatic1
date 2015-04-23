@@ -32,6 +32,7 @@
 
 using std::string;
 using std::cout;
+using std::vector;
 using boost::shared_ptr;
 
 SndfileContent::SndfileContent (shared_ptr<const Film> f, boost::filesystem::path p)
@@ -124,29 +125,6 @@ SndfileContent::full_length () const
 	return film->audio_frames_to_time (len);
 }
 
-void
-SndfileContent::set_audio_mapping (AudioMapping m)
-{
-	{
-		boost::mutex::scoped_lock lm (_mutex);
-		_audio_stream->set_mapping (m);
-	}
-
-	signal_changed (AudioContentProperty::AUDIO_MAPPING);
-}
-
-int
-SndfileContent::audio_channels () const
-{
-	return audio_stream()->channels ();
-}
-
-AudioMapping
-SndfileContent::audio_mapping () const
-{
-	return audio_stream()->mapping ();
-}
-
 AudioContent::Frame
 SndfileContent::audio_length () const
 {
@@ -154,11 +132,10 @@ SndfileContent::audio_length () const
 	return _audio_length;
 }
 
-bool
-SndfileContent::has_rate_above_48k () const
+vector<AudioStreamPtr>
+SndfileContent::audio_streams () const
 {
-	boost::mutex::scoped_lock lm (_mutex);
-	return audio_stream()->frame_rate() > 48000;
+	vector<AudioStreamPtr> s;
+	s.push_back (audio_stream ());
+	return s;
 }
-
-	

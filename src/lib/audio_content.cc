@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 
 */
 
+#include <boost/foreach.hpp>
 #include <libcxml/cxml.h>
 #include "raw_convert.h"
 #include "audio_content.h"
@@ -203,5 +204,80 @@ AudioContent::processing_description () const
 	d << "BXXX: this depends on the stream";
 
 	return d.str ();
+}
+
+bool
+AudioContent::has_rate_above_48k () const
+{
+	boost::mutex::scoped_lock lm (_mutex);
+	
+	BOOST_FOREACH (AudioStreamPtr i, audio_streams ()) {
+		if (i->frame_rate() > 48000) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+void
+AudioContent::set_audio_mapping (AudioMapping mapping)
+{
+	{
+		boost::mutex::scoped_lock lm (_mutex);
+		
+		int c = 0;
+		BOOST_FOREACH (AudioStreamPtr i, audio_streams ()) {
+			AudioMapping stream_mapping (i->channels ());
+			for (int j = 0; j < i->channels(); ++j) {
+				for (int k = 0; k < MAX_DCP_AUDIO_CHANNELS; ++k) {
+					stream_mapping.set (j, static_cast<libdcp::Channel> (k), mapping.get (c, static_cast<libdcp::Channel> (k)));
+				}
+				++c;
+			}
+			i->set_mapping (stream_mapping);
+		}
+	}
+		
+	signal_changed (AudioContentProperty::AUDIO_MAPPING);
+}
+
+
+AudioMapping
+AudioContent::audio_mapping () const
+{
+	AudioMapping merged (audio_channels ());
+	
+	boost::mutex::scoped_lock lm (_mutex);
+
+	int c = 0;
+	int s = 0;
+	BOOST_FOREACH (AudioStreamPtr i, audio_streams ()) {
+		AudioMapping mapping = i->mapping ();
+		for (int j = 0; j < mapping.content_channels(); ++j) {
+			merged.set_name (c, String::compose ("%1:%2", s + 1, j + 1));
+			for (int k = 0; k < MAX_DCP_AUDIO_CHANNELS; ++k) {
+				merged.set (c, static_cast<libdcp::Channel> (k), mapping.get (j, static_cast<libdcp::Channel> (k)));
+			}
+			++c;
+		}
+		++s;
+	}
+
+	return merged;
+}
+
+int
+AudioContent::audio_channels () const
+{
+	boost::mutex::scoped_lock lm (_mutex);
+
+	int channels = 0;
+	BOOST_FOREACH (AudioStreamPtr i, audio_streams ()) {
+		channels += i->channels ();
+	}
+
+	return channels;
 }
 

@@ -136,11 +136,10 @@ public:
 	std::string identifier () const;
 	
 	/* AudioContent */
-	int audio_channels () const;
 	AudioContent::Frame audio_length () const;
 	AudioMapping audio_mapping () const;
 	void set_audio_mapping (AudioMapping);
-	bool has_rate_above_48k () const;
+	std::vector<AudioStreamPtr> audio_streams () const;
 
 	void set_filters (std::vector<Filter const *> const &);
 	
@@ -154,7 +153,7 @@ public:
 		return _subtitle_stream;
 	}
 
-	std::vector<boost::shared_ptr<FFmpegAudioStream> > audio_streams () const {
+	std::vector<boost::shared_ptr<FFmpegAudioStream> > ffmpeg_audio_streams () const {
 		boost::mutex::scoped_lock lm (_mutex);
 		return _audio_streams;
 	}

@@ -96,7 +96,7 @@ FFmpegDecoder::FFmpegDecoder (shared_ptr<const Film> f, shared_ptr<const FFmpegC
 
 	/* First, make one of them start at 0 */
 
-	vector<shared_ptr<FFmpegAudioStream> > streams = c->audio_streams ();
+	vector<shared_ptr<FFmpegAudioStream> > streams = c->ffmpeg_audio_streams ();
 
 	_pts_offset = -DBL_MAX;
 
@@ -449,7 +449,7 @@ FFmpegDecoder::decode_audio_packet ()
 	AVPacket copy_packet = _packet;
 
 	/* BXXX: inefficient */
-	vector<shared_ptr<FFmpegAudioStream> > streams = ffmpeg_content()->audio_streams ();
+	vector<shared_ptr<FFmpegAudioStream> > streams = ffmpeg_content()->ffmpeg_audio_streams ();
 	vector<shared_ptr<FFmpegAudioStream> >::const_iterator stream = streams.begin ();
 	while (stream != streams.end () && (*stream)->uses_index (_format_context, copy_packet.stream_index)) {
 		++stream;

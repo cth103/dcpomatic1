@@ -22,6 +22,7 @@
 
 #include "content.h"
 #include "audio_mapping.h"
+#include "audio_stream.h"
 
 namespace cxml {
 	class Node;
@@ -51,14 +52,15 @@ public:
 	void as_xml (xmlpp::Node *) const;
 	std::string technical_summary () const;
 
-	virtual int audio_channels () const = 0;
 	virtual AudioContent::Frame audio_length () const = 0;
-	virtual AudioMapping audio_mapping () const = 0;
-	virtual void set_audio_mapping (AudioMapping) = 0;
 	virtual boost::filesystem::path audio_analysis_path () const;
-	virtual bool has_rate_above_48k () const = 0;
+	virtual std::vector<AudioStreamPtr> audio_streams () const = 0;
 
 	int output_audio_frame_rate () const;
+	int audio_channels () const;
+	AudioMapping audio_mapping () const;
+	void set_audio_mapping (AudioMapping);
+	bool has_rate_above_48k () const;
 	
 	boost::signals2::connection analyse_audio (boost::function<void()>);
 
