@@ -38,6 +38,7 @@ using std::setprecision;
 using std::stringstream;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
+using boost::optional;
 
 int const AudioContentProperty::AUDIO_CHANNELS = 200;
 int const AudioContentProperty::AUDIO_LENGTH = 201;
@@ -184,33 +185,58 @@ AudioContent::output_audio_frame_rate () const
 string
 AudioContent::processing_description () const
 {
-	stringstream d;
-
-	/*
-	
-	if (content_audio_frame_rate() != output_audio_frame_rate ()) {
-		stringstream from;
-		from << fixed << setprecision(3) << (content_audio_frame_rate() / 1000.0);
-		stringstream to;
-		to << fixed << setprecision(3) << (output_audio_frame_rate() / 1000.0);
-
-		d << String::compose (_("Audio will be resampled from %1kHz to %2kHz."), from.str(), to.str());
-	} else {
-		d << _("Audio will not be resampled.");
+	vector<AudioStreamPtr> streams = audio_streams ();
+	if (streams.empty ()) {
+		return "";
 	}
 
+	/* Possible answers are:
+	   1. all audio will be resampled from x to y.
+	   2. all audio will be resampled to y (from a variety of rates)
+	   3. some audio will be resampled to y (from a variety of rates)
+	   4. nothing will be resampled.
 	*/
 
-	d << "BXXX: this depends on the stream";
+	bool not_resampled = false;
+	bool resampled = false;
+	bool same = true;
 
-	return d.str ();
+	optional<int> common_frame_rate;
+	BOOST_FOREACH (AudioStreamPtr i, streams) {
+		if (i->frame_rate() != output_audio_frame_rate()) {
+			resampled = true;
+		} else {
+			not_resampled = true;
+		}
+
+		if (common_frame_rate && common_frame_rate != i->frame_rate ()) {
+			same = false;
+		}
+		common_frame_rate = i->frame_rate ();
+	}
+
+	if (not_resampled && !resampled) {
+		return _("Audio will not be resampled");
+	}
+
+	if (not_resampled && resampled) {
+		return String::compose (_("Some audio will be resampled to %1kHz"), output_audio_frame_rate ());
+	}
+
+	if (!not_resampled && resampled) {
+		if (same) {
+			return String::compose (_("Audio will be resampled from %1kHz to %2kHz"), common_frame_rate.get(), output_audio_frame_rate ());
+		} else {
+			return String::compose (_("Audio will be resampled to %1kHz"), output_audio_frame_rate ());
+		}
+	}
+
+	return "";
 }
 
 bool
 AudioContent::has_rate_above_48k () const
 {
-	boost::mutex::scoped_lock lm (_mutex);
-	
 	BOOST_FOREACH (AudioStreamPtr i, audio_streams ()) {
 		if (i->frame_rate() > 48000) {
 			return true;
@@ -224,20 +250,16 @@ AudioContent::has_rate_above_48k () const
 void
 AudioContent::set_audio_mapping (AudioMapping mapping)
 {
-	{
-		boost::mutex::scoped_lock lm (_mutex);
-		
-		int c = 0;
-		BOOST_FOREACH (AudioStreamPtr i, audio_streams ()) {
-			AudioMapping stream_mapping (i->channels ());
-			for (int j = 0; j < i->channels(); ++j) {
-				for (int k = 0; k < MAX_DCP_AUDIO_CHANNELS; ++k) {
-					stream_mapping.set (j, static_cast<libdcp::Channel> (k), mapping.get (c, static_cast<libdcp::Channel> (k)));
-				}
-				++c;
+	int c = 0;
+	BOOST_FOREACH (AudioStreamPtr i, audio_streams ()) {
+		AudioMapping stream_mapping (i->channels ());
+		for (int j = 0; j < i->channels(); ++j) {
+			for (int k = 0; k < MAX_DCP_AUDIO_CHANNELS; ++k) {
+				stream_mapping.set (j, static_cast<libdcp::Channel> (k), mapping.get (c, static_cast<libdcp::Channel> (k)));
 			}
-			i->set_mapping (stream_mapping);
+			++c;
 		}
+		i->set_mapping (stream_mapping);
 	}
 		
 	signal_changed (AudioContentProperty::AUDIO_MAPPING);
@@ -249,8 +271,6 @@ AudioContent::audio_mapping () const
 {
 	AudioMapping merged (audio_channels ());
 	
-	boost::mutex::scoped_lock lm (_mutex);
-
 	int c = 0;
 	int s = 0;
 	BOOST_FOREACH (AudioStreamPtr i, audio_streams ()) {
@@ -271,8 +291,6 @@ AudioContent::audio_mapping () const
 int
 AudioContent::audio_channels () const
 {
-	boost::mutex::scoped_lock lm (_mutex);
-
 	int channels = 0;
 	BOOST_FOREACH (AudioStreamPtr i, audio_streams ()) {
 		channels += i->channels ();
