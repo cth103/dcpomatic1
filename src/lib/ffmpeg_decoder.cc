@@ -452,7 +452,7 @@ FFmpegDecoder::decode_audio_packet ()
 	/* BXXX: inefficient */
 	vector<shared_ptr<FFmpegAudioStream> > streams = ffmpeg_content()->ffmpeg_audio_streams ();
 	vector<shared_ptr<FFmpegAudioStream> >::const_iterator stream = streams.begin ();
-	while (stream != streams.end () && (*stream)->uses_index (_format_context, copy_packet.stream_index)) {
+	while (stream != streams.end () && !(*stream)->uses_index (_format_context, copy_packet.stream_index)) {
 		++stream;
 	}
 

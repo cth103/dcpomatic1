@@ -195,7 +195,7 @@ Player::pass ()
 
 			shared_ptr<AudioDecoder> ad = dynamic_pointer_cast<AudioDecoder> ((*i)->decoder);
 			if (ad && ad->has_audio ()) {
-			for (map<AudioStreamPtr, Time>::const_iterator j = (*i)->audio_position.begin(); j != (*i)->audio_position.end(); ++j) {
+				for (map<AudioStreamPtr, Time>::const_iterator j = (*i)->audio_position.begin(); j != (*i)->audio_position.end(); ++j) {
 					audio_done_up_to = min (audio_done_up_to.get_value_or (TIME_MAX), j->second);
 				}
 			}
