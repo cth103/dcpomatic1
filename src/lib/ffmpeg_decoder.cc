@@ -59,6 +59,7 @@ using std::list;
 using std::min;
 using std::pair;
 using std::max;
+using std::map;
 using boost::shared_ptr;
 using boost::optional;
 using boost::dynamic_pointer_cast;
@@ -485,7 +486,7 @@ FFmpegDecoder::decode_audio_packet ()
 
 		if (frame_finished) {
 			
-			if (_audio_position == 0) {
+			if (_audio_position[*stream] == 0) {
 				/* Where we are in the source, in seconds */
 				double const pts = av_q2d (_format_context->streams[copy_packet.stream_index]->time_base)
 					* av_frame_get_best_effort_timestamp(_frame) + _pts_offset;
@@ -503,7 +504,7 @@ FFmpegDecoder::decode_audio_packet ()
 							);
 					
 						silence->make_silent ();
-						audio (silence, *stream, _audio_position);
+						audio (silence, *stream, _audio_position[*stream]);
 						frames -= this_time;
 					}
 				}
@@ -513,7 +514,7 @@ FFmpegDecoder::decode_audio_packet ()
 				0, (*stream)->stream(_format_context)->codec->channels, _frame->nb_samples, audio_sample_format (*stream), 1
 				);
 
-			audio (deinterleave_audio (*stream, _frame->data, data_size), *stream, _audio_position);
+			audio (deinterleave_audio (*stream, _frame->data, data_size), *stream, _audio_position[*stream]);
 		}
 			
 		copy_packet.data += decode_result;
@@ -647,15 +648,18 @@ FFmpegDecoder::done () const
 	DCPOMATIC_ASSERT (film);
 
 	Time const vp = film->video_frames_to_time (_video_position);
-	Time const ap = film->audio_frames_to_time (_audio_position);
+	if (_decode_video && (vp - _ffmpeg_content->trim_start()) < _ffmpeg_content->length_after_trim ()) {
+		return false;
+	}
 
-	bool const vd = !_decode_video ||
-		((vp - _ffmpeg_content->trim_start()) >= _ffmpeg_content->length_after_trim ());
-	
-	bool const ad = !_decode_audio ||
-		((ap - _ffmpeg_content->trim_start()) >= _ffmpeg_content->length_after_trim ());
+	for (map<AudioStreamPtr, AudioContent::Frame>::const_iterator i = _audio_position.begin(); i != _audio_position.end(); ++i) {
+		Time const ap = film->audio_frames_to_time (i->second);
+		if (_decode_audio && (ap - _ffmpeg_content->trim_start()) >= _ffmpeg_content->length_after_trim ()) {
+			return false;
+		}
+	}
 
-	return vd && ad;
+	return true;
 }
 	
 void

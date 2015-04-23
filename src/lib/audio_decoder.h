@@ -48,7 +48,7 @@ protected:
 
 	void audio (boost::shared_ptr<const AudioBuffers>, AudioStreamPtr stream, AudioContent::Frame);
 	boost::shared_ptr<const AudioContent> _audio_content;
-	AudioContent::Frame _audio_position;
+	std::map<AudioStreamPtr, AudioContent::Frame> _audio_position;
 };
 
 #endif

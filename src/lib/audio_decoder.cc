@@ -35,7 +35,6 @@ using boost::shared_ptr;
 AudioDecoder::AudioDecoder (shared_ptr<const Film> film, shared_ptr<const AudioContent> content)
 	: Decoder (film)
 	, _audio_content (content)
-	, _audio_position (0)
 {
 
 }
@@ -43,8 +42,12 @@ AudioDecoder::AudioDecoder (shared_ptr<const Film> film, shared_ptr<const AudioC
 void
 AudioDecoder::audio (shared_ptr<const AudioBuffers> data, AudioStreamPtr stream, AudioContent::Frame frame)
 {
+	if (_audio_position.find (stream) == _audio_position.end ()) {
+		_audio_position[stream] = 0;
+	}
+	
 	Audio (data, stream, frame);
-	_audio_position = frame + data->frames ();
+	_audio_position[stream] = frame + data->frames ();
 }
 
 /** This is a bit odd, but necessary when we have (e.g.) FFmpegDecoders with no audio.

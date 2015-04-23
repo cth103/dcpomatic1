@@ -35,6 +35,7 @@ using std::vector;
 using std::string;
 using std::min;
 using std::cout;
+using std::map;
 using boost::shared_ptr;
 
 SndfileDecoder::SndfileDecoder (shared_ptr<const Film> f, shared_ptr<const SndfileContent> c)
@@ -127,5 +128,9 @@ SndfileDecoder::audio_frame_rate () const
 bool
 SndfileDecoder::done () const
 {
-	return _audio_position >= _sndfile_content->audio_length ();
+	map<AudioStreamPtr, AudioContent::Frame>::const_iterator i = _audio_position.find (_sndfile_content->audio_stream ());
+	if (i == _audio_position.end ()) {
+		return false;
+	}
+	return i->second >= _sndfile_content->audio_length ();
 }
