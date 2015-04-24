@@ -58,10 +58,12 @@ public:
 	Page (wxSize panel_size, int border)
 		: _border (border)
 		, _panel_size (panel_size)
-		, _created (false)
+		, _window_exists (false)
 	{
 		_config_connection = Config::instance()->Changed.connect (boost::bind (&Page::config_changed_wrapper, this));
 	}
+
+	virtual ~Page () {}
 
 protected:
 	wxWindow* create_window (wxWindow* parent)
@@ -71,8 +73,10 @@ protected:
 		panel->SetSizer (s);
 
 		setup (parent, panel);
-		_created = true;
+		_window_exists = true;
 		config_changed ();
+
+		panel->Bind (wxEVT_DESTROY, boost::bind (&Page::window_destroyed, this));
 
 		return panel;
 	}
@@ -85,14 +89,19 @@ private:
 
 	void config_changed_wrapper ()
 	{
-		if (_created) {
+		if (_window_exists) {
 			config_changed ();
 		}
+	}
+
+	void window_destroyed ()
+	{
+		_window_exists = false;
 	}
 	
 	wxSize _panel_size;
 	boost::signals2::scoped_connection _config_connection;
-	bool _created;
+	bool _window_exists;
 };
 
 class StockPage : public wxStockPreferencesPage, public Page

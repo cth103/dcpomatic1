@@ -167,7 +167,7 @@ def configure(conf):
     conf.env.TARGET_LINUX = not conf.env.TARGET_WINDOWS and not conf.env.TARGET_OSX
     conf.env.DEBUG = conf.options.enable_debug
     # true if we should build dcpomatic/libdcpomatic/libdcpomatic-wx statically
-    conf.env.BUILD_STATIC = conf.options.target_debian or conf.options.target_centos_6 or conf.options.target_centos_7
+    conf.env.BUILD_STATIC = conf.options.target_debian or conf.options.target_centos_6 or conf.options.target_centos_7 or (conf.options.target_windows and conf.options.enable_debug)
     if conf.options.install_prefix is None:
         conf.env.INSTALL_PREFIX = conf.env.PREFIX
     else:
