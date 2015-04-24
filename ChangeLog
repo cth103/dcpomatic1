@@ -1,5 +1,8 @@
 2015-04-24  Carl Hetherington  <cth@carlh.net>
 
+	* Make disk space check take account of whether hard links
+	are supported by the target filesystem (#511).
+
 	* Allow configuration of the encryption key (#534).
 
 	* Version 1.78.7 released.
