@@ -1,5 +1,7 @@
 2015-04-24  Carl Hetherington  <cth@carlh.net>
 
+	* Fix crash on pressing Ctrl+A in some cases (#525).
+
 	* Make disk space check take account of whether hard links
 	are supported by the target filesystem (#511).
 
