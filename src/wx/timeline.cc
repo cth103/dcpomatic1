@@ -132,7 +132,10 @@ Timeline::playlist_content_changed (int property)
 
 	if (property == ContentProperty::POSITION) {
 		assign_tracks ();
-		setup_pixels_per_time_unit ();
+		if (!_left_down) {
+			/* Only do this if we are not dragging, as it's confusing otherwise */
+			setup_pixels_per_time_unit ();
+		}
 		Refresh ();
 	} else if (property == AudioContentProperty::AUDIO_MAPPING) {
 		recreate_views ();
@@ -281,6 +284,12 @@ Timeline::left_up (wxMouseEvent& ev)
 	}
 
 	set_position_from_event (ev);
+
+	/* We don't do this during drag, and set_position_from_event above
+	   might not have changed the position, so do it now.
+	*/
+	setup_pixels_per_time_unit ();
+	Refresh ();
 }
 
 void
@@ -349,7 +358,7 @@ Timeline::set_position_from_event (wxMouseEvent& ev)
 	
 	if (_snap) {
 
-		Time const new_end = new_position + _down_view->content()->length_after_trim ();
+		Time const new_end = new_position + _down_view->content()->length_after_trim () - 1;
 		/* Signed `distance' to nearest thing (i.e. negative is left on the timeline,
 		   positive is right).
 		*/
@@ -358,14 +367,14 @@ Timeline::set_position_from_event (wxMouseEvent& ev)
 		/* Find the nearest content edge; this is inefficient */
 		for (TimelineViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
 			shared_ptr<TimelineContentView> cv = dynamic_pointer_cast<TimelineContentView> (*i);
-			if (!cv || cv == _down_view) {
+			if (!cv || cv == _down_view || cv->content() == _down_view->content()) {
 				continue;
 			}
 
 			maybe_snap (cv->content()->position(), new_position, nearest_distance);
-			maybe_snap (cv->content()->position(), new_end, nearest_distance);
-			maybe_snap (cv->content()->end(), new_position, nearest_distance);
-			maybe_snap (cv->content()->end(), new_end, nearest_distance);
+			maybe_snap (cv->content()->position(), new_end + 1, nearest_distance);
+			maybe_snap (cv->content()->end() + 1, new_position, nearest_distance);
+			maybe_snap (cv->content()->end() + 1, new_end + 1, nearest_distance);
 		}
 		
 		if (nearest_distance) {

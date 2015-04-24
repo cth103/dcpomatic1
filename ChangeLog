@@ -1,5 +1,8 @@
 2015-04-24  carl  <cth@carlh.net>
 
+	* Various fixes to bad timeline drag behaviour when
+	snapping.
+
 	* Fix some flickering in the film editor when dragging
 	things in the timeline on OS X.
 
