@@ -1,3 +1,7 @@
+2015-04-24  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.78.7 released.
+
 2015-04-24  carl  <cth@carlh.net>
 
 	* Various fixes to bad timeline drag behaviour when
