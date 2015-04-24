@@ -1,5 +1,7 @@
 2015-04-24  Carl Hetherington  <cth@carlh.net>
 
+	* Allow configuration of the encryption key (#534).
+
 	* Version 1.78.7 released.
 
 2015-04-24  carl  <cth@carlh.net>

@@ -102,6 +102,7 @@ private:
 	void standard_changed ();
 	void signed_toggled ();
 	void encrypted_toggled ();
+	void edit_key_clicked ();
 
 	/* Handle changes to the model */
 	void film_changed (Film::Property);
@@ -161,6 +162,8 @@ private:
 	wxChoice* _standard;
 	wxCheckBox* _signed;
 	wxCheckBox* _encrypted;
+	wxStaticText* _key;
+	wxButton* _edit_key;
 
 	ContentMenu _menu;
 

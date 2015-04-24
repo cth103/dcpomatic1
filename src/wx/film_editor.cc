@@ -23,6 +23,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <list>
 #include <wx/wx.h>
 #include <wx/notebook.h>
 #include <wx/listctrl.h>
@@ -56,6 +57,7 @@
 #include "audio_panel.h"
 #include "video_panel.h"
 #include "image_sequence_dialog.h"
+#include "key_dialog.h"
 
 #include "lib/image_filename_sorter.cc"
 
@@ -173,6 +175,21 @@ FilmEditor::make_dcp_panel ()
 	grid->Add (_encrypted, wxGBPosition (r, 0), wxGBSpan (1, 2));
 	++r;
 
+        wxClientDC dc (_dcp_panel);
+        wxSize size = dc.GetTextExtent (wxT ("GGGGGGGG..."));
+        size.SetHeight (-1);
+
+	{
+		add_label_to_grid_bag_sizer (grid, _dcp_panel, _("Key"), true, wxGBPosition (r, 0));
+		wxBoxSizer* s = new wxBoxSizer (wxHORIZONTAL);
+		_key = new wxStaticText (_dcp_panel, wxID_ANY, "", wxDefaultPosition, size);
+		s->Add (_key, 1, wxALIGN_CENTER_VERTICAL);
+		_edit_key = new wxButton (_dcp_panel, wxID_ANY, _("Edit..."));
+		s->Add (_edit_key);
+		grid->Add (s, wxGBPosition (r, 1));
+		++r;
+	}
+
 	add_label_to_grid_bag_sizer (grid, _dcp_panel, _("Audio channels"), true, wxGBPosition (r, 0));
 	_audio_channels = new wxChoice (_dcp_panel, wxID_ANY);
 	for (int i = 2; i <= 16; i += 2) {
@@ -225,7 +242,7 @@ FilmEditor::make_dcp_panel ()
 		_dcp_content_type->Append (std_to_wx ((*i)->pretty_name ()));
 	}
 
-	list<int> const dfr = Config::instance()->allowed_dcp_frame_rates ();
+	std::list<int> const dfr;
 	for (list<int>::const_iterator i = dfr.begin(); i != dfr.end(); ++i) {
 		_frame_rate_choice->Append (std_to_wx (boost::lexical_cast<string> (*i)));
 	}
@@ -265,6 +282,7 @@ FilmEditor::connect_to_widgets ()
 	_best_frame_rate->Bind	(wxEVT_COMMAND_BUTTON_CLICKED,	      boost::bind (&FilmEditor::best_frame_rate_clicked, this));
 	_signed->Bind           (wxEVT_COMMAND_CHECKBOX_CLICKED,      boost::bind (&FilmEditor::signed_toggled, this));
 	_encrypted->Bind        (wxEVT_COMMAND_CHECKBOX_CLICKED,      boost::bind (&FilmEditor::encrypted_toggled, this));
+	_edit_key->Bind         (wxEVT_COMMAND_BUTTON_CLICKED,        boost::bind (&FilmEditor::edit_key_clicked, this));
 	_audio_channels->Bind	(wxEVT_COMMAND_CHOICE_SELECTED,       boost::bind (&FilmEditor::audio_channels_changed, this));
 	_j2k_bandwidth->Bind	(wxEVT_COMMAND_SPINCTRL_UPDATED,      boost::bind (&FilmEditor::j2k_bandwidth_changed, this));
 	/* Also listen to wxEVT_COMMAND_TEXT_UPDATED so that typing numbers directly in is always noticed */
@@ -376,6 +394,16 @@ FilmEditor::encrypted_toggled ()
 
 	_film->set_encrypted (_encrypted->GetValue ());
 }
+
+void
+FilmEditor::edit_key_clicked ()
+{
+	KeyDialog* d = new KeyDialog (this, _film->key ());
+	if (d->ShowModal () == wxID_OK) {
+		_film->set_key (d->key ());
+	}
+	d->Destroy ();
+}
 			       
 /** Called when the frame rate choice widget has been changed */
 void
@@ -483,9 +511,16 @@ FilmEditor::film_changed (Film::Property p)
 		if (_film->encrypted ()) {
 			_film->set_signed (true);
 			_signed->Enable (false);
+			_key->Enable (_generally_sensitive);
+			_edit_key->Enable (_generally_sensitive);
 		} else {
 			_signed->Enable (_generally_sensitive);
+			_key->Enable (false);
+			_edit_key->Enable (false);
 		}
+		break;
+	case Film::KEY:
+		checked_set (_key, _film->key().hex().substr (0, 8) + "...");
 		break;
 	case Film::RESOLUTION:
 		checked_set (_resolution, _film->resolution() == RESOLUTION_2K ? 0 : 1);
@@ -648,6 +683,7 @@ FilmEditor::set_film (shared_ptr<Film> f)
 	film_changed (Film::WITH_SUBTITLES);
 	film_changed (Film::SIGNED);
 	film_changed (Film::ENCRYPTED);
+	film_changed (Film::KEY);
 	film_changed (Film::J2K_BANDWIDTH);
 	film_changed (Film::ISDCF_METADATA);
 	film_changed (Film::VIDEO_FRAME_RATE);
@@ -688,6 +724,8 @@ FilmEditor::set_general_sensitivity (bool s)
 	_signed->Enable (si);
 	
 	_encrypted->Enable (s);
+	_key->Enable (s && _film && _film->encrypted ());
+	_edit_key->Enable (s && _film && _film->encrypted ());
 	_frame_rate_choice->Enable (s);
 	_frame_rate_spin->Enable (s);
 	_audio_channels->Enable (s);

@@ -138,10 +138,6 @@ public:
 		libdcp::KDM::Formulation formulation
 		) const;
 
-	libdcp::Key key () const {
-		return _key;
-	}
-
 	int state_version () const {
 		return _state_version;
 	}
@@ -162,6 +158,7 @@ public:
 		WITH_SUBTITLES,
 		SIGNED,
 		ENCRYPTED,
+		KEY,
 		J2K_BANDWIDTH,
 		ISDCF_METADATA,
 		VIDEO_FRAME_RATE,
@@ -216,6 +213,10 @@ public:
 		return _encrypted;
 	}
 
+	libdcp::Key key () const {
+		return _key;
+	}
+
 	int j2k_bandwidth () const {
 		return _j2k_bandwidth;
 	}
@@ -263,6 +264,7 @@ public:
 	void set_with_subtitles (bool);
 	void set_signed (bool);
 	void set_encrypted (bool);
+	void set_key (libdcp::Key key);
 	void set_j2k_bandwidth (int);
 	void set_isdcf_metadata (ISDCFMetadata);
 	void set_video_frame_rate (int);
