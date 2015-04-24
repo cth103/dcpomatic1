@@ -18,6 +18,7 @@
 */
 
 #include <boost/lexical_cast.hpp>
+#include <boost/foreach.hpp>
 #include <wx/spinctrl.h>
 #include "lib/config.h"
 #include "lib/sound_processor.h"
@@ -32,6 +33,7 @@
 using std::vector;
 using std::cout;
 using std::string;
+using std::pair;
 using boost::dynamic_pointer_cast;
 using boost::lexical_cast;
 using boost::shared_ptr;
@@ -146,17 +148,19 @@ AudioPanel::film_content_changed (int property)
 		_mapping->set (acs ? acs->audio_mapping () : AudioMapping ());
 		_sizer->Layout ();
 	} else if (property == FFmpegContentProperty::AUDIO_STREAMS) {
-		_stream->Clear ();
 		if (fcs) {
-			vector<shared_ptr<FFmpegAudioStream> > a = fcs->audio_streams ();
-			for (vector<shared_ptr<FFmpegAudioStream> >::iterator i = a.begin(); i != a.end(); ++i) {
-				_stream->Append (std_to_wx ((*i)->name), new wxStringClientData (std_to_wx ((*i)->identifier ())));
+			vector<pair<string, string> > data;
+			BOOST_FOREACH (shared_ptr<FFmpegAudioStream> i, fcs->audio_streams ()) {
+				data.push_back (make_pair (i->name, i->identifier ()));
 			}
+			checked_set (_stream, data);
 			
 			if (fcs->audio_stream()) {
 				checked_set (_stream, fcs->audio_stream()->identifier ());
 				setup_stream_description ();
 			}
+		} else {
+			_stream->Clear ();
 		}
 	}
 }
@@ -250,7 +254,7 @@ AudioPanel::setup_stream_description ()
 {
 	FFmpegContentList fc = _editor->selected_ffmpeg_content ();
 	if (fc.size() != 1) {
-		_stream_description->SetLabel ("");
+		checked_set (_stream_description, wxT (""));
 		return;
 	}
 
@@ -266,7 +270,7 @@ AudioPanel::setup_stream_description ()
 			s << fcs->audio_channels() << wxT (" ") << _("channels");
 		}
 		s << wxT (", ") << fcs->content_audio_frame_rate() << _("Hz");
-		_stream_description->SetLabel (s);
+		checked_set (_stream_description, s);
 	}
 }
 

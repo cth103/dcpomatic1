@@ -100,7 +100,7 @@ Timecode::set (Time t, float fps)
 	checked_set (_seconds, lexical_cast<string> (s));
 	checked_set (_frames, lexical_cast<string> (f));
 
-	_fixed->SetLabel (wxString::Format ("%02d:%02d:%02d.%02" wxLongLongFmtSpec "d", h, m, s, f));
+	checked_set (_fixed, wxString::Format ("%02d:%02d:%02d.%02" wxLongLongFmtSpec "d", h, m, s, f));
 }
 
 Time
@@ -122,10 +122,10 @@ Timecode::get (int fps) const
 void
 Timecode::clear ()
 {
-	checked_set (_hours, "");
-	checked_set (_minutes, "");
-	checked_set (_seconds, "");
-	checked_set (_frames, "");
+	checked_set (_hours, wxT (""));
+	checked_set (_minutes, wxT (""));
+	checked_set (_seconds, wxT (""));
+	checked_set (_frames, wxT (""));
 	_fixed->SetLabel ("");
 }
 
