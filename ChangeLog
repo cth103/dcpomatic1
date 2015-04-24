@@ -1,3 +1,7 @@
+2015-04-22  c.hetherington  <cth@carlh.net>
+
+	* Add tentative P3 colour conversion preset.
+
 2015-04-22  Carl Hetherington  <cth@carlh.net>
 
 	* Use ~/Library/Preferences to store preferences on OS X,
