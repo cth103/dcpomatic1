@@ -1,3 +1,8 @@
+2015-04-24  carl  <cth@carlh.net>
+
+	* Fix some flickering in the film editor when dragging
+	things in the timeline on OS X.
+
 2015-04-22  c.hetherington  <cth@carlh.net>
 
 	* Add tentative P3 colour conversion preset.
