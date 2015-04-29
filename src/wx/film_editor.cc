@@ -242,7 +242,7 @@ FilmEditor::make_dcp_panel ()
 		_dcp_content_type->Append (std_to_wx ((*i)->pretty_name ()));
 	}
 
-	std::list<int> const dfr;
+	std::list<int> const dfr = Config::instance()->allowed_dcp_frame_rates ();
 	for (list<int>::const_iterator i = dfr.begin(); i != dfr.end(); ++i) {
 		_frame_rate_choice->Append (std_to_wx (boost::lexical_cast<string> (*i)));
 	}
