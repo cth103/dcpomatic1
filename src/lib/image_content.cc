@@ -39,7 +39,7 @@ ImageContent::ImageContent (shared_ptr<const Film> f, boost::filesystem::path p)
 	: Content (f)
 	, VideoContent (f)
 {
-	if (boost::filesystem::is_regular_file (p)) {
+	if (boost::filesystem::is_regular_file (p) && valid_image_file (p)) {
 		_paths.push_back (p);
 	} else {
 		for (boost::filesystem::directory_iterator i(p); i != boost::filesystem::directory_iterator(); ++i) {

@@ -882,6 +882,11 @@ audio_channel_name (int c)
 bool
 valid_image_file (boost::filesystem::path f)
 {
+	/* Ignore any files that start with ._ as they are probably OS X resource files */
+	if (boost::starts_with (f.string(), "._")) {
+		return false;
+	}
+	
 	string ext = f.extension().string();
 	transform (ext.begin(), ext.end(), ext.begin(), ::tolower);
 	return (ext == ".tif" || ext == ".tiff" || ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp" || ext == ".tga" || ext == ".dpx");
