@@ -883,7 +883,7 @@ bool
 valid_image_file (boost::filesystem::path f)
 {
 	/* Ignore any files that start with ._ as they are probably OS X resource files */
-	if (boost::starts_with (f.string(), "._")) {
+	if (boost::starts_with (f.leaf().string(), "._")) {
 		return false;
 	}
 	
