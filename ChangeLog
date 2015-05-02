@@ -1,3 +1,9 @@
+2015-05-02  Carl Hetherington  <cth@carlh.net>
+
+	* Fix ISDCF name generation when channels are mapped but
+	not included in the DCP because its channel count is
+	too low.
+
 2015-05-01  carl  <cth@carlh.net>
 
 	* Don't load image files whose names start with ._ as they

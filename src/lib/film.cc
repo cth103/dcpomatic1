@@ -643,6 +643,11 @@ Film::isdcf_name (bool if_created_now) const
 	int non_lfe = 0;
 	int lfe = 0;
 	for (list<libdcp::Channel>::const_iterator i = mapped.begin(); i != mapped.end(); ++i) {
+		if (static_cast<int> (*i) >= audio_channels ()) {
+			/* mapped but won't be used because the number of DCP channels is too low */
+			continue;
+		}
+
 		if ((*i) == libdcp::LFE) {
 			++lfe;
 		} else {
