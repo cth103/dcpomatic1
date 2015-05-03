@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-05-03 18:56+0100\n"
-"PO-Revision-Date: 2015-03-21 02:32+0100\n"
+"PO-Revision-Date: 2015-05-03 21:18+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -447,7 +447,7 @@ msgstr "Réduction de bruit par ondelettes"
 
 #: src/lib/config.cc:116
 msgid "P3 (from SMPTE RP 431-2)"
-msgstr ""
+msgstr "P3 (de SMPTE RP 431-2)"
 
 #: src/lib/video_content.cc:508
 msgid "Padded with black to %1x%2"
@@ -470,9 +470,8 @@ msgid "Rating"
 msgstr "Classification"
 
 #: src/lib/config.cc:102
-#, fuzzy
 msgid "Rec. 601"
-msgstr "Rec. 709"
+msgstr "Rec. 601"
 
 #: src/lib/config.cc:109 src/lib/video_content.cc:192
 msgid "Rec. 709"

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-05-03 18:56+0100\n"
-"PO-Revision-Date: 2015-03-21 02:40+0100\n"
+"PO-Revision-Date: 2015-05-03 21:32+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -202,7 +202,7 @@ msgstr "Nouveau...\tCtrl-N"
 
 #: src/tools/dcpomatic.cc:661 src/tools/dcpomatic.cc:679
 msgid "Restore default preferences"
-msgstr ""
+msgstr "Rétablir préférences par défaut"
 
 #: src/tools/dcpomatic.cc:672
 msgid "S&how DCP"
@@ -226,15 +226,18 @@ msgid "Select film to open"
 msgstr "Sélectionner le film à ouvrir"
 
 #: src/tools/dcpomatic.cc:401
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The DCP and intermediate files for this film will take up about %.1f Gb, and "
 "the disk that you are using only has %.1f Gb available.  You would need half "
 "as much space if the filesystem supported hard links, but it does not.  Do "
 "you want to continue anyway?"
 msgstr ""
-"Le DCP de ce film pèsera environ %.1f Go. Le disque que vous utilisez n'a "
-"que %.1f Go disponibles. Souhaitez-vous tout de même continuer ?"
+"Le DCP et les fichiers intermediaires pour ce film pèseront environ %.1f Go. "
+"Le disque que vous utilisez n'a que %.1f Go disponible(s). Vous auriez "
+"besoin de la moitié de cet espace si votre système de fichiers supportait "
+"les \"hard links\" mais il ne les supporte pas. Souhaitez-vous tout de même "
+"continuer ?"
 
 #: src/tools/dcpomatic.cc:399
 #, c-format
