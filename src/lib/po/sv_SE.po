@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-19 15:42+0100\n"
+"POT-Creation-Date: 2015-05-03 18:56+0100\n"
 "PO-Revision-Date: 2014-01-19 08:59+0100\n"
 "Last-Translator: Adam Klotblixt <adam.klotblixt@gmail.com>\n"
 "Language-Team: \n"
@@ -98,7 +98,7 @@ msgstr "Center"
 msgid "Checking existing image data"
 msgstr "Kontrollerar befintligt bilddata"
 
-#: src/lib/writer.cc:515
+#: src/lib/writer.cc:514
 msgid "Computing audio digest"
 msgstr "Beräknar audiosammanfattning"
 
@@ -106,7 +106,7 @@ msgstr "Beräknar audiosammanfattning"
 msgid "Computing digest"
 msgstr "Beräknar sammanfattning"
 
-#: src/lib/writer.cc:511
+#: src/lib/writer.cc:510
 msgid "Computing image digest"
 msgstr "Beräknar bildsammanfattning"
 
@@ -219,7 +219,7 @@ msgstr "Kunde inte öppna %1 för att skicka"
 
 #: src/lib/internet.cc:77
 #, fuzzy
-msgid "Could not open downloaded ZIP file %1"
+msgid "Could not open downloaded ZIP file"
 msgstr "kunde inte öppna fil %1"
 
 #: src/lib/scp_dcp_job.cc:153
@@ -261,7 +261,7 @@ msgid "De-interlacing"
 msgstr "Avflätning"
 
 # svåröversatt
-#: src/lib/config.cc:400
+#: src/lib/config.cc:411
 #, fuzzy
 msgid ""
 "Dear Projectionist\n"
@@ -448,6 +448,10 @@ msgstr ""
 msgid "Overcomplete wavelet denoiser"
 msgstr "Överkomplett wavelet-brusreducering"
 
+#: src/lib/config.cc:116
+msgid "P3 (from SMPTE RP 431-2)"
+msgstr ""
+
 #: src/lib/video_content.cc:508
 #, fuzzy
 msgid "Padded with black to %1x%2"
@@ -469,12 +473,12 @@ msgstr "Public Service Announcement"
 msgid "Rating"
 msgstr "Rating"
 
-#: src/lib/config.cc:109
+#: src/lib/config.cc:102
 #, fuzzy
 msgid "Rec. 601"
 msgstr "Rec. 709"
 
-#: src/lib/config.cc:116 src/lib/video_content.cc:192
+#: src/lib/config.cc:109 src/lib/video_content.cc:192
 msgid "Rec. 709"
 msgstr "Rec. 709"
 
@@ -544,7 +548,7 @@ msgstr ""
 msgid "There was not enough memory to do this."
 msgstr ""
 
-#: src/lib/film.cc:424
+#: src/lib/film.cc:405
 #, fuzzy
 msgid ""
 "This film was created with a newer version of DCP-o-matic, and it cannot be "
@@ -554,7 +558,7 @@ msgstr ""
 "inte öppnas i denna version. Du måste skapa en ny Film, lägga till ditt "
 "innehåll och konfigurera allt igen. Ursäkta!"
 
-#: src/lib/film.cc:416
+#: src/lib/film.cc:397
 msgid ""
 "This film was created with an older version of DCP-o-matic, and "
 "unfortunately it cannot be loaded into this version.  You will need to "
@@ -597,7 +601,7 @@ msgstr "Okänt audio-sampelformat (%1)"
 msgid "Unsharp mask and Gaussian blur"
 msgstr "Oskärpemask och Gaussisk suddighet"
 
-#: src/lib/colour_conversion.cc:253
+#: src/lib/colour_conversion.cc:265
 msgid "Untitled"
 msgstr "Utan titel"
 
@@ -671,7 +675,7 @@ msgstr "kunde inte hitta information om strömmen"
 msgid "could not find video decoder"
 msgstr "kunde inte hitta video-avkodare"
 
-#: src/lib/writer.cc:479
+#: src/lib/writer.cc:478
 msgid "could not move audio MXF into the DCP (%1)"
 msgstr "kunde inte flytta audio-MXF in i DCP:n (%1)"
 
@@ -787,10 +791,6 @@ msgstr "återstående tid"
 msgid "sRGB"
 msgstr "sRGB"
 
-#: src/lib/config.cc:102
-msgid "sRGB non-linearised"
-msgstr "sRGB icke-linjär"
-
 #: src/lib/util.cc:195
 #, fuzzy
 msgid "second"
@@ -803,6 +803,9 @@ msgstr "sekunder"
 #: src/lib/ffmpeg_examiner.cc:197
 msgid "unknown"
 msgstr "okänd"
+
+#~ msgid "sRGB non-linearised"
+#~ msgstr "sRGB icke-linjär"
 
 #~ msgid "1.375"
 #~ msgstr "1,375"

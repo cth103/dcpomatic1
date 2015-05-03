@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IT VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-19 15:42+0100\n"
+"POT-Creation-Date: 2015-05-03 18:56+0100\n"
 "PO-Revision-Date: 2014-02-03 10:48+0100\n"
 "Last-Translator: William Fanelli <william.f@impronte.com>\n"
 "Language-Team: \n"
@@ -98,7 +98,7 @@ msgstr "Centro"
 msgid "Checking existing image data"
 msgstr ""
 
-#: src/lib/writer.cc:515
+#: src/lib/writer.cc:514
 msgid "Computing audio digest"
 msgstr ""
 
@@ -106,7 +106,7 @@ msgstr ""
 msgid "Computing digest"
 msgstr ""
 
-#: src/lib/writer.cc:511
+#: src/lib/writer.cc:510
 msgid "Computing image digest"
 msgstr ""
 
@@ -262,7 +262,7 @@ msgstr ""
 msgid "De-interlacing"
 msgstr "De-interlacciamento"
 
-#: src/lib/config.cc:400
+#: src/lib/config.cc:411
 #, fuzzy
 msgid ""
 "Dear Projectionist\n"
@@ -450,6 +450,10 @@ msgstr ""
 msgid "Overcomplete wavelet denoiser"
 msgstr "Overcomplete wavelet denoiser"
 
+#: src/lib/config.cc:116
+msgid "P3 (from SMPTE RP 431-2)"
+msgstr ""
+
 #: src/lib/video_content.cc:508
 msgid "Padded with black to %1x%2"
 msgstr ""
@@ -470,12 +474,12 @@ msgstr "Annuncio di pubblico servizio"
 msgid "Rating"
 msgstr "Punteggio"
 
-#: src/lib/config.cc:109
+#: src/lib/config.cc:102
 #, fuzzy
 msgid "Rec. 601"
 msgstr "Rec 709"
 
-#: src/lib/config.cc:116 src/lib/video_content.cc:192
+#: src/lib/config.cc:109 src/lib/video_content.cc:192
 #, fuzzy
 msgid "Rec. 709"
 msgstr "Rec 709"
@@ -545,7 +549,7 @@ msgstr ""
 msgid "There was not enough memory to do this."
 msgstr ""
 
-#: src/lib/film.cc:424
+#: src/lib/film.cc:405
 #, fuzzy
 msgid ""
 "This film was created with a newer version of DCP-o-matic, and it cannot be "
@@ -556,7 +560,7 @@ msgstr ""
 "un nuovo film, ri-aggiungere i tuoi contenuti e configurarlo di nuovo. Ci "
 "dispiace!"
 
-#: src/lib/film.cc:416
+#: src/lib/film.cc:397
 msgid ""
 "This film was created with an older version of DCP-o-matic, and "
 "unfortunately it cannot be loaded into this version.  You will need to "
@@ -599,7 +603,7 @@ msgstr "Formato di campionamento audio non riconosciuto (%1)"
 msgid "Unsharp mask and Gaussian blur"
 msgstr "Maschera unsharp e sfocatura Gaussiana"
 
-#: src/lib/colour_conversion.cc:253
+#: src/lib/colour_conversion.cc:265
 msgid "Untitled"
 msgstr "Senza titolo"
 
@@ -672,7 +676,7 @@ msgstr "non riesco a trovare informazioni sullo streaming"
 msgid "could not find video decoder"
 msgstr "non riesco a trovare il decoder video"
 
-#: src/lib/writer.cc:479
+#: src/lib/writer.cc:478
 msgid "could not move audio MXF into the DCP (%1)"
 msgstr ""
 
@@ -705,7 +709,9 @@ msgstr "non riesco a eseguire il convertitore della frequenza di campionamento"
 #: src/lib/resampler.cc:79
 #, fuzzy
 msgid "could not run sample-rate converter for %1 samples (%2) (%3)"
-msgstr "non riesco a eseguire il convertitore della frequenza di campionamento (%1) (%2) (%3)"
+msgstr ""
+"non riesco a eseguire il convertitore della frequenza di campionamento (%1) "
+"(%2) (%3)"
 
 #: src/lib/scp_dcp_job.cc:88
 msgid "could not start SCP session (%1)"
@@ -789,10 +795,6 @@ msgstr "restano"
 msgid "sRGB"
 msgstr "sRGB"
 
-#: src/lib/config.cc:102
-msgid "sRGB non-linearised"
-msgstr "sRGB non linearizzato"
-
 #: src/lib/util.cc:195
 #, fuzzy
 msgid "second"
@@ -806,6 +808,9 @@ msgstr "secondi"
 #, fuzzy
 msgid "unknown"
 msgstr "Errore sconosciuto"
+
+#~ msgid "sRGB non-linearised"
+#~ msgstr "sRGB non linearizzato"
 
 #~ msgid "1.375"
 #~ msgstr "1.375"

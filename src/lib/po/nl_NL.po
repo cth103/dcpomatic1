@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-19 15:42+0100\n"
+"POT-Creation-Date: 2015-05-03 18:56+0100\n"
 "PO-Revision-Date: 2014-09-04 20:34+0100\n"
 "Last-Translator: Cherif Ben Brahim <firehc@mac.com>\n"
 "Language-Team: UniversalDV <Tkooijmans@universaldv.nl>\n"
@@ -98,7 +98,7 @@ msgstr "Midden"
 msgid "Checking existing image data"
 msgstr "Controleer bestaande videodata"
 
-#: src/lib/writer.cc:515
+#: src/lib/writer.cc:514
 msgid "Computing audio digest"
 msgstr "Verwerk audio data"
 
@@ -106,7 +106,7 @@ msgstr "Verwerk audio data"
 msgid "Computing digest"
 msgstr "Verwerken..."
 
-#: src/lib/writer.cc:511
+#: src/lib/writer.cc:510
 msgid "Computing image digest"
 msgstr "Verwerk video data"
 
@@ -256,7 +256,7 @@ msgstr ""
 msgid "De-interlacing"
 msgstr "De-interlacing"
 
-#: src/lib/config.cc:400
+#: src/lib/config.cc:411
 msgid ""
 "Dear Projectionist\n"
 "\n"
@@ -445,6 +445,10 @@ msgstr "Te weinig geheugen"
 msgid "Overcomplete wavelet denoiser"
 msgstr "Overcomplete wavelet denoiser"
 
+#: src/lib/config.cc:116
+msgid "P3 (from SMPTE RP 431-2)"
+msgstr ""
+
 #: src/lib/video_content.cc:508
 #, fuzzy
 msgid "Padded with black to %1x%2"
@@ -466,12 +470,12 @@ msgstr "Publieke Service aankondiging"
 msgid "Rating"
 msgstr "Beoordeling"
 
-#: src/lib/config.cc:109
+#: src/lib/config.cc:102
 #, fuzzy
 msgid "Rec. 601"
 msgstr "Rec. 709"
 
-#: src/lib/config.cc:116 src/lib/video_content.cc:192
+#: src/lib/config.cc:109 src/lib/video_content.cc:192
 msgid "Rec. 709"
 msgstr "Rec. 709"
 
@@ -540,7 +544,7 @@ msgstr ""
 msgid "There was not enough memory to do this."
 msgstr "Er was niet genoeg geheugen om dit uit te voeren."
 
-#: src/lib/film.cc:424
+#: src/lib/film.cc:405
 msgid ""
 "This film was created with a newer version of DCP-o-matic, and it cannot be "
 "loaded into this version.  Sorry!"
@@ -548,7 +552,7 @@ msgstr ""
 "Deze film is gemaakt met een nieuwere versie van DCP-o-matic en kan niet "
 "geopend worden. Sorry!"
 
-#: src/lib/film.cc:416
+#: src/lib/film.cc:397
 msgid ""
 "This film was created with an older version of DCP-o-matic, and "
 "unfortunately it cannot be loaded into this version.  You will need to "
@@ -590,7 +594,7 @@ msgstr "Niet herkenbaar audio sample formaat (%1)"
 msgid "Unsharp mask and Gaussian blur"
 msgstr "Unsharp mask and Gaussian blur"
 
-#: src/lib/colour_conversion.cc:253
+#: src/lib/colour_conversion.cc:265
 msgid "Untitled"
 msgstr "Niet benoemd"
 
@@ -662,7 +666,7 @@ msgstr "kan geen stream informatie vinden"
 msgid "could not find video decoder"
 msgstr "kan geen videodecoder vinden"
 
-#: src/lib/writer.cc:479
+#: src/lib/writer.cc:478
 msgid "could not move audio MXF into the DCP (%1)"
 msgstr "kan MXF audio niet plaatsen in DCP (%1)"
 
@@ -777,10 +781,6 @@ msgstr "resterend"
 msgid "sRGB"
 msgstr "sRGB"
 
-#: src/lib/config.cc:102
-msgid "sRGB non-linearised"
-msgstr "sRGB non-linearised"
-
 #: src/lib/util.cc:195
 msgid "second"
 msgstr "secondes"
@@ -792,6 +792,9 @@ msgstr "secondes"
 #: src/lib/ffmpeg_examiner.cc:197
 msgid "unknown"
 msgstr "onbekend"
+
+#~ msgid "sRGB non-linearised"
+#~ msgstr "sRGB non-linearised"
 
 #~ msgid "1.375"
 #~ msgstr "1.375"

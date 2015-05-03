@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LIBDCPOMATIC\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-19 15:42+0100\n"
+"POT-Creation-Date: 2015-05-03 18:56+0100\n"
 "PO-Revision-Date: 2015-03-16 19:24-0500\n"
 "Last-Translator: Manuel AC <manuel.acevedo@civantos.>\n"
 "Language-Team: Manuel AC <manuel.acevedo@civantos.com>\n"
@@ -97,7 +97,7 @@ msgstr "Centro"
 msgid "Checking existing image data"
 msgstr "Comprobando las imágenes existentes"
 
-#: src/lib/writer.cc:515
+#: src/lib/writer.cc:514
 msgid "Computing audio digest"
 msgstr "Calculando la firma resumen del audio"
 
@@ -105,7 +105,7 @@ msgstr "Calculando la firma resumen del audio"
 msgid "Computing digest"
 msgstr "Calculando la firma resumen"
 
-#: src/lib/writer.cc:511
+#: src/lib/writer.cc:510
 msgid "Computing image digest"
 msgstr "Calculando la firma resumen de imagen"
 
@@ -254,7 +254,7 @@ msgstr "DCP-o-matic ya no ofrece el filtro `%1', así que ha sido desactivado."
 msgid "De-interlacing"
 msgstr "Desentrelazado"
 
-#: src/lib/config.cc:400
+#: src/lib/config.cc:411
 msgid ""
 "Dear Projectionist\n"
 "\n"
@@ -441,6 +441,10 @@ msgstr "Falta de memoria"
 msgid "Overcomplete wavelet denoiser"
 msgstr "Overcomplete wavelet denoiser"
 
+#: src/lib/config.cc:116
+msgid "P3 (from SMPTE RP 431-2)"
+msgstr ""
+
 #: src/lib/video_content.cc:508
 msgid "Padded with black to %1x%2"
 msgstr "Completado con negro hasta %1x%2"
@@ -461,12 +465,12 @@ msgstr "Anuncio de servicio público"
 msgid "Rating"
 msgstr "Clasificación"
 
-#: src/lib/config.cc:109
+#: src/lib/config.cc:102
 #, fuzzy
 msgid "Rec. 601"
 msgstr "Rec. 709"
 
-#: src/lib/config.cc:116 src/lib/video_content.cc:192
+#: src/lib/config.cc:109 src/lib/video_content.cc:192
 msgid "Rec. 709"
 msgstr "Rec. 709"
 
@@ -534,7 +538,7 @@ msgstr ""
 msgid "There was not enough memory to do this."
 msgstr "No hubo suficiente memoria para hacer esto."
 
-#: src/lib/film.cc:424
+#: src/lib/film.cc:405
 msgid ""
 "This film was created with a newer version of DCP-o-matic, and it cannot be "
 "loaded into this version.  Sorry!"
@@ -543,7 +547,7 @@ msgstr ""
 "desgraciadamente no s puede cargar. Necesitas crear una nueva película, "
 "volver a añadir y configurar ton contenido. ¡Lo siento!"
 
-#: src/lib/film.cc:416
+#: src/lib/film.cc:397
 msgid ""
 "This film was created with an older version of DCP-o-matic, and "
 "unfortunately it cannot be loaded into this version.  You will need to "
@@ -585,7 +589,7 @@ msgstr "Formato de audio desconocido (%1)"
 msgid "Unsharp mask and Gaussian blur"
 msgstr "Máscara de desenfoque Gaussiano"
 
-#: src/lib/colour_conversion.cc:253
+#: src/lib/colour_conversion.cc:265
 msgid "Untitled"
 msgstr "Sin título"
 
@@ -657,7 +661,7 @@ msgstr "no se pudo encontrar información del flujo"
 msgid "could not find video decoder"
 msgstr "no se pudo encontrar decodificador de vídeo"
 
-#: src/lib/writer.cc:479
+#: src/lib/writer.cc:478
 msgid "could not move audio MXF into the DCP (%1)"
 msgstr "no s puedo mover el audio MXF en el DCP (%1)"
 
@@ -772,10 +776,6 @@ msgstr "pendiente"
 msgid "sRGB"
 msgstr "sRGB"
 
-#: src/lib/config.cc:102
-msgid "sRGB non-linearised"
-msgstr "sRGB no-lineal"
-
 #: src/lib/util.cc:195
 msgid "second"
 msgstr "segundo"
@@ -787,6 +787,9 @@ msgstr "segundos"
 #: src/lib/ffmpeg_examiner.cc:197
 msgid "unknown"
 msgstr "desconocido"
+
+#~ msgid "sRGB non-linearised"
+#~ msgstr "sRGB no-lineal"
 
 #~ msgid "1.375"
 #~ msgstr "1.375"
