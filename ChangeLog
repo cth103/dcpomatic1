@@ -1,3 +1,7 @@
+2015-05-03  Carl Hetherington  <cth@carlh.net>
+
+	* Add a simple content properties dialogue (#554).
+
 2015-05-02  Carl Hetherington  <cth@carlh.net>
 
 	* Fix ISDCF name generation when channels are mapped but

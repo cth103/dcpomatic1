@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 #include "wx_util.h"
 #include "timeline_video_content_view.h"
 #include "timeline_audio_content_view.h"
+#include "content_properties_dialog.h"
 
 using std::cout;
 using std::vector;
@@ -42,6 +43,7 @@ enum {
 	ID_repeat = 1,
 	ID_join,
 	ID_find_missing,
+	ID_properties,
 	ID_remove
 };
 
@@ -52,12 +54,14 @@ ContentMenu::ContentMenu (wxWindow* p)
 	_repeat = _menu->Append (ID_repeat, _("Repeat..."));
 	_join = _menu->Append (ID_join, _("Join"));
 	_find_missing = _menu->Append (ID_find_missing, _("Find missing..."));
+	_properties = _menu->Append (ID_properties, _("Properties..."));
 	_menu->AppendSeparator ();
 	_remove = _menu->Append (ID_remove, _("Remove"));
 
 	_parent->Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&ContentMenu::repeat, this), ID_repeat);
 	_parent->Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&ContentMenu::join, this), ID_join);
 	_parent->Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&ContentMenu::find_missing, this), ID_find_missing);
+	_parent->Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&ContentMenu::properties, this), ID_properties);
 	_parent->Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&ContentMenu::remove, this), ID_remove);
 }
 
@@ -84,6 +88,7 @@ ContentMenu::popup (weak_ptr<Film> f, ContentList c, TimelineContentViewList v, 
 	_join->Enable (n > 1);
 	
 	_find_missing->Enable (_content.size() == 1 && !_content.front()->paths_valid ());
+	_properties->Enable (_content.size() == 1);
 	_remove->Enable (!_content.empty ());
 	_parent->PopupMenu (_menu, p);
 }
@@ -266,4 +271,12 @@ ContentMenu::maybe_found_missing (weak_ptr<Job> j, weak_ptr<Content> oc, weak_pt
 	}
 
 	old_content->set_path (new_content->path (0));
+}
+
+void
+ContentMenu::properties ()
+{
+	ContentPropertiesDialog* d = new ContentPropertiesDialog (_parent, _content.front ());
+	d->ShowModal ();
+	d->Destroy ();
 }
