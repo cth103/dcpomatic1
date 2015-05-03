@@ -658,7 +658,6 @@ private:
 #else
 		wxMenu* edit = new wxMenu;
 		add_item (edit, _("&Preferences...\tCtrl-P"), wxID_PREFERENCES, ALWAYS);
-		add_item (edit, _("Restore default preferences"), ID_restore_default_preferences, ALWAYS);
 #endif
 
 		wxMenu* content = new wxMenu;
@@ -675,9 +674,8 @@ private:
 		add_item (tools, _("Hints..."), ID_tools_hints, 0);
 		add_item (tools, _("Encoding servers..."), ID_tools_encoding_servers, 0);
 		add_item (tools, _("Check for updates"), ID_tools_check_for_updates, 0);
-#ifdef __WXOSX__		
+		tools->AppendSeparator ();
 		add_item (tools, _("Restore default preferences"), ID_restore_default_preferences, ALWAYS);
-#endif		
 		
 		wxMenu* help = new wxMenu;
 #ifdef __WXOSX__	
