@@ -128,7 +128,7 @@ BOOST_AUTO_TEST_CASE (video_content_scale_test_to_ratio)
 		Crop (0, 0, 0, 0),
 		Ratio::from_id ("239"),
 		true,
-		libdcp::Size (1998, 836)
+		libdcp::Size (1998, 837)
 		);
 	
 	// Flat in scope container
@@ -164,7 +164,7 @@ BOOST_AUTO_TEST_CASE (video_content_scale_test_to_ratio)
 		Crop (0, 0, 0, 0),
 		Ratio::from_id ("239"),
 		true,
-		libdcp::Size (185, 77)
+		libdcp::Size (185, 78)
 		);
 	
 	// Flat in scope container
