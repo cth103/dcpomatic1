@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-03 18:56+0100\n"
+"POT-Creation-Date: 2015-05-04 23:32+0100\n"
 "PO-Revision-Date: 2015-05-03 21:18+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
@@ -89,7 +89,7 @@ msgstr "Annulé"
 msgid "Cannot handle pixel format %1 during %2"
 msgstr "Format du pixel %1 non géré par %2"
 
-#: src/lib/util.cc:867
+#: src/lib/util.cc:869
 msgid "Centre"
 msgstr "Centre"
 
@@ -259,7 +259,7 @@ msgstr "DCP-o-matic ne gère plus le filtre \"%1\". Celui-ci a été désactivé
 msgid "De-interlacing"
 msgstr "Désentrelacement"
 
-#: src/lib/config.cc:411
+#: src/lib/config.cc:366
 msgid ""
 "Dear Projectionist\n"
 "\n"
@@ -353,7 +353,7 @@ msgstr "Gaussien"
 msgid "Gradient debander"
 msgstr "Corrections des bandes par dégradé"
 
-#: src/lib/util.cc:871
+#: src/lib/util.cc:873
 msgid "Hearing impaired"
 msgstr "Déficients Auditifs"
 
@@ -369,7 +369,7 @@ msgstr ""
 "Erreur indéterminée. Merci de rapporter le problème à l'auteur de DCP-o-"
 "matic (carl@dcpomatic.com)"
 
-#: src/lib/config.cc:222
+#: src/lib/config.cc:181
 msgid "KDM delivery: $CPL_NAME"
 msgstr "Livraison de KDM : $CPL_NAME"
 
@@ -381,23 +381,23 @@ msgstr "Désentrelaceur noyau"
 msgid "Lanczos"
 msgstr "Lanczos"
 
-#: src/lib/util.cc:865
+#: src/lib/util.cc:867
 msgid "Left"
 msgstr "Gauche"
 
-#: src/lib/util.cc:873
+#: src/lib/util.cc:875
 msgid "Left centre"
 msgstr "Centre Gauche"
 
-#: src/lib/util.cc:875
+#: src/lib/util.cc:877
 msgid "Left rear surround"
 msgstr "Surround arrière gauche"
 
-#: src/lib/util.cc:869
+#: src/lib/util.cc:871
 msgid "Left surround"
 msgstr "Arrière gauche"
 
-#: src/lib/util.cc:868
+#: src/lib/util.cc:870
 msgid "Lfe (sub)"
 msgstr "Basses fréquences"
 
@@ -445,7 +445,7 @@ msgstr "Hors capacité mémoire"
 msgid "Overcomplete wavelet denoiser"
 msgstr "Réduction de bruit par ondelettes"
 
-#: src/lib/config.cc:116
+#: src/lib/colour_conversion.cc:361
 msgid "P3 (from SMPTE RP 431-2)"
 msgstr "P3 (de SMPTE RP 431-2)"
 
@@ -469,27 +469,27 @@ msgstr "Public Service Announcement"
 msgid "Rating"
 msgstr "Classification"
 
-#: src/lib/config.cc:102
+#: src/lib/colour_conversion.cc:347
 msgid "Rec. 601"
 msgstr "Rec. 601"
 
-#: src/lib/config.cc:109 src/lib/video_content.cc:192
+#: src/lib/colour_conversion.cc:354 src/lib/video_content.cc:192
 msgid "Rec. 709"
 msgstr "Rec. 709"
 
-#: src/lib/util.cc:866
+#: src/lib/util.cc:868
 msgid "Right"
 msgstr "Droite"
 
-#: src/lib/util.cc:874
+#: src/lib/util.cc:876
 msgid "Right centre"
 msgstr "Centre Droit"
 
-#: src/lib/util.cc:876
+#: src/lib/util.cc:878
 msgid "Right rear surround"
 msgstr "Surround arrière droite"
 
-#: src/lib/util.cc:870
+#: src/lib/util.cc:872
 msgid "Right surround"
 msgstr "Arrière droite"
 
@@ -591,11 +591,11 @@ msgstr "Échantillonnage audio (%1) inconnu"
 msgid "Unsharp mask and Gaussian blur"
 msgstr "Adoucissement et flou Gaussien"
 
-#: src/lib/colour_conversion.cc:265
+#: src/lib/colour_conversion.cc:267
 msgid "Untitled"
 msgstr "Sans titre"
 
-#: src/lib/util.cc:872
+#: src/lib/util.cc:874
 msgid "Visually impaired"
 msgstr "Déficients visuels"
 
@@ -627,7 +627,7 @@ msgstr "[restant]"
 msgid "cannot contain slashes"
 msgstr "Caractère \"slash\" interdit"
 
-#: src/lib/util.cc:647
+#: src/lib/util.cc:649
 msgid "connect timed out"
 msgstr "temps de connexion expiré"
 
@@ -708,19 +708,19 @@ msgstr "démarrage de session SSH impossible"
 msgid "could not write to file %1 (%2)"
 msgstr "Écriture vers fichier distant (%1) impossible (%2)"
 
-#: src/lib/util.cc:667
+#: src/lib/util.cc:669
 msgid "error during async_accept (%1)"
 msgstr "erreur pendant async_accept (%1)"
 
-#: src/lib/util.cc:643
+#: src/lib/util.cc:645
 msgid "error during async_connect (%1)"
 msgstr "erreur pendant async_connect (%1)"
 
-#: src/lib/util.cc:716
+#: src/lib/util.cc:718
 msgid "error during async_read (%1)"
 msgstr "erreur pendant async_read (%1)"
 
-#: src/lib/util.cc:688
+#: src/lib/util.cc:690
 msgid "error during async_write (%1)"
 msgstr "erreur pendant async_write (%1)"
 
@@ -728,23 +728,23 @@ msgstr "erreur pendant async_write (%1)"
 msgid "frames per second"
 msgstr "images par seconde"
 
-#: src/lib/util.cc:162
+#: src/lib/util.cc:163
 msgid "hour"
 msgstr "heure"
 
-#: src/lib/util.cc:158 src/lib/util.cc:164
+#: src/lib/util.cc:159 src/lib/util.cc:165
 msgid "hours"
 msgstr "heures"
 
-#: src/lib/util.cc:180
+#: src/lib/util.cc:181
 msgid "minute"
 msgstr "minute"
 
-#: src/lib/util.cc:176 src/lib/util.cc:182
+#: src/lib/util.cc:177 src/lib/util.cc:183
 msgid "minutes"
 msgstr "minutes"
 
-#: src/lib/util.cc:788
+#: src/lib/util.cc:790
 msgid "missing key %1 in key-value set"
 msgstr "clé %1 manquante dans le paramétrage"
 
@@ -774,15 +774,15 @@ msgstr "format d'image"
 msgid "remaining"
 msgstr "restant"
 
-#: src/lib/config.cc:95
+#: src/lib/colour_conversion.cc:340
 msgid "sRGB"
 msgstr "sRGB"
 
-#: src/lib/util.cc:195
+#: src/lib/util.cc:196
 msgid "second"
 msgstr "seconde"
 
-#: src/lib/util.cc:197
+#: src/lib/util.cc:198
 msgid "seconds"
 msgstr "secondes"
 

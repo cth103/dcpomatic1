@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-03 18:56+0100\n"
+"POT-Creation-Date: 2015-05-04 23:32+0100\n"
 "PO-Revision-Date: 2014-09-04 20:34+0100\n"
 "Last-Translator: Cherif Ben Brahim <firehc@mac.com>\n"
 "Language-Team: UniversalDV <Tkooijmans@universaldv.nl>\n"
@@ -90,7 +90,7 @@ msgstr "Afgebroken"
 msgid "Cannot handle pixel format %1 during %2"
 msgstr "Fout met pixel formaat %1 tijdens %2"
 
-#: src/lib/util.cc:867
+#: src/lib/util.cc:869
 msgid "Centre"
 msgstr "Midden"
 
@@ -256,7 +256,7 @@ msgstr ""
 msgid "De-interlacing"
 msgstr "De-interlacing"
 
-#: src/lib/config.cc:411
+#: src/lib/config.cc:366
 msgid ""
 "Dear Projectionist\n"
 "\n"
@@ -349,7 +349,7 @@ msgstr "Gaussian"
 msgid "Gradient debander"
 msgstr "Gradient debander"
 
-#: src/lib/util.cc:871
+#: src/lib/util.cc:873
 msgid "Hearing impaired"
 msgstr "Slechthorenden"
 
@@ -365,7 +365,7 @@ msgstr ""
 "Dit is een onbekende fout. U kunt deze het beste melden bij de DCP-o-matic "
 "maker (carl@dcpomatic.com)"
 
-#: src/lib/config.cc:222
+#: src/lib/config.cc:181
 msgid "KDM delivery: $CPL_NAME"
 msgstr "KDM levering: $CPL_NAME"
 
@@ -377,23 +377,23 @@ msgstr "Kernel deinterlacer"
 msgid "Lanczos"
 msgstr "Lanczos"
 
-#: src/lib/util.cc:865
+#: src/lib/util.cc:867
 msgid "Left"
 msgstr "Links"
 
-#: src/lib/util.cc:873
+#: src/lib/util.cc:875
 msgid "Left centre"
 msgstr "Links midden"
 
-#: src/lib/util.cc:875
+#: src/lib/util.cc:877
 msgid "Left rear surround"
 msgstr "Links achter surround"
 
-#: src/lib/util.cc:869
+#: src/lib/util.cc:871
 msgid "Left surround"
 msgstr "links surround"
 
-#: src/lib/util.cc:868
+#: src/lib/util.cc:870
 msgid "Lfe (sub)"
 msgstr "Lfe (sub)"
 
@@ -445,7 +445,7 @@ msgstr "Te weinig geheugen"
 msgid "Overcomplete wavelet denoiser"
 msgstr "Overcomplete wavelet denoiser"
 
-#: src/lib/config.cc:116
+#: src/lib/colour_conversion.cc:361
 msgid "P3 (from SMPTE RP 431-2)"
 msgstr ""
 
@@ -470,28 +470,28 @@ msgstr "Publieke Service aankondiging"
 msgid "Rating"
 msgstr "Beoordeling"
 
-#: src/lib/config.cc:102
+#: src/lib/colour_conversion.cc:347
 #, fuzzy
 msgid "Rec. 601"
 msgstr "Rec. 709"
 
-#: src/lib/config.cc:109 src/lib/video_content.cc:192
+#: src/lib/colour_conversion.cc:354 src/lib/video_content.cc:192
 msgid "Rec. 709"
 msgstr "Rec. 709"
 
-#: src/lib/util.cc:866
+#: src/lib/util.cc:868
 msgid "Right"
 msgstr "Rechts"
 
-#: src/lib/util.cc:874
+#: src/lib/util.cc:876
 msgid "Right centre"
 msgstr "Rechts midden"
 
-#: src/lib/util.cc:876
+#: src/lib/util.cc:878
 msgid "Right rear surround"
 msgstr "Rechtsachter surround"
 
-#: src/lib/util.cc:870
+#: src/lib/util.cc:872
 msgid "Right surround"
 msgstr "Rechts surround"
 
@@ -594,11 +594,11 @@ msgstr "Niet herkenbaar audio sample formaat (%1)"
 msgid "Unsharp mask and Gaussian blur"
 msgstr "Unsharp mask and Gaussian blur"
 
-#: src/lib/colour_conversion.cc:265
+#: src/lib/colour_conversion.cc:267
 msgid "Untitled"
 msgstr "Niet benoemd"
 
-#: src/lib/util.cc:872
+#: src/lib/util.cc:874
 msgid "Visually impaired"
 msgstr "Slechtzienden"
 
@@ -630,7 +630,7 @@ msgstr "[still]"
 msgid "cannot contain slashes"
 msgstr "er mag geen '\" gebruikt worden"
 
-#: src/lib/util.cc:647
+#: src/lib/util.cc:649
 msgid "connect timed out"
 msgstr "verbinding timeout"
 
@@ -711,19 +711,19 @@ msgstr "kan SSH sessie niet starten"
 msgid "could not write to file %1 (%2)"
 msgstr "kan niet schrijven naar bestand %1 (%2)"
 
-#: src/lib/util.cc:667
+#: src/lib/util.cc:669
 msgid "error during async_accept (%1)"
 msgstr "fout met async_accepteren (FTP) (%1)"
 
-#: src/lib/util.cc:643
+#: src/lib/util.cc:645
 msgid "error during async_connect (%1)"
 msgstr "fout met async_verbinden (FTP) (%1)"
 
-#: src/lib/util.cc:716
+#: src/lib/util.cc:718
 msgid "error during async_read (%1)"
 msgstr "fout met async_lezen (FTP) (%1)"
 
-#: src/lib/util.cc:688
+#: src/lib/util.cc:690
 msgid "error during async_write (%1)"
 msgstr "fout met async_schrijven (FTP) (%1)"
 
@@ -731,23 +731,23 @@ msgstr "fout met async_schrijven (FTP) (%1)"
 msgid "frames per second"
 msgstr "frames per seconde"
 
-#: src/lib/util.cc:162
+#: src/lib/util.cc:163
 msgid "hour"
 msgstr "uur"
 
-#: src/lib/util.cc:158 src/lib/util.cc:164
+#: src/lib/util.cc:159 src/lib/util.cc:165
 msgid "hours"
 msgstr "uren"
 
-#: src/lib/util.cc:180
+#: src/lib/util.cc:181
 msgid "minute"
 msgstr "minuut"
 
-#: src/lib/util.cc:176 src/lib/util.cc:182
+#: src/lib/util.cc:177 src/lib/util.cc:183
 msgid "minutes"
 msgstr "minuten"
 
-#: src/lib/util.cc:788
+#: src/lib/util.cc:790
 msgid "missing key %1 in key-value set"
 msgstr "ontbrekende key %1 in key-value set"
 
@@ -777,15 +777,15 @@ msgstr ""
 msgid "remaining"
 msgstr "resterend"
 
-#: src/lib/config.cc:95
+#: src/lib/colour_conversion.cc:340
 msgid "sRGB"
 msgstr "sRGB"
 
-#: src/lib/util.cc:195
+#: src/lib/util.cc:196
 msgid "second"
 msgstr "secondes"
 
-#: src/lib/util.cc:197
+#: src/lib/util.cc:198
 msgid "seconds"
 msgstr "secondes"
 

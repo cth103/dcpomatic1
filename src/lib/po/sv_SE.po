@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-03 18:56+0100\n"
+"POT-Creation-Date: 2015-05-04 23:32+0100\n"
 "PO-Revision-Date: 2014-01-19 08:59+0100\n"
 "Last-Translator: Adam Klotblixt <adam.klotblixt@gmail.com>\n"
 "Language-Team: \n"
@@ -90,7 +90,7 @@ msgstr "Avbruten"
 msgid "Cannot handle pixel format %1 during %2"
 msgstr "Kan inte hantera pixelformat %1 under %2"
 
-#: src/lib/util.cc:867
+#: src/lib/util.cc:869
 msgid "Centre"
 msgstr "Center"
 
@@ -261,7 +261,7 @@ msgid "De-interlacing"
 msgstr "Avflätning"
 
 # svåröversatt
-#: src/lib/config.cc:411
+#: src/lib/config.cc:366
 #, fuzzy
 msgid ""
 "Dear Projectionist\n"
@@ -352,7 +352,7 @@ msgstr "Gaussisk"
 msgid "Gradient debander"
 msgstr "Gradientutjämnare"
 
-#: src/lib/util.cc:871
+#: src/lib/util.cc:873
 msgid "Hearing impaired"
 msgstr ""
 
@@ -369,7 +369,7 @@ msgstr ""
 "Det är inte känt vad som orsakade detta fel. Bästa sättet att rapportera "
 "problemet är till DCP-o-matics mejl-lista (carl@dcpomatic.com)"
 
-#: src/lib/config.cc:222
+#: src/lib/config.cc:181
 msgid "KDM delivery: $CPL_NAME"
 msgstr ""
 
@@ -381,24 +381,24 @@ msgstr "Kernel-avflätare"
 msgid "Lanczos"
 msgstr "Lanczos"
 
-#: src/lib/util.cc:865
+#: src/lib/util.cc:867
 msgid "Left"
 msgstr "Vänster"
 
-#: src/lib/util.cc:873
+#: src/lib/util.cc:875
 msgid "Left centre"
 msgstr ""
 
-#: src/lib/util.cc:875
+#: src/lib/util.cc:877
 #, fuzzy
 msgid "Left rear surround"
 msgstr "Vänster surround"
 
-#: src/lib/util.cc:869
+#: src/lib/util.cc:871
 msgid "Left surround"
 msgstr "Vänster surround"
 
-#: src/lib/util.cc:868
+#: src/lib/util.cc:870
 msgid "Lfe (sub)"
 msgstr "Lfe (sub)"
 
@@ -448,7 +448,7 @@ msgstr ""
 msgid "Overcomplete wavelet denoiser"
 msgstr "Överkomplett wavelet-brusreducering"
 
-#: src/lib/config.cc:116
+#: src/lib/colour_conversion.cc:361
 msgid "P3 (from SMPTE RP 431-2)"
 msgstr ""
 
@@ -473,29 +473,29 @@ msgstr "Public Service Announcement"
 msgid "Rating"
 msgstr "Rating"
 
-#: src/lib/config.cc:102
+#: src/lib/colour_conversion.cc:347
 #, fuzzy
 msgid "Rec. 601"
 msgstr "Rec. 709"
 
-#: src/lib/config.cc:109 src/lib/video_content.cc:192
+#: src/lib/colour_conversion.cc:354 src/lib/video_content.cc:192
 msgid "Rec. 709"
 msgstr "Rec. 709"
 
-#: src/lib/util.cc:866
+#: src/lib/util.cc:868
 msgid "Right"
 msgstr "Höger"
 
-#: src/lib/util.cc:874
+#: src/lib/util.cc:876
 msgid "Right centre"
 msgstr ""
 
-#: src/lib/util.cc:876
+#: src/lib/util.cc:878
 #, fuzzy
 msgid "Right rear surround"
 msgstr "Höger surround"
 
-#: src/lib/util.cc:870
+#: src/lib/util.cc:872
 msgid "Right surround"
 msgstr "Höger surround"
 
@@ -601,11 +601,11 @@ msgstr "Okänt audio-sampelformat (%1)"
 msgid "Unsharp mask and Gaussian blur"
 msgstr "Oskärpemask och Gaussisk suddighet"
 
-#: src/lib/colour_conversion.cc:265
+#: src/lib/colour_conversion.cc:267
 msgid "Untitled"
 msgstr "Utan titel"
 
-#: src/lib/util.cc:872
+#: src/lib/util.cc:874
 msgid "Visually impaired"
 msgstr ""
 
@@ -639,7 +639,7 @@ msgid "cannot contain slashes"
 msgstr "får inte innehålla snedstreck"
 
 # Svengelska
-#: src/lib/util.cc:647
+#: src/lib/util.cc:649
 msgid "connect timed out"
 msgstr "uppkopplingen tajmade ur"
 
@@ -721,19 +721,19 @@ msgstr "kunde inte starta SSH-session"
 msgid "could not write to file %1 (%2)"
 msgstr "kunde inte skriva till fil %1 (%2)"
 
-#: src/lib/util.cc:667
+#: src/lib/util.cc:669
 msgid "error during async_accept (%1)"
 msgstr "fel vid async_accept (%1)"
 
-#: src/lib/util.cc:643
+#: src/lib/util.cc:645
 msgid "error during async_connect (%1)"
 msgstr "fel vid async_connect (%1)"
 
-#: src/lib/util.cc:716
+#: src/lib/util.cc:718
 msgid "error during async_read (%1)"
 msgstr "fel vid async_read (%1)"
 
-#: src/lib/util.cc:688
+#: src/lib/util.cc:690
 msgid "error during async_write (%1)"
 msgstr "fel vid async_write (%1)"
 
@@ -741,23 +741,23 @@ msgstr "fel vid async_write (%1)"
 msgid "frames per second"
 msgstr "bilder per sekund"
 
-#: src/lib/util.cc:162
+#: src/lib/util.cc:163
 msgid "hour"
 msgstr "timme"
 
-#: src/lib/util.cc:158 src/lib/util.cc:164
+#: src/lib/util.cc:159 src/lib/util.cc:165
 msgid "hours"
 msgstr "timmar"
 
-#: src/lib/util.cc:180
+#: src/lib/util.cc:181
 msgid "minute"
 msgstr "minut"
 
-#: src/lib/util.cc:176 src/lib/util.cc:182
+#: src/lib/util.cc:177 src/lib/util.cc:183
 msgid "minutes"
 msgstr "minuter"
 
-#: src/lib/util.cc:788
+#: src/lib/util.cc:790
 msgid "missing key %1 in key-value set"
 msgstr "saknad nyckel %1 i nyckel-värde grupp"
 
@@ -787,16 +787,16 @@ msgstr ""
 msgid "remaining"
 msgstr "återstående tid"
 
-#: src/lib/config.cc:95
+#: src/lib/colour_conversion.cc:340
 msgid "sRGB"
 msgstr "sRGB"
 
-#: src/lib/util.cc:195
+#: src/lib/util.cc:196
 #, fuzzy
 msgid "second"
 msgstr "sekunder"
 
-#: src/lib/util.cc:197
+#: src/lib/util.cc:198
 msgid "seconds"
 msgstr "sekunder"
 

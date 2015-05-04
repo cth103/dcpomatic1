@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IT VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-03 18:56+0100\n"
+"POT-Creation-Date: 2015-05-04 23:32+0100\n"
 "PO-Revision-Date: 2014-02-03 10:48+0100\n"
 "Last-Translator: William Fanelli <william.f@impronte.com>\n"
 "Language-Team: \n"
@@ -90,7 +90,7 @@ msgstr "Cancellato"
 msgid "Cannot handle pixel format %1 during %2"
 msgstr "Non posso gestire il formato di pixel %1 durante %2"
 
-#: src/lib/util.cc:867
+#: src/lib/util.cc:869
 msgid "Centre"
 msgstr "Centro"
 
@@ -262,7 +262,7 @@ msgstr ""
 msgid "De-interlacing"
 msgstr "De-interlacciamento"
 
-#: src/lib/config.cc:411
+#: src/lib/config.cc:366
 #, fuzzy
 msgid ""
 "Dear Projectionist\n"
@@ -355,7 +355,7 @@ msgstr "Gaussiana"
 msgid "Gradient debander"
 msgstr "Gradiente debander"
 
-#: src/lib/util.cc:871
+#: src/lib/util.cc:873
 msgid "Hearing impaired"
 msgstr ""
 
@@ -372,7 +372,7 @@ msgstr ""
 "Non sappiamo cosa ha causato questo errore. La cosa migliore è inviare un "
 "report del problema alla mailing list di DCP-o-matic (carl@dcpomatic.com)"
 
-#: src/lib/config.cc:222
+#: src/lib/config.cc:181
 msgid "KDM delivery: $CPL_NAME"
 msgstr ""
 
@@ -384,24 +384,24 @@ msgstr "Deinterlacciatore Kernel"
 msgid "Lanczos"
 msgstr "Lanczos"
 
-#: src/lib/util.cc:865
+#: src/lib/util.cc:867
 msgid "Left"
 msgstr "Sinistro"
 
-#: src/lib/util.cc:873
+#: src/lib/util.cc:875
 msgid "Left centre"
 msgstr ""
 
-#: src/lib/util.cc:875
+#: src/lib/util.cc:877
 #, fuzzy
 msgid "Left rear surround"
 msgstr "Surround sinistro"
 
-#: src/lib/util.cc:869
+#: src/lib/util.cc:871
 msgid "Left surround"
 msgstr "Surround sinistro"
 
-#: src/lib/util.cc:868
+#: src/lib/util.cc:870
 msgid "Lfe (sub)"
 msgstr "Lfe(sub)"
 
@@ -450,7 +450,7 @@ msgstr ""
 msgid "Overcomplete wavelet denoiser"
 msgstr "Overcomplete wavelet denoiser"
 
-#: src/lib/config.cc:116
+#: src/lib/colour_conversion.cc:361
 msgid "P3 (from SMPTE RP 431-2)"
 msgstr ""
 
@@ -474,30 +474,30 @@ msgstr "Annuncio di pubblico servizio"
 msgid "Rating"
 msgstr "Punteggio"
 
-#: src/lib/config.cc:102
+#: src/lib/colour_conversion.cc:347
 #, fuzzy
 msgid "Rec. 601"
 msgstr "Rec 709"
 
-#: src/lib/config.cc:109 src/lib/video_content.cc:192
+#: src/lib/colour_conversion.cc:354 src/lib/video_content.cc:192
 #, fuzzy
 msgid "Rec. 709"
 msgstr "Rec 709"
 
-#: src/lib/util.cc:866
+#: src/lib/util.cc:868
 msgid "Right"
 msgstr "Destro"
 
-#: src/lib/util.cc:874
+#: src/lib/util.cc:876
 msgid "Right centre"
 msgstr ""
 
-#: src/lib/util.cc:876
+#: src/lib/util.cc:878
 #, fuzzy
 msgid "Right rear surround"
 msgstr "Surround destro"
 
-#: src/lib/util.cc:870
+#: src/lib/util.cc:872
 msgid "Right surround"
 msgstr "Surround destro"
 
@@ -603,11 +603,11 @@ msgstr "Formato di campionamento audio non riconosciuto (%1)"
 msgid "Unsharp mask and Gaussian blur"
 msgstr "Maschera unsharp e sfocatura Gaussiana"
 
-#: src/lib/colour_conversion.cc:265
+#: src/lib/colour_conversion.cc:267
 msgid "Untitled"
 msgstr "Senza titolo"
 
-#: src/lib/util.cc:872
+#: src/lib/util.cc:874
 msgid "Visually impaired"
 msgstr ""
 
@@ -640,7 +640,7 @@ msgstr "ancora"
 msgid "cannot contain slashes"
 msgstr "non può contenere barre"
 
-#: src/lib/util.cc:647
+#: src/lib/util.cc:649
 msgid "connect timed out"
 msgstr "connessione scaduta"
 
@@ -725,19 +725,19 @@ msgstr "non posso avviare la sessione SSH"
 msgid "could not write to file %1 (%2)"
 msgstr "non posso scrivere il file %1 (%2)"
 
-#: src/lib/util.cc:667
+#: src/lib/util.cc:669
 msgid "error during async_accept (%1)"
 msgstr ""
 
-#: src/lib/util.cc:643
+#: src/lib/util.cc:645
 msgid "error during async_connect (%1)"
 msgstr ""
 
-#: src/lib/util.cc:716
+#: src/lib/util.cc:718
 msgid "error during async_read (%1)"
 msgstr ""
 
-#: src/lib/util.cc:688
+#: src/lib/util.cc:690
 msgid "error during async_write (%1)"
 msgstr ""
 
@@ -745,23 +745,23 @@ msgstr ""
 msgid "frames per second"
 msgstr "fotogrammi al secondo"
 
-#: src/lib/util.cc:162
+#: src/lib/util.cc:163
 msgid "hour"
 msgstr "ora"
 
-#: src/lib/util.cc:158 src/lib/util.cc:164
+#: src/lib/util.cc:159 src/lib/util.cc:165
 msgid "hours"
 msgstr "ore"
 
-#: src/lib/util.cc:180
+#: src/lib/util.cc:181
 msgid "minute"
 msgstr "minuto"
 
-#: src/lib/util.cc:176 src/lib/util.cc:182
+#: src/lib/util.cc:177 src/lib/util.cc:183
 msgid "minutes"
 msgstr "minuti"
 
-#: src/lib/util.cc:788
+#: src/lib/util.cc:790
 msgid "missing key %1 in key-value set"
 msgstr "persa la chiave %1 tra i valori chiave"
 
@@ -791,16 +791,16 @@ msgstr ""
 msgid "remaining"
 msgstr "restano"
 
-#: src/lib/config.cc:95
+#: src/lib/colour_conversion.cc:340
 msgid "sRGB"
 msgstr "sRGB"
 
-#: src/lib/util.cc:195
+#: src/lib/util.cc:196
 #, fuzzy
 msgid "second"
 msgstr "secondi"
 
-#: src/lib/util.cc:197
+#: src/lib/util.cc:198
 msgid "seconds"
 msgstr "secondi"
 
