@@ -76,6 +76,7 @@ extern "C" {
 #include "video_content.h"
 #include "md5_digester.h"
 #include "safe_stringstream.h"
+#include "colour_conversion.h"
 
 #include "i18n.h"
 
@@ -445,6 +446,7 @@ dcpomatic_setup ()
 	libdcp::init ();
 	
 	Ratio::setup_ratios ();
+	PresetColourConversion::setup_colour_conversion_presets ();
 	VideoContentScale::setup_scales ();
 	DCPContentType::setup_dcp_content_types ();
 	Scaler::setup_scalers ();

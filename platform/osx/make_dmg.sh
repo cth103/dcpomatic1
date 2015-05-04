@@ -126,7 +126,6 @@ done
 
 cp $ROOT/32/src/dcpomatic/build/platform/osx/Info.plist "$WORK/$approot"
 cp $ROOT/32/src/dcpomatic/icons/dcpomatic.icns "$WORK/$resources/DCP-o-matic.icns"
-cp $ROOT/32/src/dcpomatic/icons/colour_conversions.png "$WORK/$resources"
 cp $ROOT/32/src/dcpomatic/icons/defaults.png "$WORK/$resources"
 cp $ROOT/32/src/dcpomatic/icons/kdm_email.png "$WORK/$resources"
 cp $ROOT/32/src/dcpomatic/icons/servers.png "$WORK/$resources"

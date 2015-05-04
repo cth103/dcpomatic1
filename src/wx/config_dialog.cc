@@ -28,20 +28,17 @@
 #include <wx/preferences.h>
 #include <wx/filepicker.h>
 #include <wx/spinctrl.h>
-#include <libdcp/colour_matrix.h>
 #include "lib/config.h"
 #include "lib/ratio.h"
 #include "lib/scaler.h"
 #include "lib/filter.h"
 #include "lib/dcp_content_type.h"
-#include "lib/colour_conversion.h"
 #include "config_dialog.h"
 #include "wx_util.h"
 #include "editable_list.h"
 #include "filter_dialog.h"
 #include "dir_picker_ctrl.h"
 #include "isdcf_metadata_dialog.h"
-#include "preset_colour_conversion_dialog.h"
 #include "server_dialog.h"
 
 using std::vector;
@@ -539,55 +536,6 @@ private:
 	EditableList<string, ServerDialog>* _servers_list;
 };
 
-class ColourConversionsPage : public StandardPage
-{
-public:
-	ColourConversionsPage (wxSize panel_size, int border)
-		: StandardPage (panel_size, border)
-	{}
-	
-	wxString GetName () const
-	{
-		return _("Colour Conversions");
-	}
-
-#ifdef DCPOMATIC_OSX	
-	wxBitmap GetLargeIcon () const
-	{
-		return wxBitmap ("colour_conversions", wxBITMAP_TYPE_PNG_RESOURCE);
-	}
-#endif
-
-private:	
-	void setup (wxWindow *, wxPanel* panel)
-	{
-		vector<string> columns;
-		columns.push_back (wx_to_std (_("Name")));
-		_list = new EditableList<PresetColourConversion, PresetColourConversionDialog> (
-			panel,
-			columns,
-			boost::bind (&Config::colour_conversions, Config::instance()),
-			boost::bind (&Config::set_colour_conversions, Config::instance(), _1),
-			boost::bind (&ColourConversionsPage::colour_conversion_column, this, _1),
-			300
-			);
-
-		panel->GetSizer()->Add (_list, 1, wxEXPAND | wxALL, _border);
-	}
-
-	void config_changed ()
-	{
-		_list->refresh ();
-	}
-	
-	string colour_conversion_column (PresetColourConversion c)
-	{
-		return c.name;
-	}
-
-	EditableList<PresetColourConversion, PresetColourConversionDialog>* _list;
-};
-
 class TMSPage : public StandardPage
 {
 public:
@@ -968,7 +916,6 @@ create_config_dialog ()
 	e->AddPage (new GeneralPage (ps, border));
 	e->AddPage (new DefaultsPage (ps, border));
 	e->AddPage (new EncodingServersPage (ps, border));
-	e->AddPage (new ColourConversionsPage (ps, border));
 	e->AddPage (new TMSPage (ps, border));
 	e->AddPage (new KDMEmailPage (ps, border));
 	e->AddPage (new AdvancedPage (ps, border));

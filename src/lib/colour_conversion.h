@@ -99,12 +99,18 @@ public:
 	PresetColourConversion (
 		std::string, double, bool, YUVToRGB yuv_to_rgb_, Chromaticity red_, Chromaticity green_, Chromaticity blue_, Chromaticity white_, double
 		);
-	PresetColourConversion (cxml::NodePtr);
-
-	void as_xml (xmlpp::Node *) const;
 
 	std::string name;
 	ColourConversion conversion;
+
+	static std::vector<PresetColourConversion> all () {
+		return _presets;
+	}
+
+	static void setup_colour_conversion_presets ();
+
+private:
+	static std::vector<PresetColourConversion> _presets;
 };
 
 bool operator== (ColourConversion const &, ColourConversion const &);

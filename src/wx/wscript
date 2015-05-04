@@ -33,7 +33,6 @@ sources = """
           kdm_dialog.cc
           key_dialog.cc
           new_film_dialog.cc
-          preset_colour_conversion_dialog.cc
           properties_dialog.cc
           repeat_dialog.cc
           screen_dialog.cc

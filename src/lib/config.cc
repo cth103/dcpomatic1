@@ -22,7 +22,6 @@
 #include <glib.h>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
-#include <libdcp/colour_matrix.h>
 #include <libcxml/cxml.h>
 #include "raw_convert.h"
 #include "config.h"
@@ -32,7 +31,6 @@
 #include "ratio.h"
 #include "dcp_content_type.h"
 #include "sound_processor.h"
-#include "colour_conversion.h"
 #include "cinema.h"
 #include "util.h"
 
@@ -81,7 +79,6 @@ Config::set_defaults ()
 	_log_types = Log::TYPE_GENERAL | Log::TYPE_WARNING | Log::TYPE_ERROR;
 
 	_allowed_dcp_frame_rates.clear ();
-	_colour_conversions.clear ();
 
 	_allowed_dcp_frame_rates.push_back (24);
 	_allowed_dcp_frame_rates.push_back (25);
@@ -89,34 +86,6 @@ Config::set_defaults ()
 	_allowed_dcp_frame_rates.push_back (48);
 	_allowed_dcp_frame_rates.push_back (50);
 	_allowed_dcp_frame_rates.push_back (60);
-
-	_colour_conversions.push_back (
-		PresetColourConversion (
-			_("sRGB"), 2.4, true, YUV_TO_RGB_REC601,
-			Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
-			)
-		);
-
-	_colour_conversions.push_back (
-		PresetColourConversion (
-			_("Rec. 601"), 2.2, false, YUV_TO_RGB_REC601,
-			Chromaticity (0.63, 0.34), Chromaticity (0.31, 0.595), Chromaticity (0.155, 0.07), Chromaticity (0.3127, 0.329), 2.6
-			)
-		);
-
-	_colour_conversions.push_back (
-		PresetColourConversion (
-			_("Rec. 709"), 2.2, false, YUV_TO_RGB_REC709,
-			Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
-			)
-		);
-
-	_colour_conversions.push_back (
-		PresetColourConversion (
-			_("P3 (from SMPTE RP 431-2)"), 2.6, false, YUV_TO_RGB_REC709,
-			Chromaticity (0.68, 0.32), Chromaticity (0.265, 0.69), Chromaticity (0.15, 0.06), Chromaticity (0.314, 0.351), 2.6
-			)
-		);
 	
 	set_kdm_email_to_default ();
 }
@@ -195,16 +164,6 @@ Config::read ()
 	_default_still_length = f.optional_number_child<int>("DefaultStillLength").get_value_or (10);
 	_default_j2k_bandwidth = f.optional_number_child<int>("DefaultJ2KBandwidth").get_value_or (200000000);
 	_default_audio_delay = f.optional_number_child<int>("DefaultAudioDelay").get_value_or (0);
-
-	list<cxml::NodePtr> cc = f.node_children ("ColourConversion");
-
-	if (!cc.empty ()) {
-		_colour_conversions.clear ();
-	}
-	
-	for (list<cxml::NodePtr>::iterator i = cc.begin(); i != cc.end(); ++i) {
-		_colour_conversions.push_back (PresetColourConversion (*i));
-	}
 
 	list<cxml::NodePtr> cin = f.node_children ("Cinema");
 	for (list<cxml::NodePtr>::iterator i = cin.begin(); i != cin.end(); ++i) {
@@ -336,10 +295,6 @@ Config::write () const
 	root->add_child("DefaultStillLength")->add_child_text (raw_convert<string> (_default_still_length));
 	root->add_child("DefaultJ2KBandwidth")->add_child_text (raw_convert<string> (_default_j2k_bandwidth));
 	root->add_child("DefaultAudioDelay")->add_child_text (raw_convert<string> (_default_audio_delay));
-
-	for (vector<PresetColourConversion>::const_iterator i = _colour_conversions.begin(); i != _colour_conversions.end(); ++i) {
-		i->as_xml (root->add_child ("ColourConversion"));
-	}
 
 	for (list<shared_ptr<Cinema> >::const_iterator i = _cinemas.begin(); i != _cinemas.end(); ++i) {
 		(*i)->as_xml (root->add_child ("Cinema"));

@@ -1,5 +1,7 @@
 2015-05-04  Carl Hetherington  <cth@carlh.net>
 
+	* Remove user configuration of colour conversion presets.
+
 	* Version 1.78.8 released.
 
 2015-05-04  Carl Hetherington  <cth@carlh.net>

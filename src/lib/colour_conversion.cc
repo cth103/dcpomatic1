@@ -35,6 +35,8 @@ using std::vector;
 using boost::shared_ptr;
 using boost::optional;
 
+vector<PresetColourConversion> PresetColourConversion::_presets;
+
 ColourConversion::ColourConversion ()
 	: input_gamma (2.4)
 	, input_gamma_linearised (true)
@@ -139,7 +141,7 @@ ColourConversion::as_xml (xmlpp::Node* node) const
 optional<size_t>
 ColourConversion::preset () const
 {
-	vector<PresetColourConversion> presets = Config::instance()->colour_conversions ();
+	vector<PresetColourConversion> presets = PresetColourConversion::all ();
 	size_t i = 0;
 	while (i < presets.size() && presets[i].conversion != *this) {
 		++i;
@@ -276,19 +278,6 @@ PresetColourConversion::PresetColourConversion (
 
 }
 
-PresetColourConversion::PresetColourConversion (cxml::NodePtr node)
-	: conversion (node)
-{
-	name = node->string_child ("Name");
-}
-
-void
-PresetColourConversion::as_xml (xmlpp::Node* node) const
-{
-	conversion.as_xml (node);
-	node->add_child("Name")->add_child_text (name);
-}
-
 static bool
 about_equal (double a, double b)
 {
@@ -341,4 +330,36 @@ bool
 operator== (PresetColourConversion const & a, PresetColourConversion const & b)
 {
 	return a.name == b.name && a.conversion == b.conversion;
+}
+
+void
+PresetColourConversion::setup_colour_conversion_presets ()
+{
+	_presets.push_back (
+		PresetColourConversion (
+			_("sRGB"), 2.4, true, YUV_TO_RGB_REC601,
+			Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
+			)
+		);
+
+	_presets.push_back (
+		PresetColourConversion (
+			_("Rec. 601"), 2.2, false, YUV_TO_RGB_REC601,
+			Chromaticity (0.63, 0.34), Chromaticity (0.31, 0.595), Chromaticity (0.155, 0.07), Chromaticity (0.3127, 0.329), 2.6
+			)
+		);
+
+	_presets.push_back (
+		PresetColourConversion (
+			_("Rec. 709"), 2.2, false, YUV_TO_RGB_REC709,
+			Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
+			)
+		);
+
+	_presets.push_back (
+		PresetColourConversion (
+			_("P3 (from SMPTE RP 431-2)"), 2.6, false, YUV_TO_RGB_REC709,
+			Chromaticity (0.68, 0.32), Chromaticity (0.265, 0.69), Chromaticity (0.15, 0.06), Chromaticity (0.314, 0.351), 2.6
+			)
+		);
 }
