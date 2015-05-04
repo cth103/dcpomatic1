@@ -471,9 +471,8 @@ msgid "Rating"
 msgstr "Beoordeling"
 
 #: src/lib/colour_conversion.cc:347
-#, fuzzy
 msgid "Rec. 601"
-msgstr "Rec. 709"
+msgstr "Rec. 601"
 
 #: src/lib/colour_conversion.cc:354 src/lib/video_content.cc:192
 msgid "Rec. 709"
