@@ -57,13 +57,13 @@ sources = """
 
 def configure(conf):
     args = '--cppflags --cxxflags'
-    if not conf.env.BUILD_STATIC:
+    if not conf.env.STATIC_WXWIDGETS:
         args += ' --libs std,richtext'
 
     conf.check_cfg(msg='Checking for wxWidgets', package='', path=conf.options.wx_config, args=args,
                    uselib_store='WXWIDGETS', mandatory=True)
 
-    if conf.env.BUILD_STATIC:
+    if conf.env.STATIC_WXWIDGETS:
 	# wx-config returns its static libraries as full paths, without -l prefixes, which confuses
         # check_cfg(), so just hard-code it all.
         conf.env.STLIB_WXWIDGETS = ['wx_gtk2u_richtext-3.0', 'wx_gtk2u_xrc-3.0', 'wx_gtk2u_qa-3.0', 'wx_baseu_net-3.0', 'wx_gtk2u_html-3.0',

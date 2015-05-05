@@ -175,6 +175,19 @@ def build(target, options):
             elif target.version == '7':
                 cmd += ' --target-centos-7 --disable-tests'
 
+    if target.distro == 'debian':
+        cmd += ' --static-wxwidgets'
+
+    if target.distro == 'ubuntu':
+        if target.version != '15.04':
+            cmd += ' --static-wxwidgets'
+
+    if target.distro == 'centos':
+        cmd += ' --static-wxwidgets'
+
+    if target.platform == 'windows' and target.debug:
+        cmd += ' --static-wxwidgets'
+
     target.command(cmd)
     target.command('./waf')
 

@@ -23,6 +23,8 @@ def options(opt):
     opt.add_option('--wx-config',         action='store',      default='wx-config', help='path to wx-config')
     opt.add_option('--address-sanitizer', action='store_true', default=False, help='build with address sanitizer')
     opt.add_option('--install-prefix',                         default=None,  help='prefix of where DCP-o-matic will be installed')
+    # New-style build variant options
+    opt.add_option('--static-wxwidgets',  action='store_true', default=False, help='link statically to wxWidgets')
 
 def static_ffmpeg(conf):
     conf.check_cfg(package='libavformat', args='--cflags', uselib_store='AVFORMAT', mandatory=True)
@@ -168,6 +170,7 @@ def configure(conf):
     conf.env.DEBUG = conf.options.enable_debug
     # true if we should build dcpomatic/libdcpomatic/libdcpomatic-wx statically
     conf.env.BUILD_STATIC = conf.options.target_debian or conf.options.target_centos_6 or conf.options.target_centos_7 or (conf.options.target_windows and conf.options.enable_debug)
+    conf.env.STATIC_WXWIDGETS = conf.options.static_wxwidgets
     if conf.options.install_prefix is None:
         conf.env.INSTALL_PREFIX = conf.env.PREFIX
     else:
