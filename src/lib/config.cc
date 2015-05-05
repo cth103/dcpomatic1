@@ -57,6 +57,32 @@ Config* Config::_instance = 0;
 Config::Config ()
 {
 	set_defaults ();
+
+#ifdef DCPOMATIC_OSX	
+	/* Check for preferences in ~/.config and move them to ~/Library if
+	   we haven't already.
+	*/
+
+	boost::filesystem::path old_path = g_get_user_config_dir ();
+	old_path /= "dcpomatic";
+	boost::filesystem::path new_path = g_get_home_dir ();
+	new_path /= "Library";
+	new_path /= "Preferences";
+	new_path /= "com.dcpomatic";
+
+	if (!boost::filesystem::exists (new_path) && boost::filesystem::exists (old_path)) {
+		boost::filesystem::create_directories (new_path);
+		boost::filesystem::copy_file (old_path / "config.xml", new_path / "config.xml");
+		boost::filesystem::create_directories (new_path / "crypt");
+		for (
+			boost::filesystem::directory_iterator i (old_path / "crypt");
+			i != boost::filesystem::directory_iterator();
+			++i) {
+			
+			boost::filesystem::copy_file (*i, new_path / "crypt" / i->path().filename ());
+		}
+	}
+#endif	
 }
 
 void
