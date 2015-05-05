@@ -326,14 +326,6 @@ def configure(conf):
         
     conf.check_cfg(package='libzip', args='--cflags --libs', uselib_store='ZIP', mandatory=True)
 
-    conf.check_cc(fragment="""
-                           #include <glib.h>
-                           int main() { g_format_size (1); }
-                           """, msg='Checking for g_format_size ()',
-                           uselib='GLIB',
-                           define_name='HAVE_G_FORMAT_SIZE',
-                           mandatory=False)
-
     conf.find_program('msgfmt', var='MSGFMT')
     
     datadir = conf.env.DATADIR
