@@ -360,10 +360,15 @@ try
 			}
 
 			DCPOMATIC_ASSERT (i != _queue.rend());
+
+			/* We will definitely write this data to disk, so clear it before we release the lock */
+			shared_ptr<const EncodedData> to_write = i->encoded;
+			i->encoded.reset ();
+
+			/* Take a copy of the frame number and eyes so that we can unlock while we write */
 			QueueItem qi = *i;
 
 			++_pushed_to_disk;
-			
 			lock.unlock ();
 
 			LOG_DEBUG (
@@ -372,9 +377,9 @@ try
 				_last_written_eyes, qi.frame
 				);
 			
-			qi.encoded->write (_film, qi.frame, qi.eyes);
+			to_write->write (_film, qi.frame, qi.eyes);
+
 			lock.lock ();
-			qi.encoded.reset ();
 			--_queued_full_in_memory;
 		}
 

@@ -1,3 +1,8 @@
+2015-05-06  Carl Hetherington  <cth@carlh.net>
+
+	* Efficiency fix for cases where there is a lot of processing
+	power.
+
 2015-05-05  c.hetherington  <cth@carlh.net>
 
 	* Add UTF-8 content type to KDM emails to try to fix #549.
