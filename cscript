@@ -236,11 +236,16 @@ def package_debian(target, cpu, version):
     target.set('CDIST_LINKFLAGS', target.get('LINKFLAGS'))
     target.set('CDIST_CXXFLAGS', target.get('CXXFLAGS'))
     target.set('CDIST_PKG_CONFIG_PATH', target.get('PKG_CONFIG_PATH'))
+    
+    cdist_extra = ''
     if target.version == 'unstable':
-        target.set('CDIST_DEBIAN_UNSTABLE', '--debian-unstable')
+        cdist_extra += ' --debian-unstable')
     if target.debug:
-        target.set('CDIST_ENABLE_DEBUG', '--enable-debug')
-        target.set('CDIST_DEBUG_PACKAGE', '--dbg-package=dcpomatic-dbg')
+        cdist_extra += ' --enable-debug'
+        cdist_extra += ' --dbg-package=dcpomatic-dbg'
+    if target.version != '15.04':
+        cdist_extra += ' --static-wxwidgets'
+    target.set('CDIST_CONFIGURE', cdist_extra)
     target.command('dpkg-buildpackage -uc -us')
     
     debs = []
