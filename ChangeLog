@@ -1,3 +1,8 @@
+2015-05-05  c.hetherington  <cth@carlh.net>
+
+	* Only enable OK button in certificate download dialogues
+	when a download has succeeded (#404).
+
 2015-05-04  Carl Hetherington  <cth@carlh.net>
 
 	* Remove user configuration of colour conversion presets.
