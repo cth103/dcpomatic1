@@ -1,5 +1,7 @@
 2015-05-05  c.hetherington  <cth@carlh.net>
 
+	* Add UTF-8 content type to KDM emails to try to fix #549.
+
 	* Only enable OK button in certificate download dialogues
 	when a download has succeeded (#404).
 
