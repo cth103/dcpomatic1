@@ -21,7 +21,7 @@ override_dh_auto_build:
 
 override_dh_auto_install:
 	./waf --nocache install --destdir=debian/dcpomatic
-	ifeq ($(CDIST_COPY_WXWIDGETS_MESSAGES), 1)
+ifeq ($(CDIST_COPY_WXWIDGETS_MESSAGES), 1)
 		mkdir -p debian/dcpomatic/usr/share/locale/de/LC_MESSAGES/
 		cp -a /usr/local/share/locale/de/LC_MESSAGES/wxstd.mo debian/dcpomatic/usr/share/locale/de/LC_MESSAGES/dcpomatic-wxstd.mo
 		mkdir -p debian/dcpomatic/usr/share/locale/es/LC_MESSAGES/
@@ -34,7 +34,7 @@ override_dh_auto_install:
 		cp -a /usr/local/share/locale/sv/LC_MESSAGES/wxstd.mo debian/dcpomatic/usr/share/locale/sv/LC_MESSAGES/dcpomatic-wxstd.mo
 		mkdir -p debian/dcpomatic/usr/share/locale/nl/LC_MESSAGES/
 		cp -a /usr/local/share/locale/nl/LC_MESSAGES/wxstd.mo debian/dcpomatic/usr/share/locale/nl/LC_MESSAGES/dcpomatic-wxstd.mo
-	endif
+endif
 
 .PHONY: override_dh_strip
 override_dh_strip:
