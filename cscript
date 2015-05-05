@@ -239,7 +239,7 @@ def package_debian(target, cpu, version):
     
     cdist_configure = ''
     if target.version == 'unstable':
-        cdist_configure += ' --debian-unstable')
+        cdist_configure += ' --debian-unstable'
     if target.debug:
         cdist_configure += ' --enable-debug'
         cdist_configure += ' --dbg-package=dcpomatic-dbg'
