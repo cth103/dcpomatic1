@@ -190,14 +190,14 @@ def build(target, options):
             elif target.version == '7':
                 cmd += ' --target-centos-7 --disable-tests'
 
-    if target.distro == 'debian':
+    if target.platform == 'linux' and target.distro == 'debian':
         cmd += ' --static-wxwidgets'
 
-    if target.distro == 'ubuntu':
+    if target.platform == 'linux' and target.distro == 'ubuntu':
         if target.version != '15.04':
             cmd += ' --static-wxwidgets'
 
-    if target.distro == 'centos':
+    if target.platform == 'linux' and target.distro == 'centos':
         cmd += ' --static-wxwidgets'
         if target.version == '6.5':
             cmd += ' --static-boost'
