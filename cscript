@@ -199,6 +199,8 @@ def build(target, options):
 
     if target.distro == 'centos':
         cmd += ' --static-wxwidgets'
+        if target.version == '6.5':
+            cmd += ' --static-boost'
 
     if target.platform == 'windows' and target.debug:
         cmd += ' --static-wxwidgets'
@@ -241,11 +243,11 @@ def package_debian(target, cpu, version):
     if target.version == 'unstable':
         cdist_configure += ' --debian-unstable'
     if target.debug:
-        cdist_configure += ' --enable-debug'
+        cdist_configure += ' --enable-debug' 
         cdist_configure += ' --dbg-package=dcpomatic-dbg'
     if target.version != '15.04':
         cdist_configure += ' --static-wxwidgets'
-    target.set('CDIST_CONFIGURE', cdist_configure)
+    target.set('CDIST_CONFIGURE', '"%s"' % cdist_configure)
 
     target.set('CDIST_COPY_WXWIDGETS_MESSAGES', target.version != '15.04')
 
