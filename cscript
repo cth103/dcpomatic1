@@ -246,6 +246,9 @@ def package_debian(target, cpu, version):
     if target.version != '15.04':
         cdist_configure += ' --static-wxwidgets'
     target.set('CDIST_CONFIGURE', cdist_configure)
+
+    target.set('CDIST_COPY_WXWIDGETS_MESSAGES', target.version != '15.04')
+
     target.command('dpkg-buildpackage -uc -us')
     
     debs = []
