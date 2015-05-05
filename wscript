@@ -23,9 +23,6 @@ def options(opt):
     opt.add_option('--wx-config',         action='store',      default='wx-config', help='path to wx-config')
     opt.add_option('--address-sanitizer', action='store_true', default=False, help='build with address sanitizer')
     opt.add_option('--install-prefix',                         default=None,  help='prefix of where DCP-o-matic will be installed')
-    # New-style build variant options
-    opt.add_option('--static-wxwidgets',  action='store_true', default=False, help='link statically to wxWidgets')
-    opt.add_option('--static-boost',      action='store_true', default=False, help='link statically to boost')
 
 def static_ffmpeg(conf):
     conf.check_cfg(package='libavformat', args='--cflags', uselib_store='AVFORMAT', mandatory=True)
@@ -63,13 +60,13 @@ def dynamic_openjpeg(conf):
     conf.check_cfg(package='libopenjpeg', args='--cflags --libs', atleast_version='1.5.0', uselib_store='OPENJPEG', mandatory=True)
     conf.check_cfg(package='libopenjpeg', args='--cflags --libs', max_version='1.5.2', mandatory=True)
 
-def static_dcp(conf, static_xmlpp, static_xmlsec, static_ssh):
+def static_dcp(conf, static_boost, static_xmlpp, static_xmlsec, static_ssh):
     conf.check_cfg(package='libdcp', atleast_version='0.100', args='--cflags', uselib_store='DCP', mandatory=True)
     conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
     conf.env.STLIB_DCP = ['dcp', 'asdcp-libdcp', 'kumu-libdcp']
     conf.env.LIB_DCP = ['glibmm-2.4', 'ssl', 'crypto', 'bz2', 'xslt']
 
-    if conf.env.STATIC_BOOST:
+    if static_boost:
         conf.env.STLIB_DCP.append('boost_system')
 
     if static_xmlpp:
@@ -102,6 +99,56 @@ def dynamic_ssh(conf):
                            }
                            """, msg='Checking for library libssh', mandatory=True, lib='ssh', uselib_store='SSH')
 
+def dynamic_boost(conf, lib_suffix, thread):
+    conf.check_cxx(fragment="""
+                            #include <boost/version.hpp>\n
+                            #if BOOST_VERSION < 104500\n
+                            #error boost too old\n
+                            #endif\n
+                            int main(void) { return 0; }\n
+                            """,
+                   mandatory=True,
+                   msg='Checking for boost library >= 1.45',
+                   okmsg='yes',
+                   errmsg='too old\nPlease install boost version 1.45 or higher.')
+
+    conf.check_cxx(fragment="""
+    			    #include <boost/thread.hpp>\n
+    			    int main() { boost::thread t (); }\n
+			    """, msg='Checking for boost threading library',
+			    libpath='/usr/local/lib',
+                            lib=[thread, 'boost_system%s' % lib_suffix],
+                            uselib_store='BOOST_THREAD')
+
+    conf.check_cxx(fragment="""
+    			    #include <boost/filesystem.hpp>\n
+    			    int main() { boost::filesystem::copy_file ("a", "b"); }\n
+			    """, msg='Checking for boost filesystem library',
+                            libpath='/usr/local/lib',
+                            lib=['boost_filesystem%s' % lib_suffix, 'boost_system%s' % lib_suffix],
+                            uselib_store='BOOST_FILESYSTEM')
+
+    conf.check_cxx(fragment="""
+    			    #include <boost/date_time.hpp>\n
+    			    int main() { boost::gregorian::day_clock::local_day(); }\n
+			    """, msg='Checking for boost datetime library',
+                            libpath='/usr/local/lib',
+                            lib=['boost_date_time%s' % lib_suffix, 'boost_system%s' % lib_suffix],
+                            uselib_store='BOOST_DATETIME')
+
+    conf.check_cxx(fragment="""
+    			    #include <boost/signals2.hpp>\n
+    			    int main() { boost::signals2::signal<void (int)> x; }\n
+			    """,
+                            msg='Checking for boost signals2 library',
+                            uselib_store='BOOST_SIGNALS2')
+
+def static_boost(conf, lib_suffix):
+    conf.env.STLIB_BOOST_THREAD = ['boost_thread']
+    conf.env.STLIB_BOOST_FILESYSTEM = ['boost_filesystem%s' % lib_suffix]
+    conf.env.STLIB_BOOST_DATETIME = ['boost_date_time%s' % lib_suffix, 'boost_system%s' % lib_suffix]
+    conf.env.STLIB_BOOST_SIGNALS2 = ['boost_signals2']
+
 def configure(conf):
     conf.load('compiler_cxx')
     if conf.options.target_windows:
@@ -121,8 +168,6 @@ def configure(conf):
     conf.env.DEBUG = conf.options.enable_debug
     # true if we should build dcpomatic/libdcpomatic/libdcpomatic-wx statically
     conf.env.BUILD_STATIC = conf.options.target_debian or conf.options.target_centos_6 or conf.options.target_centos_7 or (conf.options.target_windows and conf.options.enable_debug)
-    conf.env.STATIC_WXWIDGETS = conf.options.static_wxwidgets
-    conf.env.STATIC_BOOST     = conf.options.static_boost
     if conf.options.install_prefix is None:
         conf.env.INSTALL_PREFIX = conf.env.PREFIX
     else:
@@ -205,9 +250,11 @@ def configure(conf):
         conf.check_cfg(package='libcurl', args='--cflags --libs', uselib_store='CURL', mandatory=True)
         static_ffmpeg(conf)
         static_openjpeg(conf)
-        static_dcp(conf, False, False, False)
+        static_dcp(conf, False, False, False, False)
+        dynamic_boost(conf, boost_lib_suffix, boost_thread)
 
     if conf.env.TARGET_CENTOS_6:
+        # Centos 6.5's boost is too old, so we build a new version statically in the chroot
         conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags --libs-only-L', uselib_store='CXML', mandatory=True)
         conf.env.STLIB_CXML = ['cxml', 'boost_filesystem']
         conf.check_cfg(package='libcurl', args='--cflags --libs-only-L', uselib_store='CURL', mandatory=True)
@@ -215,9 +262,11 @@ def configure(conf):
         conf.env.LIB_CURL = ['ssh2', 'idn']
         static_ffmpeg(conf)
         static_openjpeg(conf)
-        static_dcp(conf, True, True, True)
+        static_dcp(conf, True, True, True, True)
+        static_boost(conf, boost_lib_suffix)
 
     if conf.env.TARGET_CENTOS_7:
+        # Centos 7's boost is ok so we link it dynamically
         conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags', uselib_store='CXML', mandatory=True)
         conf.env.STLIB_CXML = ['cxml']
         conf.check_cfg(package='libcurl', args='--cflags --libs', uselib_store='CURL', mandatory=True)
@@ -226,7 +275,8 @@ def configure(conf):
         conf.env.LIB_XMLSEC = ['ltdl']
         static_ffmpeg(conf)
         static_openjpeg(conf)
-        static_dcp(conf, True, True, True)
+        static_dcp(conf, False, True, True, True)
+        dynamic_boost(conf, boost_lib_suffix, boost_thread)
 
     if conf.env.TARGET_WINDOWS:
         conf.check_cfg(package='libxml++-2.6', args='--cflags --libs', uselib_store='XMLPP', mandatory=True)
@@ -238,67 +288,18 @@ def configure(conf):
                                 libpath='/usr/local/lib',
                                 lib=['boost_locale%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix],
                                 uselib_store='BOOST_LOCALE')
+        dynamic_boost(conf, boost_lib_suffix, boost_thread)
         dynamic_ffmpeg(conf)
         dynamic_openjpeg(conf)
         dynamic_dcp(conf)
         dynamic_ssh(conf)
-
-    # Boost
-    if conf.env.STATIC_BOOST:
-        conf.env.STLIB_BOOST_THREAD = ['boost_thread']
-        conf.env.STLIB_BOOST_FILESYSTEM = ['boost_filesystem%s' % boost_lib_suffix]
-        conf.env.STLIB_BOOST_DATETIME = ['boost_date_time%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix]
-        conf.env.STLIB_BOOST_SIGNALS2 = ['boost_signals2']
-    else:
-        conf.check_cxx(fragment="""
-                                #include <boost/version.hpp>\n
-                                #if BOOST_VERSION < 104500\n
-                                #error boost too old\n
-                                #endif\n
-                                int main(void) { return 0; }\n
-                                """,
-                       mandatory=True,
-                       msg='Checking for boost library >= 1.45',
-                       okmsg='yes',
-                       errmsg='too old\nPlease install boost version 1.45 or higher.')
-
-        conf.check_cxx(fragment="""
-                                #include <boost/thread.hpp>\n
-                                int main() { boost::thread t (); }\n
-                                """, msg='Checking for boost threading library',
-                       libpath='/usr/local/lib',
-                       lib=[boost_thread, 'boost_system%s' % boost_lib_suffix],
-                       uselib_store='BOOST_THREAD')
-
-        conf.check_cxx(fragment="""
-                                #include <boost/filesystem.hpp>\n
-                                int main() { boost::filesystem::copy_file ("a", "b"); }\n
-                                """, msg='Checking for boost filesystem library',
-                       libpath='/usr/local/lib',
-                       lib=['boost_filesystem%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix],
-                       uselib_store='BOOST_FILESYSTEM')
-
-        conf.check_cxx(fragment="""
-                                #include <boost/date_time.hpp>\n
-                                int main() { boost::gregorian::day_clock::local_day(); }\n
-                                """, msg='Checking for boost datetime library',
-                       libpath='/usr/local/lib',
-                       lib=['boost_date_time%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix],
-                       uselib_store='BOOST_DATETIME')
-
-        conf.check_cxx(fragment="""
-                                #include <boost/signals2.hpp>\n
-                                int main() { boost::signals2::signal<void (int)> x; }\n
-                                """,
-                       msg='Checking for boost signals2 library',
-                       uselib_store='BOOST_SIGNALS2')
-
 
     # Not packaging; just a straight build
     if not conf.env.TARGET_WINDOWS and not conf.env.TARGET_DEBIAN and not conf.env.TARGET_CENTOS_6 and not conf.env.TARGET_CENTOS_7:
         conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags --libs', uselib_store='CXML', mandatory=True)
         conf.check_cfg(package='libxml++-2.6', args='--cflags --libs', uselib_store='XMLPP', mandatory=True)
         conf.check_cfg(package='libcurl', args='--cflags --libs', uselib_store='CURL', mandatory=True)
+        dynamic_boost(conf, boost_lib_suffix, boost_thread)
         dynamic_ffmpeg(conf)
         dynamic_dcp(conf)
         dynamic_openjpeg(conf)
@@ -321,6 +322,14 @@ def configure(conf):
             conf.env.append_value('CXXFLAGS', '-DDCPOMATIC_GRAPHICS_MAGICK')
         
     conf.check_cfg(package='libzip', args='--cflags --libs', uselib_store='ZIP', mandatory=True)
+
+    conf.check_cc(fragment="""
+                           #include <glib.h>
+                           int main() { g_format_size (1); }
+                           """, msg='Checking for g_format_size ()',
+                           uselib='GLIB',
+                           define_name='HAVE_G_FORMAT_SIZE',
+                           mandatory=False)
 
     conf.find_program('msgfmt', var='MSGFMT')
     

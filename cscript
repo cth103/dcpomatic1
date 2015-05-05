@@ -82,21 +82,6 @@ deb_depends['14.04'] = {'libc6': '2.19-0ubuntu6',
                         'libcurl3': '7.35.0-1ubuntu2',
                         'libzip2': '0.10.1-1.2'}
 
-deb_depends['15.04'] = {'libc6': '2.21-0ubuntu4',
-                        'libssh-4': '0.6.3-3ubuntu3',
-                        'libboost-filesystem1.54.0': '1.54.0-4ubuntu3',
-                        'libboost-thread1.55.0': '1.55.0+dfsg-3ubuntu2',
-                        'libsndfile1': '1.0.25-9.1',
-                        'libmagick++-6.q16-5': '8:6.8.9.9-5',
-                        'libxml++2.6-2': '2.36.0-2.1',
-                        'libgtk2.0-0': '2.24.27-0ubuntu1',
-                        'libxmlsec1': '1.2.20-2ubuntu2',
-                        'libxmlsec1-openssl': '1.2.20-2ubuntu2',
-                        'libboost-date-time1.55.0': '1.55.0+dfsg-3ubuntu2',
-                        'libcurl3': '7.38.0-3ubuntu2',
-                        'libzip2': '0.11.2-1.2'}
-
-
 deb_depends['7'] = {'libc6': '2.13',
                     'libssh-4': '0.5.4',
                     'libboost-filesystem1.49.0': '1.49.0',
@@ -190,21 +175,6 @@ def build(target, options):
             elif target.version == '7':
                 cmd += ' --target-centos-7 --disable-tests'
 
-    if target.platform == 'linux' and target.distro == 'debian':
-        cmd += ' --static-wxwidgets'
-
-    if target.platform == 'linux' and target.distro == 'ubuntu':
-        if target.version != '15.04':
-            cmd += ' --static-wxwidgets'
-
-    if target.platform == 'linux' and target.distro == 'centos':
-        cmd += ' --static-wxwidgets'
-        if target.version == '6.5':
-            cmd += ' --static-boost'
-
-    if target.platform == 'windows' and target.debug:
-        cmd += ' --static-wxwidgets'
-
     target.command(cmd)
     target.command('./waf')
 
@@ -238,19 +208,11 @@ def package_debian(target, cpu, version):
     target.set('CDIST_LINKFLAGS', target.get('LINKFLAGS'))
     target.set('CDIST_CXXFLAGS', target.get('CXXFLAGS'))
     target.set('CDIST_PKG_CONFIG_PATH', target.get('PKG_CONFIG_PATH'))
-    
-    cdist_configure = ''
     if target.version == 'unstable':
-        cdist_configure += ' --debian-unstable'
+        target.set('CDIST_DEBIAN_UNSTABLE', '--debian-unstable')
     if target.debug:
-        cdist_configure += ' --enable-debug' 
-        cdist_configure += ' --dbg-package=dcpomatic-dbg'
-    if target.version != '15.04':
-        cdist_configure += ' --static-wxwidgets'
-    target.set('CDIST_CONFIGURE', '"%s"' % cdist_configure)
-
-    target.set('CDIST_COPY_WXWIDGETS_MESSAGES', target.version != '15.04')
-
+        target.set('CDIST_ENABLE_DEBUG', '--enable-debug')
+        target.set('CDIST_DEBUG_PACKAGE', '--dbg-package=dcpomatic-dbg')
     target.command('dpkg-buildpackage -uc -us')
     
     debs = []
