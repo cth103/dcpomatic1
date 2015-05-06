@@ -192,7 +192,7 @@ FilmEditor::make_dcp_panel ()
 
 	add_label_to_grid_bag_sizer (grid, _dcp_panel, _("Audio channels"), true, wxGBPosition (r, 0));
 	_audio_channels = new wxChoice (_dcp_panel, wxID_ANY);
-	for (int i = 2; i <= 16; i += 2) {
+	for (int i = 2; i <= 12; i += 2) {
 		_audio_channels->Append (wxString::Format ("%d", i));
 	}
 	grid->Add (_audio_channels, wxGBPosition (r, 1));
