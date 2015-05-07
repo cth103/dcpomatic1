@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 #include <vector>
 #include <list>
 #include <boost/filesystem.hpp>
+#include <boost/optional.hpp>
+#include "types.h"
 
 class AudioPoint
 {
@@ -55,15 +57,29 @@ public:
 	AudioAnalysis (boost::filesystem::path);
 
 	void add_point (int c, AudioPoint const & p);
+	void set_peak (float peak, Time time) {
+		_peak = peak;
+		_peak_time = time;
+	}
 	
 	AudioPoint get_point (int c, int p) const;
 	int points (int c) const;
 	int channels () const;
 
+	boost::optional<float> peak () const {
+		return _peak;
+	}
+
+	boost::optional<Time> peak_time () const {
+		return _peak_time;
+	}
+
 	void write (boost::filesystem::path);
 
 private:
 	std::vector<std::vector<AudioPoint> > _data;
+	boost::optional<float> _peak;
+	boost::optional<Time> _peak_time;
 };
 
 #endif

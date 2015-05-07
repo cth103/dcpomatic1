@@ -33,31 +33,43 @@ using boost::shared_ptr;
 using boost::bind;
 using boost::optional;
 
-AudioDialog::AudioDialog (wxWindow* parent)
+AudioDialog::AudioDialog (wxWindow* parent, shared_ptr<Film> film)
 	: wxDialog (parent, wxID_ANY, _("Audio"), wxDefaultPosition, wxSize (640, 512), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxFULL_REPAINT_ON_RESIZE)
+	, _film (film)
 	, _plot (0)
 {
+	wxFont subheading_font (*wxNORMAL_FONT);
+	subheading_font.SetWeight (wxFONTWEIGHT_BOLD);
+
 	wxBoxSizer* sizer = new wxBoxSizer (wxHORIZONTAL);
 
-	_plot = new AudioPlot (this);
-	sizer->Add (_plot, 1, wxALL | wxEXPAND, 12);
+	wxBoxSizer* left = new wxBoxSizer (wxVERTICAL);
 
-	wxBoxSizer* side = new wxBoxSizer (wxVERTICAL);
+	_plot = new AudioPlot (this);
+	left->Add (_plot, 1, wxALL | wxEXPAND, 12);
+	_peak_time = new wxStaticText (this, wxID_ANY, wxT (""));
+	left->Add (_peak_time, 0, wxALL, 12);
+
+	sizer->Add (left, 1, wxALL, 12);
+
+	wxBoxSizer* right = new wxBoxSizer (wxVERTICAL);
 
 	{
 		wxStaticText* m = new wxStaticText (this, wxID_ANY, _("Channels"));
-		side->Add (m, 1, wxALIGN_CENTER_VERTICAL | wxTOP, 16);
+		m->SetFont (subheading_font);
+		right->Add (m, 1, wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM, 16);
 	}
 
 	for (int i = 0; i < MAX_DCP_AUDIO_CHANNELS; ++i) {
 		_channel_checkbox[i] = new wxCheckBox (this, wxID_ANY, std_to_wx (audio_channel_name (i)));
-		side->Add (_channel_checkbox[i], 1, wxEXPAND | wxALL, 3);
+		right->Add (_channel_checkbox[i], 0, wxEXPAND | wxALL, 6);
 		_channel_checkbox[i]->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&AudioDialog::channel_clicked, this, _1));
 	}
 
 	{
 		wxStaticText* m = new wxStaticText (this, wxID_ANY, _("Type"));
-		side->Add (m, 1, wxALIGN_CENTER_VERTICAL | wxTOP, 16);
+		m->SetFont (subheading_font);
+		right->Add (m, 1, wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM, 16);
 	}
 	
 	wxString const types[] = {
@@ -67,20 +79,21 @@ AudioDialog::AudioDialog (wxWindow* parent)
 
 	for (int i = 0; i < AudioPoint::COUNT; ++i) {
 		_type_checkbox[i] = new wxCheckBox (this, wxID_ANY, types[i]);
-		side->Add (_type_checkbox[i], 1, wxEXPAND | wxALL, 3);
+		right->Add (_type_checkbox[i], 0, wxEXPAND | wxALL, 6);
 		_type_checkbox[i]->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&AudioDialog::type_clicked, this, _1));
 	}
 
 	{
 		wxStaticText* m = new wxStaticText (this, wxID_ANY, _("Smoothing"));
-		side->Add (m, 1, wxALIGN_CENTER_VERTICAL | wxTOP, 16);
+		m->SetFont (subheading_font);
+		right->Add (m, 1, wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM, 16);
 	}
 	
 	_smoothing = new wxSlider (this, wxID_ANY, AudioPlot::max_smoothing / 2, 1, AudioPlot::max_smoothing);
 	_smoothing->Bind (wxEVT_SCROLL_THUMBTRACK, boost::bind (&AudioDialog::smoothing_changed, this));
-	side->Add (_smoothing, 1, wxEXPAND);
+	right->Add (_smoothing, 0, wxEXPAND);
 
-	sizer->Add (side, 0, wxALL, 12);
+	sizer->Add (right, 0, wxALL, 12);
 
 	SetSizer (sizer);
 	sizer->Layout ();
@@ -115,21 +128,22 @@ AudioDialog::try_to_load_analysis ()
 	if (!boost::filesystem::exists (_content->audio_analysis_path())) {
 		LOG_DEBUG ("%1 does not exist; starting analysis job", _content->audio_analysis_path());
 		_plot->set_analysis (shared_ptr<AudioAnalysis> ());
+		_analysis.reset ();
 		_analysis_finished_connection = _content->analyse_audio (bind (&AudioDialog::analysis_finished, this));
 		return;
 	}
 	
 	LOG_DEBUG ("%1 exists; loading it", _content->audio_analysis_path ());
 	
-	shared_ptr<AudioAnalysis> a;
-	
-	a.reset (new AudioAnalysis (_content->audio_analysis_path ()));
-	_plot->set_analysis (a);
+	_analysis.reset (new AudioAnalysis (_content->audio_analysis_path ()));
+	_plot->set_analysis (_analysis);
 
-	LOG_DEBUG ("Loaded %1 channels", a->channels());
-	if (a->channels() > 0) {
-		LOG_DEBUG ("Loaded %1 points on channel 0", a->points(0));
+	LOG_DEBUG ("Loaded %1 channels", _analysis->channels());
+	if (_analysis->channels() > 0) {
+		LOG_DEBUG ("Loaded %1 points on channel 0", _analysis->points(0));
 	}
+
+	setup_peak_time ();
 
 	/* Set up some defaults if no check boxes are checked */
 	
@@ -190,6 +204,7 @@ AudioDialog::content_changed (int p)
 {
 	if (p == AudioContentProperty::AUDIO_GAIN) {
 		_plot->set_gain (_content->audio_gain ());
+		setup_peak_time ();
 	} else if (p == AudioContentProperty::AUDIO_MAPPING) {
 		try_to_load_analysis ();
 	}
@@ -212,4 +227,33 @@ void
 AudioDialog::smoothing_changed ()
 {
 	_plot->set_smoothing (_smoothing->GetValue ());
+}
+
+void
+AudioDialog::setup_peak_time ()
+{
+	if (!_analysis && !_analysis->peak ()) {
+		return;
+	}
+
+	shared_ptr<Film> film = _film.lock ();
+	if (!film) {
+		return;
+	}
+
+	float peak_dB = 20 * log10 (_analysis->peak().get()) + _content->audio_gain();
+	
+	_peak_time->SetLabel (
+		wxString::Format (
+			_("Peak is %.2fdB at %s"),
+			peak_dB,
+			time_to_timecode (_analysis->peak_time().get(), film->video_frame_rate ()).data ()
+			)
+		);
+
+	if (peak_dB > -3) {
+		_peak_time->SetForegroundColour (wxColour (255, 0, 0));
+	} else {
+		_peak_time->SetForegroundColour (wxColour (0, 0, 0));
+	}
 }
