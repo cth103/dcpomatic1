@@ -154,6 +154,8 @@ AudioDialog::try_to_load_analysis ()
 			_plot->set_type_visible (i, true);
 		}
 	}
+
+	Refresh ();
 }
 
 void
