@@ -44,6 +44,8 @@ AnalyseAudioJob::AnalyseAudioJob (shared_ptr<const Film> f, shared_ptr<AudioCont
 	, _content (c)
 	, _done (0)
 	, _samples_per_point (1)
+	, _overall_peak (0)
+	, _overall_peak_frame (0)
 {
 
 }
@@ -86,6 +88,7 @@ AnalyseAudioJob::run ()
 		set_progress (double (_done) / len);
 	}
 
+	_analysis->set_peak (_overall_peak, _film->audio_frames_to_time (_overall_peak_frame));
 	_analysis->write (content->audio_analysis_path ());
 
 	set_progress (1);
@@ -104,7 +107,15 @@ AnalyseAudioJob::audio (shared_ptr<const AudioBuffers> b, Time)
 				s = 10e-7;
 			}
 			_current[j][AudioPoint::RMS] += pow (s, 2);
-			_current[j][AudioPoint::PEAK] = max (_current[j][AudioPoint::PEAK], fabsf (s));
+
+			float const as = fabsf (s);
+			
+			_current[j][AudioPoint::PEAK] = max (_current[j][AudioPoint::PEAK], as);
+
+			if (as > _overall_peak) {
+				_overall_peak = as;
+				_overall_peak_frame = _done + i;
+			}
 
 			if ((_done % _samples_per_point) == 0) {
 				_current[j][AudioPoint::RMS] = sqrt (_current[j][AudioPoint::RMS] / _samples_per_point);

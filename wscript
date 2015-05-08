@@ -174,7 +174,8 @@ def configure(conf):
         conf.env.INSTALL_PREFIX = conf.options.install_prefix
 
     # Common CXXFLAGS
-    conf.env.append_value('CXXFLAGS', ['-D__STDC_CONSTANT_MACROS', '-D__STDC_LIMIT_MACROS', '-msse', '-ffast-math', '-fno-strict-aliasing',
+    conf.env.append_value('CXXFLAGS', ['-D__STDC_CONSTANT_MACROS', '-D__STDC_LIMIT_MACROS', '-D__STDC_FORMAT_MACROS',
+                                       '-msse', '-ffast-math', '-fno-strict-aliasing',
                                        '-Wall', '-Wno-attributes', '-Wextra', '-D_FILE_OFFSET_BITS=64'])
 
     if conf.options.enable_debug:

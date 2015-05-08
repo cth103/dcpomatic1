@@ -32,6 +32,7 @@
 #ifdef __WXGTK__
 #include <gtk/gtk.h>
 #endif
+#include "lib/types.h"
 
 class wxFilePickerCtrl;
 class wxSpinCtrl;
@@ -65,6 +66,7 @@ extern wxString std_to_wx (std::string);
 extern void dcpomatic_setup_i18n ();
 extern wxString context_translation (wxString);
 extern std::string string_client_data (wxClientData* o);
+extern wxString time_to_timecode (Time t, float fps);
 
 extern void checked_set (wxFilePickerCtrl* widget, std::string value);
 extern void checked_set (wxSpinCtrl* widget, int value);

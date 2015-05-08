@@ -1,3 +1,10 @@
+2015-05-07  carl  <cth@carlh.net>
+
+	* Tidy audio analysis dialogue a bit and add a note of
+	the overall peak (#557).
+
+	* Fix sometimes-missing channel labels on OS X audio analysis.
+
 2015-05-06  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.78.9 released.
