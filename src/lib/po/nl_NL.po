@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-04 23:32+0100\n"
+"POT-Creation-Date: 2015-05-09 15:17+0100\n"
 "PO-Revision-Date: 2014-09-04 20:34+0100\n"
 "Last-Translator: Cherif Ben Brahim <firehc@mac.com>\n"
 "Language-Team: UniversalDV <Tkooijmans@universaldv.nl>\n"
@@ -58,7 +58,7 @@ msgstr "Advertentie"
 msgid "An error occurred whilst handling the file %1."
 msgstr "Er is een fout opgetreden met bestand %1."
 
-#: src/lib/analyse_audio_job.cc:54
+#: src/lib/analyse_audio_job.cc:56
 msgid "Analyse audio"
 msgstr "Analyseer audio"
 
@@ -98,7 +98,7 @@ msgstr "Midden"
 msgid "Checking existing image data"
 msgstr "Controleer bestaande videodata"
 
-#: src/lib/writer.cc:514
+#: src/lib/writer.cc:519
 msgid "Computing audio digest"
 msgstr "Verwerk audio data"
 
@@ -106,7 +106,7 @@ msgstr "Verwerk audio data"
 msgid "Computing digest"
 msgstr "Verwerken..."
 
-#: src/lib/writer.cc:510
+#: src/lib/writer.cc:515
 msgid "Computing image digest"
 msgstr "Verwerk video data"
 
@@ -256,7 +256,7 @@ msgstr ""
 msgid "De-interlacing"
 msgstr "De-interlacing"
 
-#: src/lib/config.cc:366
+#: src/lib/config.cc:392
 msgid ""
 "Dear Projectionist\n"
 "\n"
@@ -365,7 +365,7 @@ msgstr ""
 "Dit is een onbekende fout. U kunt deze het beste melden bij de DCP-o-matic "
 "maker (carl@dcpomatic.com)"
 
-#: src/lib/config.cc:181
+#: src/lib/config.cc:207
 msgid "KDM delivery: $CPL_NAME"
 msgstr "KDM levering: $CPL_NAME"
 
@@ -665,7 +665,7 @@ msgstr "kan geen stream informatie vinden"
 msgid "could not find video decoder"
 msgstr "kan geen videodecoder vinden"
 
-#: src/lib/writer.cc:478
+#: src/lib/writer.cc:483
 msgid "could not move audio MXF into the DCP (%1)"
 msgstr "kan MXF audio niet plaatsen in DCP (%1)"
 

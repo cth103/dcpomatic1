@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-04 23:32+0100\n"
+"POT-Creation-Date: 2015-05-09 15:17+0100\n"
 "PO-Revision-Date: 2014-01-19 08:59+0100\n"
 "Last-Translator: Adam Klotblixt <adam.klotblixt@gmail.com>\n"
 "Language-Team: \n"
@@ -57,7 +57,7 @@ msgstr "Advertisement"
 msgid "An error occurred whilst handling the file %1."
 msgstr "Ett fel inträffade vid hantering av filen %1"
 
-#: src/lib/analyse_audio_job.cc:54
+#: src/lib/analyse_audio_job.cc:56
 msgid "Analyse audio"
 msgstr "Analysera audio"
 
@@ -98,7 +98,7 @@ msgstr "Center"
 msgid "Checking existing image data"
 msgstr "Kontrollerar befintligt bilddata"
 
-#: src/lib/writer.cc:514
+#: src/lib/writer.cc:519
 msgid "Computing audio digest"
 msgstr "Beräknar audiosammanfattning"
 
@@ -106,7 +106,7 @@ msgstr "Beräknar audiosammanfattning"
 msgid "Computing digest"
 msgstr "Beräknar sammanfattning"
 
-#: src/lib/writer.cc:510
+#: src/lib/writer.cc:515
 msgid "Computing image digest"
 msgstr "Beräknar bildsammanfattning"
 
@@ -261,7 +261,7 @@ msgid "De-interlacing"
 msgstr "Avflätning"
 
 # svåröversatt
-#: src/lib/config.cc:366
+#: src/lib/config.cc:392
 #, fuzzy
 msgid ""
 "Dear Projectionist\n"
@@ -369,7 +369,7 @@ msgstr ""
 "Det är inte känt vad som orsakade detta fel. Bästa sättet att rapportera "
 "problemet är till DCP-o-matics mejl-lista (carl@dcpomatic.com)"
 
-#: src/lib/config.cc:181
+#: src/lib/config.cc:207
 msgid "KDM delivery: $CPL_NAME"
 msgstr ""
 
@@ -674,7 +674,7 @@ msgstr "kunde inte hitta information om strömmen"
 msgid "could not find video decoder"
 msgstr "kunde inte hitta video-avkodare"
 
-#: src/lib/writer.cc:478
+#: src/lib/writer.cc:483
 msgid "could not move audio MXF into the DCP (%1)"
 msgstr "kunde inte flytta audio-MXF in i DCP:n (%1)"
 

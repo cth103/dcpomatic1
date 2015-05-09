@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#: src/wx/key_dialog.cc:44
 msgid ""
 msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-04 23:32+0100\n"
+"POT-Creation-Date: 2015-05-09 15:17+0100\n"
 "PO-Revision-Date: 2015-05-03 21:28+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
@@ -282,8 +281,8 @@ msgstr "Annuler"
 msgid "Certificate"
 msgstr "Certificat"
 
-#: src/wx/dolby_certificate_dialog.cc:191
-#: src/wx/doremi_certificate_dialog.cc:103
+#: src/wx/dolby_certificate_dialog.cc:192
+#: src/wx/doremi_certificate_dialog.cc:104
 msgid "Certificate downloaded"
 msgstr "Certificat téléchargé"
 
@@ -295,7 +294,7 @@ msgstr "Chaîne"
 msgid "Channel gain"
 msgstr "Gain canal"
 
-#: src/wx/audio_dialog.cc:48
+#: src/wx/audio_dialog.cc:58
 msgid "Channels"
 msgstr "Canaux"
 
@@ -359,11 +358,11 @@ msgstr "Copier nom"
 msgid "Copy..."
 msgstr "Copier..."
 
-#: src/wx/audio_dialog.cc:166
+#: src/wx/audio_dialog.cc:182
 msgid "Could not analyse audio."
 msgstr "Analyse du son impossible"
 
-#: src/wx/film_viewer.cc:346 src/wx/film_viewer.cc:352
+#: src/wx/film_viewer.cc:338 src/wx/film_viewer.cc:344
 #, c-format
 msgid "Could not decode video for view (%s)"
 msgstr "Décodage de la vidéo pour visualisation impossible (%s)"
@@ -401,7 +400,7 @@ msgstr "Répertoire du DCP"
 msgid "DCP-o-matic"
 msgstr "DCP-o-matic"
 
-#: src/wx/audio_dialog.cc:102
+#: src/wx/audio_dialog.cc:115
 #, c-format
 msgid "DCP-o-matic audio - %s"
 msgstr "Son DCP-o-matic  - %s"
@@ -484,8 +483,8 @@ msgstr "Télécharger"
 msgid "Download certificate"
 msgstr "Télécharger le certificat"
 
-#: src/wx/dolby_certificate_dialog.cc:157
-#: src/wx/doremi_certificate_dialog.cc:54
+#: src/wx/dolby_certificate_dialog.cc:158
+#: src/wx/doremi_certificate_dialog.cc:55
 msgid "Downloading certificate"
 msgstr "Téléchargement du certificat en cours"
 
@@ -831,9 +830,14 @@ msgstr "Mot de passe"
 msgid "Pause"
 msgstr "Pause"
 
-#: src/wx/audio_dialog.cc:64
+#: src/wx/audio_dialog.cc:76
 msgid "Peak"
 msgstr "Crête"
+
+#: src/wx/audio_dialog.cc:248
+#, c-format
+msgid "Peak is %.2fdB at %s"
+msgstr ""
 
 #: src/wx/film_viewer.cc:64
 msgid "Play"
@@ -867,7 +871,7 @@ msgstr "D"
 msgid "RGB to XYZ conversion"
 msgstr "Conversion RGB vers XYZ"
 
-#: src/wx/audio_dialog.cc:65
+#: src/wx/audio_dialog.cc:77
 msgid "RMS"
 msgstr "RMS"
 
@@ -1016,7 +1020,7 @@ msgstr "Afficher le son..."
 msgid "Signed"
 msgstr "Signé"
 
-#: src/wx/audio_dialog.cc:75
+#: src/wx/audio_dialog.cc:87
 msgid "Smoothing"
 msgstr "Lissage"
 
@@ -1142,11 +1146,11 @@ msgstr "Rogner par la fin"
 msgid "Trim from start"
 msgstr "Rogner au début"
 
-#: src/wx/audio_dialog.cc:59 src/wx/video_panel.cc:75
+#: src/wx/audio_dialog.cc:70 src/wx/video_panel.cc:75
 msgid "Type"
 msgstr "Type"
 
-#: src/wx/dolby_certificate_dialog.cc:182
+#: src/wx/dolby_certificate_dialog.cc:183
 msgid "Unexpected certificate filename form"
 msgstr "Nom de fichier certificat non conforme "
 

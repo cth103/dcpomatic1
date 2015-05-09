@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-04 23:32+0100\n"
+"POT-Creation-Date: 2015-05-09 15:17+0100\n"
 "PO-Revision-Date: 2015-03-21 12:54+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -59,7 +59,7 @@ msgstr "ADV (Реклама)"
 msgid "An error occurred whilst handling the file %1."
 msgstr "Возникла ошибка при обращении к файлу %1."
 
-#: src/lib/analyse_audio_job.cc:54
+#: src/lib/analyse_audio_job.cc:56
 msgid "Analyse audio"
 msgstr "Анализ аудио"
 
@@ -100,7 +100,7 @@ msgstr "Центр"
 msgid "Checking existing image data"
 msgstr "Проверка данных изображения"
 
-#: src/lib/writer.cc:514
+#: src/lib/writer.cc:519
 msgid "Computing audio digest"
 msgstr "Рендеринг аудио"
 
@@ -108,7 +108,7 @@ msgstr "Рендеринг аудио"
 msgid "Computing digest"
 msgstr "Рендеринг"
 
-#: src/lib/writer.cc:510
+#: src/lib/writer.cc:515
 msgid "Computing image digest"
 msgstr "Рендеринг изображения"
 
@@ -266,7 +266,7 @@ msgstr ""
 msgid "De-interlacing"
 msgstr "Деинтерлейсинг"
 
-#: src/lib/config.cc:366
+#: src/lib/config.cc:392
 msgid ""
 "Dear Projectionist\n"
 "\n"
@@ -376,7 +376,7 @@ msgstr ""
 "Неизвестно, что вызвало эту ошибку. Пожалуйста, сообщите об этой проблеме "
 "автору DCP-o-matic (carl@dcpomatic.com)."
 
-#: src/lib/config.cc:181
+#: src/lib/config.cc:207
 msgid "KDM delivery: $CPL_NAME"
 msgstr "Назначение KDM: $CPL_NAME"
 
@@ -670,7 +670,7 @@ msgstr "не удалось найти информацию о потоке"
 msgid "could not find video decoder"
 msgstr "не удалось найти видео декодер"
 
-#: src/lib/writer.cc:478
+#: src/lib/writer.cc:483
 msgid "could not move audio MXF into the DCP (%1)"
 msgstr "не удалось переместить аудио-MXF в DCP-пакет (%1)"
 

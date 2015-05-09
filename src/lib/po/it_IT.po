@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: IT VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-04 23:32+0100\n"
+"POT-Creation-Date: 2015-05-09 15:17+0100\n"
 "PO-Revision-Date: 2014-02-03 10:48+0100\n"
 "Last-Translator: William Fanelli <william.f@impronte.com>\n"
 "Language-Team: \n"
@@ -57,7 +57,7 @@ msgstr "Pubblicità"
 msgid "An error occurred whilst handling the file %1."
 msgstr "Errore durante l'elaborazione del file %1."
 
-#: src/lib/analyse_audio_job.cc:54
+#: src/lib/analyse_audio_job.cc:56
 #, fuzzy
 msgid "Analyse audio"
 msgstr "Analizzo l'audio"
@@ -98,7 +98,7 @@ msgstr "Centro"
 msgid "Checking existing image data"
 msgstr ""
 
-#: src/lib/writer.cc:514
+#: src/lib/writer.cc:519
 msgid "Computing audio digest"
 msgstr ""
 
@@ -106,7 +106,7 @@ msgstr ""
 msgid "Computing digest"
 msgstr ""
 
-#: src/lib/writer.cc:510
+#: src/lib/writer.cc:515
 msgid "Computing image digest"
 msgstr ""
 
@@ -262,7 +262,7 @@ msgstr ""
 msgid "De-interlacing"
 msgstr "De-interlacciamento"
 
-#: src/lib/config.cc:366
+#: src/lib/config.cc:392
 #, fuzzy
 msgid ""
 "Dear Projectionist\n"
@@ -372,7 +372,7 @@ msgstr ""
 "Non sappiamo cosa ha causato questo errore. La cosa migliore è inviare un "
 "report del problema alla mailing list di DCP-o-matic (carl@dcpomatic.com)"
 
-#: src/lib/config.cc:181
+#: src/lib/config.cc:207
 msgid "KDM delivery: $CPL_NAME"
 msgstr ""
 
@@ -674,7 +674,7 @@ msgstr "non riesco a trovare informazioni sullo streaming"
 msgid "could not find video decoder"
 msgstr "non riesco a trovare il decoder video"
 
-#: src/lib/writer.cc:478
+#: src/lib/writer.cc:483
 msgid "could not move audio MXF into the DCP (%1)"
 msgstr ""
 

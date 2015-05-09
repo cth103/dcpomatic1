@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LIBDCPOMATIC\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-04 23:32+0100\n"
+"POT-Creation-Date: 2015-05-09 15:17+0100\n"
 "PO-Revision-Date: 2015-03-16 19:24-0500\n"
 "Last-Translator: Manuel AC <manuel.acevedo@civantos.>\n"
 "Language-Team: Manuel AC <manuel.acevedo@civantos.com>\n"
@@ -57,7 +57,7 @@ msgstr "Publicidad"
 msgid "An error occurred whilst handling the file %1."
 msgstr "Ha ocurrido un error con el fichero %1."
 
-#: src/lib/analyse_audio_job.cc:54
+#: src/lib/analyse_audio_job.cc:56
 msgid "Analyse audio"
 msgstr "Analizar audio"
 
@@ -97,7 +97,7 @@ msgstr "Centro"
 msgid "Checking existing image data"
 msgstr "Comprobando las imágenes existentes"
 
-#: src/lib/writer.cc:514
+#: src/lib/writer.cc:519
 msgid "Computing audio digest"
 msgstr "Calculando la firma resumen del audio"
 
@@ -105,7 +105,7 @@ msgstr "Calculando la firma resumen del audio"
 msgid "Computing digest"
 msgstr "Calculando la firma resumen"
 
-#: src/lib/writer.cc:510
+#: src/lib/writer.cc:515
 msgid "Computing image digest"
 msgstr "Calculando la firma resumen de imagen"
 
@@ -254,7 +254,7 @@ msgstr "DCP-o-matic ya no ofrece el filtro `%1', así que ha sido desactivado."
 msgid "De-interlacing"
 msgstr "Desentrelazado"
 
-#: src/lib/config.cc:366
+#: src/lib/config.cc:392
 msgid ""
 "Dear Projectionist\n"
 "\n"
@@ -364,7 +364,7 @@ msgstr ""
 "Error desconocido. Por favor informe del problema al creador de DCP-o-matic "
 "(carl@dcpomatic.com)"
 
-#: src/lib/config.cc:181
+#: src/lib/config.cc:207
 msgid "KDM delivery: $CPL_NAME"
 msgstr "Envío de KDM: $CPL_NAME"
 
@@ -660,7 +660,7 @@ msgstr "no se pudo encontrar información del flujo"
 msgid "could not find video decoder"
 msgstr "no se pudo encontrar decodificador de vídeo"
 
-#: src/lib/writer.cc:478
+#: src/lib/writer.cc:483
 msgid "could not move audio MXF into the DCP (%1)"
 msgstr "no s puedo mover el audio MXF en el DCP (%1)"
 
