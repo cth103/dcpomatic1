@@ -232,7 +232,7 @@ AudioDialog::smoothing_changed ()
 void
 AudioDialog::setup_peak_time ()
 {
-	if (!_analysis && !_analysis->peak ()) {
+	if (!_analysis || !_analysis->peak ()) {
 		return;
 	}
 
