@@ -41,14 +41,22 @@ ContentPropertiesDialog::ContentPropertiesDialog (wxWindow* parent, shared_ptr<C
 			_("Video length"),
 			std_to_wx (raw_convert<string> (video->video_length ())) + " " + _("video frames")
 			);
+		if (video->original_video_frame_rate () > 1e-3) {
+			add_property (
+				wxT (""),
+				time_to_timecode (video->video_length() * TIME_HZ / video->original_video_frame_rate (), video->original_video_frame_rate ())
+				);
+		}
 		add_property (
 			_("Video size"),
 			std_to_wx (raw_convert<string> (video->video_size().width) + "x" + raw_convert<string> (video->video_size().height))
 			);
-		add_property (
-			_("Video frame rate"),
-			std_to_wx (raw_convert<string> (video->original_video_frame_rate())) + " " + _("frames per second")
-			);
+		if (video->original_video_frame_rate () > 1e-3) {
+			add_property (
+				_("Video frame rate"),
+				std_to_wx (raw_convert<string> (video->original_video_frame_rate())) + " " + _("frames per second")
+				);
+		}
 	}
 
 	shared_ptr<AudioContent> audio = dynamic_pointer_cast<AudioContent> (content);
@@ -58,8 +66,16 @@ ContentPropertiesDialog::ContentPropertiesDialog (wxWindow* parent, shared_ptr<C
 			std_to_wx (raw_convert<string> (audio->audio_channels ()))
 			);
 		add_property (
+			_("Sampling rate"),
+			std_to_wx (raw_convert<string> (audio->content_audio_frame_rate ())) + " " + _("Hz")
+			);
+		add_property (
 			_("Audio length"),
 			std_to_wx (raw_convert<string> (audio->audio_length())) + " " + _("audio frames")
+			);
+		add_property (
+			wxT (""),
+			time_to_timecode (audio->audio_length() * TIME_HZ / audio->content_audio_frame_rate(), audio->content_audio_frame_rate())
 			);
 	}
 	
@@ -69,6 +85,6 @@ ContentPropertiesDialog::ContentPropertiesDialog (wxWindow* parent, shared_ptr<C
 void
 ContentPropertiesDialog::add_property (wxString k, wxString v)
 {
-	add (k, true);
+	add (k, k.Length() > 0);
 	add (new wxStaticText (this, wxID_ANY, v));
 }
