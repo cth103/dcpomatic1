@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #include "lib/config.h"
 #include "lib/exceptions.h"
 #include "lib/safe_stringstream.h"
+#include "lib/raw_convert.h"
 
 using std::string;
 using std::cout;
@@ -175,7 +176,7 @@ int main (int argc, char* argv[])
 			} else if (string (optarg) == "dci-specific") {
 				formulation = libdcp::KDM::DCI_SPECIFIC;
 			} else {
-				error ("unrecognised KDM formulation " + formulation);
+				error ("unrecognised KDM formulation " + raw_convert<string> (formulation));
 			}
 		}
 	}
