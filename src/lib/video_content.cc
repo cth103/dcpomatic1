@@ -20,7 +20,7 @@
 #include <iomanip>
 #include <libcxml/cxml.h>
 #include <libdcp/colour_matrix.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "video_content.h"
 #include "video_examiner.h"
 #include "compose.hpp"
@@ -48,10 +48,12 @@ using std::cout;
 using std::vector;
 using std::min;
 using std::max;
+using std::fixed;
+using std::stringstream;
+using std::scientific;
 using boost::shared_ptr;
 using boost::optional;
 using boost::dynamic_pointer_cast;
-using libdcp::raw_convert;
 
 VideoContent::VideoContent (shared_ptr<const Film> f)
 	: Content (f)
@@ -59,9 +61,9 @@ VideoContent::VideoContent (shared_ptr<const Film> f)
 	, _original_video_frame_rate (0)
 	, _video_frame_rate (0)
 	, _video_frame_type (VIDEO_FRAME_TYPE_2D)
-	, _scale (Config::instance()->default_scale ())
+	, _scale (VideoContentScale (Ratio::from_id ("178")))
 {
-	setup_default_colour_conversion ();
+	set_default_colour_conversion (false);
 }
 
 VideoContent::VideoContent (shared_ptr<const Film> f, Time s, VideoContent::Frame len)
@@ -70,9 +72,9 @@ VideoContent::VideoContent (shared_ptr<const Film> f, Time s, VideoContent::Fram
 	, _original_video_frame_rate (0)
 	, _video_frame_rate (0)
 	, _video_frame_type (VIDEO_FRAME_TYPE_2D)
-	, _scale (Config::instance()->default_scale ())
+	, _scale (VideoContentScale (Ratio::from_id ("178")))
 {
-	setup_default_colour_conversion ();
+	set_default_colour_conversion (false);
 }
 
 VideoContent::VideoContent (shared_ptr<const Film> f, boost::filesystem::path p)
@@ -81,9 +83,9 @@ VideoContent::VideoContent (shared_ptr<const Film> f, boost::filesystem::path p)
 	, _original_video_frame_rate (0)
 	, _video_frame_rate (0)
 	, _video_frame_type (VIDEO_FRAME_TYPE_2D)
-	, _scale (Config::instance()->default_scale ())
+	, _scale (VideoContentScale (Ratio::from_id ("178")))
 {
-	setup_default_colour_conversion ();
+	set_default_colour_conversion (false);
 }
 
 VideoContent::VideoContent (shared_ptr<const Film> f, shared_ptr<const cxml::Node> node, int version)
@@ -95,6 +97,7 @@ VideoContent::VideoContent (shared_ptr<const Film> f, shared_ptr<const cxml::Nod
 	_video_frame_rate = node->number_child<float> ("VideoFrameRate");
 	_original_video_frame_rate = node->optional_number_child<float> ("OriginalVideoFrameRate").get_value_or (_video_frame_rate);
 	_video_frame_type = static_cast<VideoFrameType> (node->number_child<int> ("VideoFrameType"));
+	_sample_aspect_ratio = node->optional_number_child<float> ("SampleAspectRatio");
 	_crop.left = node->number_child<int> ("LeftCrop");
 	_crop.right = node->number_child<int> ("RightCrop");
 	_crop.top = node->number_child<int> ("TopCrop");
@@ -108,8 +111,10 @@ VideoContent::VideoContent (shared_ptr<const Film> f, shared_ptr<const cxml::Nod
 	} else {
 		_scale = VideoContentScale (node->node_child ("Scale"));
 	}
-	
-	_colour_conversion = ColourConversion (node->node_child ("ColourConversion"));
+
+	if (node->optional_node_child ("ColourConversion")) {
+		_colour_conversion = ColourConversion (node->node_child ("ColourConversion"));
+	}
 }
 
 VideoContent::VideoContent (shared_ptr<const Film> f, vector<shared_ptr<Content> > c)
@@ -117,7 +122,7 @@ VideoContent::VideoContent (shared_ptr<const Film> f, vector<shared_ptr<Content>
 	, _video_length (0)
 {
 	shared_ptr<VideoContent> ref = dynamic_pointer_cast<VideoContent> (c[0]);
-	assert (ref);
+	DCPOMATIC_ASSERT (ref);
 
 	for (size_t i = 0; i < c.size(); ++i) {
 		shared_ptr<VideoContent> vc = dynamic_pointer_cast<VideoContent> (c[i]);
@@ -168,15 +173,30 @@ VideoContent::as_xml (xmlpp::Node* node) const
 	node->add_child("VideoFrameRate")->add_child_text (raw_convert<string> (_video_frame_rate));
 	node->add_child("OriginalVideoFrameRate")->add_child_text (raw_convert<string> (_original_video_frame_rate));
 	node->add_child("VideoFrameType")->add_child_text (raw_convert<string> (static_cast<int> (_video_frame_type)));
+	if (_sample_aspect_ratio) {
+		node->add_child("SampleAspectRatio")->add_child_text (raw_convert<string> (_sample_aspect_ratio.get ()));
+	}
 	_crop.as_xml (node);
 	_scale.as_xml (node->add_child("Scale"));
-	_colour_conversion.as_xml (node->add_child("ColourConversion"));
+	if (_colour_conversion) {
+		_colour_conversion.get().as_xml (node->add_child("ColourConversion"));
+	}
 }
 
 void
-VideoContent::setup_default_colour_conversion ()
+VideoContent::set_default_colour_conversion (bool signal)
 {
-	_colour_conversion = PresetColourConversion (_("sRGB"), 2.4, true, libdcp::colour_matrix::srgb_to_xyz, 2.6).conversion;
+	{
+		boost::mutex::scoped_lock lm (_mutex);
+		_colour_conversion = PresetColourConversion (
+			_("Rec. 709"), 2.2, false, YUV_TO_RGB_REC709,
+			Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
+			).conversion;
+	}
+
+	if (signal) {
+		signal_changed (VideoContentProperty::COLOUR_CONVERSION);
+	}
 }
 
 void
@@ -184,37 +204,27 @@ VideoContent::take_from_video_examiner (shared_ptr<VideoExaminer> d)
 {
 	/* These examiner calls could call other content methods which take a lock on the mutex */
 	libdcp::Size const vs = d->video_size ();
-	float const vfr = d->video_frame_rate ();
-	
+	optional<float> const vfr = d->video_frame_rate ();
+	optional<float> const ar = d->sample_aspect_ratio ();
+
 	{
 		boost::mutex::scoped_lock lm (_mutex);
 		_video_size = vs;
-		_video_frame_rate = vfr;
-		_original_video_frame_rate = vfr;
+		if (vfr) {
+			_video_frame_rate = vfr.get ();
+			_original_video_frame_rate = vfr.get ();
+		}
+		_sample_aspect_ratio = ar;
+
+		/* Guess correct scale from size and sample aspect ratio */
+		_scale = VideoContentScale (
+			Ratio::nearest_from_ratio (float (_video_size.width) * ar.get_value_or (1) / _video_size.height)
+			);
 	}
 	
 	signal_changed (VideoContentProperty::VIDEO_SIZE);
 	signal_changed (VideoContentProperty::VIDEO_FRAME_RATE);
-}
-
-
-string
-VideoContent::information () const
-{
-	if (video_size().width == 0 || video_size().height == 0) {
-		return "";
-	}
-	
-	SafeStringStream s;
-
-	s << String::compose (
-		_("%1x%2 pixels (%3:1)"),
-		video_size().width,
-		video_size().height,
-		setprecision (3), video_size().ratio ()
-		);
-	
-	return s.str ();
+	signal_changed (VideoContentProperty::VIDEO_SCALE);
 }
 
 void
@@ -303,8 +313,11 @@ VideoContent::identifier () const
 	  << "_" << crop().right
 	  << "_" << crop().top
 	  << "_" << crop().bottom
-	  << "_" << scale().id()
-	  << "_" << colour_conversion().identifier ();
+	  << "_" << scale().id();
+
+	if (colour_conversion()) {
+		s << "_" << colour_conversion().get().identifier ();
+	}
 
 	return s.str ();
 }
@@ -323,10 +336,16 @@ VideoContent::set_video_frame_type (VideoFrameType t)
 string
 VideoContent::technical_summary () const
 {
-	return String::compose (
-		"video: length %1, size %2x%3, rate %4",
+	string s = String::compose (
+		N_("video: length %1, size %2x%3, rate %4"),
 		video_length_after_3d_combine(), video_size().width, video_size().height, video_frame_rate()
 		);
+
+	if (sample_aspect_ratio ()) {
+		s += String::compose (N_(", sample aspect ratio %1"), (sample_aspect_ratio().get ()));
+	}
+
+	return s;
 }
 
 libdcp::Size
@@ -345,7 +364,18 @@ VideoContent::video_size_after_3d_split () const
 		return libdcp::Size (s.width, s.height / 2);
 	}
 
-	assert (false);
+	DCPOMATIC_ASSERT (false);
+}
+
+void
+VideoContent::unset_colour_conversion ()
+{
+	{
+		boost::mutex::scoped_lock lm (_mutex);
+		_colour_conversion = boost::optional<ColourConversion> ();
+	}
+
+	signal_changed (VideoContentProperty::COLOUR_CONVERSION);
 }
 
 void
@@ -373,7 +403,7 @@ VideoContent::Frame
 VideoContent::time_to_content_video_frames (Time t) const
 {
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 	
 	FrameRateChange frc (video_frame_rate(), film->video_frame_rate());
 
@@ -388,7 +418,7 @@ void
 VideoContent::scale_and_crop_to_fit_width ()
 {
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 
 	set_scale (VideoContentScale (film->container ()));
 
@@ -401,7 +431,7 @@ void
 VideoContent::scale_and_crop_to_fit_height ()
 {
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 
 	set_scale (VideoContentScale (film->container ()));
 
@@ -425,3 +455,68 @@ VideoContent::set_video_frame_rate (float r)
 	signal_changed (VideoContentProperty::VIDEO_FRAME_RATE);
 }
 
+string
+VideoContent::processing_description () const
+{
+	/* stringstream is OK here as this string is just for presentation to the user */
+	stringstream d;
+
+	if (video_size().width && video_size().height) {
+		d << String::compose (
+			_("Content video is %1x%2"),
+			video_size_after_3d_split().width,
+			video_size_after_3d_split().height
+			);
+
+		float ratio = video_size_after_3d_split().ratio ();
+
+		if (sample_aspect_ratio ()) {
+			d << ", " << _("pixel aspect ratio") << " " << fixed << setprecision(2) << sample_aspect_ratio().get () << ":1";
+			ratio *= sample_aspect_ratio().get ();
+		}
+
+		d << "\n" << _("Display aspect ratio") << " " << fixed << setprecision(2) << ratio << ":1\n";
+	}
+
+	if ((crop().left || crop().right || crop().top || crop().bottom) && video_size() != libdcp::Size (0, 0)) {
+		libdcp::Size cropped = video_size_after_crop ();
+		d << String::compose (
+			_("Cropped to %1x%2"),
+			cropped.width, cropped.height
+			);
+
+		d << " (" << fixed << setprecision(2) << cropped.ratio () << ":1)\n";
+	}
+
+	shared_ptr<const Film> film = _film.lock ();
+	DCPOMATIC_ASSERT (film);
+
+	libdcp::Size const container_size = film->frame_size ();
+	libdcp::Size const scaled = scale().size (dynamic_pointer_cast<const VideoContent> (shared_from_this ()), container_size, container_size);
+
+	if (scaled != video_size_after_crop ()) {
+		d << String::compose (
+			_("Scaled to %1x%2"),
+			scaled.width, scaled.height
+			);
+
+		d << " (" << fixed << setprecision(2) << scaled.ratio() << ":1)\n";
+	}
+	
+	if (scaled != container_size) {
+		d << String::compose (
+			_("Padded with black to %1x%2"),
+			container_size.width, container_size.height
+			);
+
+		d << " (" << fixed << setprecision(2) << container_size.ratio () << ":1)\n";
+	}
+
+	d << _("Content frame rate");
+	d << " " << fixed << setprecision(4) << video_frame_rate() << "\n";
+	
+	FrameRateChange frc (video_frame_rate(), film->video_frame_rate ());
+	d << frc.description () << "\n";
+
+	return d.str ();
+}

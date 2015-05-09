@@ -58,11 +58,11 @@ public:
 	virtual void examine (boost::shared_ptr<Job>);
 	virtual std::string summary () const = 0;
 	/** @return Technical details of this content; these are written to logs to
-	 *  help with debugging.
+	 *  help with debugging, and not presented in the UI.
 	 */
 	virtual std::string technical_summary () const;
-	virtual std::string information () const = 0;
 	virtual void as_xml (xmlpp::Node *) const;
+	/** @return Full length of this content as presented in the DCP */
 	virtual Time full_length () const = 0;
 	virtual std::string identifier () const;
 
@@ -89,7 +89,10 @@ public:
 	
 	bool paths_valid () const;
 
-	/** @return MD5 digest of the content's file(s) */
+	/** @return Digest of the content's file(s).  Note: this is
+	 *  not a complete MD5-or-whatever hash, but a sort of poor
+	 *  man' version (see comments in ::examine).
+	 */
 	std::string digest () const {
 		boost::mutex::scoped_lock lm (_mutex);
 		return _digest;
@@ -133,6 +136,11 @@ public:
 
 	boost::signals2::signal<void (boost::weak_ptr<Content>, int, bool)> Changed;
 
+	/* Debug only */
+	boost::shared_ptr<const Film> film () const {
+		return _film.lock ();
+	}
+	
 protected:
 	void signal_changed (int);
 

@@ -63,7 +63,7 @@ BOOST_AUTO_TEST_CASE (file_group_test)
 	}
 
 	FileGroup fg (name);
-	uint8_t test[65536];
+	uint8_t* test = new uint8_t[256*1024];
 
 	int pos = 0;
 
@@ -103,4 +103,6 @@ BOOST_AUTO_TEST_CASE (file_group_test)
 	BOOST_CHECK_EQUAL (fg.seek (1077, SEEK_END), total_length - 1077);
 	BOOST_CHECK_EQUAL (fg.read (test, 256), 256);
 	BOOST_CHECK_EQUAL (memcmp (data + total_length - 1077, test, 256), 0);
+
+	delete[] test;
 }

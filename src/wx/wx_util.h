@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@
 #ifdef __WXGTK__
 #include <gtk/gtk.h>
 #endif
+#include "lib/types.h"
 
 class wxFilePickerCtrl;
 class wxSpinCtrl;
@@ -64,42 +65,21 @@ extern std::string wx_to_std (wxString);
 extern wxString std_to_wx (std::string);
 extern void dcpomatic_setup_i18n ();
 extern wxString context_translation (wxString);
-
-/** @class ThreadedStaticText
- *
- *  @brief A wxStaticText whose content is computed in a separate thread, to avoid holding
- *  up the GUI while work is done.
- */
-class ThreadedStaticText : public wxStaticText
-{
-public:
-	ThreadedStaticText (wxWindow* parent, wxString initial, boost::function<std::string ()> fn);
-	~ThreadedStaticText ();
-
-	/** Emitted in the UI thread when the text has been set up */
-	boost::signals2::signal<void()> Finished;
-
-private:
-	void run (boost::function<std::string ()> fn);
-	void thread_finished (wxCommandEvent& ev);
-
-	/** Thread to do our work in */
-	boost::thread* _thread;
-	
-	static const int _update_event_id;
-};
-
 extern std::string string_client_data (wxClientData* o);
+extern wxString time_to_timecode (Time t, float fps);
 
 extern void checked_set (wxFilePickerCtrl* widget, std::string value);
 extern void checked_set (wxSpinCtrl* widget, int value);
 extern void checked_set (wxSpinCtrlDouble* widget, double value);
 extern void checked_set (wxChoice* widget, int value);
 extern void checked_set (wxChoice* widget, std::string value);
+extern void checked_set (wxChoice* widget, std::vector<std::pair<std::string, std::string> > items);
 extern void checked_set (wxTextCtrl* widget, std::string value);
+extern void checked_set (wxTextCtrl* widget, wxString value);
 extern void checked_set (wxCheckBox* widget, bool value);
 extern void checked_set (wxRadioButton* widget, bool value);
 extern void checked_set (wxStaticText* widget, std::string value);
+extern void checked_set (wxStaticText* widget, wxString value);
 
 extern int wx_get (wxChoice* widget);
 extern int wx_get (wxSpinCtrl* widget);

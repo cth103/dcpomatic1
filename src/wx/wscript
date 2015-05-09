@@ -15,6 +15,7 @@ sources = """
           config_dialog.cc
           content_colour_conversion_dialog.cc
           content_menu.cc
+          content_properties_dialog.cc
           isdcf_metadata_dialog.cc
           dir_picker_ctrl.cc
           dolby_certificate_dialog.cc
@@ -27,11 +28,11 @@ sources = """
           filter_editor.cc
           gain_calculator_dialog.cc
           hints_dialog.cc
+          image_sequence_dialog.cc
           job_manager_view.cc
-          job_wrapper.cc
           kdm_dialog.cc
+          key_dialog.cc
           new_film_dialog.cc
-          preset_colour_conversion_dialog.cc
           properties_dialog.cc
           repeat_dialog.cc
           screen_dialog.cc
@@ -42,6 +43,11 @@ sources = """
           timecode.cc
           timeline.cc
           timeline_dialog.cc
+          timeline_time_axis_view.cc
+          timeline_video_content_view.cc
+          timeline_audio_content_view.cc
+          timeline_content_view.cc
+          timeline_view.cc
           timing_panel.cc
           update_dialog.cc
           video_panel.cc
@@ -64,7 +70,6 @@ def configure(conf):
                                     'wx_gtk2u_adv-3.0', 'wx_gtk2u_core-3.0', 'wx_baseu_xml-3.0', 'wx_baseu-3.0']
         conf.env.LIB_WXWIDGETS = ['tiff', 'SM', 'dl', 'jpeg', 'png', 'X11', 'expat']
         if conf.env.TARGET_DEBIAN and conf.env.DEBIAN_UNSTABLE:
-            conf.env.LIB_WXWIDGETS.append('Xxf86vm')
             conf.env.LIB_WXWIDGETS.append('Xext')
             conf.env.LIB_WXWIDGETS.append('X11')
 

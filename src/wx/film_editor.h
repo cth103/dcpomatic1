@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -68,6 +68,8 @@ public:
 	AudioContentList selected_audio_content ();
 	SubtitleContentList selected_subtitle_content ();
 	FFmpegContentList selected_ffmpeg_content ();
+
+	void content_add_file_clicked ();
 	
 private:
 	void make_dcp_panel ();
@@ -78,8 +80,8 @@ private:
 	void name_changed ();
 	void use_isdcf_name_toggled ();
 	void edit_isdcf_button_clicked ();
+	void copy_isdcf_name_button_clicked ();
 	void content_selection_changed ();
-	void content_add_file_clicked ();
 	void content_add_folder_clicked ();
 	void content_remove_clicked ();
 	void content_earlier_clicked ();
@@ -95,12 +97,12 @@ private:
 	void content_timeline_clicked ();
 	void audio_channels_changed ();
 	void resolution_changed ();
-	void sequence_video_changed ();
 	void content_right_click (wxListEvent &);
 	void three_d_changed ();
 	void standard_changed ();
 	void signed_toggled ();
 	void encrypted_toggled ();
+	void edit_key_clicked ();
 
 	/* Handle changes to the model */
 	void film_changed (Film::Property);
@@ -116,6 +118,8 @@ private:
 	
 	void active_jobs_changed (bool);
 	void config_changed ();
+
+	void add_files (std::list<std::string> paths);
 
 	FilmEditorPanel* _video_panel;
 	FilmEditorPanel* _audio_panel;
@@ -143,21 +147,23 @@ private:
 	wxButton* _content_earlier;
 	wxButton* _content_later;
 	wxButton* _content_timeline;
-	wxCheckBox* _sequence_video;
 	wxButton* _edit_isdcf_button;
+	wxButton* _copy_isdcf_name_button;
 	wxChoice* _scaler;
  	wxSpinCtrl* _j2k_bandwidth;
 	wxChoice* _dcp_content_type;
 	wxChoice* _frame_rate_choice;
 	wxSpinCtrl* _frame_rate_spin;
 	wxSizer* _frame_rate_sizer;
-	wxSpinCtrl* _audio_channels;
+	wxChoice* _audio_channels;
 	wxButton* _best_frame_rate;
 	wxCheckBox* _three_d;
 	wxChoice* _resolution;
 	wxChoice* _standard;
 	wxCheckBox* _signed;
 	wxCheckBox* _encrypted;
+	wxStaticText* _key;
+	wxButton* _edit_key;
 
 	ContentMenu _menu;
 

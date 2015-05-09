@@ -19,12 +19,13 @@
 
 #include <stdint.h>
 #include <cmath>
-#include <cassert>
 #include <cstdio>
 #include <iostream>
+#include <inttypes.h>
 #include <boost/filesystem.hpp>
 #include "audio_analysis.h"
 #include "cross.h"
+#include "util.h"
 
 using std::ostream;
 using std::istream;
@@ -44,7 +45,10 @@ AudioPoint::AudioPoint ()
 AudioPoint::AudioPoint (FILE* f)
 {
 	for (int i = 0; i < COUNT; ++i) {
-		fscanf (f, "%f", &_data[i]);
+		int n = fscanf (f, "%f", &_data[i]);
+		if (n != 1) {
+			_data[i] = 0;
+		}
 	}
 }
 
@@ -86,8 +90,11 @@ AudioAnalysis::AudioAnalysis (int channels)
 AudioAnalysis::AudioAnalysis (boost::filesystem::path filename)
 {
 	FILE* f = fopen_boost (filename, "r");
+	if (!f) {
+		throw OpenFileError (filename);
+	}
 
-	int channels;
+	int channels = 0;
 	fscanf (f, "%d", &channels);
 	_data.resize (channels);
 
@@ -108,20 +115,31 @@ AudioAnalysis::AudioAnalysis (boost::filesystem::path filename)
 		}
 	}
 
+	/* These may not exist in old analysis files, so be careful
+	   about reading them.
+	*/
+
+	float peak;
+	Time peak_time;
+	if (fscanf (f, "%f%" SCNd64, &peak, &peak_time) == 2) {
+		_peak = peak;
+		_peak_time = peak_time;
+	}
+
 	fclose (f);
 }
 
 void
 AudioAnalysis::add_point (int c, AudioPoint const & p)
 {
-	assert (c < channels ());
+	DCPOMATIC_ASSERT (c < channels ());
 	_data[c].push_back (p);
 }
 
 AudioPoint
 AudioAnalysis::get_point (int c, int p) const
 {
-	assert (p < points (c));
+	DCPOMATIC_ASSERT (p < points (c));
 	return _data[c][p];
 }
 
@@ -134,7 +152,7 @@ AudioAnalysis::channels () const
 int
 AudioAnalysis::points (int c) const
 {
-	assert (c < channels ());
+	DCPOMATIC_ASSERT (c < channels ());
 	return _data[c].size ();
 }
 
@@ -145,6 +163,9 @@ AudioAnalysis::write (boost::filesystem::path filename)
 	tmp.replace_extension (".tmp");
 
 	FILE* f = fopen_boost (tmp, "w");
+	if (!f) {
+		throw OpenFileError (tmp);
+	}
 
 	fprintf (f, "%ld\n", _data.size ());
 	for (vector<vector<AudioPoint> >::iterator i = _data.begin(); i != _data.end(); ++i) {
@@ -152,6 +173,10 @@ AudioAnalysis::write (boost::filesystem::path filename)
 		for (vector<AudioPoint>::iterator j = i->begin(); j != i->end(); ++j) {
 			j->write (f);
 		}
+	}
+
+	if (_peak) {
+		fprintf (f, "%f%" PRId64, _peak.get (), _peak_time.get ());
 	}
 
 	fclose (f);

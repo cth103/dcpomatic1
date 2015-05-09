@@ -49,6 +49,7 @@ class Player : public boost::enable_shared_from_this<Player>, public boost::nonc
 {
 public:
 	Player (boost::shared_ptr<const Film>, boost::shared_ptr<const Playlist>);
+	~Player ();
 
 	void disable_video ();
 	void disable_audio ();
@@ -117,6 +118,7 @@ private:
 
 	AudioMerger<Time, AudioContent::Frame> _audio_merger;
 
+	/** Size of the image in the DCP (e.g. 1998x1080 for flat) */
 	libdcp::Size _video_container_size;
 	boost::shared_ptr<PlayerVideoFrame> _black_frame;
 	std::map<boost::shared_ptr<AudioContent>, boost::shared_ptr<Resampler> > _resamplers;
@@ -134,6 +136,7 @@ private:
 	boost::signals2::scoped_connection _playlist_changed_connection;
 	boost::signals2::scoped_connection _playlist_content_changed_connection;
 	boost::signals2::scoped_connection _film_changed_connection;
+	std::list<boost::signals2::connection> _decoder_connections;
 };
 
 #endif

@@ -21,7 +21,7 @@ extern "C" {
 #include <libavformat/avformat.h>
 }
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "ffmpeg_content.h"
 #include "ffmpeg_examiner.h"
 #include "compose.hpp"
@@ -45,7 +45,6 @@ using std::cout;
 using std::pair;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
-using libdcp::raw_convert;
 
 int const FFmpegContentProperty::SUBTITLE_STREAMS = 100;
 int const FFmpegContentProperty::SUBTITLE_STREAM = 101;
@@ -104,7 +103,7 @@ FFmpegContent::FFmpegContent (shared_ptr<const Film> f, vector<boost::shared_ptr
 	, SubtitleContent (f, c)
 {
 	shared_ptr<FFmpegContent> ref = dynamic_pointer_cast<FFmpegContent> (c[0]);
-	assert (ref);
+	DCPOMATIC_ASSERT (ref);
 
 	for (size_t i = 0; i < c.size(); ++i) {
 		shared_ptr<FFmpegContent> fc = dynamic_pointer_cast<FFmpegContent> (c[i]);
@@ -168,9 +167,9 @@ FFmpegContent::examine (shared_ptr<Job> job)
 	Content::examine (job);
 
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 
-	shared_ptr<FFmpegExaminer> examiner (new FFmpegExaminer (shared_from_this ()));
+	shared_ptr<FFmpegExaminer> examiner (new FFmpegExaminer (shared_from_this (), job));
 
 	VideoContent::Frame video_length = 0;
 	video_length = examiner->video_length ();
@@ -214,12 +213,12 @@ FFmpegContent::summary () const
 string
 FFmpegContent::technical_summary () const
 {
-	string as = "none";
+	string as = N_("none");
 	if (_audio_stream) {
 		as = _audio_stream->technical_summary ();
 	}
 
-	string ss = "none";
+	string ss = N_("none");
 	if (_subtitle_stream) {
 		ss = _subtitle_stream->technical_summary ();
 	}
@@ -230,23 +229,8 @@ FFmpegContent::technical_summary () const
 		+ VideoContent::technical_summary() + " - "
 		+ AudioContent::technical_summary() + " - "
 		+ String::compose (
-			"ffmpeg: audio %1, subtitle %2, filters %3", as, ss, filt
+			N_("ffmpeg: audio %1, subtitle %2, filters %3"), as, ss, filt
 			);
-}
-
-string
-FFmpegContent::information () const
-{
-	if (video_length() == 0 || video_frame_rate() == 0) {
-		return "";
-	}
-	
-	SafeStringStream s;
-	
-	s << String::compose (_("%1 frames; %2 frames per second"), video_length_after_3d_combine(), video_frame_rate()) << "\n";
-	s << VideoContent::information ();
-
-	return s.str ();
 }
 
 void
@@ -382,7 +366,7 @@ FFmpegStream::stream (AVFormatContext const * fc) const
 		++i;
 	}
 
-	assert (false);
+	DCPOMATIC_ASSERT (false);
 	return 0;
 }
 
@@ -406,7 +390,7 @@ Time
 FFmpegContent::full_length () const
 {
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 	
 	FrameRateChange frc (video_frame_rate (), film->video_frame_rate ());
 	return video_length_after_3d_combine() * frc.factor() * TIME_HZ / film->video_frame_rate ();
@@ -475,7 +459,7 @@ FFmpegContent::audio_analysis_path () const
 	*/
 
 	boost::filesystem::path p = film->audio_analysis_dir ();
-	string name = digest ();
+	string name = digest();
 	if (audio_stream ()) {
 		name += "_" + audio_stream()->identifier ();
 	}

@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE (crop_image_test2)
 	image = image->crop (crop, true);
 
 	/* Convert it back to RGB to make comparison to black easier */
-	image = image->scale (image->size(), Scaler::from_id ("bicubic"), PIX_FMT_RGB24, true);
+	image = image->scale (image->size(), Scaler::from_id ("bicubic"), YUV_TO_RGB_REC601, PIX_FMT_RGB24, true);
 
 	/* Check that its still black after the crop */
 	uint8_t* p = image->data()[0];
@@ -174,16 +174,24 @@ read_file (string file)
 
 	boost::shared_ptr<Image> image (new Image (PIX_FMT_RGB24, size, true));
 
+#ifdef DCPOMATIC_IMAGE_MAGICK	
 	using namespace MagickCore;
+#endif	
 	
 	uint8_t* p = image->data()[0];
 	for (int y = 0; y < size.height; ++y) {
 		uint8_t* q = p;
 		for (int x = 0; x < size.width; ++x) {
 			Magick::Color c = magick_image.pixelColor (x, y);
+#ifdef DCPOMATIC_IMAGE_MAGICK			
 			*q++ = c.redQuantum() * 255 / QuantumRange;
 			*q++ = c.greenQuantum() * 255 / QuantumRange;
 			*q++ = c.blueQuantum() * 255 / QuantumRange;
+#else			
+			*q++ = c.redQuantum() * 255 / MaxRGB;
+			*q++ = c.greenQuantum() * 255 / MaxRGB;
+			*q++ = c.blueQuantum() * 255 / MaxRGB;
+#endif			
 		}
 		p += image->stride()[0];
 	}
@@ -195,14 +203,20 @@ static
 void
 write_file (shared_ptr<Image> image, string file)
 {
+#ifdef DCPOMATIC_IMAGE_MAGICK	
 	using namespace MagickCore;
+#endif	
 	
 	Magick::Image magick_image (Magick::Geometry (image->size().width, image->size().height), Magick::Color (0, 0, 0));
 	uint8_t*p = image->data()[0];
 	for (int y = 0; y < image->size().height; ++y) {
 		uint8_t* q = p;
 		for (int x = 0; x < image->size().width; ++x) {
+#ifdef DCPOMATIC_IMAGE_MAGICK
 			Magick::Color c (q[0] * QuantumRange / 256, q[1] * QuantumRange / 256, q[2] * QuantumRange / 256);
+#else			
+			Magick::Color c (q[0] * MaxRGB / 256, q[1] * MaxRGB / 256, q[2] * MaxRGB / 256);
+#endif			
 			magick_image.pixelColor (x, y, c);
 			q += 3;
 		}
@@ -230,13 +244,13 @@ crop_scale_window_single (AVPixelFormat in_format, libdcp::Size in_size, Crop cr
 				
 	/* Convert using separate methods */
 	boost::shared_ptr<Image> sep = test->crop (crop, true);
-	sep = sep->scale (inter_size, Scaler::from_id ("bicubic"), PIX_FMT_RGB24, true);
+	sep = sep->scale (inter_size, Scaler::from_id ("bicubic"), YUV_TO_RGB_REC601, PIX_FMT_RGB24, true);
 	boost::shared_ptr<Image> sep_container (new Image (PIX_FMT_RGB24, out_size, true));
 	sep_container->make_black ();
 	sep_container->copy (sep, Position<int> ((out_size.width - inter_size.width) / 2, (out_size.height - inter_size.height) / 2));
 
 	/* Convert using the all-in-one method */
-	shared_ptr<Image> all = test->crop_scale_window (crop, inter_size, out_size, Scaler::from_id ("bicubic"), PIX_FMT_RGB24, true);
+	shared_ptr<Image> all = test->crop_scale_window (crop, inter_size, out_size, Scaler::from_id ("bicubic"), YUV_TO_RGB_REC601, PIX_FMT_RGB24, true);
 
 	/* Compare */
 	BOOST_CHECK_EQUAL (sep_container->size().width, all->size().width);

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -59,10 +59,10 @@ class Film : public boost::enable_shared_from_this<Film>, public boost::noncopya
 {
 public:
 	Film (boost::filesystem::path, bool log = true);
+	~Film ();
 
-	boost::filesystem::path info_dir () const;
+	boost::filesystem::path info_file () const;
 	boost::filesystem::path j2c_path (int, Eyes, bool) const;
-	boost::filesystem::path info_path (int, Eyes) const;
 	boost::filesystem::path internal_video_mxf_dir () const;
 	boost::filesystem::path internal_video_mxf_filename () const;
 	boost::filesystem::path audio_analysis_dir () const;
@@ -80,8 +80,6 @@ public:
 		return _log;
 	}
 
-	int encoded_frames () const;
-	
 	boost::filesystem::path file (boost::filesystem::path f) const;
 	boost::filesystem::path dir (boost::filesystem::path d) const;
 
@@ -113,7 +111,7 @@ public:
 	Time audio_frames_to_time (OutputAudioFrame) const;
 
 	uint64_t required_disk_space () const;
-	bool should_be_enough_disk_space (double &, double &) const;
+	bool should_be_enough_disk_space (double& required, double& available, bool& can_hard_link) const;
 	
 	/* Proxies for some Playlist methods */
 
@@ -140,10 +138,6 @@ public:
 		libdcp::KDM::Formulation formulation
 		) const;
 
-	libdcp::Key key () const {
-		return _key;
-	}
-
 	int state_version () const {
 		return _state_version;
 	}
@@ -164,6 +158,7 @@ public:
 		WITH_SUBTITLES,
 		SIGNED,
 		ENCRYPTED,
+		KEY,
 		J2K_BANDWIDTH,
 		ISDCF_METADATA,
 		VIDEO_FRAME_RATE,
@@ -218,6 +213,10 @@ public:
 		return _encrypted;
 	}
 
+	libdcp::Key key () const {
+		return _key;
+	}
+
 	int j2k_bandwidth () const {
 		return _j2k_bandwidth;
 	}
@@ -265,6 +264,7 @@ public:
 	void set_with_subtitles (bool);
 	void set_signed (bool);
 	void set_encrypted (bool);
+	void set_key (libdcp::Key key);
 	void set_j2k_bandwidth (int);
 	void set_isdcf_metadata (ISDCFMetadata);
 	void set_video_frame_rate (int);
@@ -341,6 +341,10 @@ private:
 
 	/** true if our state has changed since we last saved it */
 	mutable bool _dirty;
+
+	boost::signals2::scoped_connection _playlist_changed_connection;
+	boost::signals2::scoped_connection _playlist_content_changed_connection;
+	std::list<boost::signals2::connection> _job_connections;
 
 	friend class paths_test;
 	friend class film_metadata_test;

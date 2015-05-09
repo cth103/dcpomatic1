@@ -47,7 +47,9 @@ extern "C" {
 
 #define LOG_GENERAL(...) film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_GENERAL);
 #define LOG_ERROR(...) film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_ERROR);
-#define LOG_WARNING(...) film->log()->log (__VA_ARGS__, Log::TYPE_WARNING);
+#define LOG_WARNING_NC(...) film->log()->log (__VA_ARGS__, Log::TYPE_WARNING);
+#define LOG_WARNING(...) film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_WARNING);
+#define LOG_DEBUG(...) film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_DEBUG);
 
 using std::cout;
 using std::string;
@@ -72,6 +74,7 @@ FFmpegDecoder::FFmpegDecoder (shared_ptr<const Film> f, shared_ptr<const FFmpegC
 	, _decode_audio (audio)
 	, _pts_offset (0)
 	, _just_sought (false)
+	, _stop (false)
 {
 	setup_subtitle ();
 
@@ -93,13 +96,20 @@ FFmpegDecoder::FFmpegDecoder (shared_ptr<const Film> f, shared_ptr<const FFmpegC
 	bool const have_audio = audio && c->audio_stream() && c->audio_stream()->first_audio;
 
 	/* First, make one of them start at 0 */
-
 	if (have_audio && have_video) {
 		_pts_offset = - min (c->first_video().get(), c->audio_stream()->first_audio.get());
 	} else if (have_video) {
 		_pts_offset = - c->first_video().get();
 	} else if (have_audio) {
 		_pts_offset = - c->audio_stream()->first_audio.get();
+	}
+
+	/* If _pts_offset is positive we would be pushing things from a -ve PTS to be played.
+	   I don't think we ever want to do that, as it seems things at -ve PTS are not meant
+	   to be seen (use for alignment bars etc.); see mantis #418.
+	*/
+	if (_pts_offset > 0) {
+		_pts_offset = 0;
 	}
 
 	/* Now adjust both so that the video pts starts on a frame */
@@ -144,8 +154,7 @@ FFmpegDecoder::flush ()
 	}
 
 	/* Stop us being asked for any more data */
-	_video_position = _ffmpeg_content->video_length_after_3d_combine ();
-	_audio_position = _ffmpeg_content->audio_length ();
+	_stop = true;
 }
 
 void
@@ -153,13 +162,17 @@ FFmpegDecoder::pass ()
 {
 	int r = av_read_frame (_format_context, &_packet);
 
-	if (r < 0) {
+	/* AVERROR_INVALIDDATA can apparently be returned sometimes even when av_read_frame
+	   has pretty-much succeeded (and hence generated data which should be processed).
+	   Hence it makes sense to continue here in that case.
+	*/
+	if (r < 0 && r != AVERROR_INVALIDDATA) {
 		if (r != AVERROR_EOF) {
 			/* Maybe we should fail here, but for now we'll just finish off instead */
 			char buf[256];
 			av_strerror (r, buf, sizeof(buf));
 			shared_ptr<const Film> film = _film.lock ();
-			assert (film);
+			DCPOMATIC_ASSERT (film);
 			LOG_ERROR (N_("error on av_read_frame (%1) (%2)"), buf, r);
 		}
 
@@ -168,7 +181,7 @@ FFmpegDecoder::pass ()
 	}
 
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 
 	int const si = _packet.stream_index;
 	
@@ -189,13 +202,14 @@ FFmpegDecoder::pass ()
 shared_ptr<AudioBuffers>
 FFmpegDecoder::deinterleave_audio (uint8_t** data, int size)
 {
-	assert (_ffmpeg_content->audio_channels());
-	assert (bytes_per_audio_sample());
+	DCPOMATIC_ASSERT (_ffmpeg_content->audio_channels());
+	DCPOMATIC_ASSERT (bytes_per_audio_sample());
 
 	/* Deinterleave and convert to float */
 
-	assert ((size % (bytes_per_audio_sample() * _ffmpeg_content->audio_channels())) == 0);
-
+	/* total_samples and frames will be rounded down here, so if there are stray samples at the end
+	   of the block that do not form a complete sample or frame they will be dropped.
+	*/
 	int const total_samples = size / bytes_per_audio_sample();
 	int const frames = total_samples / _ffmpeg_content->audio_channels();
 	shared_ptr<AudioBuffers> audio (new AudioBuffers (_ffmpeg_content->audio_channels(), frames));
@@ -352,6 +366,7 @@ FFmpegDecoder::seek (VideoContent::Frame frame, bool accurate)
 	}
 	
 	_video_position = frame;
+	_stop = false;
 	
 	if (frame == 0 || !accurate) {
 		/* We're already there, or we're as close as we need to be */
@@ -399,16 +414,31 @@ FFmpegDecoder::decode_audio_packet ()
 	*/
 	
 	AVPacket copy_packet = _packet;
+
+	/* This is just for LOG_WARNING */
+	shared_ptr<const Film> film = _film.lock ();
 	
 	while (copy_packet.size > 0) {
 
 		int frame_finished;
-		int const decode_result = avcodec_decode_audio4 (audio_codec_context(), _frame, &frame_finished, &copy_packet);
+		int decode_result = avcodec_decode_audio4 (audio_codec_context(), _frame, &frame_finished, &copy_packet);
 		if (decode_result < 0) {
+			/* avcodec_decode_audio4 can sometimes return an error even though it has decoded
+			   some valid data; for example dca_subframe_footer can return AVERROR_INVALIDDATA
+			   if it overreads the auxiliary data.  ffplay carries on if frame_finished is true,
+			   even in the face of such an error, so I think we should too.
+
+			   Returning from the method here caused mantis #352.
+			*/
+			
 			shared_ptr<const Film> film = _film.lock ();
-			assert (film);
-			LOG_ERROR ("avcodec_decode_audio4 failed (%1)", decode_result);
-			return;
+			DCPOMATIC_ASSERT (film);
+			LOG_WARNING ("avcodec_decode_audio4 failed (%1)", decode_result);
+
+			/* Fudge decode_result so that we come out of the while loop when
+			   we've processed this data.
+			*/
+			decode_result = copy_packet.size;
 		}
 
 		if (frame_finished) {
@@ -417,6 +447,8 @@ FFmpegDecoder::decode_audio_packet ()
 				/* Where we are in the source, in seconds */
 				double const pts = av_q2d (_format_context->streams[copy_packet.stream_index]->time_base)
 					* av_frame_get_best_effort_timestamp(_frame) + _pts_offset;
+
+				LOG_DEBUG("FFmpeg audio frame finished at %1 (offset is %2)", pts, _pts_offset);
 
 				if (pts > 0) {
 					/* Emit some silence */
@@ -438,7 +470,7 @@ FFmpegDecoder::decode_audio_packet ()
 			int const data_size = av_samples_get_buffer_size (
 				0, audio_codec_context()->channels, _frame->nb_samples, audio_sample_format (), 1
 				);
-			
+
 			audio (deinterleave_audio (_frame->data, data_size), _audio_position);
 		}
 			
@@ -466,7 +498,7 @@ FFmpegDecoder::decode_video_packet ()
 
 	if (i == _filter_graphs.end ()) {
 		shared_ptr<const Film> film = _film.lock ();
-		assert (film);
+		DCPOMATIC_ASSERT (film);
 
 		graph.reset (new FilterGraph (_ffmpeg_content, libdcp::Size (_frame->width, _frame->height), (AVPixelFormat) _frame->format));
 		_filter_graphs.push_back (graph);
@@ -479,7 +511,7 @@ FFmpegDecoder::decode_video_packet ()
 	list<pair<shared_ptr<Image>, int64_t> > images = graph->process (_frame);
 
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 
 	for (list<pair<shared_ptr<Image>, int64_t> >::iterator i = images.begin(); i != images.end(); ++i) {
 
@@ -516,7 +548,7 @@ FFmpegDecoder::decode_video_packet ()
 					);
 				
 				shared_ptr<const Film> film = _film.lock ();
-				assert (film);
+				DCPOMATIC_ASSERT (film);
 
 				black->make_black ();
 				video (shared_ptr<ImageProxy> (new RawImageProxy (image, film->log())), false, _video_position);
@@ -529,7 +561,7 @@ FFmpegDecoder::decode_video_packet ()
 			}
 				
 		} else {
-			LOG_WARNING ("Dropping frame without PTS");
+			LOG_WARNING_NC ("Dropping frame without PTS");
 		}
 	}
 
@@ -565,8 +597,22 @@ FFmpegDecoder::setup_subtitle ()
 bool
 FFmpegDecoder::done () const
 {
-	bool const vd = !_decode_video || (_video_position >= _ffmpeg_content->video_length());
-	bool const ad = !_decode_audio || !_ffmpeg_content->audio_stream() || (_audio_position >= _ffmpeg_content->audio_length());
+	if (_stop) {
+		return true;
+	}
+		
+	shared_ptr<const Film> film = _film.lock ();
+	DCPOMATIC_ASSERT (film);
+
+	Time const vp = film->video_frames_to_time (_video_position);
+	Time const ap = film->audio_frames_to_time (_audio_position);
+
+	bool const vd = !_decode_video ||
+		((vp - _ffmpeg_content->trim_start()) >= _ffmpeg_content->length_after_trim ());
+	
+	bool const ad = !_decode_audio || !_ffmpeg_content->audio_stream() ||
+		((ap - _ffmpeg_content->trim_start()) >= _ffmpeg_content->length_after_trim ());
+
 	return vd && ad;
 }
 	

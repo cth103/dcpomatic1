@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -39,14 +39,32 @@ public:
 private:
 	void changed ();
 	void changed (wxSpinCtrlDouble *);
+	void chromaticity_changed ();
+	void adjusted_white_changed ();
+	void update_rgb_to_xyz ();
+	void update_bradford ();
+	void subhead (wxGridBagSizer* sizer, wxWindow* parent, wxString text, int& row) const;
 
 	void set_spin_ctrl (wxSpinCtrlDouble *, double);
 
 	std::map<wxSpinCtrlDouble*, double> _last_spin_ctrl_value;
-	
+
 	wxSpinCtrlDouble* _input_gamma;
 	wxCheckBox* _input_gamma_linearised;
-	wxTextCtrl* _matrix[3][3];
+	wxChoice* _yuv_to_rgb;
+	wxTextCtrl* _red_x;
+	wxTextCtrl* _red_y;
+	wxTextCtrl* _green_x;
+	wxTextCtrl* _green_y;
+	wxTextCtrl* _blue_x;
+	wxTextCtrl* _blue_y;
+	wxTextCtrl* _white_x;
+	wxTextCtrl* _white_y;
+	wxCheckBox* _adjust_white;
+	wxTextCtrl* _adjusted_white_x;
+	wxTextCtrl* _adjusted_white_y;
+	wxStaticText* _rgb_to_xyz[3][3];
+	wxStaticText* _bradford[3][3];
 	wxSpinCtrlDouble* _output_gamma;
 };
 

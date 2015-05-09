@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ AboutDialog::AboutDialog (wxWindow* parent)
 
 	t = new wxStaticText (
 		this, wxID_ANY,
-		_("Free, open-source DCP generation from almost anything."),
+		_("Free, open-source DCP creation from almost anything."),
 		wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER
 		);
 	t->SetFont (subtitle_font);
@@ -75,7 +75,7 @@ AboutDialog::AboutDialog (wxWindow* parent)
 
 	t = new wxStaticText (
 		this, wxID_ANY,
-		_("(C) 2012-2014 Carl Hetherington, Terrence Meiczinger, Paul Davis, Ole Laursen"),
+		_("(C) 2012-2015 Carl Hetherington, Terrence Meiczinger, Paul Davis, Ole Laursen"),
 		wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER
 		);
 	
@@ -88,7 +88,14 @@ AboutDialog::AboutDialog (wxWindow* parent)
 	written_by.Add (wxT ("Terrence Meiczinger"));
 	written_by.Add (wxT ("Paul Davis"));
 	written_by.Add (wxT ("Ole Laursen"));
+	written_by.Add (wxT ("Brecht Sanders"));
+	written_by.Add (wxT ("Jianguo Huang"));
 	add_section (_("Written by"), written_by);
+
+	wxArrayString with_help_from;
+	with_help_from.Add (wxT ("David Vignoni"));
+	with_help_from.Add (wxT ("Dennis Couzin"));
+	add_section (_("With help from"), with_help_from);
 
 	wxArrayString translated_by;
 	translated_by.Add (wxT ("Manuel AC"));
@@ -104,30 +111,36 @@ AboutDialog::AboutDialog (wxWindow* parent)
 	translated_by.Add (wxT ("Carsten Kurz"));
 	translated_by.Add (wxT ("Grégoire Ausina"));
 	translated_by.Add (wxT ("Cherif Ben Brahim"));
+	translated_by.Add (wxT ("Igor Voytovich"));
+	translated_by.Add (wxT ("Davide Sanvito"));
 	add_section (_("Translated by"), translated_by);
-
-	wxArrayString artwork_by;
-	artwork_by.Add (wxT ("David Vignoni"));
-	add_section (_("Artwork by"), artwork_by);
 
 	wxArrayString supported_by;
 	supported_by.Add (wxT ("Manual AC"));
 	supported_by.Add (wxT ("Kambiz Afshar"));
 	supported_by.Add (wxT ("Alex Asp"));
+	supported_by.Add (wxT ("Eric Audurier"));
 	supported_by.Add (wxT ("Louis Belloisy"));
 	supported_by.Add (wxT ("Mike Blakesley"));
 	supported_by.Add (wxT ("Jeff Boot"));
 	supported_by.Add (wxT ("Kieran Carroll"));
+	supported_by.Add (wxT ("Matt Carter"));
 	supported_by.Add (wxT ("Frank Cianciolo"));
 	supported_by.Add (wxT ("Cinema Clarici"));
 	supported_by.Add (wxT ("Adam Colt"));
 	supported_by.Add (wxT ("Matthias Damm"));
 	supported_by.Add (wxT ("Alexey Derevyanko"));
+	supported_by.Add (wxT ("Unwana Essien"));
+	supported_by.Add (wxT ("Maxime Estoppey"));
+	supported_by.Add (wxT ("Frechen-Film e.V."));
+	supported_by.Add (wxT ("Jose Angel Velasco Fernandez"));
 	supported_by.Add (wxT ("Andres Fink"));
 	supported_by.Add (wxT ("Evan Freeze"));
 	supported_by.Add (wxT ("Silvio Giuliano"));
 	supported_by.Add (wxT ("Alan Gouger"));
+	supported_by.Add (wxT ("Christopher Gray"));
 	supported_by.Add (wxT ("Flor Guillaume"));
+	supported_by.Add (wxT ("Patrick Haderer"));
 	supported_by.Add (wxT ("Antonio Ruiz Hernandez"));
 	supported_by.Add (wxT ("Jonathan Jensen"));
 	supported_by.Add (wxT ("Chris Kay"));
@@ -140,12 +153,17 @@ AboutDialog::AboutDialog (wxWindow* parent)
 	supported_by.Add (wxT ("Olivier Lemaire"));
 	supported_by.Add (wxT ("Gavin Lewarne"));
 	supported_by.Add (wxT ("Theo Lipfert"));
+	supported_by.Add (wxT ("Adrian Manolescu"));
 	supported_by.Add (wxT ("Mattias Mattsson"));
 	supported_by.Add (wxT ("Kjarten Michaelsen"));
 	supported_by.Add (wxT ("Aldo Midali"));
 	supported_by.Add (wxT ("Sylvain Mielle"));
 	supported_by.Add (wxT ("Lindsay Morris"));
+	supported_by.Add (wxT ("Гуляев Михаил"));
+	supported_by.Add (wxT ("David Nedrow"));
 	supported_by.Add (wxT ("Tim O'Brien"));
+	supported_by.Add (wxT ("Jerome Cohen Olivar"));
+	supported_by.Add (wxT ("Rui Pereira"));
 	supported_by.Add (wxT ("Ivan Pullman"));
 	supported_by.Add (wxT ("Mark Rolfe"));
 	supported_by.Add (wxT ("David Rozenthal"));
@@ -155,10 +173,17 @@ AboutDialog::AboutDialog (wxWindow* parent)
 	supported_by.Add (wxT ("Mike Stiebing"));
 	supported_by.Add (wxT ("Randy Stankey"));
 	supported_by.Add (wxT ("Bruce Taylor"));
+	supported_by.Add (wxT ("Lawrence Towers"));
+	supported_by.Add (wxT ("Richard Turner"));
+	supported_by.Add (wxT ("Raoul Walzer"));
+	supported_by.Add (wxT ("Frank Wenz"));
+	supported_by.Add (wxT ("Roland Wirtz"));
 	supported_by.Add (wxT ("Wolfgang Woehl"));
 	supported_by.Add (wxT ("Wolfram Weber"));
+	supported_by.Add (wxT ("Johannes Wilbrand"));
 	supported_by.Add (wxT ("Frank de Wulf"));
 	supported_by.Add (wxT ("Pavel Zhdanko"));
+	supported_by.Add (wxT ("Daniel Židek"));
 	add_section (_("Supported by"), supported_by);
 
 	wxArrayString tested_by;
@@ -170,6 +195,7 @@ AboutDialog::AboutDialog (wxWindow* parent)
 	tested_by.Add (wxT ("Adam Colt"));
 	tested_by.Add (wxT ("John Convertino"));
 	tested_by.Add (wxT ("Andreas Eli"));
+	tested_by.Add (wxT ("Jose Angel Velasco Fernandez"));
 	tested_by.Add (wxT ("Maurizio Giampà"));
 	tested_by.Add (wxT ("Luke Granger-Brown"));
 	tested_by.Add (wxT ("Sumit Guha"));
@@ -193,12 +219,15 @@ AboutDialog::AboutDialog (wxWindow* parent)
 	tested_by.Add (wxT ("Gérald Maruccia"));
 	tested_by.Add (wxT ("Will Meadows"));
 	tested_by.Add (wxT ("Brad Miller"));
+	tested_by.Add (wxT ("Ash Mitchell"));
 	tested_by.Add (wxT ("Anders Nordentoft-Madsen"));
 	tested_by.Add (wxT ("Mauro Ottonello"));
 	tested_by.Add (wxT ("Peter Puchner"));
 	tested_by.Add (wxT ("Markus Raab"));
 	tested_by.Add (wxT ("Greg Rooke"));
+	tested_by.Add (wxT ("Elad Saad"));
 	tested_by.Add (wxT ("Karim Senoucci"));
+	tested_by.Add (wxT ("Steve Smail"));
 	tested_by.Add (wxT ("Simon Vannarath"));
 	tested_by.Add (wxT ("Andrew Walls"));
 	tested_by.Add (wxT ("Andreas Weiss"));

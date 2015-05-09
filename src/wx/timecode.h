@@ -26,13 +26,15 @@ class Timecode : public wxPanel
 public:
 	Timecode (wxWindow *);
 
-	void set (Time, int);
+	void set (Time, float);
 	Time get (int) const;
 	void clear ();
 
 	void set_editable (bool);
 
 	boost::signals2::signal<void ()> Changed;
+
+	static wxSize size (wxWindow* parent);
 
 private:
 	void changed ();

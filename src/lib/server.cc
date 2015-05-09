@@ -28,7 +28,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/scoped_array.hpp>
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "server.h"
 #include "util.h"
 #include "scaler.h"
@@ -62,7 +62,6 @@ using boost::bind;
 using boost::scoped_array;
 using boost::optional;
 using libdcp::Size;
-using libdcp::raw_convert;
 
 Server::Server (shared_ptr<Log> log, bool verbose)
 	: _log (log)
@@ -247,6 +246,9 @@ Server::broadcast_received ()
 		root->add_child("Threads")->add_child_text (raw_convert<string> (_worker_threads.size ()));
 		string xml = doc.write_to_string ("UTF-8");
 
+		if (_verbose) {
+			cout << "Offering services to master " << _broadcast.send_endpoint.address().to_string () << "\n";
+		}
 		shared_ptr<Socket> socket (new Socket);
 		try {
 			socket->connect (boost::asio::ip::tcp::endpoint (_broadcast.send_endpoint.address(), Config::instance()->server_port_base() + 1));

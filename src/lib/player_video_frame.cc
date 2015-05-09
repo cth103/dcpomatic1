@@ -17,7 +17,7 @@
 
 */
 
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "player_video_frame.h"
 #include "image.h"
 #include "image_proxy.h"
@@ -26,7 +26,6 @@
 using std::string;
 using std::cout;
 using boost::shared_ptr;
-using libdcp::raw_convert;
 
 PlayerVideoFrame::PlayerVideoFrame (
 	shared_ptr<const ImageProxy> in,
@@ -36,7 +35,7 @@ PlayerVideoFrame::PlayerVideoFrame (
 	Scaler const * scaler,
 	Eyes eyes,
 	Part part,
-	ColourConversion colour_conversion
+	boost::optional<ColourConversion> colour_conversion
 	)
 	: _in (in)
 	, _crop (crop)
@@ -59,7 +58,7 @@ PlayerVideoFrame::PlayerVideoFrame (shared_ptr<cxml::Node> node, shared_ptr<Sock
 	_scaler = Scaler::from_id (node->string_child ("Scaler"));
 	_eyes = (Eyes) node->number_child<int> ("Eyes");
 	_part = (Part) node->number_child<int> ("Part");
-	_colour_conversion = ColourConversion (node);
+	_colour_conversion = ColourConversion::from_xml (node);
 
 	_in = image_proxy_factory (node->node_child ("In"), socket, log);
 
@@ -84,7 +83,7 @@ PlayerVideoFrame::set_subtitle (shared_ptr<const Image> image, Position<int> pos
 }
 
 shared_ptr<Image>
-PlayerVideoFrame::image () const
+PlayerVideoFrame::image (AVPixelFormat pixel_format) const
 {
 	shared_ptr<Image> im = _in->image ();
 	
@@ -105,10 +104,13 @@ PlayerVideoFrame::image () const
 	default:
 		break;
 	}
-		
-	shared_ptr<Image> out = im->crop_scale_window (total_crop, _inter_size, _out_size, _scaler, PIX_FMT_RGB24, false);
 
-	Position<int> const container_offset ((_out_size.width - _inter_size.width) / 2, (_out_size.height - _inter_size.width) / 2);
+	YUVToRGB yuv_to_rgb = YUV_TO_RGB_REC601;
+	if (_colour_conversion) {
+		yuv_to_rgb = _colour_conversion.get().yuv_to_rgb;
+	}
+		
+	shared_ptr<Image> out = im->crop_scale_window (total_crop, _inter_size, _out_size, _scaler, yuv_to_rgb, pixel_format, false);
 
 	if (_subtitle_image) {
 		out->alpha_blend (_subtitle_image, _subtitle_position);
@@ -129,7 +131,9 @@ PlayerVideoFrame::add_metadata (xmlpp::Node* node) const
 	node->add_child("Scaler")->add_child_text (_scaler->id ());
 	node->add_child("Eyes")->add_child_text (raw_convert<string> (_eyes));
 	node->add_child("Part")->add_child_text (raw_convert<string> (_part));
-	_colour_conversion.as_xml (node);
+	if (_colour_conversion) {
+		_colour_conversion.get().as_xml (node);
+	}
 	if (_subtitle_image) {
 		node->add_child ("SubtitleWidth")->add_child_text (raw_convert<string> (_subtitle_image->size().width));
 		node->add_child ("SubtitleHeight")->add_child_text (raw_convert<string> (_subtitle_image->size().height));

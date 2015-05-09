@@ -114,7 +114,7 @@ FilterGraph::FilterGraph (shared_ptr<const FFmpegContent> content, libdcp::Size 
 	inputs->pad_idx = 0;
 	inputs->next = 0;
 
-	if (avfilter_graph_parse (graph, filters.c_str(), &inputs, &outputs, 0) < 0) {
+	if (avfilter_graph_parse (graph, filters.c_str(), inputs, outputs, 0) < 0) {
 		throw DecodeError (N_("could not set up filter graph."));
 	}
 	
@@ -138,8 +138,9 @@ FilterGraph::process (AVFrame* frame)
 {
 	list<pair<shared_ptr<Image>, int64_t> > images;
 
-	if (av_buffersrc_write_frame (_buffer_src_context, frame) < 0) {
-		throw DecodeError (N_("could not push buffer into filter chain."));
+	int r = av_buffersrc_write_frame (_buffer_src_context, frame);
+	if (r < 0) {
+		throw DecodeError (String::compose (N_("could not push buffer into filter chain (%1)."), r));
 	}
 
 	while (true) {

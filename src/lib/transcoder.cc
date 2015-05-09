@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -57,17 +57,17 @@ audio_proxy (weak_ptr<Encoder> encoder, shared_ptr<const AudioBuffers> audio)
 	}
 }
 
-/** Construct a transcoder using a Decoder that we create and a supplied Encoder.
+/** Construct a transcoder.
  *  @param f Film that we are transcoding.
- *  @param e Encoder to use.
+ *  @param j Job that this transcoder is being used in.
  */
 Transcoder::Transcoder (shared_ptr<const Film> f, shared_ptr<Job> j)
 	: _player (f->make_player ())
 	, _encoder (new Encoder (f, j))
 	, _finishing (false)
 {
-	_player->Video.connect (bind (video_proxy, _encoder, _1, _2));
-	_player->Audio.connect (bind (audio_proxy, _encoder, _1));
+	_player_video_connection = _player->Video.connect (bind (video_proxy, _encoder, _1, _2));
+	_player_audio_connection = _player->Audio.connect (bind (audio_proxy, _encoder, _1));
 }
 
 void

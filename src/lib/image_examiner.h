@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2014 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ class ImageExaminer : public VideoExaminer
 public:
 	ImageExaminer (boost::shared_ptr<const Film>, boost::shared_ptr<const ImageContent>, boost::shared_ptr<Job>);
 
-	float video_frame_rate () const;
+	boost::optional<float> video_frame_rate () const;
 	libdcp::Size video_size () const;
 	VideoContent::Frame video_length () const {
 		return _video_length;

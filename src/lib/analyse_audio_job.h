@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ public:
 	AnalyseAudioJob (boost::shared_ptr<const Film>, boost::shared_ptr<AudioContent>);
 
 	std::string name () const;
+	std::string json_name () const;
 	void run ();
 
 private:
@@ -39,8 +40,12 @@ private:
 	OutputAudioFrame _done;
 	int64_t _samples_per_point;
 	std::vector<AudioPoint> _current;
-
+	float _overall_peak;
+	OutputAudioFrame _overall_peak_frame;
+	
 	boost::shared_ptr<AudioAnalysis> _analysis;
+
+	boost::signals2::scoped_connection _player_connection;
 
 	static const int _num_points;
 };

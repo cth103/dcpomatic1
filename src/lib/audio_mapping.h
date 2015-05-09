@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #define DCPOMATIC_AUDIO_MAPPING_H
 
 #include <vector>
+#include <list>
 #include <libdcp/types.h>
 #include <boost/shared_ptr.hpp>
 
@@ -58,6 +59,9 @@ public:
 	}
 
 	std::string digest () const;
+
+	std::list<libdcp::Channel> mapped_dcp_channels () const;
+	void unmap_all ();
 	
 private:
 	void setup (int);

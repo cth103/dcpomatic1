@@ -21,8 +21,9 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
+#include <libavutil/opt.h>
 }
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "ffmpeg.h"
 #include "ffmpeg_content.h"
 #include "exceptions.h"
@@ -32,8 +33,8 @@ extern "C" {
 
 using std::string;
 using std::cout;
+using std::set;
 using boost::shared_ptr;
-using libdcp::raw_convert;
 
 boost::mutex FFmpeg::_mutex;
 
@@ -109,7 +110,10 @@ FFmpeg::setup_general ()
 
 	for (uint32_t i = 0; i < _format_context->nb_streams; ++i) {
 		AVStream* s = _format_context->streams[i];
-		if (s->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
+		/* Files from iTunes sometimes have two video streams, one with the avg_frame_rate.num and .den set
+		   to zero.  Ignore these streams.
+		*/
+		if (s->codec->codec_type == AVMEDIA_TYPE_VIDEO && s->avg_frame_rate.num > 0 && s->avg_frame_rate.den > 0) {
 			_video_stream = i;
 		}
 	}
@@ -118,24 +122,30 @@ FFmpeg::setup_general ()
 		throw DecodeError (N_("could not find video stream"));
 	}
 
-	/* Hack: if the AVStreams have zero IDs, put some in.  We
-	   use the IDs so that we can cope with VOBs, in which streams
-	   move about in index but remain with the same ID in different
-	   VOBs.  However, some files have all-zero IDs, hence this hack.
+	/* Hack: if the AVStreams have non-unique IDs, make them so.
+	   We use the IDs so that we can cope with VOBs, in which
+	   streams move about in index but remain with the same ID in
+	   different VOBs.  However, some files have all-zero or otherwise
+	   duplicate IDs, hence this hack.
 	*/
-	   
-	uint32_t i = 0;
-	while (i < _format_context->nb_streams && _format_context->streams[i]->id == 0) {
-		++i;
-	}
 
-	if (i == _format_context->nb_streams) {
-		/* Put in our own IDs */
-		for (uint32_t i = 0; i < _format_context->nb_streams; ++i) {
-			_format_context->streams[i]->id = i;
+	set<int> used;
+	for (uint32_t i = 0; i < _format_context->nb_streams; ++i) {
+		int const id = _format_context->streams[i]->id;
+		if (used.find (id) == used.end ()) {
+			used.insert (id);
+		} else {
+			/* Duplicate ID: find a new one */
+			int j = 0;
+			while (j < INT_MAX && used.find (j) != used.end ()) {
+				++j;
+			}
+
+			_format_context->streams[i]->id = j;
+			used.insert (j);
 		}
 	}
-
+	
 	_frame = av_frame_alloc ();
 	if (_frame == 0) {
 		throw DecodeError (N_("could not allocate frame"));
@@ -147,7 +157,7 @@ FFmpeg::setup_video ()
 {
 	boost::mutex::scoped_lock lm (_mutex);
 
-	assert (_video_stream >= 0);
+	DCPOMATIC_ASSERT (_video_stream >= 0);
 	AVCodecContext* context = _format_context->streams[_video_stream]->codec;
 	AVCodec* codec = avcodec_find_decoder (context->codec_id);
 
@@ -170,13 +180,20 @@ FFmpeg::setup_audio ()
 		if (context->codec_type != AVMEDIA_TYPE_AUDIO) {
 			continue;
 		}
-		
+
 		AVCodec* codec = avcodec_find_decoder (context->codec_id);
 		if (codec == 0) {
 			throw DecodeError (_("could not find audio decoder"));
 		}
+
+		/* This option disables decoding of DCA frame footers in our patched version
+		   of FFmpeg.  I believe these footers are of no use to us, and they can cause
+		   problems when FFmpeg fails to decode them (mantis #352).
+		*/
+		AVDictionary* options = 0;
+		av_dict_set (&options, "disable_footer", "1", 0);
 		
-		if (avcodec_open2 (context, codec, 0) < 0) {
+		if (avcodec_open2 (context, codec, &options) < 0) {
 			throw DecodeError (N_("could not open audio decoder"));
 		}
 	}

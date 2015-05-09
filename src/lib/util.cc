@@ -40,16 +40,21 @@
 #include <boost/filesystem.hpp>
 #ifdef DCPOMATIC_WINDOWS
 #include <boost/locale.hpp>
+#include <dbghelp.h>
 #endif
 #include <glib.h>
 #include <openjpeg.h>
+#ifdef DCPOMATIC_IMAGE_MAGICK
 #include <magick/MagickCore.h>
+#else
+#include <magick/common.h>
+#include <magick/magick_config.h>
+#endif
 #include <magick/version.h>
 #include <libdcp/version.h>
 #include <libdcp/util.h>
 #include <libdcp/signer_chain.h>
 #include <libdcp/signer.h>
-#include <libdcp/raw_convert.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -57,6 +62,7 @@ extern "C" {
 #include <libavfilter/avfiltergraph.h>
 #include <libavutil/pixfmt.h>
 }
+#include "raw_convert.h"
 #include "util.h"
 #include "exceptions.h"
 #include "scaler.h"
@@ -70,9 +76,7 @@ extern "C" {
 #include "video_content.h"
 #include "md5_digester.h"
 #include "safe_stringstream.h"
-#ifdef DCPOMATIC_WINDOWS
-#include "stack.hpp"
-#endif
+#include "colour_conversion.h"
 
 #include "i18n.h"
 
@@ -100,8 +104,11 @@ using boost::shared_ptr;
 using boost::thread;
 using boost::optional;
 using libdcp::Size;
-using libdcp::raw_convert;
 
+/** Path to our executable, required by the stacktrace stuff and filled
+ *  in during App::onInit().
+ */
+std::string program_name;
 static boost::thread::id ui_thread;
 static boost::filesystem::path backtrace_file;
 
@@ -290,20 +297,84 @@ seconds (struct timeval t)
 }
 
 #ifdef DCPOMATIC_WINDOWS
-LONG WINAPI exception_handler(struct _EXCEPTION_POINTERS *)
+/** Resolve symbol name and source location given the path to the executable */
+int
+addr2line (void const * const addr)
 {
-	dbg::stack s;
-	FILE* f = fopen_boost (backtrace_file, "w");
-	fprintf (f, "Exception thrown:");
-	for (dbg::stack::const_iterator i = s.begin(); i != s.end(); ++i) {
-		fprintf (f, "%p %s %d %s\n", i->instruction, i->function.c_str(), i->line, i->module.c_str());
-	}
-	fclose (f);
-	return EXCEPTION_CONTINUE_SEARCH;
+	char addr2line_cmd[512] = {0};
+	sprintf(addr2line_cmd, "addr2line -f -p -e %.256s %p > %s", program_name.c_str(), addr, backtrace_file.string().c_str()); 
+	return system(addr2line_cmd);
+}
+
+/** This is called when C signals occur on Windows (e.g. SIGSEGV)
+ *  (NOT C++ exceptions!).  We write a backtrace to backtrace_file by dark means.
+ *  Adapted from code here: http://spin.atomicobject.com/2013/01/13/exceptions-stack-traces-c/
+ */
+LONG WINAPI
+exception_handler (struct _EXCEPTION_POINTERS * info)
+{
+ 	FILE* f = fopen_boost (backtrace_file, "w");
+	fprintf (f, "C-style exception %d\n", info->ExceptionRecord->ExceptionCode);
+	fclose(f);
+	
+	if (info->ExceptionRecord->ExceptionCode != EXCEPTION_STACK_OVERFLOW) {
+		CONTEXT* context = info->ContextRecord;
+		SymInitialize (GetCurrentProcess (), 0, true);
+	
+		STACKFRAME frame = { 0 };
+	
+		/* setup initial stack frame */
+#if _WIN64
+		frame.AddrPC.Offset    = context->Rip;
+		frame.AddrStack.Offset = context->Rsp;
+		frame.AddrFrame.Offset = context->Rbp;
+#else	
+		frame.AddrPC.Offset    = context->Eip;
+		frame.AddrStack.Offset = context->Esp;
+		frame.AddrFrame.Offset = context->Ebp;
+#endif
+		frame.AddrPC.Mode      = AddrModeFlat;
+		frame.AddrStack.Mode   = AddrModeFlat;
+		frame.AddrFrame.Mode   = AddrModeFlat;
+	
+		while (
+			StackWalk (
+				IMAGE_FILE_MACHINE_I386,
+				GetCurrentProcess (),
+				GetCurrentThread (),
+				&frame,
+				context,
+				0,
+				SymFunctionTableAccess,
+				SymGetModuleBase,
+				0
+				)
+			) {
+			addr2line((void *) frame.AddrPC.Offset);
+		}
+	} else {
+#ifdef _WIN64		
+		addr2line ((void *) info->ContextRecord->Rip);
+#else		
+		addr2line ((void *) info->ContextRecord->Eip);
+#endif		
+ 	}
+
+ 	return EXCEPTION_CONTINUE_SEARCH;
 }
 #endif
+ 
+void
+set_backtrace_file (boost::filesystem::path p)
+{
+	backtrace_file = p;
+}
 
-/* From http://stackoverflow.com/questions/2443135/how-do-i-find-where-an-exception-was-thrown-in-c */
+/** This is called when there is an unhandled exception.  Any
+ *  backtrace in this function is useless on Windows as the stack has
+ *  already been unwound from the throw; we have the gdb wrap hack to
+ *  cope with that.
+ */
 void
 terminate ()
 {
@@ -338,9 +409,10 @@ void
 dcpomatic_setup ()
 {
 #ifdef DCPOMATIC_WINDOWS
-	backtrace_file /= g_get_user_config_dir ();
-	backtrace_file /= "backtrace.txt";
-	SetUnhandledExceptionFilter(exception_handler);
+	boost::filesystem::path p = g_get_user_config_dir ();
+	p /= "backtrace.txt";
+	set_backtrace_file (p);
+	SetUnhandledExceptionFilter (exception_handler);
 
 	/* Dark voodoo which, I think, gets boost::filesystem::path to
 	   correctly convert UTF-8 strings to paths, and also paths
@@ -374,6 +446,7 @@ dcpomatic_setup ()
 	libdcp::init ();
 	
 	Ratio::setup_ratios ();
+	PresetColourConversion::setup_colour_conversion_presets ();
 	VideoContentScale::setup_scales ();
 	DCPContentType::setup_dcp_content_types ();
 	Scaler::setup_scalers ();
@@ -461,42 +534,53 @@ split_at_spaces_considering_quotes (string s)
 	return out;
 }
 
-/** @param job Optional job for which to report progress */
+/** Compute a digest of the first and last `size' bytes of a set of files. */
 string
-md5_digest (vector<boost::filesystem::path> files, shared_ptr<Job> job)
+md5_digest_head_tail (vector<boost::filesystem::path> files, boost::uintmax_t size)
 {
-	boost::uintmax_t const buffer_size = 64 * 1024;
-	char buffer[buffer_size];
-
+	boost::scoped_array<char> buffer (new char[size]);
 	MD5Digester digester;
 
-	vector<int64_t> sizes;
-	for (size_t i = 0; i < files.size(); ++i) {
-		sizes.push_back (boost::filesystem::file_size (files[i]));
-	}
-
-	for (size_t i = 0; i < files.size(); ++i) {
+	/* Head */
+	boost::uintmax_t to_do = size;
+	char* p = buffer.get ();
+	int i = 0;
+	while (i < int64_t (files.size()) && to_do > 0) {
 		FILE* f = fopen_boost (files[i], "rb");
 		if (!f) {
 			throw OpenFileError (files[i].string());
 		}
 
-		boost::uintmax_t const bytes = boost::filesystem::file_size (files[i]);
-		boost::uintmax_t remaining = bytes;
+		boost::uintmax_t this_time = min (to_do, boost::filesystem::file_size (files[i]));
+		fread (p, 1, this_time, f);
+		p += this_time;
+ 		to_do -= this_time;
+		fclose (f);
 
-		while (remaining > 0) {
-			int const t = min (remaining, buffer_size);
-			fread (buffer, 1, t, f);
-			digester.add (buffer, t);
-			remaining -= t;
+		++i;
+	}
+	digester.add (buffer.get(), size - to_do);
 
-			if (job) {
-				job->set_progress ((float (i) + 1 - float(remaining) / bytes) / files.size ());
-			}
+	/* Tail */
+	to_do = size;
+	p = buffer.get ();
+	i = files.size() - 1;
+	while (i >= 0 && to_do > 0) {
+		FILE* f = fopen_boost (files[i], "rb");
+		if (!f) {
+			throw OpenFileError (files[i].string());
 		}
 
+		boost::uintmax_t this_time = min (to_do, boost::filesystem::file_size (files[i]));
+		dcpomatic_fseek (f, -this_time, SEEK_END);
+		fread (p, 1, this_time, f);
+		p += this_time;
+		to_do -= this_time;
 		fclose (f);
-	}
+
+		--i;
+	}		
+	digester.add (buffer.get(), size - to_do);
 
 	return digester.get ();
 }
@@ -576,7 +660,7 @@ Socket::accept (int port)
 	_acceptor->async_accept (_socket, boost::lambda::var(ec) = boost::lambda::_1);
 	do {
 		_io_service.run_one ();
-	} while (ec == boost::asio::error::would_block );
+	} while (ec == boost::asio::error::would_block);
 
 	delete _acceptor;
 	_acceptor = 0;
@@ -757,7 +841,7 @@ get_optional_int (multimap<string, string> const & kv, string k)
 void
 ensure_ui_thread ()
 {
-	assert (boost::this_thread::get_id() == ui_thread);
+	DCPOMATIC_ASSERT (boost::this_thread::get_id() == ui_thread);
 }
 
 /** @param v Content video frame.
@@ -774,12 +858,11 @@ video_frames_to_audio_frames (VideoContent::Frame v, float audio_sample_rate, fl
 string
 audio_channel_name (int c)
 {
-	assert (MAX_DCP_AUDIO_CHANNELS == 12);
+	DCPOMATIC_ASSERT (MAX_DCP_AUDIO_CHANNELS == 12);
 
-	/* TRANSLATORS: these are the names of audio channels; Lfe (sub) is the low-frequency
-	   enhancement channel (sub-woofer).  HI is the hearing-impaired audio track and
-	   VI is the visually-impaired audio track (audio describe).
-	*/
+	/// TRANSLATORS: these are the names of audio channels; Lfe (sub) is the low-frequency
+	/// enhancement channel (sub-woofer).  HI is the hearing-impaired audio track and
+	/// VI is the visually-impaired audio track (audio describe).
 	string const channels[] = {
 		_("Left"),
 		_("Right"),
@@ -801,6 +884,11 @@ audio_channel_name (int c)
 bool
 valid_image_file (boost::filesystem::path f)
 {
+	/* Ignore any files that start with ._ as they are probably OS X resource files */
+	if (boost::starts_with (f.leaf().string(), "._")) {
+		return false;
+	}
+	
 	string ext = f.extension().string();
 	transform (ext.begin(), ext.end(), ext.begin(), ::tolower);
 	return (ext == ".tif" || ext == ".tiff" || ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp" || ext == ".tga" || ext == ".dpx");
@@ -956,6 +1044,50 @@ divide_with_round (int64_t a, int64_t b)
 	} else {
 		return a / b;
 	}
+}
+
+long
+frame_info_position (int frame, Eyes eyes)
+{
+	static int const info_size = 48;
+	
+	switch (eyes) {
+	case EYES_BOTH:
+		return frame * info_size;
+	case EYES_LEFT:
+		return frame * info_size * 2;
+	case EYES_RIGHT:
+		return frame * info_size * 2 + info_size;
+	default:
+		DCPOMATIC_ASSERT (false);
+	}
+
+	DCPOMATIC_ASSERT (false);
+}
+
+libdcp::FrameInfo
+read_frame_info (FILE* file, int frame, Eyes eyes)
+{
+	libdcp::FrameInfo info;
+	dcpomatic_fseek (file, frame_info_position (frame, eyes), SEEK_SET);
+	fread (&info.offset, sizeof (info.offset), 1, file);
+	fread (&info.size, sizeof (info.size), 1, file);
+	
+	char hash_buffer[33];
+	fread (hash_buffer, 1, 32, file);
+	hash_buffer[32] = '\0';
+	info.hash = hash_buffer;
+
+	return info;
+}
+
+void
+write_frame_info (FILE* file, int frame, Eyes eyes, libdcp::FrameInfo info)
+{
+	dcpomatic_fseek (file, frame_info_position (frame, eyes), SEEK_SET);
+	fwrite (&info.offset, sizeof (info.offset), 1, file);
+	fwrite (&info.size, sizeof (info.size), 1, file);
+	fwrite (info.hash.c_str(), 1, info.hash.size(), file);
 }
 
 ScopedTemporary::ScopedTemporary ()

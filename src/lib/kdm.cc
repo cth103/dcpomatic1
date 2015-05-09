@@ -19,7 +19,6 @@
 
 #include <list>
 #include <boost/shared_ptr.hpp>
-#include <quickmail.h>
 #include <zip.h>
 #include <libdcp/kdm.h>
 #include "kdm.h"
@@ -29,6 +28,7 @@
 #include "film.h"
 #include "config.h"
 #include "safe_stringstream.h"
+#include "quickmail.h"
 
 using std::list;
 using std::string;
@@ -252,6 +252,8 @@ email_kdms (
 		if (!Config::instance()->kdm_bcc().empty ()) {
 			quickmail_add_bcc (mail, Config::instance()->kdm_bcc().c_str ());
 		}
+
+		quickmail_add_header (mail, "Content-Type: text/plain; charset=UTF-8");
 		
 		string body = Config::instance()->kdm_email().c_str();
 		boost::algorithm::replace_all (body, "$CPL_NAME", film->dcp_name ());

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 
 */
 
+#include <iostream>
 #include <boost/optional.hpp>
 #include <libxml++/libxml++.h>
 #include <libcxml/cxml.h>
@@ -29,6 +30,8 @@
 
 using std::vector;
 using std::string;
+using std::cout;
+using std::min;
 using boost::shared_ptr;
 using boost::optional;
 
@@ -120,30 +123,42 @@ VideoContentScale::from_id (string id)
 	return VideoContentScale (true);
 }
 		
-/** @param display_container Size of the container that we are displaying this content in.
- *  @param film_container The size of the film's image.
+/** @param display_container Size of the container that we are
+ *  displaying this content in.
  */
 libdcp::Size
 VideoContentScale::size (shared_ptr<const VideoContent> c, libdcp::Size display_container, libdcp::Size film_container) const
 {
+	/* Work out the size of the content if it were put inside film_container */
+
+	libdcp::Size video_size_after_crop = c->video_size_after_crop ();
+	
+	libdcp::Size size;
 	if (_ratio) {
-		return fit_ratio_within (_ratio->ratio (), display_container);
+		/* Stretch to fit the requested ratio */
+		size = fit_ratio_within (_ratio->ratio (), film_container);
+	} else if (_scale || video_size_after_crop.width > film_container.width || video_size_after_crop.height > film_container.height) {
+		/* Scale, preserving aspect ratio; this is either if we have been asked to scale with no stretch
+		   or if the unscaled content is too big for film_container.
+		*/
+		size = fit_ratio_within (video_size_after_crop.ratio(), film_container);
+	} else {
+		/* No stretch nor scale */
+		size = video_size_after_crop;
 	}
 
-	libdcp::Size const ac = c->video_size_after_crop ();
-
-	/* Force scale if the film_container is smaller than the content's image */
-	if (_scale || film_container.width < ac.width || film_container.height < ac.height) {
-		return fit_ratio_within (ac.ratio (), display_container);
+	/* Now scale it down if the display container is smaller than the film container */
+	if (display_container != film_container) {
+		float const scale = min (
+			float (display_container.width) / film_container.width,
+			float (display_container.height) / film_container.height
+			);
+		
+		size.width = rint (size.width * scale);
+		size.height = rint (size.height * scale);
 	}
 
-	/* Scale the image so that it will be in the right place in film_container, even if display_container is a
-	   different size.
-	*/
-	return libdcp::Size (
-		c->video_size().width  * float(display_container.width)  / film_container.width,
-		c->video_size().height * float(display_container.height) / film_container.height
-		);
+	return size;
 }
 
 void

@@ -22,9 +22,9 @@
  */
 
 #include <iostream>
-#include <cassert>
 #include "sound_processor.h"
 #include "dolby_cp750.h"
+#include "util.h"
 
 using namespace std;
 
@@ -98,6 +98,6 @@ SoundProcessor::as_index (SoundProcessor const * s)
 SoundProcessor const *
 SoundProcessor::from_index (int i)
 {
-	assert (i <= int(_sound_processors.size ()));
+	DCPOMATIC_ASSERT (i <= int(_sound_processors.size ()));
 	return _sound_processors[i];
 }

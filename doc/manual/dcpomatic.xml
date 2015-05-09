@@ -16,7 +16,7 @@
 -->
 
 <bookinfo>
-<title>DCP-o-matic</title>
+<title>DCP-o-matic users' manual</title>
 <author><firstname>Carl</firstname><surname>Hetherington</surname></author>
 </bookinfo>
 
@@ -37,12 +37,6 @@ url="http://en.wikipedia.org/wiki/Digital_Cinema_Package">Digital
 Cinema Packages</ulink> (DCPs) from DVDs, Blu-Rays, video files such as MP4
 and AVI, or still images.  The resulting DCPs will play on modern digital
 cinema projectors.
-</para>
-
-<para>
-You might find it useful to make DVDs easier to present, to encode
-independently-shot feature films, or to generate local advertising for
-your cinema.
 </para>
 
 </section>
@@ -70,11 +64,11 @@ This manual uses icons from the <ulink url="http://tango.freedesktop.org/">Tango
 </section>
 </chapter>
 
+
+<!-- ============================================================== -->
 <chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
 <title>Installation</title>
 
-
-<!-- ============================================================== -->
 <section>
 <title>Windows</title>
 
@@ -181,7 +175,6 @@ The following dependencies are required:
 <listitem><ulink url="http://www.libssh.org/">libssh</ulink></listitem>
 <listitem><ulink url="http://www.gtk.org/">GTK (on Linux)</ulink></listitem>
 <listitem><ulink url="http://www.wxwidgets.org/">wxWidgets</ulink></listitem>
-<listitem><ulink url="http://freecode.com/projects/libquickmail">libquickmail</ulink></listitem>
 <listitem><ulink url="http://libxmlplusplus.sourceforge.net/">libxml++</ulink></listitem>
 <listitem><ulink url="http://www.aleksey.com/xmlsec/">xmlsec</ulink></listitem>
 <listitem><ulink url="http://curl.haxx.se/">curl</ulink></listitem>
@@ -519,8 +512,12 @@ images which should be treated as the frames of a video.
 <para>
 To add one or more movie, sound or still-image files, select
 <guilabel>Add file(s)...</guilabel> and choose them from the selector.
-To add a directory of images, choose <guilabel>Add
-directory...</guilabel> and do similar.
+</para>
+
+<para>To add a directory (folder) of images, choose <guilabel>Add
+image sequence...</guilabel> and choose the directory from the
+selector.  DCP-o-matic will open a small dialogue box where you can
+enter the frame rate that your image sequence should be run at.
 </para>
 
 <para>
@@ -540,6 +537,13 @@ Below the content list are the controls to set content properties.  To
 adjust the properties for a piece of content, click its name in the
 content list.  The content property controls will then become active
 for that piece of content.
+</para>
+
+<para>
+If you want to change the properties for multiple pieces of content at
+the same time, select the content in the list by clicking the first
+piece then clicking the other pieces with <keycap>shift</keycap> key
+held down.  Note that not all settings can be changed in this way.
 </para>
 
 <para>
@@ -681,21 +685,46 @@ dialogue box, as shown in <xref linkend="fig-colour-conversion"/>.
 
 <para>
 In most cases, it is only necessary to select one of DCP-o-matic's
-presets.  DCP-o-matic knows how to convert from two common
-colourspaces: sRGB and Rec. 709, so if your content was graded using
-one of those you can select the appropriate preset.
+presets.  DCP-o-matic knows how to convert from four common
+colourspaces: sRGB, Rec. 601, Rec. 709 and P3.  If you do not know
+which preset you should use, refer to the suggestions in <xref
+linkend="tab-colour-conversion"/>.
 </para>
 
+<table id="tab-colour-conversion">
+<title>Suggested colour conversion settings</title>
+<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+<colspec colwidth='1*'/>
+<colspec colwidth='5*'/>
+<tbody>
+<row>
+<entry>sRGB</entry><entry>Still images in RGB, e.g. photographs</entry>
+</row>
+<row>
+<entry>Rec. 601</entry><entry>Standard-definition content (lower than about 1000 pixels across) including DVD rips.</entry>
+</row>
+<row>
+<entry>Rec. 709</entry><entry>High-definition content including Blu-Ray rips.</entry>
+</row>
+<row>
+<entry>P3</entry><entry>Content explicitly graded to P3.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+
 <para>
-For other colour spaces you can edit the values in the lower half of
-the dialogue box as you wish.  Alternatively, create a new colour
-conversion preset using the preferences dialog, as described in <xref
+For other required colour conversions, and if you know what you are
+doing, you can edit the values in the lower half of the dialogue box.
+Alternatively, create a new colour conversion preset using the
+preferences dialog, as described in <xref
 linkend="sec-prefs-colour"/>.
 </para>
 
 <para>
-Colour conversion is discussed in more detail in a separate document
-<ulink url="http://dcpomatic.com/manual/colour.pdf">colour.pdf</ulink>.
+Colour conversion is discussed in much more detail in a separate
+document <ulink
+url="http://dcpomatic.com/manual/colour.pdf">colour.pdf</ulink>.
 </para>
 
 </section>
@@ -728,10 +757,11 @@ ratio that your content should be presented in.
 At the bottom of the video tab is a short description of what will
 happen to your video with the current settings.  In the example of
 <xref linkend="fig-video-tab"/>, DCP-o-matic is telling you that the
-video file is 1920x1080 pixels (which is a ratio of 1.78:1).  Since
-the controls specify &lsquo;Flat&rsquo; for the ratio, DCP-o-matic
-scales the content image to 1998x1080, which is the DCI flat
-resolution at 2K.
+video file is 1920x1080 pixels and it has square pixels (a pixel
+aspect ratio of 1.00) hence its display aspect ratio is 1.78:1.  Since
+the controls specify &lsquo;16:9&rsquo; for the ratio, DCP-o-matic
+does not scale the image but pads it to the DCP's container ratio of
+1.85:1.  For a 2K DCP this is 1998x1080 pixels.
 </para>
 
 <para>
@@ -994,14 +1024,37 @@ content, as shown in <xref linkend="fig-subtitles-tab"/>.
 <para>
 DCP-o-matic will extract subtitles from the content, if present, and
 they can be &lsquo;burnt into&rsquo; the DCP (that is, they are
-included in the image and not overlaid by the projector).  Note that
-DVD and Blu-Ray subtitles are stored as bitmaps, so it is not possible
-(automatically) to use non-burnt-in subtitles with these sources.
+included in the image and not overlaid by the projector).
+</para>
+
+<para>
 Select the <guilabel>With Subtitles</guilabel> check-box to enable
-subtitles.  The <guilabel>X Offset</guilabel> and <guilabel>Y
-Offset</guilabel> controls move the subtitles around within the image,
-and the <guilabel>scale</guilabel> control changes their size.  The
-<guilabel>Stream</guilabel> control changes the subtitle stream that
+subtitles.
+</para>
+
+<para>
+The <guilabel>X Offset</guilabel> and <guilabel>Y Offset</guilabel>
+controls move the subtitles around within the image.  The offsets are
+expressed as a percentage of the video frame size; 100% X offset is
+the entire width of the frame, and 100% Y offset is the entire height.
+Hence, to move the subtitles down by half the frame height you would
+use a Y offset of 50%.
+</para>
+
+<para>
+The <guilabel>X Scale</guilabel> and <guilabel>Y Scale</guilabel>
+controls scale the subtitles.  Scale values of 1 make the subtitles
+the same size (relative to the size of the image) as they are on the
+original.  Values lower than 1 make them smaller, and values higher
+make them larger.  You can stretch the subtitles in either direction
+by specifying different values for X and Y scale.  Subtitles from DVD
+and Blu Ray sources are frequently larger (relative to the video
+frame) than those typically used for DCP, so it is often useful to
+scale such subtitles down using these controls.
+</para>
+
+<para>
+The <guilabel>Stream</guilabel> control changes the subtitle stream that
 is used when the content has more than one.
 </para>
 
@@ -1214,6 +1267,8 @@ linkend="fig-pipeline3"/>.
 
 </chapter>
 
+
+<!-- ============================================================== -->
 <chapter xml:id="ch-dcp" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
 <title>DCP settings</title>
 
@@ -1251,6 +1306,16 @@ open by clicking on the <guilabel>Details</guilabel> button.
 </para>
 
 <para>
+If you want to take the ISDCF-compliant name that DCP-o-matic
+generates and modify it, click <guilabel>Copy as name</guilabel> and
+the ISDCF name will be copied into the <guilabel>Name</guilabel> box.
+You can then edit it as you wish.  The DCP name should not matter (in
+that it should not affect how the DCP ingests or plays) but
+projectionists will appreciate it if you use the standard naming
+scheme as it makes it easier to identify details of the content.
+</para>
+
+<para>
 If the DCP name is long, it may not all be visible.  You can see the
 full name by hovering the mouse pointer over the partial name.
 </para>
@@ -1281,6 +1346,12 @@ more detail in <xref linkend="ch-frame-rates"/>.
 </para>
 
 <para>
+The <guilabel>Use best</guilabel> button sets the DCP video frame rate
+to what DCP-o-matic thinks is the best given the content that you have
+added.
+</para>
+
+<para>
 The <guilabel>Signed</guilabel> check-box sets whether or not the DCP
 is signed.  This is rarely important; if in doubt, tick it.
 </para>
@@ -1293,15 +1364,19 @@ linkend="ch-encryption"/>.
 </para>
 
 <para>
-The <guilabel>Use best</guilabel> button sets the DCP video frame rate
-to what DCP-o-matic thinks is the best given the content that you have
-added.
+If you use encryption DCP-o-matic will generate a random encryption
+key for you.  If you want to specify your own key, click the
+<guilabel>Edit...</guilabel> button next to the key.
 </para>
 
 <para>
 The <guilabel>Audio Channels</guilabel> control sets the number of
 audio channels that the DCP will have.  If the DCP has any channels
 for which there is no content audio they will be replaced by silence.
+You can only set an even number of channels here, since that is
+required by the DCI standard.  If you want an odd number of channels,
+simply set the DCP channel count to one greater than you need and the
+unused channel will be filled with silence.
 </para>
 
 <para>
@@ -1319,10 +1394,11 @@ high enough resolution to be worth presenting in 4K.
 </para>
 
 <para>
-The <guilabel>JPEG2000 bandwidth</guilabel>; setting changes how big the final
-image files used within the DCP will be.  Larger numbers will give
-better quality, but correspondingly larger DCPs.  The bandwidth can be
-between 50 and 250 megabits per second (Mbit/s).
+The <guilabel>JPEG2000 bandwidth</guilabel>; setting changes how big
+the final image files used within the DCP will be.  Larger numbers
+will give better quality, but correspondingly larger DCPs.  The
+bandwidth can be between 50 and 250 megabits per second (Mbit/s).
+Most commercial DCPs use bit rates between 75 and 125 Mbit/s.
 </para>
 
 <para>
@@ -1339,6 +1415,8 @@ most situations.
 
 </chapter>
 
+
+<!-- ============================================================== -->
 <chapter xml:id="ch-encryption" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
 <title>Encryption</title>
 
@@ -1511,10 +1589,41 @@ from a file.  The certificate should be in SHA256 PEM format.
 </para>
 
 <para>
-Once you have set up all the screens that you need KDMs for,
-DCP-o-matic can generate KDMs for the last DCP that you generated for
-the currently-loaded film.  Select the cinemas and/or screens that you
-want KDMs for and fill in the start and end dates and times.  
+Alternatively, certificates for projection systems made by some
+manufacturers can be downloaded from databases provided by the
+manufacturer.  Currently this is supported for Doremi and Dolby
+equipment.  If you are targeting a screen with equipment by one of
+these manufacturers you can select Doremi or Dolby from the
+<guilabel>Server manufacturer</guilabel> selection and then click
+<guilabel>Download</guilabel>.  In the next dialogue box, enter
+details of the screen and click <guilabel>Download</guilabel> and, all
+being well, the certificate will be fetched.
+</para>
+
+<para>
+Using the download system you will need to know the serial number of
+the media server in use in the screen.  Most cinema projection or
+technical departments will know these serial numbers.
+</para>
+
+<para>
+Note that the reliability of the manufacturers' certificate databases
+cannot be guaranteed.  It is vital that KDMs are tested by the
+destination cinema will in advance of show time to identify any
+problems.
+</para>
+
+<para>
+Once you have set up all the screens that you need KDMs for, select
+the CPL that you want to create the KDM for.  You can use the
+drop-down list to select the CPLs in the current film project, or load
+a CPL from somewhere else.  Select the cinemas and/or screens that you
+want KDMs for and fill in the start and end dates and times.
+</para>
+
+<para>
+You must also select the type of KDM that you want to generate.  If in
+doubt, use <guilabel>Modified Transitional 1</guilabel>.
 </para>
 
 <para>
@@ -1650,7 +1759,36 @@ various properties of new films.
 
 </section>
 
-<!-- XXX: servers -->
+<!-- ============================================================== -->
+<section>
+<title>Servers</title>
+
+<para>
+The servers tab is shown in <xref linkend="fig-prefs-servers"/>.
+</para>
+
+<figure id="fig-prefs-servers">
+  <title>Servers preferences</title> 
+  <mediaobject>
+    <imageobject> 
+      <imagedata fileref="screenshots/prefs-servers&scs;"/>
+    </imageobject> 
+  </mediaobject>
+</figure>
+
+<para>
+If <guilabel>Use all servers</guilabel> is ticked DCP-o-matic will
+locate encoding servers automatically (see <xref
+linkend="ch:servers"/>).
+</para>
+
+<para>
+Instead of this (or in addition) servers can be specified explicitly.
+To add a server, click <guilabel>Add...</guilabel> and enter the host
+name or IP address of the server to use.
+</para>
+
+</section>
 
 <!-- ============================================================== -->
 <section xml:id="sec-prefs-colour">
@@ -1827,6 +1965,8 @@ unticked.
 </section>
 </chapter>
 
+
+<!-- ============================================================== -->
 <chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en" xml:id="ch-frame-rates">
 <title>Frame rates</title>
 
@@ -1951,6 +2091,7 @@ purposes.
 </chapter>
 
 
+<!-- ============================================================== -->
 <chapter xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en" xml:id="ch-servers">
 <title>Encoding servers</title>
 
@@ -2058,6 +2199,8 @@ provide a significant speed-up compared to a 100Mb/s network.
 
 </chapter>
 
+
+<!-- ============================================================== -->
 <chapter xml:id="ch-files" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
 <title>Generated files</title>
 
@@ -2115,6 +2258,8 @@ to the cinema which is showing your DCP.
 
 </chapter>
 
+
+<!-- ============================================================== -->
 <chapter>
 <title>Loose ends</title>
 
@@ -2123,7 +2268,6 @@ This chapter collects a few notes on bits of DCP-o-matic that do not fit elsewhe
 </para>
 
 
-<!-- ============================================================== -->
 <section>
 <title>Resuming encodes</title>
 

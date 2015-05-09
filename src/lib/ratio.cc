@@ -33,8 +33,7 @@ Ratio::setup_ratios ()
 {
 	_ratios.push_back (new Ratio (float(1290) / 1080, "119", _("1.19"), "119"));
 	_ratios.push_back (new Ratio (float(1440) / 1080, "133", _("4:3"), "133"));
-	_ratios.push_back (new Ratio (float(1480) / 1080, "137", _("Academy"), "137"));
-	_ratios.push_back (new Ratio (float(1485) / 1080, "138", _("1.375"), "137"));
+	_ratios.push_back (new Ratio (float(1485) / 1080, "138", _("Academy"), "137"));
 	_ratios.push_back (new Ratio (float(1800) / 1080, "166", _("1.66"), "166"));
 	_ratios.push_back (new Ratio (float(1920) / 1080, "178", _("16:9"), "178"));
 	_ratios.push_back (new Ratio (float(1998) / 1080, "185", _("Flat"), "F"));
@@ -45,6 +44,11 @@ Ratio::setup_ratios ()
 Ratio const *
 Ratio::from_id (string i)
 {
+	/* We removed the ratio with id 137; replace it with 138 */
+	if (i == "137") {
+		i = "138";
+	}
+	
 	vector<Ratio const *>::iterator j = _ratios.begin ();
 	while (j != _ratios.end() && (*j)->id() != i) {
 		++j;
@@ -72,4 +76,20 @@ Ratio::from_ratio (float r)
 
 	return *j;
 }
-   
+
+Ratio const *
+Ratio::nearest_from_ratio (float r)
+{
+	Ratio const * nearest = 0;
+	float distance = FLT_MAX;
+	
+	for (vector<Ratio const *>::iterator i = _ratios.begin (); i != _ratios.end(); ++i) {
+		float const d = fabs ((*i)->ratio() - r);
+		if (d < distance) {
+			distance = d;
+			nearest = *i;
+		}
+	}
+
+	return nearest;
+}

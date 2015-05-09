@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,6 +24,10 @@
 #include "lib/playlist.h"
 #include "film_editor.h"
 #include "timeline.h"
+#include "timeline_time_axis_view.h"
+#include "timeline_video_content_view.h"
+#include "timeline_audio_content_view.h"
+#include "timeline_view.h"
 #include "wx_util.h"
 
 using std::list;
@@ -35,315 +39,11 @@ using boost::dynamic_pointer_cast;
 using boost::bind;
 using boost::optional;
 
-/** Parent class for components of the timeline (e.g. a piece of content or an axis) */
-class View : public boost::noncopyable
-{
-public:
-	View (Timeline& t)
-		: _timeline (t)
-	{
-
-	}
-
-	virtual ~View () {}
-		
-	void paint (wxGraphicsContext* g)
-	{
-		_last_paint_bbox = bbox ();
-		do_paint (g);
-	}
-	
-	void force_redraw ()
-	{
-		_timeline.force_redraw (_last_paint_bbox);
-		_timeline.force_redraw (bbox ());
-	}
-
-	virtual dcpomatic::Rect<int> bbox () const = 0;
-
-protected:
-	virtual void do_paint (wxGraphicsContext *) = 0;
-	
-	int time_x (Time t) const
-	{
-		return _timeline.tracks_position().x + t * _timeline.pixels_per_time_unit().get_value_or (0);
-	}
-	
-	Timeline& _timeline;
-
-private:
-	dcpomatic::Rect<int> _last_paint_bbox;
-};
-
-
-/** Parent class for views of pieces of content */
-class ContentView : public View
-{
-public:
-	ContentView (Timeline& tl, shared_ptr<Content> c)
-		: View (tl)
-		, _content (c)
-		, _selected (false)
-	{
-		_content_connection = c->Changed.connect (bind (&ContentView::content_changed, this, _2, _3));
-	}
-
-	dcpomatic::Rect<int> bbox () const
-	{
-		assert (_track);
-
-		shared_ptr<const Film> film = _timeline.film ();
-		shared_ptr<const Content> content = _content.lock ();
-		if (!film || !content) {
-			return dcpomatic::Rect<int> ();
-		}
-		
-		return dcpomatic::Rect<int> (
-			time_x (content->position ()) - 8,
-			y_pos (_track.get()) - 8,
-			content->length_after_trim () * _timeline.pixels_per_time_unit().get_value_or(0) + 16,
-			_timeline.track_height() + 16
-			);
-	}
-
-	void set_selected (bool s) {
-		_selected = s;
-		force_redraw ();
-	}
-	
-	bool selected () const {
-		return _selected;
-	}
-
-	shared_ptr<Content> content () const {
-		return _content.lock ();
-	}
-
-	void set_track (int t) {
-		_track = t;
-	}
-
-	void unset_track () {
-		_track = boost::optional<int> ();
-	}
-
-	optional<int> track () const {
-		return _track;
-	}
-
-	virtual wxString type () const = 0;
-	virtual wxColour colour () const = 0;
-	
-private:
-
-	void do_paint (wxGraphicsContext* gc)
-	{
-		assert (_track);
-
-		shared_ptr<const Film> film = _timeline.film ();
-		shared_ptr<const Content> cont = content ();
-		if (!film || !cont) {
-			return;
-		}
-
-		Time const position = cont->position ();
-		Time const len = cont->length_after_trim ();
-
-		wxColour selected (colour().Red() / 2, colour().Green() / 2, colour().Blue() / 2);
-
-		gc->SetPen (*wxBLACK_PEN);
-		
-		gc->SetPen (*wxThePenList->FindOrCreatePen (wxColour (0, 0, 0), 4, wxPENSTYLE_SOLID));
-		if (_selected) {
-			gc->SetBrush (*wxTheBrushList->FindOrCreateBrush (selected, wxBRUSHSTYLE_SOLID));
-		} else {
-			gc->SetBrush (*wxTheBrushList->FindOrCreateBrush (colour(), wxBRUSHSTYLE_SOLID));
-		}
-
-		wxGraphicsPath path = gc->CreatePath ();
-		path.MoveToPoint    (time_x (position),	      y_pos (_track.get()) + 4);
-		path.AddLineToPoint (time_x (position + len), y_pos (_track.get()) + 4);
-		path.AddLineToPoint (time_x (position + len), y_pos (_track.get() + 1) - 4);
-		path.AddLineToPoint (time_x (position),	      y_pos (_track.get() + 1) - 4);
-		path.AddLineToPoint (time_x (position),	      y_pos (_track.get()) + 4);
-		gc->StrokePath (path);
-		gc->FillPath (path);
-
-		wxString name = wxString::Format (wxT ("%s [%s]"), std_to_wx (cont->path_summary()).data(), type().data());
-		wxDouble name_width;
-		wxDouble name_height;
-		wxDouble name_descent;
-		wxDouble name_leading;
-		gc->GetTextExtent (name, &name_width, &name_height, &name_descent, &name_leading);
-		
-		gc->Clip (wxRegion (time_x (position), y_pos (_track.get()), len * _timeline.pixels_per_time_unit().get_value_or(0), _timeline.track_height()));
-		gc->DrawText (name, time_x (position) + 12, y_pos (_track.get() + 1) - name_height - 4);
-		gc->ResetClip ();
-	}
-
-	int y_pos (int t) const
-	{
-		return _timeline.tracks_position().y + t * _timeline.track_height();
-	}
-
-	void content_changed (int p, bool frequent)
-	{
-		ensure_ui_thread ();
-		
-		if (p == ContentProperty::POSITION || p == ContentProperty::LENGTH) {
-			force_redraw ();
-		}
-
-		if (!frequent) {
-			_timeline.setup_pixels_per_time_unit ();
-			_timeline.Refresh ();
-		}
-	}
-
-	boost::weak_ptr<Content> _content;
-	optional<int> _track;
-	bool _selected;
-
-	boost::signals2::scoped_connection _content_connection;
-};
-
-class AudioContentView : public ContentView
-{
-public:
-	AudioContentView (Timeline& tl, shared_ptr<Content> c)
-		: ContentView (tl, c)
-	{}
-	
-private:
-	wxString type () const
-	{
-		return _("audio");
-	}
-
-	wxColour colour () const
-	{
-		return wxColour (149, 121, 232, 255);
-	}
-};
-
-class VideoContentView : public ContentView
-{
-public:
-	VideoContentView (Timeline& tl, shared_ptr<Content> c)
-		: ContentView (tl, c)
-	{}
-
-private:	
-
-	wxString type () const
-	{
-		if (dynamic_pointer_cast<FFmpegContent> (content ())) {
-			return _("video");
-		} else {
-			return _("still");
-		}
-	}
-
-	wxColour colour () const
-	{
-		return wxColour (242, 92, 120, 255);
-	}
-};
-
-class TimeAxisView : public View
-{
-public:
-	TimeAxisView (Timeline& tl, int y)
-		: View (tl)
-		, _y (y)
-	{}
-	
-	dcpomatic::Rect<int> bbox () const
-	{
-		return dcpomatic::Rect<int> (0, _y - 4, _timeline.width(), 24);
-	}
-
-	void set_y (int y)
-	{
-		_y = y;
-		force_redraw ();
-	}
-
-private:	
-
-	void do_paint (wxGraphicsContext* gc)
-	{
-		if (!_timeline.pixels_per_time_unit()) {
-			return;
-		}
-
-		double const pptu = _timeline.pixels_per_time_unit().get ();
-		
-		gc->SetPen (*wxThePenList->FindOrCreatePen (wxColour (0, 0, 0), 1, wxPENSTYLE_SOLID));
-		
-		int mark_interval = rint (128 / (TIME_HZ * pptu));
-		if (mark_interval > 5) {
-			mark_interval -= mark_interval % 5;
-		}
-		if (mark_interval > 10) {
-			mark_interval -= mark_interval % 10;
-		}
-		if (mark_interval > 60) {
-			mark_interval -= mark_interval % 60;
-		}
-		if (mark_interval > 3600) {
-			mark_interval -= mark_interval % 3600;
-		}
-		
-		if (mark_interval < 1) {
-			mark_interval = 1;
-		}
-
-		wxGraphicsPath path = gc->CreatePath ();
-		path.MoveToPoint (_timeline.x_offset(), _y);
-		path.AddLineToPoint (_timeline.width(), _y);
-		gc->StrokePath (path);
-
-		Time t = 0;
-		while ((t * pptu) < _timeline.width()) {
-			wxGraphicsPath path = gc->CreatePath ();
-			path.MoveToPoint (time_x (t), _y - 4);
-			path.AddLineToPoint (time_x (t), _y + 4);
-			gc->StrokePath (path);
-
-			int tc = t / TIME_HZ;
-			int const h = tc / 3600;
-			tc -= h * 3600;
-			int const m = tc / 60;
-			tc -= m * 60;
-			int const s = tc;
-			
-			wxString str = wxString::Format (wxT ("%02d:%02d:%02d"), h, m, s);
-			wxDouble str_width;
-			wxDouble str_height;
-			wxDouble str_descent;
-			wxDouble str_leading;
-			gc->GetTextExtent (str, &str_width, &str_height, &str_descent, &str_leading);
-			
-			int const tx = _timeline.x_offset() + t * pptu;
-			if ((tx + str_width) < _timeline.width()) {
-				gc->DrawText (str, time_x (t), _y + 16);
-			}
-			
-			t += mark_interval * TIME_HZ;
-		}
-	}
-
-private:
-	int _y;
-};
-
-
 Timeline::Timeline (wxWindow* parent, FilmEditor* ed, shared_ptr<Film> film)
 	: wxPanel (parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE)
 	, _film_editor (ed)
 	, _film (film)
-	, _time_axis_view (new TimeAxisView (*this, 32))
+	, _time_axis_view (new TimelineTimeAxisView (*this, 32))
 	, _tracks (0)
 	, _left_down (false)
 	, _down_view_position (0)
@@ -382,7 +82,7 @@ Timeline::paint ()
 
 	gc->SetFont (gc->CreateFont (*wxNORMAL_FONT));
 
-	for (ViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
+	for (TimelineViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
 		(*i)->paint (gc);
 	}
 
@@ -393,7 +93,12 @@ void
 Timeline::playlist_changed ()
 {
 	ensure_ui_thread ();
-	
+	recreate_views ();
+}
+
+void
+Timeline::recreate_views ()
+{
 	shared_ptr<const Film> fl = _film.lock ();
 	if (!fl) {
 		return;
@@ -406,10 +111,12 @@ Timeline::playlist_changed ()
 
 	for (ContentList::iterator i = content.begin(); i != content.end(); ++i) {
 		if (dynamic_pointer_cast<VideoContent> (*i)) {
-			_views.push_back (shared_ptr<View> (new VideoContentView (*this, *i)));
+			_views.push_back (shared_ptr<TimelineView> (new TimelineVideoContentView (*this, *i)));
 		}
-		if (dynamic_pointer_cast<AudioContent> (*i)) {
-			_views.push_back (shared_ptr<View> (new AudioContentView (*this, *i)));
+
+		shared_ptr<AudioContent> ac = dynamic_pointer_cast<AudioContent> (*i);
+		if (ac && !ac->audio_mapping().mapped_dcp_channels().empty ()) {
+			_views.push_back (shared_ptr<TimelineView> (new TimelineAudioContentView (*this, *i)));
 		}
 	}
 
@@ -425,23 +132,28 @@ Timeline::playlist_content_changed (int property)
 
 	if (property == ContentProperty::POSITION) {
 		assign_tracks ();
-		setup_pixels_per_time_unit ();
+		if (!_left_down) {
+			/* Only do this if we are not dragging, as it's confusing otherwise */
+			setup_pixels_per_time_unit ();
+		}
 		Refresh ();
+	} else if (property == AudioContentProperty::AUDIO_MAPPING) {
+		recreate_views ();
 	}
 }
 
 void
 Timeline::assign_tracks ()
 {
-	for (ViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
-		shared_ptr<ContentView> c = dynamic_pointer_cast<ContentView> (*i);
+	for (TimelineViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
+		shared_ptr<TimelineContentView> c = dynamic_pointer_cast<TimelineContentView> (*i);
 		if (c) {
 			c->unset_track ();
 		}
 	}
 
-	for (ViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
-		shared_ptr<ContentView> cv = dynamic_pointer_cast<ContentView> (*i);
+	for (TimelineViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
+		shared_ptr<TimelineContentView> cv = dynamic_pointer_cast<TimelineContentView> (*i);
 		if (!cv) {
 			continue;
 		}
@@ -450,9 +162,9 @@ Timeline::assign_tracks ()
 
 		int t = 0;
 		while (true) {
-			ViewList::iterator j = _views.begin();
+			TimelineViewList::iterator j = _views.begin();
 			while (j != _views.end()) {
-				shared_ptr<ContentView> test = dynamic_pointer_cast<ContentView> (*j);
+				shared_ptr<TimelineContentView> test = dynamic_pointer_cast<TimelineContentView> (*j);
 				if (!test) {
 					++j;
 					continue;
@@ -505,17 +217,17 @@ Timeline::setup_pixels_per_time_unit ()
 	_pixels_per_time_unit = static_cast<double>(width() - x_offset() * 2) / film->length ();
 }
 
-shared_ptr<View>
+shared_ptr<TimelineView>
 Timeline::event_to_view (wxMouseEvent& ev)
 {
-	ViewList::iterator i = _views.begin();
+	TimelineViewList::iterator i = _views.begin();
 	Position<int> const p (ev.GetX(), ev.GetY());
 	while (i != _views.end() && !(*i)->bbox().contains (p)) {
 		++i;
 	}
 
 	if (i == _views.end ()) {
-		return shared_ptr<View> ();
+		return shared_ptr<TimelineView> ();
 	}
 
 	return *i;
@@ -524,8 +236,8 @@ Timeline::event_to_view (wxMouseEvent& ev)
 void
 Timeline::left_down (wxMouseEvent& ev)
 {
-	shared_ptr<View> view = event_to_view (ev);
-	shared_ptr<ContentView> content_view = dynamic_pointer_cast<ContentView> (view);
+	shared_ptr<TimelineView> view = event_to_view (ev);
+	shared_ptr<TimelineContentView> content_view = dynamic_pointer_cast<TimelineContentView> (view);
 
 	_down_view.reset ();
 
@@ -534,8 +246,8 @@ Timeline::left_down (wxMouseEvent& ev)
 		_down_view_position = content_view->content()->position ();
 	}
 
-	for (ViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
-		shared_ptr<ContentView> cv = dynamic_pointer_cast<ContentView> (*i);
+	for (TimelineViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
+		shared_ptr<TimelineContentView> cv = dynamic_pointer_cast<TimelineContentView> (*i);
 		if (!cv) {
 			continue;
 		}
@@ -572,6 +284,12 @@ Timeline::left_up (wxMouseEvent& ev)
 	}
 
 	set_position_from_event (ev);
+
+	/* We don't do this during drag, and set_position_from_event above
+	   might not have changed the position, so do it now.
+	*/
+	setup_pixels_per_time_unit ();
+	Refresh ();
 }
 
 void
@@ -587,8 +305,8 @@ Timeline::mouse_moved (wxMouseEvent& ev)
 void
 Timeline::right_down (wxMouseEvent& ev)
 {
-	shared_ptr<View> view = event_to_view (ev);
-	shared_ptr<ContentView> cv = dynamic_pointer_cast<ContentView> (view);
+	shared_ptr<TimelineView> view = event_to_view (ev);
+	shared_ptr<TimelineContentView> cv = dynamic_pointer_cast<TimelineContentView> (view);
 	if (!cv) {
 		return;
 	}
@@ -598,7 +316,16 @@ Timeline::right_down (wxMouseEvent& ev)
 		cv->set_selected (true);
 	}
 
-	_menu.popup (_film, selected_content (), ev.GetPosition ());
+	_menu.popup (_film, selected_content (), selected_views (), ev.GetPosition ());
+}
+
+void
+Timeline::maybe_snap (Time a, Time b, optional<Time>& nearest_distance) const
+{
+	Time const d = a - b;
+	if (!nearest_distance || abs (d) < abs (nearest_distance.get())) {
+		nearest_distance = d;
+	}
 }
 
 void
@@ -630,43 +357,30 @@ Timeline::set_position_from_event (wxMouseEvent& ev)
 	Time new_position = _down_view_position + (p.x - _down_point.x) / pptu;
 	
 	if (_snap) {
-		
-		bool first = true;
-		Time nearest_distance = TIME_MAX;
-		Time nearest_new_position = TIME_MAX;
+
+		Time const new_end = new_position + _down_view->content()->length_after_trim () - 1;
+		/* Signed `distance' to nearest thing (i.e. negative is left on the timeline,
+		   positive is right).
+		*/
+		optional<Time> nearest_distance;
 		
 		/* Find the nearest content edge; this is inefficient */
-		for (ViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
-			shared_ptr<ContentView> cv = dynamic_pointer_cast<ContentView> (*i);
-			if (!cv || cv == _down_view) {
+		for (TimelineViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
+			shared_ptr<TimelineContentView> cv = dynamic_pointer_cast<TimelineContentView> (*i);
+			if (!cv || cv == _down_view || cv->content() == _down_view->content()) {
 				continue;
 			}
-			
-			{
-				/* Snap starts to ends */
-				Time const d = abs (cv->content()->end() - new_position);
-				if (first || d < nearest_distance) {
-					nearest_distance = d;
-					nearest_new_position = cv->content()->end();
-				}
-			}
-			
-			{
-				/* Snap ends to starts */
-				Time const d = abs (cv->content()->position() - (new_position + _down_view->content()->length_after_trim()));
-				if (d < nearest_distance) {
-					nearest_distance = d;
-					nearest_new_position = cv->content()->position() - _down_view->content()->length_after_trim ();
-				}
-			}
-			
-			first = false;
+
+			maybe_snap (cv->content()->position(), new_position, nearest_distance);
+			maybe_snap (cv->content()->position(), new_end + 1, nearest_distance);
+			maybe_snap (cv->content()->end() + 1, new_position, nearest_distance);
+			maybe_snap (cv->content()->end() + 1, new_end + 1, nearest_distance);
 		}
 		
-		if (!first) {
+		if (nearest_distance) {
 			/* Snap if it's close; `close' means within a proportion of the time on the timeline */
-			if (nearest_distance < (width() / pptu) / 32) {
-				new_position = nearest_new_position;
+			if (abs (nearest_distance.get()) < (width() / pptu) / 64) {
+				new_position += nearest_distance.get();
 			}
 		}
 	}
@@ -678,7 +392,7 @@ Timeline::set_position_from_event (wxMouseEvent& ev)
 	_down_view->content()->set_position (new_position);
 	
 	shared_ptr<Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 	film->set_sequence_video (false);
 }
 
@@ -703,21 +417,21 @@ Timeline::resized ()
 void
 Timeline::clear_selection ()
 {
-	for (ViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
-		shared_ptr<ContentView> cv = dynamic_pointer_cast<ContentView> (*i);
+	for (TimelineViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
+		shared_ptr<TimelineContentView> cv = dynamic_pointer_cast<TimelineContentView> (*i);
 		if (cv) {
 			cv->set_selected (false);
 		}
 	}
 }
 
-Timeline::ContentViewList
+TimelineContentViewList
 Timeline::selected_views () const
 {
-	ContentViewList sel;
+	TimelineContentViewList sel;
 	
-	for (ViewList::const_iterator i = _views.begin(); i != _views.end(); ++i) {
-		shared_ptr<ContentView> cv = dynamic_pointer_cast<ContentView> (*i);
+	for (TimelineViewList::const_iterator i = _views.begin(); i != _views.end(); ++i) {
+		shared_ptr<TimelineContentView> cv = dynamic_pointer_cast<TimelineContentView> (*i);
 		if (cv && cv->selected()) {
 			sel.push_back (cv);
 		}
@@ -730,9 +444,9 @@ ContentList
 Timeline::selected_content () const
 {
 	ContentList sel;
-	ContentViewList views = selected_views ();
+	TimelineContentViewList views = selected_views ();
 	
-	for (ContentViewList::const_iterator i = views.begin(); i != views.end(); ++i) {
+	for (TimelineContentViewList::const_iterator i = views.begin(); i != views.end(); ++i) {
 		sel.push_back ((*i)->content ());
 	}
 

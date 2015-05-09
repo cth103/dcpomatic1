@@ -53,7 +53,8 @@ add_label_to_sizer (wxSizer* s, wxWindow* p, wxString t, bool, int prop)
 		t += wxT (":");
 	}
 #endif	
-	wxStaticText* m = new wxStaticText (p, wxID_ANY, t);
+	wxStaticText* m = new wxStaticText (p, wxID_ANY, wxT (""));
+	m->SetLabelMarkup (t);
 	s->Add (m, prop, flags, 6);
 	return m;
 }
@@ -72,7 +73,8 @@ add_label_to_grid_bag_sizer (wxGridBagSizer* s, wxWindow* p, wxString t, bool, w
 		t += wxT (":");
 	}
 #endif	
-	wxStaticText* m = new wxStaticText (p, wxID_ANY, t);
+	wxStaticText* m = new wxStaticText (p, wxID_ANY, wxT (""));
+	m->SetLabelMarkup (t);
 	s->Add (m, pos, span, flags);
 	return m;
 }
@@ -115,50 +117,6 @@ wxString
 std_to_wx (string s)
 {
 	return wxString (s.c_str(), wxConvUTF8);
-}
-
-int const ThreadedStaticText::_update_event_id = 10000;
-
-/** @param parent Parent for the wxStaticText.
- *  @param initial Initial text for the wxStaticText while the computation is being run.
- *  @param fn Function which works out what the wxStaticText content should be and returns it.
- */
-ThreadedStaticText::ThreadedStaticText (wxWindow* parent, wxString initial, function<string ()> fn)
-	: wxStaticText (parent, wxID_ANY, initial)
-{
-	Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&ThreadedStaticText::thread_finished, this, _1), _update_event_id);
-	_thread = new thread (bind (&ThreadedStaticText::run, this, fn));
-}
-
-ThreadedStaticText::~ThreadedStaticText ()
-{
-	_thread->interrupt ();
-	_thread->join ();
-	delete _thread;
-}
-
-/** Run our thread and post the result to the GUI thread via AddPendingEvent */
-void
-ThreadedStaticText::run (function<string ()> fn)
-try
-{
-	wxCommandEvent ev (wxEVT_COMMAND_TEXT_UPDATED, _update_event_id);
-	ev.SetString (std_to_wx (fn ()));
-	GetEventHandler()->AddPendingEvent (ev);
-}
-catch (...)
-{
-	/* Ignore exceptions; marginally better than the program quitting, but
-	   only marginally.
-	*/
-}
-
-/** Called in the GUI thread when our worker thread has finished */
-void
-ThreadedStaticText::thread_finished (wxCommandEvent& ev)
-{
-	SetLabel (ev.GetString ());
-	Finished ();
 }
 
 string
@@ -224,6 +182,29 @@ checked_set (wxChoice* widget, string value)
 }
 
 void
+checked_set (wxChoice* widget, vector<pair<string, string> > items)
+{
+	vector<pair<string, string> > current;
+	for (unsigned int i = 0; i < widget->GetCount(); ++i) {
+		current.push_back (
+			make_pair (
+				wx_to_std (widget->GetString (i)),
+				string_client_data (widget->GetClientObject (i))
+				)
+			);
+	}
+
+	if (current == items) {
+		return;
+	}
+
+	widget->Clear ();
+	for (vector<pair<string, string> >::const_iterator i = items.begin(); i != items.end(); ++i) {
+		widget->Append (std_to_wx (i->first), new wxStringClientData (std_to_wx (i->second)));
+	}
+}
+
+void
 checked_set (wxTextCtrl* widget, string value)
 {
 	if (widget->GetValue() != std_to_wx (value)) {
@@ -232,10 +213,26 @@ checked_set (wxTextCtrl* widget, string value)
 }
 
 void
+checked_set (wxTextCtrl* widget, wxString value)
+{
+	if (widget->GetValue() != value) {
+		widget->ChangeValue (value);
+	}
+}
+
+void
 checked_set (wxStaticText* widget, string value)
 {
 	if (widget->GetLabel() != std_to_wx (value)) {
 		widget->SetLabel (std_to_wx (value));
+	}
+}
+
+void
+checked_set (wxStaticText* widget, wxString value)
+{
+	if (widget->GetLabel() != value) {
+		widget->SetLabel (value);
 	}
 }
 
@@ -280,6 +277,14 @@ dcpomatic_setup_i18n ()
 		locale->AddCatalogLookupPathPrefix (POSIX_LOCALE_PREFIX);
 #endif
 
+#ifdef DCPOMATIC_LINUX
+		/* We have to include the wxWidgets .mo in our distribution,
+		   so we rename it to avoid clashes with any other installation
+		   of wxWidgets.
+		*/
+		locale->AddCatalog (wxT ("dcpomatic-wxstd"));
+#endif		
+		
 		locale->AddCatalog (wxT ("libdcpomatic-wx"));
 		locale->AddCatalog (wxT ("dcpomatic"));
 		
@@ -328,4 +333,18 @@ context_translation (wxString s)
 	}
 
 	return t;
+}
+
+wxString
+time_to_timecode (Time t, float fps)
+{
+	double w = static_cast<double>(t) / TIME_HZ;
+	int const h = (w / 3600);
+	w -= h * 3600;
+	int const m = (w / 60);
+	w -= m * 60;
+	int const s = floor (w);
+	w -= s;
+	int const f = rint (w * fps);
+	return wxString::Format (wxT("%02d:%02d:%02d.%02d"), h, m, s, f);
 }

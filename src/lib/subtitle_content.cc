@@ -18,7 +18,7 @@
 */
 
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "subtitle_content.h"
 #include "util.h"
 #include "exceptions.h"
@@ -29,7 +29,6 @@ using std::string;
 using std::vector;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
-using libdcp::raw_convert;
 
 int const SubtitleContentProperty::SUBTITLE_X_OFFSET = 500;
 int const SubtitleContentProperty::SUBTITLE_Y_OFFSET = 501;
@@ -72,7 +71,7 @@ SubtitleContent::SubtitleContent (shared_ptr<const Film> f, vector<shared_ptr<Co
 	: Content (f, c)
 {
 	shared_ptr<SubtitleContent> ref = dynamic_pointer_cast<SubtitleContent> (c[0]);
-	assert (ref);
+	DCPOMATIC_ASSERT (ref);
 	
 	for (size_t i = 0; i < c.size(); ++i) {
 		shared_ptr<SubtitleContent> sc = dynamic_pointer_cast<SubtitleContent> (c[i]);

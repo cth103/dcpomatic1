@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 #include <libdcp/signer.h>
 #include <libdcp/util.h>
 #include <libdcp/kdm.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "film.h"
 #include "job.h"
 #include "util.h"
@@ -65,6 +65,7 @@ using std::map;
 using std::vector;
 using std::setfill;
 using std::min;
+using std::max;
 using std::make_pair;
 using std::endl;
 using std::cout;
@@ -79,7 +80,6 @@ using boost::optional;
 using boost::is_any_of;
 using libdcp::Size;
 using libdcp::Signer;
-using libdcp::raw_convert;
 
 #define LOG_GENERAL(...) log()->log (String::compose (__VA_ARGS__), Log::TYPE_GENERAL);
 #define LOG_GENERAL_NC(...) log()->log (__VA_ARGS__, Log::TYPE_GENERAL);
@@ -124,13 +124,13 @@ Film::Film (boost::filesystem::path dir, bool log)
 {
 	set_isdcf_date_today ();
 
-	_playlist->Changed.connect (bind (&Film::playlist_changed, this));
-	_playlist->ContentChanged.connect (bind (&Film::playlist_content_changed, this, _1, _2));
+	_playlist_changed_connection = _playlist->Changed.connect (bind (&Film::playlist_changed, this));
+	_playlist_content_changed_connection = _playlist->ContentChanged.connect (bind (&Film::playlist_content_changed, this, _1, _2));
 	
 	/* Make state.directory a complete path without ..s (where possible)
 	   (Code swiped from Adam Bowen on stackoverflow)
 	*/
-	
+
 	boost::filesystem::path p (boost::filesystem::system_complete (dir));
 	boost::filesystem::path result;
 	for (boost::filesystem::path::iterator i = p.begin(); i != p.end(); ++i) {
@@ -145,7 +145,7 @@ Film::Film (boost::filesystem::path dir, bool log)
 		}
 	}
 
-	set_directory (result);
+	set_directory (result.make_preferred ());
 	if (log) {
 		_log.reset (new FileLog (file ("log")));
 	} else {
@@ -155,10 +155,17 @@ Film::Film (boost::filesystem::path dir, bool log)
 	_playlist->set_sequence_video (_sequence_video);
 }
 
+Film::~Film ()
+{
+	for (list<boost::signals2::connection>::const_iterator i = _job_connections.begin(); i != _job_connections.end(); ++i) {
+		i->disconnect ();
+	}
+}
+
 string
 Film::video_identifier () const
 {
-	assert (container ());
+	DCPOMATIC_ASSERT (container ());
 
 	SafeStringStream s;
 	s.imbue (std::locale::classic ());
@@ -193,14 +200,14 @@ Film::video_identifier () const
 	return s.str ();
 }
 	  
-/** @return The path to the directory to write video frame info files to */
+/** @return The file to write video frame info to */
 boost::filesystem::path
-Film::info_dir () const
+Film::info_file () const
 {
 	boost::filesystem::path p;
 	p /= "info";
 	p /= video_identifier ();
-	return dir (p);
+	return file (p);
 }
 
 boost::filesystem::path
@@ -259,11 +266,6 @@ Film::make_dcp ()
 		throw BadSettingError (_("name"), _("cannot contain slashes"));
 	}
 
-	/* It seems to make sense to auto-save metadata here, since the make DCP may last
-	   a long time, and crashes/power failures are moderately likely.
-	 */
-	write_metadata ();
-
 	LOG_GENERAL ("DCP-o-matic %1 git %2 using %3", dcpomatic_version, dcpomatic_git_commit, dependency_version_summary());
 
 	{
@@ -295,7 +297,15 @@ Film::make_dcp ()
 	info.dwOSVersionInfoSize = sizeof (info);
 	GetVersionEx (&info);
 	LOG_GENERAL ("Windows version %1.%2.%3 SP %4", info.dwMajorVersion, info.dwMinorVersion, info.dwBuildNumber, info.szCSDVersion);
-#endif	
+#endif
+
+#if __GNUC__
+#if __x86_64__
+	LOG_GENERAL_NC ("Built for 64-bit");
+#else
+	LOG_GENERAL_NC ("Built for 32-bit");
+#endif
+#endif
 	
 	LOG_GENERAL ("CPU: %1, %2 processors", cpu_info(), boost::thread::hardware_concurrency ());
 	list<pair<string, string> > const m = mount_info ();
@@ -328,25 +338,6 @@ Film::send_dcp_to_tms ()
 {
 	shared_ptr<Job> j (new SCPDCPJob (shared_from_this()));
 	JobManager::instance()->add (j);
-}
-
-/** Count the number of frames that have been encoded for this film.
- *  @return frame count.
- */
-int
-Film::encoded_frames () const
-{
-	if (container() == 0) {
-		return 0;
-	}
-
-	int N = 0;
-	for (boost::filesystem::directory_iterator i = boost::filesystem::directory_iterator (info_dir ()); i != boost::filesystem::directory_iterator(); ++i) {
-		++N;
-		boost::this_thread::interruption_point ();
-	}
-
-	return N;
 }
 
 shared_ptr<xmlpp::Document>
@@ -447,6 +438,14 @@ Film::read_metadata ()
 	_signed = f.optional_bool_child("Signed").get_value_or (true);
 	_encrypted = f.bool_child ("Encrypted");
 	_audio_channels = f.number_child<int> ("AudioChannels");
+	/* We used to allow odd numbers (and zero) channels, but it's just not worth
+	   the pain.
+	*/
+	if (_audio_channels == 0) {
+		_audio_channels = 2;
+	} else if ((_audio_channels % 2) == 1) {
+		_audio_channels++;
+	}
 	_sequence_video = f.bool_child ("SequenceVideo");
 	_three_d = f.bool_child ("ThreeD");
 	_interop = f.bool_child ("Interop");
@@ -455,6 +454,9 @@ Film::read_metadata ()
 	list<string> notes;
 	/* This method is the only one that can return notes (so far) */
 	_playlist->set_from_xml (shared_from_this(), f.node_child ("Playlist"), _state_version, notes);
+
+	/* Write backtraces to this film's directory, until another film is loaded */
+	set_backtrace_file (file ("backtrace.txt"));
 
 	_dirty = false;
 	return notes;
@@ -582,12 +584,12 @@ Film::isdcf_name (bool if_created_now) const
 		d << "_" << container()->isdcf_name();
 	}
 
-	/* XXX: this uses the first bit of content only */
+	ContentList cl = content ();
 
+	/* XXX: this uses the first bit of content only */
 	/* The standard says we don't do this for trailers, for some strange reason */
 	if (dcp_content_type() && dcp_content_type()->libdcp_kind() != libdcp::TRAILER) {
 		Ratio const * content_ratio = 0;
-		ContentList cl = content ();
 		for (ContentList::iterator i = cl.begin(); i != cl.end(); ++i) {
 			shared_ptr<VideoContent> vc = dynamic_pointer_cast<VideoContent> (*i);
 			if (vc) {
@@ -622,25 +624,39 @@ Film::isdcf_name (bool if_created_now) const
 		}
 	}
 
-	switch (audio_channels ()) {
-	case 1:
-		d << "_10";
-		break;
-	case 2:
-		d << "_20";
-		break;
-	case 3:
-		d << "_30";
-		break;
-	case 4:
-		d << "_40";
-		break;
-	case 5:
-		d << "_50";
-		break;
-	case 6:
-		d << "_51";
-		break;
+	/* Find all mapped channels */
+	
+	list<libdcp::Channel> mapped;
+	for (ContentList::const_iterator i = cl.begin(); i != cl.end(); ++i) {
+		shared_ptr<const AudioContent> ac = dynamic_pointer_cast<const AudioContent> (*i);
+		if (ac) {
+			list<libdcp::Channel> c = ac->audio_mapping().mapped_dcp_channels ();
+			copy (c.begin(), c.end(), back_inserter (mapped));
+		}
+	}
+
+	mapped.sort ();
+	mapped.unique ();
+
+	/* Count them */
+			
+	int non_lfe = 0;
+	int lfe = 0;
+	for (list<libdcp::Channel>::const_iterator i = mapped.begin(); i != mapped.end(); ++i) {
+		if (static_cast<int> (*i) >= audio_channels ()) {
+			/* mapped but won't be used because the number of DCP channels is too low */
+			continue;
+		}
+
+		if ((*i) == libdcp::LFE) {
+			++lfe;
+		} else {
+			++non_lfe;
+		}
+	}
+
+	if (non_lfe) {
+		d << "_" << non_lfe << lfe;
 	}
 
 	/* XXX: HI/VI */
@@ -817,32 +833,6 @@ Film::set_isdcf_date_today ()
 }
 
 boost::filesystem::path
-Film::info_path (int f, Eyes e) const
-{
-	boost::filesystem::path p;
-	p /= info_dir ();
-
-	SafeStringStream s;
-	s.width (8);
-	s << setfill('0') << f;
-
-	if (e == EYES_LEFT) {
-		s << ".L";
-	} else if (e == EYES_RIGHT) {
-		s << ".R";
-	}
-
-	s << ".md5";
-	
-	p /= s.str();
-
-	/* info_dir() will already have added any initial bit of the path,
-	   so don't call file() on this.
-	*/
-	return p;
-}
-
-boost::filesystem::path
 Film::j2c_path (int f, Eyes e, bool t) const
 {
 	boost::filesystem::path p;
@@ -919,6 +909,13 @@ Film::set_encrypted (bool e)
 	signal_changed (ENCRYPTED);
 }
 
+void
+Film::set_key (libdcp::Key key)
+{
+	_key = key;
+	signal_changed (KEY);
+}
+
 shared_ptr<Playlist>
 Film::playlist () const
 {
@@ -939,7 +936,11 @@ Film::examine_and_add_content (shared_ptr<Content> c)
 	}
 			
 	shared_ptr<Job> j (new ExamineContentJob (shared_from_this(), c));
-	j->Finished.connect (bind (&Film::maybe_add_content, this, boost::weak_ptr<Job> (j), boost::weak_ptr<Content> (c)));
+
+	_job_connections.push_back (
+		j->Finished.connect (bind (&Film::maybe_add_content, this, boost::weak_ptr<Job> (j), boost::weak_ptr<Content> (c)))
+		);
+	
 	JobManager::instance()->add (j);
 }
 
@@ -1009,7 +1010,11 @@ Film::playlist_content_changed (boost::weak_ptr<Content> c, int p)
 {
 	if (p == VideoContentProperty::VIDEO_FRAME_RATE) {
 		set_video_frame_rate (_playlist->best_dcp_frame_rate ());
-	} 
+	} else if (
+		p == AudioContentProperty::AUDIO_MAPPING ||
+		p == AudioContentProperty::AUDIO_CHANNELS) {
+		signal_changed (NAME);
+	}
 
 	if (ui_signaller) {
 		ui_signaller->emit (boost::bind (boost::ref (ContentChanged), c, p));
@@ -1020,6 +1025,7 @@ void
 Film::playlist_changed ()
 {
 	signal_changed (CONTENT);
+	signal_changed (NAME);
 }	
 
 OutputAudioFrame
@@ -1072,7 +1078,7 @@ Film::full_frame () const
 		return libdcp::Size (4096, 2160);
 	}
 
-	assert (false);
+	DCPOMATIC_ASSERT (false);
 	return libdcp::Size ();
 }
 
@@ -1139,10 +1145,29 @@ Film::required_disk_space () const
  *  Note: the decision made by this method isn't, of course, 100% reliable.
  */
 bool
-Film::should_be_enough_disk_space (double& required, double& available) const
+Film::should_be_enough_disk_space (double& required, double& available, bool& can_hard_link) const
 {
+	/* Create a test file and see if we can hard-link it */
+	boost::filesystem::path test = internal_video_mxf_dir() / "test";
+	boost::filesystem::path test2 = internal_video_mxf_dir() / "test2";
+	can_hard_link = true;
+	FILE* f = fopen_boost (test, "w");
+	if (f) {
+		fclose (f);
+		boost::system::error_code ec;
+		boost::filesystem::create_hard_link (test, test2, ec);
+		if (ec) {
+			can_hard_link = false;
+		}
+		boost::filesystem::remove (test);
+		boost::filesystem::remove (test2);
+	}
+
 	boost::filesystem::space_info s = boost::filesystem::space (internal_video_mxf_dir ());
 	required = double (required_disk_space ()) / 1073741824.0f;
+	if (!can_hard_link) {
+		required *= 2;
+	}
 	available = double (s.available) / 1073741824.0f;
 	return (available - required) > 1;
 }

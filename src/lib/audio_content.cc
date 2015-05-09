@@ -18,7 +18,7 @@
 */
 
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "audio_content.h"
 #include "analyse_audio_job.h"
 #include "job_manager.h"
@@ -32,9 +32,11 @@
 using std::string;
 using std::cout;
 using std::vector;
+using std::fixed;
+using std::setprecision;
+using std::stringstream;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
-using libdcp::raw_convert;
 
 int const AudioContentProperty::AUDIO_CHANNELS = 200;
 int const AudioContentProperty::AUDIO_LENGTH = 201;
@@ -70,7 +72,7 @@ AudioContent::AudioContent (shared_ptr<const Film> f, vector<shared_ptr<Content>
 	: Content (f, c)
 {
 	shared_ptr<AudioContent> ref = dynamic_pointer_cast<AudioContent> (c[0]);
-	assert (ref);
+	DCPOMATIC_ASSERT (ref);
 	
 	for (size_t i = 0; i < c.size(); ++i) {
 		shared_ptr<AudioContent> ac = dynamic_pointer_cast<AudioContent> (c[i]);
@@ -123,7 +125,7 @@ boost::signals2::connection
 AudioContent::analyse_audio (boost::function<void()> finished)
 {
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 	
 	shared_ptr<AnalyseAudioJob> job (new AnalyseAudioJob (film, dynamic_pointer_cast<AudioContent> (shared_from_this())));
 	boost::signals2::connection c = job->Finished.connect (finished);
@@ -148,14 +150,17 @@ AudioContent::audio_analysis_path () const
 string
 AudioContent::technical_summary () const
 {
-	return String::compose ("audio: channels %1, length %2, raw rate %3, out rate %4", audio_channels(), audio_length(), content_audio_frame_rate(), output_audio_frame_rate());
+	return String::compose (
+		N_("audio: channels %1, length %2, raw rate %3, out rate %4"),
+		audio_channels(), audio_length(), content_audio_frame_rate(), output_audio_frame_rate()
+		);
 }
 
 int
 AudioContent::output_audio_frame_rate () const
 {
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 	
 	/* Resample to a DCI-approved sample rate */
 	double t = dcp_audio_frame_rate (content_audio_frame_rate ());
@@ -173,5 +178,24 @@ AudioContent::output_audio_frame_rate () const
 	}
 
 	return rint (t);
+}
+
+string
+AudioContent::processing_description () const
+{
+	stringstream d;
+	
+	if (content_audio_frame_rate() != output_audio_frame_rate ()) {
+		stringstream from;
+		from << fixed << setprecision(3) << (content_audio_frame_rate() / 1000.0);
+		stringstream to;
+		to << fixed << setprecision(3) << (output_audio_frame_rate() / 1000.0);
+
+		d << String::compose (_("Audio will be resampled from %1kHz to %2kHz."), from.str(), to.str());
+	} else {
+		d << _("Audio will not be resampled.");
+	}
+
+	return d.str ();
 }
 

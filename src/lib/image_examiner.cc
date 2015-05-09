@@ -32,19 +32,22 @@ using std::cout;
 using std::list;
 using std::sort;
 using boost::shared_ptr;
+using boost::optional;
 
 ImageExaminer::ImageExaminer (shared_ptr<const Film> film, shared_ptr<const ImageContent> content, shared_ptr<Job>)
 	: _film (film)
 	, _image_content (content)
 	, _video_length (0)
 {
+#ifdef DCPOMATIC_IMAGE_MAGICK	
 	using namespace MagickCore;
+#endif	
 	Magick::Image* image = new Magick::Image (content->path(0).string());
 	_video_size = libdcp::Size (image->columns(), image->rows());
 	delete image;
 
 	if (content->still ()) {
-		_video_length = Config::instance()->default_still_length() * video_frame_rate();
+		_video_length = Config::instance()->default_still_length() * video_frame_rate().get_value_or (24);
 	} else {
 		_video_length = _image_content->number_of_paths ();
 	}
@@ -56,13 +59,9 @@ ImageExaminer::video_size () const
 	return _video_size.get ();
 }
 
-float
+optional<float>
 ImageExaminer::video_frame_rate () const
 {
-	boost::shared_ptr<const Film> f = _film.lock ();
-	if (!f) {
-		return 24;
-	}
-
-	return f->video_frame_rate ();
+	/* Don't know */
+	return optional<float> ();
 }

@@ -18,10 +18,11 @@
 */
 
 #include <wx/wx.h>
+#include <boost/optional.hpp>
 
 class UpdateDialog : public wxDialog
 {
 public:
-	UpdateDialog (wxWindow *, std::string, std::string);
+	UpdateDialog (wxWindow *, boost::optional<std::string>, boost::optional<std::string>);
 };
 

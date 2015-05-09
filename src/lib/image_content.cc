@@ -29,6 +29,8 @@
 
 #include "i18n.h"
 
+#include "image_filename_sorter.cc"
+
 using std::string;
 using std::cout;
 using boost::shared_ptr;
@@ -37,7 +39,7 @@ ImageContent::ImageContent (shared_ptr<const Film> f, boost::filesystem::path p)
 	: Content (f)
 	, VideoContent (f)
 {
-	if (boost::filesystem::is_regular_file (p)) {
+	if (boost::filesystem::is_regular_file (p) && valid_image_file (p)) {
 		_paths.push_back (p);
 	} else {
 		for (boost::filesystem::directory_iterator i(p); i != boost::filesystem::directory_iterator(); ++i) {
@@ -50,7 +52,7 @@ ImageContent::ImageContent (shared_ptr<const Film> f, boost::filesystem::path p)
 			throw FileError (_("No valid image files were found in the folder."), p);
 		}
 		       		
-		sort (_paths.begin(), _paths.end());
+		sort (_paths.begin(), _paths.end(), ImageFilenameSorter ());
 	}
 }
 
@@ -59,7 +61,7 @@ ImageContent::ImageContent (shared_ptr<const Film> f, shared_ptr<const cxml::Nod
 	: Content (f, node)
 	, VideoContent (f, node, version)
 {
-	
+
 }
 
 string
@@ -83,9 +85,9 @@ ImageContent::technical_summary () const
 		+ VideoContent::technical_summary() + " - ";
 
 	if (still ()) {
-		s += _("still");
+		s += N_("still");
 	} else {
-		s += _("moving");
+		s += N_("moving");
 	}
 
 	return s;
@@ -102,11 +104,10 @@ ImageContent::as_xml (xmlpp::Node* node) const
 void
 ImageContent::examine (shared_ptr<Job> job)
 {
-	job->sub (_("Computing digest"));
 	Content::examine (job);
 
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 	
 	shared_ptr<ImageExaminer> examiner (new ImageExaminer (film, shared_from_this(), job));
 
@@ -129,7 +130,7 @@ Time
 ImageContent::full_length () const
 {
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 	
 	FrameRateChange frc (video_frame_rate(), film->video_frame_rate ());
 	return video_length_after_3d_combine() * frc.factor() * TIME_HZ / video_frame_rate();

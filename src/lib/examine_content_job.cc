@@ -38,12 +38,19 @@ ExamineContentJob::ExamineContentJob (shared_ptr<const Film> f, shared_ptr<Conte
 
 ExamineContentJob::~ExamineContentJob ()
 {
+	
 }
 
 string
 ExamineContentJob::name () const
 {
 	return _("Examine content");
+}
+
+string
+ExamineContentJob::json_name () const
+{
+	return N_("examine_content");
 }
 
 void

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 #include "compose.hpp"
 #include "film.h"
 #include "player.h"
+#include "log.h"
+#include "compose.hpp"
 
 #include "i18n.h"
 
@@ -31,6 +33,10 @@ using std::min;
 using std::cout;
 using boost::shared_ptr;
 
+#define LOG_DEBUG_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_DEBUG);
+#define LOG_DEBUG(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_DEBUG);
+#define LOG_TIMING(...) _film->log()->microsecond_log (String::compose (__VA_ARGS__), Log::TYPE_TIMING);
+
 int const AnalyseAudioJob::_num_points = 1024;
 
 AnalyseAudioJob::AnalyseAudioJob (shared_ptr<const Film> f, shared_ptr<AudioContent> c)
@@ -38,6 +44,8 @@ AnalyseAudioJob::AnalyseAudioJob (shared_ptr<const Film> f, shared_ptr<AudioCont
 	, _content (c)
 	, _done (0)
 	, _samples_per_point (1)
+	, _overall_peak (0)
+	, _overall_peak_frame (0)
 {
 
 }
@@ -46,6 +54,12 @@ string
 AnalyseAudioJob::name () const
 {
 	return _("Analyse audio");
+}
+
+string
+AnalyseAudioJob::json_name () const
+{
+	return N_("analyse_audio");
 }
 
 void
@@ -61,7 +75,7 @@ AnalyseAudioJob::run ()
 	shared_ptr<Player> player (new Player (_film, playlist));
 	player->disable_video ();
 	
-	player->Audio.connect (bind (&AnalyseAudioJob::audio, this, _1, _2));
+	_player_connection = player->Audio.connect (bind (&AnalyseAudioJob::audio, this, _1, _2));
 
 	_samples_per_point = max (int64_t (1), _film->time_to_audio_frames (_film->length()) / _num_points);
 
@@ -74,8 +88,9 @@ AnalyseAudioJob::run ()
 		set_progress (double (_done) / len);
 	}
 
+	_analysis->set_peak (_overall_peak, _film->audio_frames_to_time (_overall_peak_frame));
 	_analysis->write (content->audio_analysis_path ());
-	
+
 	set_progress (1);
 	set_state (FINISHED_OK);
 }
@@ -92,7 +107,15 @@ AnalyseAudioJob::audio (shared_ptr<const AudioBuffers> b, Time)
 				s = 10e-7;
 			}
 			_current[j][AudioPoint::RMS] += pow (s, 2);
-			_current[j][AudioPoint::PEAK] = max (_current[j][AudioPoint::PEAK], fabsf (s));
+
+			float const as = fabsf (s);
+			
+			_current[j][AudioPoint::PEAK] = max (_current[j][AudioPoint::PEAK], as);
+
+			if (as > _overall_peak) {
+				_overall_peak = as;
+				_overall_peak_frame = _done + i;
+			}
 
 			if ((_done % _samples_per_point) == 0) {
 				_current[j][AudioPoint::RMS] = sqrt (_current[j][AudioPoint::RMS] / _samples_per_point);

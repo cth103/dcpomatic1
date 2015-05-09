@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,9 +22,8 @@
 #include <glib.h>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
-#include <libdcp/colour_matrix.h>
-#include <libdcp/raw_convert.h>
 #include <libcxml/cxml.h>
+#include "raw_convert.h"
 #include "config.h"
 #include "server.h"
 #include "scaler.h"
@@ -32,7 +31,6 @@
 #include "ratio.h"
 #include "dcp_content_type.h"
 #include "sound_processor.h"
-#include "colour_conversion.h"
 #include "cinema.h"
 #include "util.h"
 
@@ -51,53 +49,85 @@ using boost::shared_ptr;
 using boost::optional;
 using boost::algorithm::is_any_of;
 using boost::algorithm::split;
-using libdcp::raw_convert;
+using boost::algorithm::trim;
 
 Config* Config::_instance = 0;
 
 /** Construct default configuration */
 Config::Config ()
-	: _num_local_encoding_threads (max (2U, boost::thread::hardware_concurrency()))
-	, _server_port_base (6192)
-	, _use_any_servers (true)
-	, _tms_path (".")
-	, _sound_processor (SoundProcessor::from_id (N_("dolby_cp750")))
-	, _allow_any_dcp_frame_rate (false)
-	, _default_still_length (10)
-	, _default_scale (VideoContentScale (Ratio::from_id ("185")))
-	, _default_container (Ratio::from_id ("185"))
-	, _default_dcp_content_type (DCPContentType::from_isdcf_name ("TST"))
-	, _default_j2k_bandwidth (100000000)
-	, _default_audio_delay (0)
-	, _check_for_updates (false)
-	, _check_for_test_updates (false)
-	, _maximum_j2k_bandwidth (250000000)
-	, _log_types (Log::TYPE_GENERAL | Log::TYPE_WARNING | Log::TYPE_ERROR)
 {
+	set_defaults ();
+
+#ifdef DCPOMATIC_OSX	
+	/* Check for preferences in ~/.config and move them to ~/Library if
+	   we haven't already.
+	*/
+
+	boost::filesystem::path old_path = g_get_user_config_dir ();
+	old_path /= "dcpomatic";
+	boost::filesystem::path new_path = g_get_home_dir ();
+	new_path /= "Library";
+	new_path /= "Preferences";
+	new_path /= "com.dcpomatic";
+
+	if (!boost::filesystem::exists (new_path) && boost::filesystem::exists (old_path)) {
+		boost::filesystem::create_directories (new_path);
+		boost::filesystem::copy_file (old_path / "config.xml", new_path / "config.xml");
+		boost::filesystem::create_directories (new_path / "crypt");
+		for (
+			boost::filesystem::directory_iterator i (old_path / "crypt");
+			i != boost::filesystem::directory_iterator();
+			++i) {
+			
+			boost::filesystem::copy_file (*i, new_path / "crypt" / i->path().filename ());
+		}
+	}
+#endif	
+}
+
+void
+Config::set_defaults ()
+{
+	_num_local_encoding_threads = max (2U, boost::thread::hardware_concurrency());
+	_server_port_base = 6192;
+	_use_any_servers = true;
+	_tms_path = ".";
+	_sound_processor = SoundProcessor::from_id (N_("dolby_cp750"));
+	_allow_any_dcp_frame_rate = false;
+	_default_still_length = 10;
+	_default_container = Ratio::from_id ("185");
+	_default_dcp_content_type = DCPContentType::from_isdcf_name ("FTR");
+	_default_j2k_bandwidth = 100000000;
+	_default_audio_delay = 0;
+	_check_for_updates = false;
+	_check_for_test_updates = false;
+	_maximum_j2k_bandwidth = 250000000;
+	_log_types = Log::TYPE_GENERAL | Log::TYPE_WARNING | Log::TYPE_ERROR;
+
+	_allowed_dcp_frame_rates.clear ();
+
 	_allowed_dcp_frame_rates.push_back (24);
 	_allowed_dcp_frame_rates.push_back (25);
 	_allowed_dcp_frame_rates.push_back (30);
 	_allowed_dcp_frame_rates.push_back (48);
 	_allowed_dcp_frame_rates.push_back (50);
 	_allowed_dcp_frame_rates.push_back (60);
+	
+	set_kdm_email_to_default ();
+}
 
-	_colour_conversions.push_back (PresetColourConversion (_("sRGB"), 2.4, true, libdcp::colour_matrix::srgb_to_xyz, 2.6));
-	_colour_conversions.push_back (PresetColourConversion (_("sRGB non-linearised"), 2.4, false, libdcp::colour_matrix::srgb_to_xyz, 2.6));
-	_colour_conversions.push_back (PresetColourConversion (_("Rec. 709"), 2.2, false, libdcp::colour_matrix::rec709_to_xyz, 2.6));
-
-	reset_kdm_email ();
+void
+Config::restore_defaults ()
+{
+	Config::instance()->set_defaults ();
+	Config::instance()->changed ();
 }
 
 void
 Config::read ()
 {
-	if (!boost::filesystem::exists (file (false))) {
-		read_old_metadata ();
-		return;
-	}
-
 	cxml::Document f ("Config");
-	f.read_file (file (false));
+	f.read_file (file ());
 	optional<string> c;
 
 	optional<int> version = f.optional_number_child<int> ("Version");
@@ -135,11 +165,6 @@ Config::read ()
 
 	_language = f.optional_string_child ("Language");
 
-	c = f.optional_string_child ("DefaultScale");
-	if (c) {
-		_default_scale = VideoContentScale::from_id (c.get ());
-	}
-
 	c = f.optional_string_child ("DefaultContainer");
 	if (c) {
 		_default_container = Ratio::from_id (c.get ());
@@ -165,23 +190,6 @@ Config::read ()
 	_default_still_length = f.optional_number_child<int>("DefaultStillLength").get_value_or (10);
 	_default_j2k_bandwidth = f.optional_number_child<int>("DefaultJ2KBandwidth").get_value_or (200000000);
 	_default_audio_delay = f.optional_number_child<int>("DefaultAudioDelay").get_value_or (0);
-
-	list<cxml::NodePtr> cc = f.node_children ("ColourConversion");
-
-	if (!cc.empty ()) {
-		_colour_conversions.clear ();
-	}
-	
-	for (list<cxml::NodePtr>::iterator i = cc.begin(); i != cc.end(); ++i) {
-		_colour_conversions.push_back (PresetColourConversion (*i));
-	}
-
-	if (!version) {
-		/* Loading version 0 (before Rec. 709 was added as a preset).
-		   Add it in.
-		*/
-		_colour_conversions.push_back (PresetColourConversion (_("Rec. 709"), 2.2, false, libdcp::colour_matrix::rec709_to_xyz, 2.6));
-	}
 
 	list<cxml::NodePtr> cin = f.node_children ("Cinema");
 	for (list<cxml::NodePtr>::iterator i = cin.begin(); i != cin.end(); ++i) {
@@ -216,90 +224,37 @@ Config::read ()
 	}
 }
 
-void
-Config::read_old_metadata ()
+boost::filesystem::path
+Config::base_directory () const
 {
-	/* XXX: this won't work with non-Latin filenames */
-	ifstream f (file(true).string().c_str ());
-	string line;
-
-	while (getline (f, line)) {
-		if (line.empty ()) {
-			continue;
-		}
-
-		if (line[0] == '#') {
-			continue;
-		}
-
-		size_t const s = line.find (' ');
-		if (s == string::npos) {
-			continue;
-		}
-		
-		string const k = line.substr (0, s);
-		string const v = line.substr (s + 1);
-
-		if (k == N_("num_local_encoding_threads")) {
-			_num_local_encoding_threads = atoi (v.c_str ());
-		} else if (k == N_("default_directory")) {
-			_default_directory = v;
-		} else if (k == N_("server_port")) {
-			_server_port_base = atoi (v.c_str ());
-		} else if (k == N_("server")) {
-			vector<string> b;
-			split (b, v, is_any_of (" "));
-			if (b.size() == 2) {
-				_servers.push_back (b[0]);
-			}
-		} else if (k == N_("tms_ip")) {
-			_tms_ip = v;
-		} else if (k == N_("tms_path")) {
-			_tms_path = v;
-		} else if (k == N_("tms_user")) {
-			_tms_user = v;
-		} else if (k == N_("tms_password")) {
-			_tms_password = v;
-		} else if (k == N_("sound_processor")) {
-			_sound_processor = SoundProcessor::from_id (v);
-		} else if (k == "language") {
-			_language = v;
-		} else if (k == "default_container") {
-			_default_container = Ratio::from_id (v);
-		} else if (k == "default_dcp_content_type") {
-			_default_dcp_content_type = DCPContentType::from_isdcf_name (v);
-		} else if (k == "dcp_metadata_issuer") {
-			_dcp_issuer = v;
-		}
-
-		_default_isdcf_metadata.read_old_metadata (k, v);
-	}
+	boost::filesystem::path p;
+#ifdef DCPOMATIC_OSX
+	p /= g_get_home_dir ();
+	p /= "Library";
+	p /= "Preferences";
+	p /= "com.dcpomatic";
+#else	
+	p /= g_get_user_config_dir ();
+	p /= "dcpomatic";
+#endif
+	boost::system::error_code ec;
+	boost::filesystem::create_directories (p, ec);
+	return p;
 }
 
 /** @return Filename to write configuration to */
 boost::filesystem::path
-Config::file (bool old) const
+Config::file () const
 {
-	boost::filesystem::path p;
-	p /= g_get_user_config_dir ();
-	boost::system::error_code ec;
-	boost::filesystem::create_directory (p, ec);
-	if (old) {
-		p /= ".dvdomatic";
-	} else {
-		p /= "dcpomatic";
-		boost::filesystem::create_directory (p, ec);
-		p /= "config.xml";
-	}
+	boost::filesystem::path p = base_directory ();
+	p /= "config.xml";
 	return p;
 }
 
 boost::filesystem::path
 Config::signer_chain_directory () const
 {
-	boost::filesystem::path p;
-	p /= g_get_user_config_dir ();
-	p /= "dcpomatic";
+	boost::filesystem::path p = base_directory ();
 	p /= "crypt";
 	boost::filesystem::create_directories (p);
 	return p;
@@ -353,7 +308,6 @@ Config::write () const
 	if (_language) {
 		root->add_child("Language")->add_child_text (_language.get());
 	}
-	root->add_child("DefaultScale")->add_child_text (_default_scale.id ());
 	if (_default_container) {
 		root->add_child("DefaultContainer")->add_child_text (_default_container->id ());
 	}
@@ -367,10 +321,6 @@ Config::write () const
 	root->add_child("DefaultStillLength")->add_child_text (raw_convert<string> (_default_still_length));
 	root->add_child("DefaultJ2KBandwidth")->add_child_text (raw_convert<string> (_default_j2k_bandwidth));
 	root->add_child("DefaultAudioDelay")->add_child_text (raw_convert<string> (_default_audio_delay));
-
-	for (vector<PresetColourConversion>::const_iterator i = _colour_conversions.begin(); i != _colour_conversions.end(); ++i) {
-		i->as_xml (root->add_child ("ColourConversion"));
-	}
 
 	for (list<shared_ptr<Cinema> >::const_iterator i = _cinemas.begin(); i != _cinemas.end(); ++i) {
 		(*i)->as_xml (root->add_child ("Cinema"));
@@ -395,8 +345,14 @@ Config::write () const
 	for (vector<boost::filesystem::path>::const_iterator i = _history.begin(); i != _history.end(); ++i) {
 		root->add_child("History")->add_child_text (i->string ());
 	}
-	
-	doc.write_to_file_formatted (file(false).string ());
+
+	try {
+		doc.write_to_file_formatted (file().string ());
+	} catch (xmlpp::exception& e) {
+		string s = e.what ();
+		trim (s);
+		std::cerr << "dcpomatic: failed to save configuration (" << s << ")\n";
+	}
 }
 
 boost::filesystem::path
@@ -430,7 +386,7 @@ Config::changed ()
 }
 
 void
-Config::reset_kdm_email ()
+Config::set_kdm_email_to_default ()
 {
 	_kdm_email = _(
 		"Dear Projectionist\n\n"
@@ -440,6 +396,13 @@ Config::reset_kdm_email ()
 		"The KDMs are valid from $START_TIME until $END_TIME.\n\n"
 		"Best regards,\nDCP-o-matic"
 		);
+}	
+
+void
+Config::reset_kdm_email ()
+{
+	set_kdm_email_to_default ();
+	changed ();
 }
 
 void

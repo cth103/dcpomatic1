@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 
 */
 
-#include <libdcp/raw_convert.h>
+#include "lib/raw_convert.h"
 #include "lib/content.h"
 #include "lib/image_content.h"
 #include "timing_panel.h"
@@ -30,7 +30,6 @@ using std::string;
 using std::set;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
-using libdcp::raw_convert;
 
 TimingPanel::TimingPanel (FilmEditor* e)
 	/* horrid hack for apparent lack of context support with wxWidgets i18n code */
@@ -38,6 +37,40 @@ TimingPanel::TimingPanel (FilmEditor* e)
 {
 	wxFlexGridSizer* grid = new wxFlexGridSizer (2, 4, 4);
 	_sizer->Add (grid, 0, wxALL, 8);
+
+	wxSize size = Timecode::size (this);
+	
+	wxSizer* labels = new wxBoxSizer (wxHORIZONTAL);
+	//// TRANSLATORS: this is an abbreviation for "hours"
+	wxStaticText* t = new wxStaticText (this, wxID_ANY, _("h"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
+#ifdef DCPOMATIC_LINUX
+	/* Hack to work around failure to centre text on GTK */
+	gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
+#endif		
+	labels->Add (t, 1, wxEXPAND);
+	add_label_to_sizer (labels, this, wxT (":"), false);
+	//// TRANSLATORS: this is an abbreviation for "minutes"
+	t = new wxStaticText (this, wxID_ANY, _("m"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
+#ifdef DCPOMATIC_LINUX
+	gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
+#endif		
+	labels->Add (t, 1, wxEXPAND);
+	add_label_to_sizer (labels, this, wxT (":"), false);
+	//// TRANSLATORS: this is an abbreviation for "seconds"
+	t = new wxStaticText (this, wxID_ANY, _("s"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
+#ifdef DCPOMATIC_LINUX
+	gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
+#endif		
+	labels->Add (t, 1, wxEXPAND);
+	add_label_to_sizer (labels, this, wxT (":"), false);
+	//// TRANSLATORS: this is an abbreviation for "frames"
+	t = new wxStaticText (this, wxID_ANY, _("f"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
+#ifdef DCPOMATIC_LINUX
+	gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
+#endif		
+	labels->Add (t, 1, wxEXPAND);
+	grid->Add (new wxStaticText (this, wxID_ANY, wxT ("")));
+	grid->Add (labels);
 
 	add_label_to_sizer (grid, this, _("Position"), true);
 	_position = new Timecode (this);
@@ -66,6 +99,30 @@ TimingPanel::TimingPanel (FilmEditor* e)
 		grid->Add (s, 1, wxEXPAND);
 	}
 
+	grid->AddSpacer (0);
+
+	/* We can't use Wrap() here as it doesn't work with markup:
+	 * http://trac.wxwidgets.org/ticket/13389
+	 */
+
+	wxString in = _("<i>Only change this if the content's frame rate has been read incorrectly.</i>");
+	wxString out;
+	int const width = 20;
+	int current = 0;
+	for (size_t i = 0; i < in.Length(); ++i) {
+		if (in[i] == ' ' && current >= width) {
+			out += '\n';
+			current = 0;
+		} else {
+			out += in[i];
+			++current;
+		}
+	}
+	
+	t = new wxStaticText (this, wxID_ANY, wxT (""));
+	t->SetLabelMarkup (out);
+	grid->Add (t, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 6);
+
 	_position->Changed.connect    (boost::bind (&TimingPanel::position_changed, this));
 	_full_length->Changed.connect (boost::bind (&TimingPanel::full_length_changed, this));
 	_trim_start->Changed.connect  (boost::bind (&TimingPanel::trim_start_changed, this));
@@ -73,6 +130,40 @@ TimingPanel::TimingPanel (FilmEditor* e)
 	_play_length->Changed.connect (boost::bind (&TimingPanel::play_length_changed, this));
 	_video_frame_rate->Bind       (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&TimingPanel::video_frame_rate_changed, this));
 	_set_video_frame_rate->Bind   (wxEVT_COMMAND_BUTTON_CLICKED, boost::bind (&TimingPanel::set_video_frame_rate, this));
+}
+
+void
+TimingPanel::update_full_length ()
+{
+	ContentList cl = _editor->selected_content ();
+
+	set<Time> check;
+	for (ContentList::const_iterator i = cl.begin (); i != cl.end(); ++i) {
+		check.insert ((*i)->full_length ());
+	}
+	
+	if (check.size() == 1) {
+		_full_length->set (cl.front()->full_length (), _editor->film()->video_frame_rate ());
+	} else {
+		_full_length->clear ();
+	}
+}
+
+void
+TimingPanel::update_play_length ()
+{
+	ContentList cl = _editor->selected_content ();
+
+	set<Time> check;
+	for (ContentList::const_iterator i = cl.begin (); i != cl.end(); ++i) {
+		check.insert ((*i)->length_after_trim ());
+	}
+	
+	if (check.size() == 1) {
+		_play_length->set (cl.front()->length_after_trim (), _editor->film()->video_frame_rate ());
+	} else {
+		_play_length->clear ();
+	}
 }
 
 void
@@ -104,16 +195,7 @@ TimingPanel::film_content_changed (int property)
 		property == VideoContentProperty::VIDEO_FRAME_TYPE
 		) {
 
-		set<Time> check;
-		for (ContentList::const_iterator i = cl.begin (); i != cl.end(); ++i) {
-			check.insert ((*i)->full_length ());
-		}
-		
-		if (check.size() == 1) {
-			_full_length->set (cl.front()->full_length (), film_video_frame_rate);
-		} else {
-			_full_length->clear ();
-		}
+		update_full_length ();
 
 	} else if (property == ContentProperty::TRIM_START) {
 
@@ -150,16 +232,7 @@ TimingPanel::film_content_changed (int property)
 		property == VideoContentProperty::VIDEO_FRAME_TYPE
 		) {
 
-		set<Time> check;
-		for (ContentList::const_iterator i = cl.begin (); i != cl.end(); ++i) {
-			check.insert ((*i)->length_after_trim ());
-		}
-		
-		if (check.size() == 1) {
-			_play_length->set (cl.front()->length_after_trim (), film_video_frame_rate);
-		} else {
-			_play_length->clear ();
-		}
+		update_play_length ();
 	}
 
 	if (property == VideoContentProperty::VIDEO_FRAME_RATE) {
@@ -173,10 +246,10 @@ TimingPanel::film_content_changed (int property)
 			}
 		}
 		if (check.size() == 1) {
-			_video_frame_rate->SetValue (std_to_wx (raw_convert<string> (vc->video_frame_rate (), 5)));
+			checked_set (_video_frame_rate, raw_convert<string> (vc->video_frame_rate (), 5));
 			_video_frame_rate->Enable (true);
 		} else {
-			_video_frame_rate->SetValue ("");
+			checked_set (_video_frame_rate, wxT (""));
 			_video_frame_rate->Enable (false);
 		}
 	}
@@ -279,4 +352,13 @@ TimingPanel::content_selection_changed ()
 	film_content_changed (ContentProperty::TRIM_START);
 	film_content_changed (ContentProperty::TRIM_END);
 	film_content_changed (VideoContentProperty::VIDEO_FRAME_RATE);
+}
+
+void
+TimingPanel::film_changed (Film::Property p)
+{
+	if (p == Film::VIDEO_FRAME_RATE) {
+		update_full_length ();
+		update_play_length ();
+	}
 }

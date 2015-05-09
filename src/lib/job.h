@@ -43,6 +43,7 @@ public:
 
 	/** @return user-readable name of this job */
 	virtual std::string name () const = 0;
+	virtual std::string json_name () const = 0;
 	/** Run this job in the current thread. */
 	virtual void run () = 0;
 	
@@ -64,6 +65,7 @@ public:
 
 	int elapsed_time () const;
 	virtual std::string status () const;
+	std::string json_status () const;
 	std::string sub_name () const {
 		return _sub_name;
 	}
@@ -71,10 +73,7 @@ public:
 	void set_progress_unknown ();
 	void set_progress (float, bool force = false);
 	void sub (std::string);
-	float progress () const;
-	bool progress_unknown () const {
-		return !_progress;
-	}
+	boost::optional<float> progress () const;
 
 	boost::shared_ptr<const Film> film () const {
 		return _film;
@@ -124,6 +123,11 @@ private:
 	/** mutex for _progress */
 	mutable boost::mutex _progress_mutex;
 	boost::optional<float> _progress;
+
+	/** condition to signal changes to pause/resume so that we know when to wake;
+	    this could be a general _state_change if it made more sense.
+	*/
+	boost::condition_variable _pause_changed;
 
 	int _ran_for;
 };

@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,20 +28,17 @@
 #include <wx/preferences.h>
 #include <wx/filepicker.h>
 #include <wx/spinctrl.h>
-#include <libdcp/colour_matrix.h>
 #include "lib/config.h"
 #include "lib/ratio.h"
 #include "lib/scaler.h"
 #include "lib/filter.h"
 #include "lib/dcp_content_type.h"
-#include "lib/colour_conversion.h"
 #include "config_dialog.h"
 #include "wx_util.h"
 #include "editable_list.h"
 #include "filter_dialog.h"
 #include "dir_picker_ctrl.h"
 #include "isdcf_metadata_dialog.h"
-#include "preset_colour_conversion_dialog.h"
 #include "server_dialog.h"
 
 using std::vector;
@@ -56,35 +53,91 @@ class Page
 {
 public:
 	Page (wxSize panel_size, int border)
-		: _panel_size (panel_size)
-		, _border (border)
-	{}
+		: _border (border)
+		, _panel_size (panel_size)
+		, _window_exists (false)
+	{
+		_config_connection = Config::instance()->Changed.connect (boost::bind (&Page::config_changed_wrapper, this));
+	}
+
+	virtual ~Page () {}
 
 protected:
-	wxPanel* make_panel (wxWindow* parent)
+	wxWindow* create_window (wxWindow* parent)
 	{
 		wxPanel* panel = new wxPanel (parent, wxID_ANY, wxDefaultPosition, _panel_size);
 		wxBoxSizer* s = new wxBoxSizer (wxVERTICAL);
 		panel->SetSizer (s);
+
+		setup (parent, panel);
+		_window_exists = true;
+		config_changed ();
+
+		panel->Bind (wxEVT_DESTROY, boost::bind (&Page::window_destroyed, this));
+
 		return panel;
 	}
 	
-	wxSize _panel_size;
 	int _border;
+
+private:
+	virtual void config_changed () = 0;
+	virtual void setup (wxWindow* parent, wxPanel* panel) = 0;
+
+	void config_changed_wrapper ()
+	{
+		if (_window_exists) {
+			config_changed ();
+		}
+	}
+
+	void window_destroyed ()
+	{
+		_window_exists = false;
+	}
+	
+	wxSize _panel_size;
+	boost::signals2::scoped_connection _config_connection;
+	bool _window_exists;
 };
 
-class GeneralPage : public wxStockPreferencesPage, public Page
+class StockPage : public wxStockPreferencesPage, public Page
+{
+public:
+	StockPage (Kind kind, wxSize panel_size, int border)
+		: wxStockPreferencesPage (kind)
+		, Page (panel_size, border)
+	{}
+	
+	wxWindow* CreateWindow (wxWindow* parent)
+	{
+		return create_window (parent);
+	}
+};
+
+class StandardPage : public wxPreferencesPage, public Page
+{
+public:
+	StandardPage (wxSize panel_size, int border)
+		: Page (panel_size, border)
+	{}
+	
+	wxWindow* CreateWindow (wxWindow* parent)
+	{
+		return create_window (parent);
+	}
+};
+
+class GeneralPage : public StockPage
 {
 public:
 	GeneralPage (wxSize panel_size, int border)
-		: wxStockPreferencesPage (Kind_General)
-		, Page (panel_size, border)
+		: StockPage (Kind_General, panel_size, border)
 	{}
 
-	wxWindow* CreateWindow (wxWindow* parent)
+private:	
+	void setup (wxWindow *, wxPanel* panel)
 	{
-		wxPanel* panel = make_panel (parent);
-
 		wxFlexGridSizer* table = new wxFlexGridSizer (2, DCPOMATIC_SIZER_X_GAP, DCPOMATIC_SIZER_Y_GAP);
 		table->AddGrowableCol (1, 1);
 		panel->GetSizer()->Add (table, 1, wxALL | wxEXPAND, _border);
@@ -99,6 +152,7 @@ public:
 		_language->Append (wxT ("Italiano"));
 		_language->Append (wxT ("Nederlands"));
 		_language->Append (wxT ("Svenska"));
+		_language->Append (wxT ("русский"));
 		table->Add (_language);
 		
 		wxStaticText* restart = add_label_to_sizer (table, panel, _("(restart DCP-o-matic to see language changes)"), false);
@@ -111,7 +165,6 @@ public:
 		add_label_to_sizer (table, panel, _("Threads to use for encoding on this host"), true);
 		_num_local_encoding_threads = new wxSpinCtrl (panel);
 		table->Add (_num_local_encoding_threads, 1);
-
 		
 		_check_for_updates = new wxCheckBox (panel, wxID_ANY, _("Check for updates on startup"));
 		table->Add (_check_for_updates, 1, wxEXPAND | wxALL);
@@ -121,44 +174,47 @@ public:
 		table->Add (_check_for_test_updates, 1, wxEXPAND | wxALL);
 		table->AddSpacer (0);
 		
-		Config* config = Config::instance ();
-		
-		_set_language->SetValue (config->language ());
-		
-		if (config->language().get_value_or ("") == "fr") {
-			_language->SetSelection (3);
-		} else if (config->language().get_value_or ("") == "it") {
-			_language->SetSelection (4);
-		} else if (config->language().get_value_or ("") == "es") {
-			_language->SetSelection (2);
-		} else if (config->language().get_value_or ("") == "sv") {
-			_language->SetSelection (6);
-		} else if (config->language().get_value_or ("") == "de") {
-			_language->SetSelection (0);
-		} else if (config->language().get_value_or ("") == "nl") {
-			_language->SetSelection (5);
-		} else {
-			_language->SetSelection (1);
-		}
-		
-		setup_language_sensitivity ();
-		
 		_set_language->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&GeneralPage::set_language_changed, this));
 		_language->Bind     (wxEVT_COMMAND_CHOICE_SELECTED,  boost::bind (&GeneralPage::language_changed,     this));
 		
 		_num_local_encoding_threads->SetRange (1, 128);
-		_num_local_encoding_threads->SetValue (config->num_local_encoding_threads ());
 		_num_local_encoding_threads->Bind (wxEVT_COMMAND_SPINCTRL_UPDATED, boost::bind (&GeneralPage::num_local_encoding_threads_changed, this));
 
-		_check_for_updates->SetValue (config->check_for_updates ());
 		_check_for_updates->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&GeneralPage::check_for_updates_changed, this));
-		_check_for_test_updates->SetValue (config->check_for_test_updates ());
 		_check_for_test_updates->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&GeneralPage::check_for_test_updates_changed, this));
-		
-		return panel;
 	}
 
-private:	
+	void config_changed ()
+	{
+		Config* config = Config::instance ();
+		
+		checked_set (_set_language, config->language ());
+		
+		if (config->language().get_value_or ("") == "fr") {
+			checked_set (_language, 3);
+		} else if (config->language().get_value_or ("") == "it") {
+			checked_set (_language, 4);
+		} else if (config->language().get_value_or ("") == "es") {
+			checked_set (_language, 2);
+		} else if (config->language().get_value_or ("") == "sv") {
+			checked_set (_language, 6);
+		} else if (config->language().get_value_or ("") == "de") {
+			checked_set (_language, 0);
+		} else if (config->language().get_value_or ("") == "nl") {
+			checked_set (_language, 5);
+		} else if (config->language().get_value_or ("") == "ru") {
+			checked_set (_language, 7);
+		} else {
+			checked_set (_language, 1);
+		}
+		
+		setup_language_sensitivity ();
+
+		checked_set (_num_local_encoding_threads, config->num_local_encoding_threads ());
+		checked_set (_check_for_updates, config->check_for_updates ());
+		checked_set (_check_for_test_updates, config->check_for_test_updates ());
+	}
+	
 	void setup_language_sensitivity ()
 	{
 		_language->Enable (_set_language->GetValue ());
@@ -198,6 +254,9 @@ private:
 		case 6:
 			Config::instance()->set_language ("sv");
 			break;
+		case 7:
+			Config::instance()->set_language ("ru");
+			break;
 		}
 	}
 	
@@ -223,11 +282,11 @@ private:
 	wxCheckBox* _check_for_test_updates;
 };
 
-class DefaultsPage : public wxPreferencesPage, public Page
+class DefaultsPage : public StandardPage
 {
 public:
 	DefaultsPage (wxSize panel_size, int border)
-		: Page (panel_size, border)
+		: StandardPage (panel_size, border)
 	{}
 	
 	wxString GetName () const
@@ -242,10 +301,9 @@ public:
 	}
 #endif	
 
-	wxWindow* CreateWindow (wxWindow* parent)
+private:	
+	void setup (wxWindow* parent, wxPanel* panel)
 	{
-		wxPanel* panel = make_panel (parent);
-
 		wxFlexGridSizer* table = new wxFlexGridSizer (2, DCPOMATIC_SIZER_X_GAP, DCPOMATIC_SIZER_Y_GAP);
 		table->AddGrowableCol (1, 1);
 		panel->GetSizer()->Add (table, 1, wxALL | wxEXPAND, _border);
@@ -271,10 +329,6 @@ public:
 		_isdcf_metadata_button = new wxButton (panel, wxID_ANY, _("Edit..."));
 		table->Add (_isdcf_metadata_button);
 
-		add_label_to_sizer (table, panel, _("Default scale to"), true);
-		_scale = new wxChoice (panel, wxID_ANY);
-		table->Add (_scale);
-		
 		add_label_to_sizer (table, panel, _("Default container"), true);
 		_container = new wxChoice (panel, wxID_ANY);
 		table->Add (_container);
@@ -305,61 +359,63 @@ public:
 		_issuer = new wxTextCtrl (panel, wxID_ANY);
 		table->Add (_issuer, 1, wxEXPAND);
 
-		Config* config = Config::instance ();
-		
 		_still_length->SetRange (1, 3600);
-		_still_length->SetValue (config->default_still_length ());
 		_still_length->Bind (wxEVT_COMMAND_SPINCTRL_UPDATED, boost::bind (&DefaultsPage::still_length_changed, this));
 		
-		_directory->SetPath (std_to_wx (config->default_directory_or (wx_to_std (wxStandardPaths::Get().GetDocumentsDir())).string ()));
 		_directory->Bind (wxEVT_COMMAND_DIRPICKER_CHANGED, boost::bind (&DefaultsPage::directory_changed, this));
 		
 		_isdcf_metadata_button->Bind (wxEVT_COMMAND_BUTTON_CLICKED, boost::bind (&DefaultsPage::edit_isdcf_metadata_clicked, this, parent));
 		
-		vector<VideoContentScale> scales = VideoContentScale::all ();
-		for (size_t i = 0; i < scales.size(); ++i) {
-			_scale->Append (std_to_wx (scales[i].name ()));
-			if (scales[i] == config->default_scale ()) {
-				_scale->SetSelection (i);
-			}
-		}
-
 		vector<Ratio const *> ratios = Ratio::all ();
 		for (size_t i = 0; i < ratios.size(); ++i) {
 			_container->Append (std_to_wx (ratios[i]->nickname ()));
-			if (ratios[i] == config->default_container ()) {
-				_container->SetSelection (i);
-			}
 		}
 		
-		_scale->Bind (wxEVT_COMMAND_CHOICE_SELECTED, boost::bind (&DefaultsPage::scale_changed, this));
 		_container->Bind (wxEVT_COMMAND_CHOICE_SELECTED, boost::bind (&DefaultsPage::container_changed, this));
 		
 		vector<DCPContentType const *> const ct = DCPContentType::all ();
 		for (size_t i = 0; i < ct.size(); ++i) {
 			_dcp_content_type->Append (std_to_wx (ct[i]->pretty_name ()));
-			if (ct[i] == config->default_dcp_content_type ()) {
-				_dcp_content_type->SetSelection (i);
-			}
 		}
 		
 		_dcp_content_type->Bind (wxEVT_COMMAND_CHOICE_SELECTED, boost::bind (&DefaultsPage::dcp_content_type_changed, this));
 		
 		_j2k_bandwidth->SetRange (50, 250);
-		_j2k_bandwidth->SetValue (config->default_j2k_bandwidth() / 1000000);
 		_j2k_bandwidth->Bind (wxEVT_COMMAND_SPINCTRL_UPDATED, boost::bind (&DefaultsPage::j2k_bandwidth_changed, this));
 		
 		_audio_delay->SetRange (-1000, 1000);
-		_audio_delay->SetValue (config->default_audio_delay ());
 		_audio_delay->Bind (wxEVT_COMMAND_SPINCTRL_UPDATED, boost::bind (&DefaultsPage::audio_delay_changed, this));
 
-		_issuer->SetValue (std_to_wx (config->dcp_issuer ()));
 		_issuer->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&DefaultsPage::issuer_changed, this));
-
-		return panel;
 	}
 
-private:
+	void config_changed ()
+	{
+		Config* config = Config::instance ();
+		
+		_directory->SetPath (std_to_wx (config->default_directory_or (wx_to_std (wxStandardPaths::Get().GetDocumentsDir())).string ()));
+		checked_set (_still_length, config->default_still_length ());
+
+		vector<Ratio const *> ratios = Ratio::all ();
+		for (size_t i = 0; i < ratios.size(); ++i) {
+			if (ratios[i] == config->default_container ()) {
+				checked_set (_container, i);
+			}
+		}
+
+		vector<DCPContentType const *> const ct = DCPContentType::all ();
+		for (size_t i = 0; i < ct.size(); ++i) {
+			if (ct[i] == config->default_dcp_content_type ()) {
+				checked_set (_dcp_content_type, i);
+			}
+		}
+		
+		checked_set (_j2k_bandwidth, config->default_j2k_bandwidth() / 1000000);
+		checked_set (_audio_delay, config->default_audio_delay ());
+		_j2k_bandwidth->SetRange (50, Config::instance()->maximum_j2k_bandwidth () / 1000000);
+		checked_set (_issuer, config->dcp_issuer ());
+	}
+	
 	void j2k_bandwidth_changed ()
 	{
 		Config::instance()->set_default_j2k_bandwidth (_j2k_bandwidth->GetValue() * 1000000);
@@ -388,12 +444,6 @@ private:
 		Config::instance()->set_default_still_length (_still_length->GetValue ());
 	}
 
-	void scale_changed ()
-	{
-		vector<VideoContentScale> scale = VideoContentScale::all ();
-		Config::instance()->set_default_scale (scale[_scale->GetSelection()]);
-	}
-	
 	void container_changed ()
 	{
 		vector<Ratio const *> ratio = Ratio::all ();
@@ -420,17 +470,17 @@ private:
 #else
 	wxDirPickerCtrl* _directory;
 #endif
-	wxChoice* _scale;
 	wxChoice* _container;
 	wxChoice* _dcp_content_type;
 	wxTextCtrl* _issuer;
+
 };
 
-class EncodingServersPage : public wxPreferencesPage, public Page
+class EncodingServersPage : public StandardPage
 {
 public:
 	EncodingServersPage (wxSize panel_size, int border)
-		: Page (panel_size, border)
+		: StandardPage (panel_size, border)
 	{}
 	
 	wxString GetName () const
@@ -445,10 +495,9 @@ public:
 	}
 #endif	
 
-	wxWindow* CreateWindow (wxWindow* parent)
+private:	
+	void setup (wxWindow *, wxPanel* panel)
 	{
-		wxPanel* panel = make_panel (parent);
-		
 		_use_any_servers = new wxCheckBox (panel, wxID_ANY, _("Use all servers"));
 		panel->GetSizer()->Add (_use_any_servers, 0, wxALL, _border);
 		
@@ -464,13 +513,14 @@ public:
 		
 		panel->GetSizer()->Add (_servers_list, 1, wxEXPAND | wxALL, _border);
 		
-		_use_any_servers->SetValue (Config::instance()->use_any_servers ());
 		_use_any_servers->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&EncodingServersPage::use_any_servers_changed, this));
-
-		return panel;
 	}
 
-private:	
+	void config_changed ()
+	{
+		checked_set (_use_any_servers, Config::instance()->use_any_servers ());
+		_servers_list->refresh ();
+	}
 
 	void use_any_servers_changed ()
 	{
@@ -486,55 +536,11 @@ private:
 	EditableList<string, ServerDialog>* _servers_list;
 };
 
-class ColourConversionsPage : public wxPreferencesPage, public Page
-{
-public:
-	ColourConversionsPage (wxSize panel_size, int border)
-		: Page (panel_size, border)
-	{}
-	
-	wxString GetName () const
-	{
-		return _("Colour Conversions");
-	}
-
-#ifdef DCPOMATIC_OSX	
-	wxBitmap GetLargeIcon () const
-	{
-		return wxBitmap ("colour_conversions", wxBITMAP_TYPE_PNG_RESOURCE);
-	}
-#endif	
-	wxWindow* CreateWindow (wxWindow* parent)
-	{
-		wxPanel* panel = make_panel (parent);
-
-		vector<string> columns;
-		columns.push_back (wx_to_std (_("Name")));
-		wxPanel* list = new EditableList<PresetColourConversion, PresetColourConversionDialog> (
-			panel,
-			columns,
-			boost::bind (&Config::colour_conversions, Config::instance()),
-			boost::bind (&Config::set_colour_conversions, Config::instance(), _1),
-			boost::bind (&ColourConversionsPage::colour_conversion_column, this, _1),
-			300
-			);
-
-		panel->GetSizer()->Add (list, 1, wxEXPAND | wxALL, _border);
-		return panel;
-	}
-
-private:
-	string colour_conversion_column (PresetColourConversion c)
-	{
-		return c.name;
-	}
-};
-
-class TMSPage : public wxPreferencesPage, public Page
+class TMSPage : public StandardPage
 {
 public:
 	TMSPage (wxSize panel_size, int border)
-		: Page (panel_size, border)
+		: StandardPage (panel_size, border)
 	{}
 
 	wxString GetName () const
@@ -549,10 +555,9 @@ public:
 	}
 #endif	
 
-	wxWindow* CreateWindow (wxWindow* parent)
+private:	
+	void setup (wxWindow *, wxPanel* panel)
 	{
-		wxPanel* panel = make_panel (parent);
-
 		wxFlexGridSizer* table = new wxFlexGridSizer (2, DCPOMATIC_SIZER_X_GAP, DCPOMATIC_SIZER_Y_GAP);
 		table->AddGrowableCol (1, 1);
 		panel->GetSizer()->Add (table, 1, wxALL | wxEXPAND, _border);
@@ -573,21 +578,22 @@ public:
 		_tms_password = new wxTextCtrl (panel, wxID_ANY);
 		table->Add (_tms_password, 1, wxEXPAND);
 		
-		Config* config = Config::instance ();
-		
-		_tms_ip->SetValue (std_to_wx (config->tms_ip ()));
 		_tms_ip->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&TMSPage::tms_ip_changed, this));
-		_tms_path->SetValue (std_to_wx (config->tms_path ()));
 		_tms_path->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&TMSPage::tms_path_changed, this));
-		_tms_user->SetValue (std_to_wx (config->tms_user ()));
 		_tms_user->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&TMSPage::tms_user_changed, this));
-		_tms_password->SetValue (std_to_wx (config->tms_password ()));
 		_tms_password->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&TMSPage::tms_password_changed, this));
-
-		return panel;
 	}
 
-private:
+	void config_changed ()
+	{
+		Config* config = Config::instance ();
+
+		checked_set (_tms_ip, config->tms_ip ());
+		checked_set (_tms_path, config->tms_path ());
+		checked_set (_tms_user, config->tms_user ());
+		checked_set (_tms_password, config->tms_password ());
+	}
+	
 	void tms_ip_changed ()
 	{
 		Config::instance()->set_tms_ip (wx_to_std (_tms_ip->GetValue ()));
@@ -614,12 +620,16 @@ private:
 	wxTextCtrl* _tms_password;
 };
 
-class KDMEmailPage : public wxPreferencesPage, public Page
+class KDMEmailPage : public StandardPage
 {
 public:
-
 	KDMEmailPage (wxSize panel_size, int border)
-		: Page (panel_size, border)
+#ifdef DCPOMATIC_OSX		
+		/* We have to force both width and height of this one */
+		: StandardPage (wxSize (480, 128), border)
+#else
+	        : StandardPage (panel_size, border)
+#endif		  
 	{}
 	
 	wxString GetName () const
@@ -634,14 +644,9 @@ public:
 	}
 #endif	
 
-	wxWindow* CreateWindow (wxWindow* parent)
+private:	
+	void setup (wxWindow *, wxPanel* panel)
 	{
-#ifdef DCPOMATIC_OSX		
-		/* We have to force both width and height of this one */
-		wxPanel* panel = new wxPanel (parent, wxID_ANY, wxDefaultPosition, wxSize (480, 128));
-#else
-		wxPanel* panel = new wxPanel (parent);
-#endif
 		wxBoxSizer* s = new wxBoxSizer (wxVERTICAL);
 		panel->SetSizer (s);
 
@@ -690,29 +695,31 @@ public:
 		_reset_kdm_email = new wxButton (panel, wxID_ANY, _("Reset to default text"));
 		panel->GetSizer()->Add (_reset_kdm_email, 0, wxEXPAND | wxALL, _border);
 
-		Config* config = Config::instance ();
-		_mail_server->SetValue (std_to_wx (config->mail_server ()));
 		_mail_server->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&KDMEmailPage::mail_server_changed, this));
-		_mail_user->SetValue (std_to_wx (config->mail_user ()));
 		_mail_user->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&KDMEmailPage::mail_user_changed, this));
-		_mail_password->SetValue (std_to_wx (config->mail_password ()));
 		_mail_password->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&KDMEmailPage::mail_password_changed, this));
-		_kdm_subject->SetValue (std_to_wx (config->kdm_subject ()));
 		_kdm_subject->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&KDMEmailPage::kdm_subject_changed, this));
-		_kdm_from->SetValue (std_to_wx (config->kdm_from ()));
 		_kdm_from->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&KDMEmailPage::kdm_from_changed, this));
-		_kdm_cc->SetValue (std_to_wx (config->kdm_cc ()));
 		_kdm_cc->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&KDMEmailPage::kdm_cc_changed, this));
-		_kdm_bcc->SetValue (std_to_wx (config->kdm_bcc ()));
 		_kdm_bcc->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&KDMEmailPage::kdm_bcc_changed, this));
 		_kdm_email->Bind (wxEVT_COMMAND_TEXT_UPDATED, boost::bind (&KDMEmailPage::kdm_email_changed, this));
-		_kdm_email->SetValue (std_to_wx (Config::instance()->kdm_email ()));
 		_reset_kdm_email->Bind (wxEVT_COMMAND_BUTTON_CLICKED, boost::bind (&KDMEmailPage::reset_kdm_email, this));
-
-		return panel;
 	}
 
-private:
+	void config_changed ()
+	{
+		Config* config = Config::instance ();
+
+		checked_set (_mail_server, config->mail_server ());
+		checked_set (_mail_user, config->mail_user ());
+		checked_set (_mail_password, config->mail_password ());
+		checked_set (_kdm_subject, config->kdm_subject ());
+		checked_set (_kdm_from, config->kdm_from ());
+		checked_set (_kdm_cc, config->kdm_cc ());
+		checked_set (_kdm_bcc, config->kdm_bcc ());
+		checked_set (_kdm_email, config->kdm_email ());
+	}
+	
 	void mail_server_changed ()
 	{
 		Config::instance()->set_mail_server (wx_to_std (_mail_server->GetValue ()));
@@ -750,13 +757,19 @@ private:
 	
 	void kdm_email_changed ()
 	{
+		if (_kdm_email->GetValue().IsEmpty ()) {
+			/* Sometimes we get sent an erroneous notification that the email
+			   is empty; I don't know why.
+			*/
+			return;
+		}
 		Config::instance()->set_kdm_email (wx_to_std (_kdm_email->GetValue ()));
 	}
 
 	void reset_kdm_email ()
 	{
 		Config::instance()->reset_kdm_email ();
-		_kdm_email->SetValue (wx_to_std (Config::instance()->kdm_email ()));
+		checked_set (_kdm_email, Config::instance()->kdm_email ());
 	}
 
 	wxTextCtrl* _mail_server;
@@ -770,19 +783,16 @@ private:
 	wxButton* _reset_kdm_email;
 };
 
-class AdvancedPage : public wxStockPreferencesPage, public Page
+class AdvancedPage : public StockPage
 {
 public:
-
 	AdvancedPage (wxSize panel_size, int border)
-		: wxStockPreferencesPage (Kind_Advanced)
-		, Page (panel_size, border)
+		: StockPage (Kind_Advanced, panel_size, border)
 	{}
-	
-	wxWindow* CreateWindow (wxWindow* parent)
-	{
-		wxPanel* panel = make_panel (parent);
 
+private:	
+	void setup (wxWindow *, wxPanel* panel)
+	{
 		wxFlexGridSizer* table = new wxFlexGridSizer (2, DCPOMATIC_SIZER_X_GAP, DCPOMATIC_SIZER_Y_GAP);
 		table->AddGrowableCol (1, 1);
 		panel->GetSizer()->Add (table, 1, wxALL | wxEXPAND, _border);
@@ -816,31 +826,35 @@ public:
 			t->Add (_log_warning, 1, wxEXPAND | wxALL);
 			_log_error = new wxCheckBox (panel, wxID_ANY, _("Errors"));
 			t->Add (_log_error, 1, wxEXPAND | wxALL);
+			_log_debug = new wxCheckBox (panel, wxID_ANY, _("Debugging"));
+			t->Add (_log_debug, 1, wxEXPAND | wxALL);
 			_log_timing = new wxCheckBox (panel, wxID_ANY, S_("Config|Timing"));
 			t->Add (_log_timing, 1, wxEXPAND | wxALL);
 			table->Add (t, 0, wxALL, 6);
 		}
 
-		Config* config = Config::instance ();
-		
-		_maximum_j2k_bandwidth->SetRange (1, 500);
-		_maximum_j2k_bandwidth->SetValue (config->maximum_j2k_bandwidth() / 1000000);
+		_maximum_j2k_bandwidth->SetRange (1, 1000);
 		_maximum_j2k_bandwidth->Bind (wxEVT_COMMAND_SPINCTRL_UPDATED, boost::bind (&AdvancedPage::maximum_j2k_bandwidth_changed, this));
-		_allow_any_dcp_frame_rate->SetValue (config->allow_any_dcp_frame_rate ());
 		_allow_any_dcp_frame_rate->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&AdvancedPage::allow_any_dcp_frame_rate_changed, this));
-		_log_general->SetValue (config->log_types() & Log::TYPE_GENERAL);
 		_log_general->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&AdvancedPage::log_changed, this));
-		_log_warning->SetValue (config->log_types() & Log::TYPE_WARNING);
 		_log_warning->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&AdvancedPage::log_changed, this));
-		_log_error->SetValue (config->log_types() & Log::TYPE_ERROR);
 		_log_error->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&AdvancedPage::log_changed, this));
-		_log_timing->SetValue (config->log_types() & Log::TYPE_TIMING);
+		_log_debug->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&AdvancedPage::log_changed, this));
 		_log_timing->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&AdvancedPage::log_changed, this));
-		
-		return panel;
 	}
 
-private:
+	void config_changed ()
+	{
+		Config* config = Config::instance ();
+		
+		checked_set (_maximum_j2k_bandwidth, config->maximum_j2k_bandwidth() / 1000000);
+		checked_set (_allow_any_dcp_frame_rate, config->allow_any_dcp_frame_rate ());
+		checked_set (_log_general, config->log_types() & Log::TYPE_GENERAL);
+		checked_set (_log_warning, config->log_types() & Log::TYPE_WARNING);
+		checked_set (_log_error, config->log_types() & Log::TYPE_ERROR);
+		checked_set (_log_debug, config->log_types() & Log::TYPE_DEBUG);
+		checked_set (_log_timing, config->log_types() & Log::TYPE_TIMING);
+	}
 
 	void maximum_j2k_bandwidth_changed ()
 	{
@@ -864,6 +878,9 @@ private:
 		if (_log_error->GetValue ())  {
 			types |= Log::TYPE_ERROR;
 		}
+		if (_log_debug->GetValue ())  {
+			types |= Log::TYPE_DEBUG;
+		}
 		if (_log_timing->GetValue ()) {
 			types |= Log::TYPE_TIMING;
 		}
@@ -875,6 +892,7 @@ private:
 	wxCheckBox* _log_general;
 	wxCheckBox* _log_warning;
 	wxCheckBox* _log_error;
+	wxCheckBox* _log_debug;
 	wxCheckBox* _log_timing;
 };
 	
@@ -898,7 +916,6 @@ create_config_dialog ()
 	e->AddPage (new GeneralPage (ps, border));
 	e->AddPage (new DefaultsPage (ps, border));
 	e->AddPage (new EncodingServersPage (ps, border));
-	e->AddPage (new ColourConversionsPage (ps, border));
 	e->AddPage (new TMSPage (ps, border));
 	e->AddPage (new KDMEmailPage (ps, border));
 	e->AddPage (new AdvancedPage (ps, border));

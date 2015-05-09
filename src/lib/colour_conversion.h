@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,11 +34,40 @@ namespace xmlpp {
 	class Node;
 }
 
+enum YUVToRGB {
+	YUV_TO_RGB_REC601,
+	YUV_TO_RGB_REC709,
+	YUV_TO_RGB_COUNT
+};
+
+class Chromaticity
+{
+public:
+	Chromaticity ()
+		: x (0)
+		, y (0)
+	{}
+
+	Chromaticity (double x_, double y_)
+		: x (x_)
+		, y (y_)
+	{}
+		
+	double x;
+	double y;
+
+	double z () const {
+		return 1 - x - y;
+	}
+};
+
 class ColourConversion
 {
 public:
 	ColourConversion ();
-	ColourConversion (double, bool, double const matrix[3][3], double);
+	ColourConversion (
+		double, bool, YUVToRGB yuv_to_rgb_, Chromaticity red_, Chromaticity green_, Chromaticity blue_, Chromaticity white_, double
+		);
 	ColourConversion (cxml::NodePtr);
 
 	virtual void as_xml (xmlpp::Node *) const;
@@ -46,26 +75,46 @@ public:
 
 	boost::optional<size_t> preset () const;
 
+	static boost::optional<ColourConversion> from_xml (cxml::NodePtr);
+
 	double input_gamma;
 	bool input_gamma_linearised;
-	boost::numeric::ublas::matrix<double> matrix;
+	YUVToRGB yuv_to_rgb;
+	Chromaticity red;
+	Chromaticity green;
+	Chromaticity blue;
+	Chromaticity white;
+	/** White point that we are adjusting to using a Bradford matrix */
+	boost::optional<Chromaticity> adjusted_white;
 	double output_gamma;
+
+	boost::numeric::ublas::matrix<double> rgb_to_xyz () const;
+	boost::numeric::ublas::matrix<double> bradford () const;
 };
 
 class PresetColourConversion
 {
 public:
 	PresetColourConversion ();
-	PresetColourConversion (std::string, double, bool, double const matrix[3][3], double);
-	PresetColourConversion (cxml::NodePtr);
-
-	void as_xml (xmlpp::Node *) const;
+	PresetColourConversion (
+		std::string, double, bool, YUVToRGB yuv_to_rgb_, Chromaticity red_, Chromaticity green_, Chromaticity blue_, Chromaticity white_, double
+		);
 
 	std::string name;
 	ColourConversion conversion;
+
+	static std::vector<PresetColourConversion> all () {
+		return _presets;
+	}
+
+	static void setup_colour_conversion_presets ();
+
+private:
+	static std::vector<PresetColourConversion> _presets;
 };
 
 bool operator== (ColourConversion const &, ColourConversion const &);
 bool operator!= (ColourConversion const &, ColourConversion const &);
+bool operator== (PresetColourConversion const &, PresetColourConversion const &);
 
 #endif

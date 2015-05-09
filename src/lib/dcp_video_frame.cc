@@ -47,8 +47,8 @@
 #include <libdcp/xyz_frame.h>
 #include <libdcp/rgb_xyz.h>
 #include <libdcp/colour_matrix.h>
-#include <libdcp/raw_convert.h>
 #include <libcxml/cxml.h>
+#include "raw_convert.h"
 #include "film.h"
 #include "dcp_video_frame.h"
 #include "config.h"
@@ -69,7 +69,6 @@ using std::string;
 using std::cout;
 using boost::shared_ptr;
 using libdcp::Size;
-using libdcp::raw_convert;
 
 #define DCI_COEFFICENT (48.0 / 52.37)
 
@@ -108,28 +107,47 @@ DCPVideoFrame::DCPVideoFrame (shared_ptr<const PlayerVideoFrame> frame, shared_p
 shared_ptr<EncodedData>
 DCPVideoFrame::encode_locally ()
 {
-	shared_ptr<libdcp::LUT> in_lut;
-	if (_frame->colour_conversion().input_gamma_linearised) {
-		in_lut = libdcp::SRGBLinearisedGammaLUT::cache.get (12, _frame->colour_conversion().input_gamma);
-	} else {
-		in_lut = libdcp::GammaLUT::cache.get (12, _frame->colour_conversion().input_gamma);
-	}
+	shared_ptr<libdcp::XYZFrame> xyz;
 
-	/* XXX: libdcp should probably use boost */
-	
-	double matrix[3][3];
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			matrix[i][j] = _frame->colour_conversion().matrix (i, j);
+	if (_frame->colour_conversion()) {
+		ColourConversion conversion = _frame->colour_conversion().get ();
+		shared_ptr<libdcp::LUT> in_lut;
+		if (conversion.input_gamma_linearised) {
+			in_lut = libdcp::SRGBLinearisedGammaLUT::cache.get (12, conversion.input_gamma);
+		} else {
+			in_lut = libdcp::GammaLUT::cache.get (12, conversion.input_gamma);
 		}
-	}
+		
+		/* XXX: libdcp should probably use boost */
 
-	shared_ptr<libdcp::XYZFrame> xyz = libdcp::rgb_to_xyz (
-		_frame->image(),
-		in_lut,
-		libdcp::GammaLUT::cache.get (16, 1 / _frame->colour_conversion().output_gamma),
-		matrix
-		);
+		boost::numeric::ublas::matrix<double> A = conversion.rgb_to_xyz ();
+		
+		double rgb_to_xyz[3][3];
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				rgb_to_xyz[i][j] = A (i, j);
+			}
+		}
+
+		boost::numeric::ublas::matrix<double> B = conversion.bradford ();
+
+		double bradford[3][3];
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				bradford[i][j] = B (i, j);
+			}
+		}
+		
+		xyz = libdcp::rgb_to_xyz (
+			_frame->image(AV_PIX_FMT_RGB48LE),
+			in_lut,
+			libdcp::GammaLUT::cache.get (16, 1 / conversion.output_gamma),
+			rgb_to_xyz,
+			bradford
+			);
+	} else {
+		xyz = libdcp::xyz_to_xyz (_frame->image (AV_PIX_FMT_RGB48LE));
+	}
 
 	/* Set the max image and component sizes based on frame_rate */
 	int max_cs_len = ((float) _j2k_bandwidth) / 8 / _frames_per_second;
@@ -371,12 +389,14 @@ EncodedData::write (shared_ptr<const Film> film, int frame, Eyes eyes) const
 }
 
 void
-EncodedData::write_info (shared_ptr<const Film> film, int frame, Eyes eyes, libdcp::FrameInfo fin) const
+EncodedData::write_info (shared_ptr<const Film> film, int frame, Eyes eyes, libdcp::FrameInfo info) const
 {
-	boost::filesystem::path const info = film->info_path (frame, eyes);
-	FILE* h = fopen_boost (info, "w");
-	fin.write (h);
-	fclose (h);
+	FILE* file = fopen_boost (film->info_file(), "ab");
+	if (!file) {
+		throw OpenFileError (film->info_file ());
+	}
+	write_frame_info (file, frame, eyes, info);
+	fclose (file);
 }
 
 /** Send this data to a socket.

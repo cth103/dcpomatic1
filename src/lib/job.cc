@@ -30,13 +30,19 @@
 #include "ui_signaller.h"
 #include "exceptions.h"
 #include "safe_stringstream.h"
+#include "film.h"
+#include "log.h"
 
 #include "i18n.h"
+
+#define LOG_ERROR_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_ERROR);
+#define LOG_GENERAL_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_GENERAL);
 
 using std::string;
 using std::list;
 using std::cout;
 using boost::shared_ptr;
+using boost::optional;
 
 Job::Job (shared_ptr<const Film> f)
 	: _film (f)
@@ -221,7 +227,7 @@ Job::elapsed_time () const
 void
 Job::set_progress (float p, bool force)
 {
-	if (!force && fabs (p - progress()) < 0.01) {
+	if (!force && fabs (p - progress().get_value_or(0)) < 0.01) {
 		/* Calm excessive progress reporting */
 		return;
 	}
@@ -230,8 +236,9 @@ Job::set_progress (float p, bool force)
 	_progress = p;
 	boost::this_thread::interruption_point ();
 
-	if (paused ()) {
-		dcpomatic_sleep (1);
+	boost::mutex::scoped_lock lm2 (_state_mutex);
+	while (_state == PAUSED) {
+		_pause_changed.wait (lm2);
 	}
 
 	if (ui_signaller) {
@@ -239,12 +246,12 @@ Job::set_progress (float p, bool force)
 	}
 }
 
-/** @return fractional progress of the current sub-job, or -1 if not known */
-float
+/** @return fractional progress of the current sub-job, if known */
+optional<float>
 Job::progress () const
 {
 	boost::mutex::scoped_lock lm (_progress_mutex);
-	return _progress.get_value_or (-1);
+	return _progress;
 }
 
 void
@@ -254,7 +261,8 @@ Job::sub (string n)
 		boost::mutex::scoped_lock lm (_progress_mutex);
 		_sub_name = n;
 	}
-	
+
+	LOG_GENERAL_NC ("Job: " + n);
 	set_progress (0, true);
 }
 
@@ -279,6 +287,9 @@ Job::error_summary () const
 void
 Job::set_error (string s, string d)
 {
+	LOG_ERROR_NC (s);
+	LOG_ERROR_NC (d);
+	
 	boost::mutex::scoped_lock lm (_state_mutex);
 	_error_summary = s;
 	_error_details = d;
@@ -290,26 +301,32 @@ Job::set_progress_unknown ()
 {
 	boost::mutex::scoped_lock lm (_progress_mutex);
 	_progress.reset ();
+	lm.unlock ();
+
+	if (ui_signaller) {
+		ui_signaller->emit (boost::bind (boost::ref (Progress)));
+	}	
 }
 
 /** @return Human-readable status of this job */
 string
 Job::status () const
 {
-	float const p = progress ();
+	optional<float> p = progress ();
 	int const t = elapsed_time ();
 	int const r = remaining_time ();
 
-	int pc = rint (p * 100);
-	if (pc == 100) {
-		/* 100% makes it sound like we've finished when we haven't */
-		pc = 99;
-	}
-
 	SafeStringStream s;
-	if (!finished ()) {
+	if (!finished () && p) {
+		int pc = rint (p.get() * 100);
+		if (pc == 100) {
+			/* 100% makes it sound like we've finished when we haven't */
+			pc = 99;
+		}
+		
 		s << pc << N_("%");
-		if (p >= 0 && t > 10 && r > 0) {
+		
+		if (t > 10 && r > 0) {
 			/// TRANSLATORS: remaining here follows an amount of time that is remaining
 			/// on an operation.
 			s << "; " << seconds_to_approximate_hms (r) << " " << _("remaining");
@@ -325,11 +342,38 @@ Job::status () const
 	return s.str ();
 }
 
+string
+Job::json_status () const
+{
+	boost::mutex::scoped_lock lm (_state_mutex);
+
+	switch (_state) {
+	case NEW:
+		return N_("new");
+	case RUNNING:
+		return N_("running");
+	case PAUSED:
+		return N_("paused");
+	case FINISHED_OK:
+		return N_("finished_ok");
+	case FINISHED_ERROR:
+		return N_("finished_error");
+	case FINISHED_CANCELLED:
+		return N_("finished_cancelled");
+	}
+
+	return "";
+}
+
 /** @return An estimate of the remaining time for this sub-job, in seconds */
 int
 Job::remaining_time () const
 {
-	return elapsed_time() / progress() - elapsed_time();
+	if (progress().get_value_or(0) == 0) {
+		return elapsed_time ();
+	}
+	
+	return elapsed_time() / progress().get() - elapsed_time();
 }
 
 void
@@ -348,6 +392,7 @@ Job::pause ()
 {
 	if (running ()) {
 		set_state (PAUSED);
+		_pause_changed.notify_all ();
 	}
 }
 
@@ -356,5 +401,6 @@ Job::resume ()
 {
 	if (paused ()) {
 		set_state (RUNNING);
+		_pause_changed.notify_all ();
 	}
 }

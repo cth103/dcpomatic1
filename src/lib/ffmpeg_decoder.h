@@ -82,6 +82,9 @@ private:
 	bool _decode_video;
 	bool _decode_audio;
 
+	/** Offset to add to FFmpeg frame timestamps to get our position (in seconds) */
 	double _pts_offset;
 	bool _just_sought;
+
+	bool _stop;
 };

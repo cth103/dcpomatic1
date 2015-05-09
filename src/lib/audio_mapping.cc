@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,20 +19,19 @@
 
 #include <libxml++/libxml++.h>
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "audio_mapping.h"
 #include "util.h"
 #include "md5_digester.h"
 
 using std::list;
 using std::cout;
-using std::make_pair;
-using std::pair;
 using std::string;
+using std::vector;
 using std::min;
+using std::abs;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
-using libdcp::raw_convert;
 
 AudioMapping::AudioMapping ()
 	: _content_channels (0)
@@ -144,3 +143,35 @@ AudioMapping::digest () const
 
 	return digester.get ();
 }
+
+list<libdcp::Channel>
+AudioMapping::mapped_dcp_channels () const
+{
+	static float const minus_96_db = 0.000015849;
+
+	list<libdcp::Channel> mapped;
+	
+	for (vector<vector<float> >::const_iterator i = _gain.begin(); i != _gain.end(); ++i) {
+		for (size_t j = 0; j < i->size(); ++j) {
+			if (abs ((*i)[j]) > minus_96_db) {
+				mapped.push_back ((libdcp::Channel) j);
+			}
+		}
+	}
+
+	mapped.sort ();
+	mapped.unique ();
+	
+	return mapped;
+}
+
+void
+AudioMapping::unmap_all ()
+{
+	for (vector<vector<float> >::iterator i = _gain.begin(); i != _gain.end(); ++i) {
+		for (vector<float>::iterator j = i->begin(); j != i->end(); ++j) {
+			*j = 0;
+		}
+	}
+}
+	

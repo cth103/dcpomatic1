@@ -29,9 +29,7 @@ using boost::lexical_cast;
 Timecode::Timecode (wxWindow* parent)
 	: wxPanel (parent)
 {
-	wxClientDC dc (parent);
-	wxSize size = dc.GetTextExtent (wxT ("9999"));
-	size.SetHeight (-1);
+	wxSize const s = size (parent);
 
 	wxTextValidator validator (wxFILTER_INCLUDE_CHAR_LIST);
 	wxArrayString list;
@@ -47,19 +45,19 @@ Timecode::Timecode (wxWindow* parent)
 	
 	_editable = new wxPanel (this);
 	wxSizer* editable_sizer = new wxBoxSizer (wxHORIZONTAL);
-	_hours = new wxTextCtrl (_editable, wxID_ANY, wxT(""), wxDefaultPosition, size, 0, validator);
+	_hours = new wxTextCtrl (_editable, wxID_ANY, wxT(""), wxDefaultPosition, s, 0, validator);
 	_hours->SetMaxLength (2);
 	editable_sizer->Add (_hours);
 	add_label_to_sizer (editable_sizer, _editable, wxT (":"), false);
-	_minutes = new wxTextCtrl (_editable, wxID_ANY, wxT(""), wxDefaultPosition, size, 0, validator);
+	_minutes = new wxTextCtrl (_editable, wxID_ANY, wxT(""), wxDefaultPosition, s, 0, validator);
 	_minutes->SetMaxLength (2);
 	editable_sizer->Add (_minutes);
 	add_label_to_sizer (editable_sizer, _editable, wxT (":"), false);
-	_seconds = new wxTextCtrl (_editable, wxID_ANY, wxT(""), wxDefaultPosition, size, 0, validator);
+	_seconds = new wxTextCtrl (_editable, wxID_ANY, wxT(""), wxDefaultPosition, s, 0, validator);
 	_seconds->SetMaxLength (2);
 	editable_sizer->Add (_seconds);
 	add_label_to_sizer (editable_sizer, _editable, wxT (":"), false);
-	_frames = new wxTextCtrl (_editable, wxID_ANY, wxT(""), wxDefaultPosition, size, 0, validator);
+	_frames = new wxTextCtrl (_editable, wxID_ANY, wxT(""), wxDefaultPosition, s, 0, validator);
 	_frames->SetMaxLength (2);
 	editable_sizer->Add (_frames);
 	_set_button = new wxButton (_editable, wxID_ANY, _("Set"));
@@ -83,7 +81,7 @@ Timecode::Timecode (wxWindow* parent)
 }
 
 void
-Timecode::set (Time t, int fps)
+Timecode::set (Time t, float fps)
 {
 	/* Do this calculation with frames so that we can round
 	   to a frame boundary at the start rather than the end.
@@ -102,7 +100,7 @@ Timecode::set (Time t, int fps)
 	checked_set (_seconds, lexical_cast<string> (s));
 	checked_set (_frames, lexical_cast<string> (f));
 
-	_fixed->SetLabel (wxString::Format ("%02d:%02d:%02d.%02" wxLongLongFmtSpec "d", h, m, s, f));
+	checked_set (_fixed, wxString::Format ("%02d:%02d:%02d.%02" wxLongLongFmtSpec "d", h, m, s, f));
 }
 
 Time
@@ -124,10 +122,10 @@ Timecode::get (int fps) const
 void
 Timecode::clear ()
 {
-	checked_set (_hours, "");
-	checked_set (_minutes, "");
-	checked_set (_seconds, "");
-	checked_set (_frames, "");
+	checked_set (_hours, wxT (""));
+	checked_set (_minutes, wxT (""));
+	checked_set (_seconds, wxT (""));
+	checked_set (_frames, wxT (""));
 	_fixed->SetLabel ("");
 }
 
@@ -150,4 +148,13 @@ Timecode::set_editable (bool e)
 	_editable->Show (e);
 	_fixed->Show (!e);
 	_sizer->Layout ();
+}
+
+wxSize
+Timecode::size (wxWindow* parent)
+{
+	wxClientDC dc (parent);
+	wxSize size = dc.GetTextExtent (wxT ("9999"));
+	size.SetHeight (-1);
+	return size;
 }

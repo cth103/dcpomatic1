@@ -1,3 +1,728 @@
+2015-05-07  carl  <cth@carlh.net>
+
+	* Tidy audio analysis dialogue a bit and add a note of
+	the overall peak (#557).
+
+	* Fix sometimes-missing channel labels on OS X audio analysis.
+
+2015-05-06  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.78.9 released.
+
+2015-05-06  Carl Hetherington  <cth@carlh.net>
+
+	* Efficiency fix for cases where there is a lot of processing
+	power.
+
+2015-05-05  c.hetherington  <cth@carlh.net>
+
+	* Add UTF-8 content type to KDM emails to try to fix #549.
+
+	* Only enable OK button in certificate download dialogues
+	when a download has succeeded (#404).
+
+2015-05-04  Carl Hetherington  <cth@carlh.net>
+
+	* Remove user configuration of colour conversion presets.
+
+	* Version 1.78.8 released.
+
+2015-05-04  Carl Hetherington  <cth@carlh.net>
+
+	* Updated fr_FR translation from Thierry Journet.
+
+2015-05-03  Carl Hetherington  <cth@carlh.net>
+
+	* Add a simple content properties dialogue (#554).
+
+2015-05-02  Carl Hetherington  <cth@carlh.net>
+
+	* Fix ISDCF name generation when channels are mapped but
+	not included in the DCP because its channel count is
+	too low.
+
+2015-05-01  carl  <cth@carlh.net>
+
+	* Don't load image files whose names start with ._ as they
+	are probably OS X resource files.
+
+2015-04-24  Carl Hetherington  <cth@carlh.net>
+
+	* Fix crash on pressing Ctrl+A in some cases (#525).
+
+	* Make disk space check take account of whether hard links
+	are supported by the target filesystem (#511).
+
+	* Allow configuration of the encryption key (#534).
+
+	* Version 1.78.7 released.
+
+2015-04-24  carl  <cth@carlh.net>
+
+	* Various fixes to bad timeline drag behaviour when
+	snapping.
+
+	* Fix some flickering in the film editor when dragging
+	things in the timeline on OS X.
+
+2015-04-22  c.hetherington  <cth@carlh.net>
+
+	* Add tentative P3 colour conversion preset.
+
+2015-04-22  Carl Hetherington  <cth@carlh.net>
+
+	* Use ~/Library/Preferences to store preferences on OS X,
+	and don't give a fatal error if saving configuration fails
+	(#509).
+
+2015-04-20  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.78.6 released.
+
+2015-04-20  Carl Hetherington  <cth@carlh.net>
+
+	* Use a single binary file for keeping frame information
+	rather than a file per frame (#444).
+
+	* Remove the encoded frames count in properties, which
+	I think is of dubious value.
+
+2015-04-18  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.78.5 released.
+
+2015-04-18  Carl Hetherington  <cth@carlh.net>
+
+	* Attempt to fix confusion with the JPEG2000 bandwidth
+	control when a user enters a value directly rather than
+	using the spin arrows.
+
+2015-04-17  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.78.4 released.
+
+2015-04-16  Carl Hetherington  <cth@carlh.net>
+
+	* Fix potential OS X crashes due to another incarnation
+	of the bizarre multi-thread stringstream bug.
+
+2015-04-15  c.hetherington  <cth@carlh.net>
+
+	* Sort filenames when they are imported with "add files" or
+	drag-and-drop.
+
+	* Fix incorrect import of files with drag-and-drop.
+
+2015-04-14  Carl Hetherington  <cth@carlh.net>
+
+	* Allow adjustment of white point using a Bradford matrix.
+
+2015-04-13  Carl Hetherington  <cth@carlh.net>
+
+	* Define colour conversions using red/green/blue chromaticities
+	and white point rather than a matrix.
+
+2015-04-13  c.hetherington  <cth@carlh.net>
+
+	* Add menu option to reset default preferences.
+
+2015-04-13  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.78.3 released.
+
+2015-04-13  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.78.2 released.
+
+2015-04-13  Carl Hetherington  <cth@carlh.net>
+
+	* Make the matrix used to convert from YUV to RGB configurable, so
+	that the correct one for Rec 601 or 709 can be used.  Add a Rec
+	601 colour conversion preset and change the Rec 709 preset to use
+	the right matrix to convert from YUV to RGB.
+
+	* Remove small (and incorrect) differences between RGB -> XYZ
+	matrices for Rec 709 and sRGB.
+
+2015-04-12  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.78.1 released.
+
+2015-04-12  Carl Hetherington  <cth@carlh.net>
+
+	* Possibly fix problems with multiple moving-image
+	content in the same film (#531).
+
+2015-03-26  Carl Hetherington  <cth@carlh.net>
+
+	* Updated ru_RU translation from Igor Voytovich.
+
+2015-03-22  Carl Hetherington  <cth@carlh.net>
+
+	* Updated fr_FR translation from Thierry Journet.
+
+2015-03-20  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.78.0 released.
+
+2015-03-20  c.hetherington  <cth@carlh.net>
+
+	* Remove 1.37 ratio and set Academy to 1.375.
+
+	* Update to de_DE translation from Carsten Kurz.
+
+2015-03-18  Carl Hetherington  <cth@carlh.net>
+
+	* Update to fr_FR translation from Thierry Journet.
+
+2015-03-17  Carl Hetherington  <cth@carlh.net>
+
+	* Update to es_ES translation from Manuel AC.
+
+2015-03-16  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.16 released.
+
+2015-03-16  Carl Hetherington  <cth@carlh.net>
+
+	* Update to it_IT translation from Davide Sanvito.
+
+2015-03-07  Carl Hetherington  <cth@carlh.net>
+
+	* Ellipsize filters string if it is too long (#475).
+
+	* Version 1.77.15 released.
+
+2015-03-07  Carl Hetherington  <cth@carlh.net>
+
+	* Use the number of mapped audio channels
+	for the DCP name, not the number of channels
+	written to the DCP (#479).
+
+2015-03-06  Carl Hetherington  <cth@carlh.net>
+
+	* Only allow even DCP channel counts of
+	2 or more.
+
+2015-03-04  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.14 released.
+
+2015-03-04  Carl Hetherington  <cth@carlh.net>
+
+	* Speculative fix to certificate not being
+	recognised by EasyDCP Player.
+
+	* Version 1.77.13 released.
+
+2015-03-04  Carl Hetherington  <cth@carlh.net>
+
+	* Fix incorrect timing of sndfile content when
+	video is being sped up or slowed down.
+
+2015-02-27  c.hetherington  <cth@carlh.net>
+
+	* Update full/play length in the timing panel when
+	the DCP frame rate is changed.
+
+2015-02-25  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.12 released.
+
+2015-02-25  c.hetherington  <cth@carlh.net>
+
+	* Fix one cause of hangs right at the end of an encode
+	run (#508).
+
+2015-02-25  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.11 released.
+
+2015-02-24  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.10 released.
+
+2015-02-24  Carl Hetherington  <cth@carlh.net>
+
+	* Fix corrupted frames and crashes when duplicating
+	frames from sources into the DCP (#507).
+
+2015-02-22  Carl Hetherington  <cth@carlh.net>
+
+	* Add a note to the timing panel to try to stop people
+	changing the video frame rate in the wrong circumstances.
+
+2015-02-16  Carl Hetherington  <cth@carlh.net>
+
+	* Allow "deletion" of the audio part of a FFmpeg
+	file from the timeline; delete unmaps the audio (#316).
+
+2015-02-16  c.hetherington  <cth@carlh.net>
+
+	* Resurrect JSON server code.
+
+2015-02-14  Carl Hetherington  <cth@carlh.net>
+
+	* Remove ^H shortcut to Hints dialog as it clashes
+	with OS X's hide shortcut.
+
+	* Possibly fix a variety of odd crashes caused by
+	dangling connections to signals.
+
+	* Version 1.77.9 released.
+
+2015-02-13  Carl Hetherington  <cth@carlh.net>
+
+	* Speculative fix for crash on finding a server which
+	may be caused by a failure to disconnect from
+	ServerFinder when an Encoder is destroyed.
+
+2015-02-11  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.8 released.
+
+2015-02-04  Carl Hetherington  <cth@carlh.net>
+
+	* Sort image sequences using the numeric part of the
+	leaf name, rather than alphanumerically (#469).
+
+	* Version 1.77.7 released.
+
+2015-02-04  Carl Hetherington  <cth@carlh.net>
+
+	* Fix some bad string encodings and another
+	no-scale crash (when content is larger than the
+	container) (possibly #482).
+
+2015-02-03  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.6 released.
+
+2015-02-03  Carl Hetherington  <cth@carlh.net>
+
+	* Fix crash on cropping a 1920x1080 content top
+	and bottom and then fitting it into a Scope
+	container.
+
+2015-01-25  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.5 released.
+
+2015-01-25  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.4 released.
+
+2015-01-25  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.3 released.
+
+2015-01-25  Carl Hetherington  <cth@carlh.net>
+
+	* Back-port the in-tree libquickmail from 2.x with
+	its fix to prevent the use of VRFY (#477).
+
+2015-01-24  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.2 released.
+
+2015-01-24  Carl Hetherington  <cth@carlh.net>
+
+	* New ru_RU translation from Igor Voytovich.
+
+2015-01-23  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.1 released.
+
+2015-01-23  Carl Hetherington  <cth@carlh.net>
+
+	* Only take the MD5 of the first and last megabyte
+	of content files, rather than the whole thing, to speed
+	up content examination (#472).
+
+	* Remove option to disable digest for image files.
+
+2015-01-20  Carl Hetherington  <cth@carlh.net>
+
+	* Fix update checker.
+
+	* Scan a whole FFmpeg file if no duration is given
+	in its header.
+
+2015-01-20  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.77.0 released.
+
+2015-01-16  c.hetherington  <cth@carlh.net>
+
+	* Update fr_FR translation from Thierry Journet.
+
+2015-01-12  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.42 released.
+
+2015-01-12  c.hetherington  <cth@carlh.net>
+
+	* Trim whitespace from FTP replies
+	to fix problems with certificate download (#442).
+
+2015-01-11  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.41 released.
+
+2015-01-11  Carl Hetherington  <cth@carlh.net>
+
+	* Fix for subtitle timing with trim.
+
+2015-01-09  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.40 released.
+
+2015-01-09  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.39 released.
+
+2015-01-09  Carl Hetherington  <cth@carlh.net>
+
+	* Label h:m:s:f in timing panel.
+
+	* Version 1.76.38 released.
+
+2015-01-09  c.hetherington  <cth@carlh.net>
+
+	* Potentially fix another crash at 99% due
+	to an over-assertive assert in the audio
+	deinterleaving code.
+
+2015-01-08  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.37 released.
+
+2015-01-08  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.36 released.
+
+2015-01-08  c.hetherington  <cth@carlh.net>
+
+	* Updated de_DE translation from Carsten Kurz.
+
+2015-01-07  c.hetherington  <cth@carlh.net>
+
+	* Updated es_ES translation from Manual AC.
+
+2015-01-07  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.35 released.
+
+2015-01-07  c.hetherington  <cth@carlh.net>
+
+	* Display sample aspect ratio in video tab if the
+	source file declares it.
+
+	* Add a little more debugging for 99% hangs.
+
+2015-01-06  c.hetherington  <cth@carlh.net>
+
+	* Fix incorrect lengths of sound files when using
+	very low frame-rate video (#440).
+
+2015-01-04  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.34 released.
+
+2015-01-04  Carl Hetherington  <cth@carlh.net>
+
+	* Fix for non-playing of FFmpeg-decoded files
+	that return AVERROR_INVALIDDATA.
+
+2014-12-26  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.33 released.
+
+2014-12-24  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.32 released.
+
+2014-12-17  Carl Hetherington  <cth@carlh.net>
+
+	* Fix "Show DCP" option on OS X and Windows.
+
+2014-12-15  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.31 released.
+
+2014-12-14  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.30 released.
+
+2014-12-14  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.29 released.
+
+2014-12-13  Carl Hetherington  <cth@carlh.net>
+
+	* Add "copy to name" button to allow editing
+	of ISDCF names after creation rather than the
+	`replace-on-disable' hack.
+
+2014-12-12  Carl Hetherington  <cth@carlh.net>
+
+	* Fix a few missing checks for Cancel in dialogs (#449).
+
+	* Version 1.76.28 released.
+
+2014-12-12  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.27 released.
+
+2014-12-11  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.26 released.
+
+2014-12-09  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.25 released.
+
+2014-12-09  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.24 released.
+
+2014-12-09  Carl Hetherington  <cth@carlh.net>
+
+	* Another attempt to fix slipping sync on DTS-encoded
+	soundtracks (#352).
+
+2014-12-06  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.23 released.
+
+2014-12-05  c.hetherington  <cth@carlh.net>
+
+	* Fix broken still-image import.
+
+2014-12-04  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.22 released.
+
+2014-12-04  Carl Hetherington  <cth@carlh.net>
+
+	* Give a nicer error when writing config fails.
+
+2014-12-04  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.21 released.
+
+2014-12-04  c.hetherington  <cth@carlh.net>
+
+	* Fix crash on dragging things in the timeline the second
+	time it has been opened.
+
+2014-12-03  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.20 released.
+
+2014-12-03  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.19 released.
+
+2014-12-03  c.hetherington  <cth@carlh.net>
+
+	* Increase maximum JPEG2000 bandwidth to 1000 Mbit/s
+	and allow the default control in config to go that
+	high when allowed.
+
+2014-12-03  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.18 released.
+
+2014-12-03  Carl Hetherington  <cth@carlh.net>
+
+	* Updated fr_FR translation from Lilian Lefranc.
+
+	* Version 1.76.17 released.
+
+2014-12-02  Carl Hetherington  <cth@carlh.net>
+
+	* Open a dialog box on adding an image sequence
+	so the user can specify the frame rate (#423) and
+	request no calculation of digests (#446).
+
+2014-11-25  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.16 released.
+
+2014-11-25  Carl Hetherington  <cth@carlh.net>
+
+	* Speculative fix for hangs at the end of
+	encodes in some cases (with 3D content).
+
+2014-11-24  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.15 released.
+
+2014-11-24  c.hetherington  <cth@carlh.net>
+
+	* Bump ffmpeg.
+
+2014-11-20  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.14 released.
+
+2014-11-11  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.13 released.
+
+2014-11-09  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.12 released.
+
+2014-11-09  Carl Hetherington  <cth@carlh.net>
+
+	* Remove code which tried to load old DVD-o-matic
+	configuration files if they were present.  It is
+	not well tested and is unlikely to be of much use
+	after all this time anyway.
+
+2014-11-07  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.11 released.
+
+2014-11-07  Carl Hetherington  <cth@carlh.net>
+
+	* Speculative fix for hidden content appearing
+	(from timestamps before 0) (#418).
+
+	* Guess initial scale from the size of video
+	content images, taking pixel aspect ratio into
+	account where possible.
+
+2014-11-05  c.hetherington  <cth@carlh.net>
+
+	* Add a couple of new hints.
+
+2014-11-04  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.10 released.
+
+2014-11-04  c.hetherington  <cth@carlh.net>
+
+	* Updated de_DE translation from Carsten Kurz.
+
+2014-11-03  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.9 released.
+
+2014-10-31  Carl Hetherington  <cth@carlh.net>
+
+	* Fix for hangs at 99% when encoding
+	trimmed content.
+
+2014-11-02  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.8 released.
+
+2014-11-02  Carl Hetherington  <cth@carlh.net>
+
+	* Be more tolerant of some FFmpeg audio decoding errors;
+	should fix #352.
+
+2014-10-26  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.7 released.
+
+2014-10-24  Carl Hetherington  <cth@carlh.net>
+
+	* Add a pause button for jobs.
+
+	* Experimental support for bypassing colourspace conversion (#266).
+
+	* Version 1.76.6 released.
+
+2014-10-23  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.5 released.
+
+2014-10-23  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.4 released.
+
+2014-10-23  Carl Hetherington  <cth@carlh.net>
+
+	* Rename 'Add folder' to 'Add image sequence'
+	and add some tooltips.
+
+	* Move the "keep video in sequence" button into
+	the timeline dialogue.
+
+	* Fix mix-placement of content when using the "Down"
+	button to move it.
+
+2014-10-22  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.3 released.
+
+2014-10-22  Carl Hetherington  <cth@carlh.net>
+
+	* Fix bug where some files from iTunes would
+	be read as being at 90,000fps.
+
+2014-10-20  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.76.2 released.
+
+2014-10-19  Carl Hetherington  <cth@carlh.net>
+
+	* Add simple note of what audio resampling
+	will be done to the audio panel.
+
+2014-10-16  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.75.2 released.
+
+2014-10-16  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.75.1 released.
+
+2014-10-16  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.75.0 released.
+
+2014-10-14  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.74.3 released.
+
+2014-10-08  c.hetherington  <cth@carlh.net>
+
+	* Make server finding more reliable when
+	there are more than a few servers.
+
+2014-10-08  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.74.2 released.
+
+2014-10-08  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.74.1 released.
+
+2014-10-05  Carl Hetherington  <cth@carlh.net>
+
+	* Bump ffmpeg version.
+
+2014-10-06  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.74.0 released.
+
+2014-10-06  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.73.9 released.
+
+2014-09-28  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.73.8 released.
+
+2014-09-28  Carl Hetherington  <cth@carlh.net>
+
+	* Add a few key shortcuts.
+
 2014-09-16  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.73.7 released.

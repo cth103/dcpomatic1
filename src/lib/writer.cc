@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -43,8 +43,13 @@
 #include "i18n.h"
 
 #define LOG_GENERAL(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_GENERAL);
+#define LOG_GENERAL_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_GENERAL);
+#define LOG_DEBUG(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_DEBUG);
+#define LOG_DEBUG_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_DEBUG);
 #define LOG_TIMING(...) _film->log()->microsecond_log (String::compose (__VA_ARGS__), Log::TYPE_TIMING);
+#define LOG_WARNING(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_WARNING);
 #define LOG_WARNING_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_WARNING);
+#define LOG_ERROR(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_ERROR);
 
 /* OS X strikes again */
 #undef set_key
@@ -77,10 +82,7 @@ Writer::Writer (shared_ptr<const Film> f, weak_ptr<Job> j)
 	boost::filesystem::remove_all (_film->dir (_film->dcp_name ()));
 
 	shared_ptr<Job> job = _job.lock ();
-	assert (job);
-
-	job->sub (_("Checking existing image data"));
-	check_existing_picture_mxf ();
+	DCPOMATIC_ASSERT (job);
 
 	/* Create our picture asset in a subdirectory, named according to those
 	   film's parameters which affect the video output.  We will hard-link
@@ -92,6 +94,9 @@ Writer::Writer (shared_ptr<const Film> f, weak_ptr<Job> j)
 	} else {
 		_picture_asset.reset (new libdcp::MonoPictureAsset (_film->internal_video_mxf_dir (), _film->internal_video_mxf_filename ()));
 	}
+
+	job->sub (_("Checking existing image data"));
+	check_existing_picture_mxf ();
 
 	_picture_asset->set_edit_rate (_film->video_frame_rate ());
 	_picture_asset->set_size (_film->frame_size ());
@@ -173,9 +178,12 @@ Writer::fake_write (int frame, Eyes eyes)
 		_full_condition.wait (lock);
 	}
 	
-	FILE* ifi = fopen_boost (_film->info_path (frame, eyes), "r");
-	libdcp::FrameInfo info (ifi);
-	fclose (ifi);
+	FILE* file = fopen_boost (_film->info_file (), "rb");
+	if (!file) {
+		throw ReadFileError (_film->info_file ());
+	}
+	libdcp::FrameInfo info = read_frame_info (file, frame, eyes);
+	fclose (file);
 	
 	QueueItem qi;
 	qi.type = QueueItem::FAKE;
@@ -242,6 +250,9 @@ try
 	{
 		boost::mutex::scoped_lock lock (_mutex);
 
+		/* This is for debugging only */
+		bool done_something = false;
+
 		while (true) {
 			
 			if (_finish || _queued_full_in_memory > _maximum_frames_in_memory || have_sequenced_image_at_queue_head ()) {
@@ -255,12 +266,27 @@ try
 			LOG_TIMING (N_("writer wakes with a queue of %1"), _queue.size());
 		}
 
-		if (_finish && _queue.empty()) {
+		/* We stop here if we have been asked to finish, and if either the queue
+		   is empty or we do not have a sequenced image at its head (if this is the
+		   case we will never terminate as no new frames will be sent once
+		   _finish is true).
+		*/
+		if (_finish && (!have_sequenced_image_at_queue_head() || _queue.empty())) {
+			done_something = true;
+			/* (Hopefully temporarily) log anything that was not written */
+			if (!_queue.empty() && !have_sequenced_image_at_queue_head()) {
+				LOG_WARNING (N_("Finishing writer with a left-over queue of %1:"), _queue.size());
+				for (list<QueueItem>::const_iterator i = _queue.begin(); i != _queue.end(); ++i) {
+					LOG_WARNING (N_("- type %1, size %2, frame %3, eyes %4"), i->type, i->size, i->frame, i->eyes);
+				}
+				LOG_WARNING (N_("Last written frame %1, last written eyes %2"), _last_written_frame, _last_written_eyes);
+			}
 			return;
 		}
 
 		/* Write any frames that we can write; i.e. those that are in sequence. */
 		while (have_sequenced_image_at_queue_head ()) {
+			done_something = true;
 			QueueItem qi = _queue.front ();
 			_queue.pop_front ();
 			if (qi.type == QueueItem::FULL && qi.encoded) {
@@ -271,7 +297,7 @@ try
 			switch (qi.type) {
 			case QueueItem::FULL:
 			{
-				LOG_GENERAL (N_("Writer FULL-writes %1 to MXF"), qi.frame);
+				LOG_DEBUG (N_("Writer FULL-writes %1 to MXF"), qi.frame);
 				if (!qi.encoded) {
 					qi.encoded.reset (new EncodedData (_film->j2c_path (qi.frame, qi.eyes, false)));
 				}
@@ -283,14 +309,14 @@ try
 				break;
 			}
 			case QueueItem::FAKE:
-				LOG_GENERAL (N_("Writer FAKE-writes %1 to MXF"), qi.frame);
+				LOG_DEBUG (N_("Writer FAKE-writes %1 to MXF"), qi.frame);
 				_picture_asset_writer->fake_write (qi.size);
 				_last_written[qi.eyes].reset ();
 				++_fake_written;
 				break;
 			case QueueItem::REPEAT:
 			{
-				LOG_GENERAL (N_("Writer REPEAT-writes %1 to MXF"), qi.frame);
+				LOG_DEBUG (N_("Writer REPEAT-writes %1 to MXF"), qi.frame);
 				libdcp::FrameInfo fin = _picture_asset_writer->write (
 					_last_written[qi.eyes]->data(),
 					_last_written[qi.eyes]->size()
@@ -308,7 +334,7 @@ try
 			
 			if (_film->length()) {
 				shared_ptr<Job> job = _job.lock ();
-				assert (job);
+				DCPOMATIC_ASSERT (job);
 				int total = _film->time_to_video_frames (_film->length ());
 				if (_film->three_d ()) {
 					/* _full_written and so on are incremented for each eye, so we need to double the total
@@ -321,6 +347,7 @@ try
 		}
 
 		while (_queued_full_in_memory > _maximum_frames_in_memory) {
+			done_something = true;
 			/* Too many frames in memory which can't yet be written to the stream.
 			   Write some FULL frames to disk.
 			*/
@@ -332,23 +359,36 @@ try
 				++i;
 			}
 
-			assert (i != _queue.rend());
+			DCPOMATIC_ASSERT (i != _queue.rend());
+
+			/* We will definitely write this data to disk, so clear it before we release the lock */
+			shared_ptr<const EncodedData> to_write = i->encoded;
+			i->encoded.reset ();
+
+			/* Take a copy of the frame number and eyes so that we can unlock while we write */
 			QueueItem qi = *i;
 
 			++_pushed_to_disk;
-			
 			lock.unlock ();
 
-			LOG_GENERAL (
+			LOG_DEBUG (
 				"Writer full (awaiting %1 [last eye was %2]); pushes %3 to disk",
 				_last_written_frame + 1,
 				_last_written_eyes, qi.frame
 				);
 			
-			qi.encoded->write (_film, qi.frame, qi.eyes);
+			to_write->write (_film, qi.frame, qi.eyes);
+
 			lock.lock ();
-			qi.encoded.reset ();
 			--_queued_full_in_memory;
+		}
+
+		if (!done_something) {
+			LOG_DEBUG_NC ("Writer loop ran without doing anything");
+			LOG_DEBUG ("_queued_full_in_memory=%1", _queued_full_in_memory);
+			LOG_DEBUG ("_queue_size=%1", _queue.size ());
+			LOG_DEBUG ("_finish=%1", _finish);
+			LOG_DEBUG ("_last_written_frame=%1", _last_written_frame);
 		}
 
 		/* The queue has probably just gone down a bit; notify anything wait()ing on _full_condition */
@@ -388,9 +428,13 @@ Writer::finish ()
 	if (!_thread) {
 		return;
 	}
+
+	LOG_DEBUG_NC (N_("Terminating writer thread"));
 	
 	terminate_thread (true);
 
+	LOG_DEBUG_NC (N_("Finalizing writers"));
+	
 	_picture_asset_writer->finalize ();
 	if (_sound_asset_writer) {
 		_sound_asset_writer->finalize ();
@@ -401,10 +445,10 @@ Writer::finish ()
 	_picture_asset->set_duration (frames);
 
 	/* Hard-link the video MXF into the DCP */
-	boost::filesystem::path video_from;
-	video_from /= _film->internal_video_mxf_dir();
-	video_from /= _film->internal_video_mxf_filename();
+	LOG_GENERAL_NC (N_("Hard-linking video MXF into DCP"));
 	
+	boost::filesystem::path video_from = _picture_asset->path ();
+
 	boost::filesystem::path video_to;
 	video_to /= _film->dir (_film->dcp_name());
 	video_to /= _film->video_mxf_filename ();
@@ -412,9 +456,12 @@ Writer::finish ()
 	boost::system::error_code ec;
 	boost::filesystem::create_hard_link (video_from, video_to, ec);
 	if (ec) {
-		/* hard link failed; copy instead */
-		boost::filesystem::copy_file (video_from, video_to);
-		LOG_WARNING_NC ("Hard-link failed; fell back to copying");
+		LOG_WARNING ("Hard-link failed; copying instead (%1)", ec.message ());
+		boost::filesystem::copy_file (video_from, video_to, ec);
+		if (ec) {
+			LOG_ERROR ("Failed to copy video file from %1 to %2 (%3)", video_from.string(), video_to.string(), ec.message ());
+			throw FileError (ec.message(), video_from);
+		}
 	}
 
 	/* And update the asset */
@@ -423,6 +470,7 @@ Writer::finish ()
 	_picture_asset->set_file_name (_film->video_mxf_filename ());
 
 	/* Move the audio MXF into the DCP */
+	LOG_GENERAL_NC (N_("Moving audio MXF into DCP"));
 
 	if (_sound_asset) {
 		boost::filesystem::path audio_to;
@@ -462,7 +510,7 @@ Writer::finish ()
 			       ));
 
 	shared_ptr<Job> job = _job.lock ();
-	assert (job);
+	DCPOMATIC_ASSERT (job);
 
 	job->sub (_("Computing image digest"));
 	_picture_asset->compute_digest (boost::bind (&Job::set_progress, job.get(), _1, false));
@@ -515,19 +563,14 @@ bool
 Writer::check_existing_picture_mxf_frame (FILE* mxf, int f, Eyes eyes)
 {
 	/* Read the frame info as written */
-	FILE* ifi = fopen_boost (_film->info_path (f, eyes), "r");
-	if (!ifi) {
+	FILE* file = fopen_boost (_film->info_file (), "rb");
+	if (!file) {
 		LOG_GENERAL ("Existing frame %1 has no info file", f);
 		return false;
 	}
-	
-	libdcp::FrameInfo info (ifi);
-	fclose (ifi);
-	if (info.size == 0) {
-		LOG_GENERAL ("Existing frame %1 has no info file", f);
-		return false;
-	}
-	
+	libdcp::FrameInfo info = read_frame_info (file, f, eyes);
+	fclose (file);
+
 	/* Read the data from the MXF and hash it */
 	dcpomatic_fseek (mxf, info.offset, SEEK_SET);
 	EncodedData data (info.size);
@@ -551,28 +594,18 @@ void
 Writer::check_existing_picture_mxf ()
 {
 	/* Try to open the existing MXF */
-	boost::filesystem::path p;
-	p /= _film->internal_video_mxf_dir ();
-	p /= _film->internal_video_mxf_filename ();
-	FILE* mxf = fopen_boost (p, "rb");
+	FILE* mxf = fopen_boost (_picture_asset->path(), "rb");
 	if (!mxf) {
-		LOG_GENERAL ("Could not open existing MXF at %1 (errno=%2)", p.string(), errno);
+		LOG_GENERAL ("Could not open existing MXF at %1 (errno=%2)", _picture_asset->path().string(), errno);
 		return;
-	}
-
-	int N = 0;
-	for (boost::filesystem::directory_iterator i (_film->info_dir ()); i != boost::filesystem::directory_iterator (); ++i) {
-		++N;
 	}
 
 	while (true) {
 
 		shared_ptr<Job> job = _job.lock ();
-		assert (job);
+		DCPOMATIC_ASSERT (job);
 
-		if (N > 0) {
-			job->set_progress (float (_first_nonexistant_frame) / N);
-		}
+		job->set_progress_unknown ();
 
 		if (_film->three_d ()) {
 			if (!check_existing_picture_mxf_frame (mxf, _first_nonexistant_frame, EYES_LEFT)) {

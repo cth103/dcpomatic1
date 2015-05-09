@@ -1,0 +1,2 @@
+#!/bin/bash
+git diff $1 -- src/wx/about_dialog.cc | grep ^\+.*supported_by | awk -F\" '{ print $2; }'

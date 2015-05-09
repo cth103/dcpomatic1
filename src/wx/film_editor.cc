@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <list>
 #include <wx/wx.h>
 #include <wx/notebook.h>
 #include <wx/listctrl.h>
@@ -55,6 +56,10 @@
 #include "subtitle_panel.h"
 #include "audio_panel.h"
 #include "video_panel.h"
+#include "image_sequence_dialog.h"
+#include "key_dialog.h"
+
+#include "lib/image_filename_sorter.cc"
 
 using std::string;
 using std::cout;
@@ -122,9 +127,16 @@ FilmEditor::make_dcp_panel ()
 
 	_use_isdcf_name = new wxCheckBox (_dcp_panel, wxID_ANY, _("Use ISDCF name"));
 	grid->Add (_use_isdcf_name, wxGBPosition (r, 0), wxDefaultSpan, flags);
-	_edit_isdcf_button = new wxButton (_dcp_panel, wxID_ANY, _("Details..."));
-	grid->Add (_edit_isdcf_button, wxGBPosition (r, 1), wxDefaultSpan);
-	++r;
+
+	{
+		wxBoxSizer* s = new wxBoxSizer (wxHORIZONTAL);
+		_edit_isdcf_button = new wxButton (_dcp_panel, wxID_ANY, _("Details..."));
+		s->Add (_edit_isdcf_button, 1, wxEXPAND | wxRIGHT, DCPOMATIC_SIZER_X_GAP);
+		_copy_isdcf_name_button = new wxButton (_dcp_panel, wxID_ANY, _("Copy as name"));
+		s->Add (_copy_isdcf_name_button, 1, wxEXPAND | wxLEFT, DCPOMATIC_SIZER_X_GAP);
+		grid->Add (s, wxGBPosition (r, 1), wxDefaultSpan, wxEXPAND);
+		++r;
+	}
 
 	add_label_to_grid_bag_sizer (grid, _dcp_panel, _("DCP Name"), true, wxGBPosition (r, 0));
 	_dcp_name = new wxStaticText (_dcp_panel, wxID_ANY, wxT (""));
@@ -133,7 +145,7 @@ FilmEditor::make_dcp_panel ()
 
 	add_label_to_grid_bag_sizer (grid, _dcp_panel, _("Container"), true, wxGBPosition (r, 0));
 	_container = new wxChoice (_dcp_panel, wxID_ANY);
-	grid->Add (_container, wxGBPosition (r, 1), wxDefaultSpan, wxEXPAND);
+	grid->Add (_container, wxGBPosition (r, 1), wxDefaultSpan);
 	++r;
 
 	add_label_to_grid_bag_sizer (grid, _dcp_panel, _("Content Type"), true, wxGBPosition (r, 0));
@@ -150,7 +162,7 @@ FilmEditor::make_dcp_panel ()
 		_frame_rate_sizer->Add (_frame_rate_spin, 1, wxALIGN_CENTER_VERTICAL);
 		setup_frame_rate_widget ();
 		_best_frame_rate = new wxButton (_dcp_panel, wxID_ANY, _("Use best"));
-		_frame_rate_sizer->Add (_best_frame_rate, 1, wxALIGN_CENTER_VERTICAL | wxEXPAND);
+		_frame_rate_sizer->Add (_best_frame_rate, 0, wxALIGN_CENTER_VERTICAL);
 		grid->Add (_frame_rate_sizer, wxGBPosition (r, 1));
 	}
 	++r;
@@ -163,8 +175,26 @@ FilmEditor::make_dcp_panel ()
 	grid->Add (_encrypted, wxGBPosition (r, 0), wxGBSpan (1, 2));
 	++r;
 
+        wxClientDC dc (_dcp_panel);
+        wxSize size = dc.GetTextExtent (wxT ("GGGGGGGG..."));
+        size.SetHeight (-1);
+
+	{
+		add_label_to_grid_bag_sizer (grid, _dcp_panel, _("Key"), true, wxGBPosition (r, 0));
+		wxBoxSizer* s = new wxBoxSizer (wxHORIZONTAL);
+		_key = new wxStaticText (_dcp_panel, wxID_ANY, "", wxDefaultPosition, size);
+		s->Add (_key, 1, wxALIGN_CENTER_VERTICAL);
+		_edit_key = new wxButton (_dcp_panel, wxID_ANY, _("Edit..."));
+		s->Add (_edit_key);
+		grid->Add (s, wxGBPosition (r, 1));
+		++r;
+	}
+
 	add_label_to_grid_bag_sizer (grid, _dcp_panel, _("Audio channels"), true, wxGBPosition (r, 0));
-	_audio_channels = new wxSpinCtrl (_dcp_panel, wxID_ANY);
+	_audio_channels = new wxChoice (_dcp_panel, wxID_ANY);
+	for (int i = 2; i <= 12; i += 2) {
+		_audio_channels->Append (wxString::Format ("%d", i));
+	}
 	grid->Add (_audio_channels, wxGBPosition (r, 1));
 	++r;
 
@@ -212,12 +242,11 @@ FilmEditor::make_dcp_panel ()
 		_dcp_content_type->Append (std_to_wx ((*i)->pretty_name ()));
 	}
 
-	list<int> const dfr = Config::instance()->allowed_dcp_frame_rates ();
+	std::list<int> const dfr = Config::instance()->allowed_dcp_frame_rates ();
 	for (list<int>::const_iterator i = dfr.begin(); i != dfr.end(); ++i) {
 		_frame_rate_choice->Append (std_to_wx (boost::lexical_cast<string> (*i)));
 	}
 
-	_audio_channels->SetRange (0, MAX_DCP_AUDIO_CHANNELS);
 	_j2k_bandwidth->SetRange (1, Config::instance()->maximum_j2k_bandwidth() / 1000000);
 	_frame_rate_spin->SetRange (1, 480);
 
@@ -234,6 +263,7 @@ FilmEditor::connect_to_widgets ()
 	_name->Bind		(wxEVT_COMMAND_TEXT_UPDATED, 	      boost::bind (&FilmEditor::name_changed, this));
 	_use_isdcf_name->Bind	(wxEVT_COMMAND_CHECKBOX_CLICKED,      boost::bind (&FilmEditor::use_isdcf_name_toggled, this));
 	_edit_isdcf_button->Bind(wxEVT_COMMAND_BUTTON_CLICKED,	      boost::bind (&FilmEditor::edit_isdcf_button_clicked, this));
+	_copy_isdcf_name_button->Bind (wxEVT_COMMAND_BUTTON_CLICKED,  boost::bind (&FilmEditor::copy_isdcf_name_button_clicked, this));
 	_container->Bind	(wxEVT_COMMAND_CHOICE_SELECTED,	      boost::bind (&FilmEditor::container_changed, this));
 	_content->Bind		(wxEVT_COMMAND_LIST_ITEM_SELECTED,    boost::bind (&FilmEditor::content_selection_changed, this));
 	_content->Bind		(wxEVT_COMMAND_LIST_ITEM_DESELECTED,  boost::bind (&FilmEditor::content_selection_changed, this));
@@ -252,10 +282,12 @@ FilmEditor::connect_to_widgets ()
 	_best_frame_rate->Bind	(wxEVT_COMMAND_BUTTON_CLICKED,	      boost::bind (&FilmEditor::best_frame_rate_clicked, this));
 	_signed->Bind           (wxEVT_COMMAND_CHECKBOX_CLICKED,      boost::bind (&FilmEditor::signed_toggled, this));
 	_encrypted->Bind        (wxEVT_COMMAND_CHECKBOX_CLICKED,      boost::bind (&FilmEditor::encrypted_toggled, this));
-	_audio_channels->Bind	(wxEVT_COMMAND_SPINCTRL_UPDATED,      boost::bind (&FilmEditor::audio_channels_changed, this));
+	_edit_key->Bind         (wxEVT_COMMAND_BUTTON_CLICKED,        boost::bind (&FilmEditor::edit_key_clicked, this));
+	_audio_channels->Bind	(wxEVT_COMMAND_CHOICE_SELECTED,       boost::bind (&FilmEditor::audio_channels_changed, this));
 	_j2k_bandwidth->Bind	(wxEVT_COMMAND_SPINCTRL_UPDATED,      boost::bind (&FilmEditor::j2k_bandwidth_changed, this));
+	/* Also listen to wxEVT_COMMAND_TEXT_UPDATED so that typing numbers directly in is always noticed */
+	_j2k_bandwidth->Bind	(wxEVT_COMMAND_TEXT_UPDATED,          boost::bind (&FilmEditor::j2k_bandwidth_changed, this));
 	_resolution->Bind       (wxEVT_COMMAND_CHOICE_SELECTED,       boost::bind (&FilmEditor::resolution_changed, this));
-	_sequence_video->Bind   (wxEVT_COMMAND_CHECKBOX_CLICKED,      boost::bind (&FilmEditor::sequence_video_changed, this));
 	_three_d->Bind	 	(wxEVT_COMMAND_CHECKBOX_CLICKED,      boost::bind (&FilmEditor::three_d_changed, this));
 	_standard->Bind         (wxEVT_COMMAND_CHOICE_SELECTED,       boost::bind (&FilmEditor::standard_changed, this));
 }
@@ -277,26 +309,35 @@ FilmEditor::make_content_panel ()
 		_content->SetColumnWidth (0, 512);
 
 		wxBoxSizer* b = new wxBoxSizer (wxVERTICAL);
+
 		_content_add_file = new wxButton (_content_panel, wxID_ANY, _("Add file(s)..."));
-		b->Add (_content_add_file, 1, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
-		_content_add_folder = new wxButton (_content_panel, wxID_ANY, _("Add folder..."));
+		_content_add_file->SetToolTip (_("Add video, image or sound files to the film."));
+		b->Add (_content_add_file,   0, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
+		
+		_content_add_folder = new wxButton (_content_panel, wxID_ANY, _("Add image\nsequence..."));
+		_content_add_folder->SetToolTip (_("Add a directory of image files which will be used as a moving image sequence."));
 		b->Add (_content_add_folder, 1, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
+		
 		_content_remove = new wxButton (_content_panel, wxID_ANY, _("Remove"));
-		b->Add (_content_remove, 1, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
+		_content_remove->SetToolTip (_("Remove the selected piece of content from the film."));
+		b->Add (_content_remove, 0, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
+		
 		_content_earlier = new wxButton (_content_panel, wxID_ANY, _("Up"));
-		b->Add (_content_earlier, 1, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
+		_content_earlier->SetToolTip (_("Move the selected piece of content earlier in the film."));
+		b->Add (_content_earlier, 0, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
+		
 		_content_later = new wxButton (_content_panel, wxID_ANY, _("Down"));
-		b->Add (_content_later, 1, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
+		_content_later->SetToolTip (_("Move the selected piece of content later in the film."));
+		b->Add (_content_later, 0, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
+
 		_content_timeline = new wxButton (_content_panel, wxID_ANY, _("Timeline..."));
-		b->Add (_content_timeline, 1, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
+		_content_timeline->SetToolTip (_("Open the timeline for the film."));
+		b->Add (_content_timeline, 0, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
 
 		s->Add (b, 0, wxALL, 4);
 
 		_content_sizer->Add (s, 0, wxEXPAND | wxALL, 6);
 	}
-
-	_sequence_video = new wxCheckBox (_content_panel, wxID_ANY, _("Keep video in sequence"));
-	_content_sizer->Add (_sequence_video);
 
 	_content_notebook = new wxNotebook (_content_panel, wxID_ANY);
 	_content_sizer->Add (_content_notebook, 1, wxEXPAND | wxTOP, 6);
@@ -353,6 +394,16 @@ FilmEditor::encrypted_toggled ()
 
 	_film->set_encrypted (_encrypted->GetValue ());
 }
+
+void
+FilmEditor::edit_key_clicked ()
+{
+	KeyDialog* d = new KeyDialog (this, _film->key ());
+	if (d->ShowModal () == wxID_OK) {
+		_film->set_key (d->key ());
+	}
+	d->Destroy ();
+}
 			       
 /** Called when the frame rate choice widget has been changed */
 void
@@ -387,7 +438,7 @@ FilmEditor::audio_channels_changed ()
 		return;
 	}
 
-	_film->set_audio_channels (_audio_channels->GetValue ());
+	_film->set_audio_channels ((_audio_channels->GetSelection() + 1) * 2);
 }
 
 void
@@ -460,9 +511,16 @@ FilmEditor::film_changed (Film::Property p)
 		if (_film->encrypted ()) {
 			_film->set_signed (true);
 			_signed->Enable (false);
+			_key->Enable (_generally_sensitive);
+			_edit_key->Enable (_generally_sensitive);
 		} else {
 			_signed->Enable (_generally_sensitive);
+			_key->Enable (false);
+			_edit_key->Enable (false);
 		}
+		break;
+	case Film::KEY:
+		checked_set (_key, _film->key().hex().substr (0, 8) + "...");
 		break;
 	case Film::RESOLUTION:
 		checked_set (_resolution, _film->resolution() == RESOLUTION_2K ? 0 : 1);
@@ -500,11 +558,8 @@ FilmEditor::film_changed (Film::Property p)
 		break;
 	}
 	case Film::AUDIO_CHANNELS:
-		checked_set (_audio_channels, _film->audio_channels ());
+		checked_set (_audio_channels, (_film->audio_channels () / 2) - 1);
 		setup_dcp_name ();
-		break;
-	case Film::SEQUENCE_VIDEO:
-		checked_set (_sequence_video, _film->sequence_video ());
 		break;
 	case Film::THREE_D:
 		checked_set (_three_d, _film->three_d ());
@@ -512,6 +567,8 @@ FilmEditor::film_changed (Film::Property p)
 		break;
 	case Film::INTEROP:
 		checked_set (_standard, _film->interop() ? 1 : 0);
+		break;
+	default:
 		break;
 	}
 }
@@ -574,7 +631,7 @@ FilmEditor::container_changed ()
 	int const n = _container->GetSelection ();
 	if (n >= 0) {
 		vector<Ratio const *> ratios = Ratio::all ();
-		assert (n < int (ratios.size()));
+		DCPOMATIC_ASSERT (n < int (ratios.size()));
 		_film->set_container (ratios[n]);
 	}
 }
@@ -626,11 +683,11 @@ FilmEditor::set_film (shared_ptr<Film> f)
 	film_changed (Film::WITH_SUBTITLES);
 	film_changed (Film::SIGNED);
 	film_changed (Film::ENCRYPTED);
+	film_changed (Film::KEY);
 	film_changed (Film::J2K_BANDWIDTH);
 	film_changed (Film::ISDCF_METADATA);
 	film_changed (Film::VIDEO_FRAME_RATE);
 	film_changed (Film::AUDIO_CHANNELS);
-	film_changed (Film::SEQUENCE_VIDEO);
 	film_changed (Film::THREE_D);
 	film_changed (Film::INTEROP);
 
@@ -657,6 +714,7 @@ FilmEditor::set_general_sensitivity (bool s)
 	_content_earlier->Enable (s);
 	_content_later->Enable (s);
 	_content_timeline->Enable (s);
+	_copy_isdcf_name_button->Enable (s);
 	_dcp_content_type->Enable (s);
 
 	bool si = s;
@@ -666,13 +724,14 @@ FilmEditor::set_general_sensitivity (bool s)
 	_signed->Enable (si);
 	
 	_encrypted->Enable (s);
+	_key->Enable (s && _film && _film->encrypted ());
+	_edit_key->Enable (s && _film && _film->encrypted ());
 	_frame_rate_choice->Enable (s);
 	_frame_rate_spin->Enable (s);
 	_audio_channels->Enable (s);
 	_j2k_bandwidth->Enable (s);
 	_container->Enable (s);
 	_best_frame_rate->Enable (s && _film && _film->best_video_frame_rate () != _film->video_frame_rate ());
-	_sequence_video->Enable (s);
 	_resolution->Enable (s);
 	_scaler->Enable (s);
 	_three_d->Enable (s);
@@ -711,13 +770,8 @@ FilmEditor::use_isdcf_name_toggled ()
 void
 FilmEditor::use_isdcf_name_changed ()
 {
-	bool const i = _film->use_isdcf_name ();
-
-	if (!i) {
-		_film->set_name (_film->isdcf_name (true));
-	}
-
-	_edit_isdcf_button->Enable (i);
+	_edit_isdcf_button->Enable (_film->use_isdcf_name ());
+	setup_dcp_name ();
 }
 
 void
@@ -764,6 +818,36 @@ FilmEditor::best_frame_rate_clicked ()
 void
 FilmEditor::setup_content ()
 {
+	ContentList content = _film->content ();
+	sort (content.begin(), content.end(), ContentSorter ());
+	
+	/* First, check to see if anything has changed and bail if not; this avoids
+	   flickering on OS X.
+	*/
+
+	vector<string> existing;
+	for (int i = 0; i < _content->GetItemCount(); ++i) {
+		existing.push_back (wx_to_std (_content->GetItemText (i)));
+	}
+
+	vector<string> proposed;
+	for (ContentList::iterator i = content.begin(); i != content.end(); ++i) {
+		bool const valid = (*i)->paths_valid ();
+
+		string s = (*i)->summary ();
+		if (!valid) {
+			s = _("MISSING: ") + s;
+		}
+
+		proposed.push_back (s);
+	}
+	
+	if (existing == proposed) {
+		return;
+	}
+      
+	/* Something has changed: set up the control */
+	
 	string selected_summary;
 	int const s = _content->GetNextItem (-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 	if (s != -1) {
@@ -772,9 +856,6 @@ FilmEditor::setup_content ()
 	
 	_content->DeleteAllItems ();
 
-	ContentList content = _film->content ();
-	sort (content.begin(), content.end(), ContentSorter ());
-	
 	for (ContentList::iterator i = content.begin(); i != content.end(); ++i) {
 		int const t = _content->GetItemCount ();
 		bool const valid = (*i)->paths_valid ();
@@ -817,23 +898,53 @@ FilmEditor::content_add_file_clicked ()
 
 	wxArrayString paths;
 	d->GetPaths (paths);
+	list<string> path_list;
+	for (unsigned int i = 0; i < paths.GetCount(); i++) {
+		path_list.push_back (wx_to_std (paths[i]));
+	}
+	add_files (path_list);
+
+	d->Destroy ();
+}
+
+void
+FilmEditor::add_files (list<string> path_list)
+{
+	/* It has been reported that the paths returned from e.g. wxFileDialog are not always sorted;
+	   I can't reproduce that, but sort them anyway.
+	*/
+	
+	path_list.sort (ImageFilenameSorter ());
 
 	/* XXX: check for lots of files here and do something */
 
-	for (unsigned int i = 0; i < paths.GetCount(); ++i) {
-		_film->examine_and_add_content (content_factory (_film, wx_to_std (paths[i])));
+	for (list<string>::const_iterator i = path_list.begin(); i != path_list.end(); ++i) {
+		shared_ptr<Content> c = content_factory (_film, *i);
+		shared_ptr<ImageContent> ic = dynamic_pointer_cast<ImageContent> (c);
+		if (ic) {
+			ic->set_video_frame_rate (24);
+		}
+		_film->examine_and_add_content (c);
 	}
-
-	d->Destroy ();
 }
 
 void
 FilmEditor::content_add_folder_clicked ()
 {
 	wxDirDialog* d = new wxDirDialog (this, _("Choose a folder"), wxT (""), wxDD_DIR_MUST_EXIST);
-	int const r = d->ShowModal ();
+	int r = d->ShowModal ();
+	boost::filesystem::path const path (wx_to_std (d->GetPath ()));
 	d->Destroy ();
 	
+	if (r != wxID_OK) {
+		return;
+	}
+
+	ImageSequenceDialog* e = new ImageSequenceDialog (this);
+	r = e->ShowModal ();
+	float const frame_rate = e->frame_rate ();
+	e->Destroy ();
+
 	if (r != wxID_OK) {
 		return;
 	}
@@ -841,12 +952,13 @@ FilmEditor::content_add_folder_clicked ()
 	shared_ptr<ImageContent> ic;
 	
 	try {
-		ic.reset (new ImageContent (_film, boost::filesystem::path (wx_to_std (d->GetPath ()))));
+		ic.reset (new ImageContent (_film, path));
 	} catch (FileError& e) {
 		error_dialog (this, std_to_wx (e.what ()));
 		return;
 	}
 
+	ic->set_video_frame_rate (frame_rate);
 	_film->examine_and_add_content (ic);
 }
 
@@ -1013,19 +1125,9 @@ FilmEditor::set_selection (weak_ptr<Content> wc)
 }
 
 void
-FilmEditor::sequence_video_changed ()
-{
-	if (!_film) {
-		return;
-	}
-	
-	_film->set_sequence_video (_sequence_video->GetValue ());
-}
-
-void
 FilmEditor::content_right_click (wxListEvent& ev)
 {
-	_menu.popup (_film, selected_content (), ev.GetPoint ());
+	_menu.popup (_film, selected_content (), TimelineContentViewList (), ev.GetPoint ());
 }
 
 void
@@ -1087,7 +1189,17 @@ FilmEditor::content_files_dropped (wxDropFilesEvent& event)
 	}
 	
 	wxString* paths = event.GetFiles ();
+	list<string> path_list;
 	for (int i = 0; i < event.GetNumberOfFiles(); i++) {
-		_film->examine_and_add_content (content_factory (_film, wx_to_std (paths[i])));
+		path_list.push_back (wx_to_std (paths[i]));
 	}
+
+	add_files (path_list);				     
+}
+
+void
+FilmEditor::copy_isdcf_name_button_clicked ()
+{
+	_film->set_name (_film->isdcf_name (false));
+	_film->set_use_isdcf_name (false);
 }

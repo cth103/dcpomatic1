@@ -52,7 +52,7 @@ Subtitle::update (shared_ptr<const Film> film, libdcp::Size video_container_size
 	}
 
 	shared_ptr<SubtitleContent> sc = dynamic_pointer_cast<SubtitleContent> (piece->content);
-	assert (sc);
+	DCPOMATIC_ASSERT (sc);
 
 	dcpomatic::Rect<double> in_rect = _in_rect;
 	libdcp::Size scaled_size;
@@ -60,7 +60,10 @@ Subtitle::update (shared_ptr<const Film> film, libdcp::Size video_container_size
 	in_rect.x += sc->subtitle_x_offset ();
 	in_rect.y += sc->subtitle_y_offset ();
 
-	/* We will scale the subtitle up to fit _video_container_size, and also by the additional subtitle scale */
+	/* We will scale the subtitle up to fit _video_container_size, and also by the additional subtitle scale.
+	   Remember that in_rect is fractional, so multiplying it by the video container size scales up the subtitle
+	   to correspond to the scale being used on the video.
+	*/
 	scaled_size.width = in_rect.width * video_container_size.width * sc->subtitle_x_scale ();
 	scaled_size.height = in_rect.height * video_container_size.height * sc->subtitle_y_scale ();
 
@@ -82,6 +85,7 @@ Subtitle::update (shared_ptr<const Film> film, libdcp::Size video_container_size
 	_out_image = _in_image->scale (
 		scaled_size,
 		Scaler::from_id ("bicubic"),
+		YUV_TO_RGB_REC601,
 		_in_image->pixel_format (),
 		true
 		);

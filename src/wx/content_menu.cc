@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,6 +29,9 @@
 #include "content_menu.h"
 #include "repeat_dialog.h"
 #include "wx_util.h"
+#include "timeline_video_content_view.h"
+#include "timeline_audio_content_view.h"
+#include "content_properties_dialog.h"
 
 using std::cout;
 using std::vector;
@@ -40,6 +43,7 @@ enum {
 	ID_repeat = 1,
 	ID_join,
 	ID_find_missing,
+	ID_properties,
 	ID_remove
 };
 
@@ -50,12 +54,14 @@ ContentMenu::ContentMenu (wxWindow* p)
 	_repeat = _menu->Append (ID_repeat, _("Repeat..."));
 	_join = _menu->Append (ID_join, _("Join"));
 	_find_missing = _menu->Append (ID_find_missing, _("Find missing..."));
+	_properties = _menu->Append (ID_properties, _("Properties..."));
 	_menu->AppendSeparator ();
 	_remove = _menu->Append (ID_remove, _("Remove"));
 
 	_parent->Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&ContentMenu::repeat, this), ID_repeat);
 	_parent->Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&ContentMenu::join, this), ID_join);
 	_parent->Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&ContentMenu::find_missing, this), ID_find_missing);
+	_parent->Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&ContentMenu::properties, this), ID_properties);
 	_parent->Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&ContentMenu::remove, this), ID_remove);
 }
 
@@ -65,10 +71,11 @@ ContentMenu::~ContentMenu ()
 }
 
 void
-ContentMenu::popup (weak_ptr<Film> f, ContentList c, wxPoint p)
+ContentMenu::popup (weak_ptr<Film> f, ContentList c, TimelineContentViewList v, wxPoint p)
 {
 	_film = f;
 	_content = c;
+	_views = v;
 	_repeat->Enable (!_content.empty ());
 
 	int n = 0;
@@ -81,6 +88,7 @@ ContentMenu::popup (weak_ptr<Film> f, ContentList c, wxPoint p)
 	_join->Enable (n > 1);
 	
 	_find_missing->Enable (_content.size() == 1 && !_content.front()->paths_valid ());
+	_properties->Enable (_content.size() == 1);
 	_remove->Enable (!_content.empty ());
 	_parent->PopupMenu (_menu, p);
 }
@@ -107,6 +115,7 @@ ContentMenu::repeat ()
 	d->Destroy ();
 
 	_content.clear ();
+	_views.clear ();
 }
 
 void
@@ -120,7 +129,7 @@ ContentMenu::join ()
 		}
 	}
 
-	assert (fc.size() > 1);
+	DCPOMATIC_ASSERT (fc.size() > 1);
 
 	shared_ptr<Film> film = _film.lock ();
 	if (!film) {
@@ -150,9 +159,46 @@ ContentMenu::remove ()
 		return;
 	}
 
-	film->playlist()->remove (_content);
+	/* We are removing from the timeline if _views is not empty */
+	bool handled = false;
+	if (!_views.empty ()) {
+		/* Special case: we only remove FFmpegContent if its video view is selected;
+		   if not, and its audio view is selected, we unmap the audio.
+		*/
+		for (ContentList::iterator i = _content.begin(); i != _content.end(); ++i) {
+			shared_ptr<FFmpegContent> fc = dynamic_pointer_cast<FFmpegContent> (*i);
+			if (!fc) {
+				continue;
+			}
+			
+			shared_ptr<TimelineVideoContentView> video;
+			shared_ptr<TimelineAudioContentView> audio;
+
+			for (TimelineContentViewList::iterator i = _views.begin(); i != _views.end(); ++i) {
+				shared_ptr<TimelineVideoContentView> v = dynamic_pointer_cast<TimelineVideoContentView> (*i);
+				shared_ptr<TimelineAudioContentView> a = dynamic_pointer_cast<TimelineAudioContentView> (*i);
+				if (v && v->content() == fc) {
+					video = v;
+				} else if (a && a->content() == fc) {
+					audio = a;
+				}
+			}
+
+			if (!video && audio) {
+				AudioMapping m = fc->audio_mapping ();
+				m.unmap_all ();
+				fc->set_audio_mapping (m);
+				handled = true;
+			}
+		}
+	}
+
+	if (!handled) {
+		film->playlist()->remove (_content);
+	}
 
 	_content.clear ();
+	_views.clear ();
 }
 
 void
@@ -193,7 +239,7 @@ ContentMenu::find_missing ()
 
 	shared_ptr<Job> j (new ExamineContentJob (film, content));
 	
-	j->Finished.connect (
+	_job_connection = j->Finished.connect (
 		bind (
 			&ContentMenu::maybe_found_missing,
 			this,
@@ -216,8 +262,8 @@ ContentMenu::maybe_found_missing (weak_ptr<Job> j, weak_ptr<Content> oc, weak_pt
 
 	shared_ptr<Content> old_content = oc.lock ();
 	shared_ptr<Content> new_content = nc.lock ();
-	assert (old_content);
-	assert (new_content);
+	DCPOMATIC_ASSERT (old_content);
+	DCPOMATIC_ASSERT (new_content);
 
 	if (new_content->digest() != old_content->digest()) {
 		error_dialog (0, _("The content file(s) you specified are not the same as those that are missing.  Either try again with the correct content file or remove the missing content."));
@@ -225,4 +271,12 @@ ContentMenu::maybe_found_missing (weak_ptr<Job> j, weak_ptr<Content> oc, weak_pt
 	}
 
 	old_content->set_path (new_content->path (0));
+}
+
+void
+ContentMenu::properties ()
+{
+	ContentPropertiesDialog* d = new ContentPropertiesDialog (_parent, _content.front ());
+	d->ShowModal ();
+	d->Destroy ();
 }

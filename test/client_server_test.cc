@@ -31,6 +31,8 @@ using std::list;
 using boost::shared_ptr;
 using boost::thread;
 
+static Server* server = 0;
+
 void
 do_remote_encode (shared_ptr<DCPVideoFrame> frame, ServerDescription description, shared_ptr<EncodedData> locally_encoded)
 {
@@ -100,10 +102,11 @@ BOOST_AUTO_TEST_CASE (client_server_test_rgb)
 
 	shared_ptr<EncodedData> locally_encoded = frame->encode_locally ();
 	BOOST_ASSERT (locally_encoded);
-	
-	Server* server = new Server (log, true);
 
-	new thread (boost::bind (&Server::run, server, 2));
+	if (!server) {
+		server = new Server (log, false);
+		new thread (boost::bind (&Server::run, server, 2));
+	}
 
 	/* Let the server get itself ready */
 	dcpomatic_sleep (1);
@@ -179,10 +182,11 @@ BOOST_AUTO_TEST_CASE (client_server_test_yuv)
 
 	shared_ptr<EncodedData> locally_encoded = frame->encode_locally ();
 	BOOST_ASSERT (locally_encoded);
-	
-	Server* server = new Server (log, true);
 
-	new thread (boost::bind (&Server::run, server, 2));
+	if (!server) {
+		server = new Server (log, false);
+		new thread (boost::bind (&Server::run, server, 2));
+	}
 
 	/* Let the server get itself ready */
 	dcpomatic_sleep (1);

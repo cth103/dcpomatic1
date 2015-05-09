@@ -1,9 +1,11 @@
 import subprocess
 import os
 import sys
+import distutils
+import distutils.spawn
 
 APPNAME = 'dcpomatic'
-VERSION = '1.73.7devel'
+VERSION = '1.78.9devel'
 
 def options(opt):
     opt.load('compiler_cxx')
@@ -28,8 +30,9 @@ def static_ffmpeg(conf):
     conf.check_cfg(package='libavfilter', args='--cflags', uselib_store='AVFILTER', mandatory=True)
     conf.env.STLIB_AVFILTER = ['avfilter', 'swresample']
     conf.check_cfg(package='libavcodec', args='--cflags', uselib_store='AVCODEC', mandatory=True)
+    # lzma link is needed by Centos 7, at least
     conf.env.STLIB_AVCODEC = ['avcodec']
-    conf.env.LIB_AVCODEC = ['z']
+    conf.env.LIB_AVCODEC = ['z', 'lzma']
     conf.check_cfg(package='libavutil', args='--cflags', uselib_store='AVUTIL', mandatory=True)
     conf.env.STLIB_AVUTIL = ['avutil']
     conf.check_cfg(package='libswscale', args='--cflags', uselib_store='SWSCALE', mandatory=True)
@@ -58,7 +61,7 @@ def dynamic_openjpeg(conf):
     conf.check_cfg(package='libopenjpeg', args='--cflags --libs', max_version='1.5.2', mandatory=True)
 
 def static_dcp(conf, static_boost, static_xmlpp, static_xmlsec, static_ssh):
-    conf.check_cfg(package='libdcp', atleast_version='0.96', args='--cflags', uselib_store='DCP', mandatory=True)
+    conf.check_cfg(package='libdcp', atleast_version='0.100', args='--cflags', uselib_store='DCP', mandatory=True)
     conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
     conf.env.STLIB_DCP = ['dcp', 'asdcp-libdcp', 'kumu-libdcp']
     conf.env.LIB_DCP = ['glibmm-2.4', 'ssl', 'crypto', 'bz2', 'xslt']
@@ -84,7 +87,7 @@ def static_dcp(conf, static_boost, static_xmlpp, static_xmlsec, static_ssh):
         conf.env.LIB_DCP.append('ssh')
 
 def dynamic_dcp(conf):
-    conf.check_cfg(package='libdcp', atleast_version='0.97.0', args='--cflags --libs', uselib_store='DCP', mandatory=True)
+    conf.check_cfg(package='libdcp', atleast_version='0.100.0', args='--cflags --libs', uselib_store='DCP', mandatory=True)
     conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
 
 def dynamic_ssh(conf):
@@ -146,17 +149,6 @@ def static_boost(conf, lib_suffix):
     conf.env.STLIB_BOOST_DATETIME = ['boost_date_time%s' % lib_suffix, 'boost_system%s' % lib_suffix]
     conf.env.STLIB_BOOST_SIGNALS2 = ['boost_signals2']
 
-def dynamic_quickmail(conf):
-    conf.check_cxx(fragment="""
-                            #include <quickmail.h>
-                            int main(void) { quickmail_initialize (); }
-                            """,
-                   mandatory=True,
-                   msg='Checking for libquickmail',
-                   libpath='/usr/local/lib',
-                   lib=['quickmail', 'curl'],
-                   uselib_store='QUICKMAIL')
-
 def configure(conf):
     conf.load('compiler_cxx')
     if conf.options.target_windows:
@@ -173,15 +165,17 @@ def configure(conf):
     conf.env.VERSION = VERSION
     conf.env.TARGET_OSX = sys.platform == 'darwin'
     conf.env.TARGET_LINUX = not conf.env.TARGET_WINDOWS and not conf.env.TARGET_OSX
+    conf.env.DEBUG = conf.options.enable_debug
     # true if we should build dcpomatic/libdcpomatic/libdcpomatic-wx statically
-    conf.env.BUILD_STATIC = conf.options.target_debian or conf.options.target_centos_6 or conf.options.target_centos_7
+    conf.env.BUILD_STATIC = conf.options.target_debian or conf.options.target_centos_6 or conf.options.target_centos_7 or (conf.options.target_windows and conf.options.enable_debug)
     if conf.options.install_prefix is None:
         conf.env.INSTALL_PREFIX = conf.env.PREFIX
     else:
         conf.env.INSTALL_PREFIX = conf.options.install_prefix
 
     # Common CXXFLAGS
-    conf.env.append_value('CXXFLAGS', ['-D__STDC_CONSTANT_MACROS', '-D__STDC_LIMIT_MACROS', '-msse', '-ffast-math', '-fno-strict-aliasing',
+    conf.env.append_value('CXXFLAGS', ['-D__STDC_CONSTANT_MACROS', '-D__STDC_LIMIT_MACROS', '-D__STDC_FORMAT_MACROS',
+                                       '-msse', '-ffast-math', '-fno-strict-aliasing',
                                        '-Wall', '-Wno-attributes', '-Wextra', '-D_FILE_OFFSET_BITS=64'])
 
     if conf.options.enable_debug:
@@ -255,7 +249,6 @@ def configure(conf):
         conf.env.STLIB_CXML = ['cxml']
         conf.check_cfg(package='libxml++-2.6', args='--cflags --libs', uselib_store='XMLPP', mandatory=True)
         conf.check_cfg(package='libcurl', args='--cflags --libs', uselib_store='CURL', mandatory=True)
-        conf.env.STLIB_QUICKMAIL = ['quickmail']
         static_ffmpeg(conf)
         static_openjpeg(conf)
         static_dcp(conf, False, False, False, False)
@@ -268,8 +261,6 @@ def configure(conf):
         conf.check_cfg(package='libcurl', args='--cflags --libs-only-L', uselib_store='CURL', mandatory=True)
         conf.env.STLIB_CURL = ['curl']
         conf.env.LIB_CURL = ['ssh2', 'idn']
-        conf.env.STLIB_QUICKMAIL = ['quickmail', 'curl']
-        conf.env.LIB_QUICKMAIL = ['ssh2', 'idn']
         static_ffmpeg(conf)
         static_openjpeg(conf)
         static_dcp(conf, True, True, True, True)
@@ -280,7 +271,6 @@ def configure(conf):
         conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags', uselib_store='CXML', mandatory=True)
         conf.env.STLIB_CXML = ['cxml']
         conf.check_cfg(package='libcurl', args='--cflags --libs', uselib_store='CURL', mandatory=True)
-        conf.env.STLIB_QUICKMAIL = ['quickmail']
         conf.env.LIB_SSH = ['gssapi_krb5']
         conf.env.LIB_XMLPP = ['xml2']
         conf.env.LIB_XMLSEC = ['ltdl']
@@ -299,7 +289,6 @@ def configure(conf):
                                 libpath='/usr/local/lib',
                                 lib=['boost_locale%s' % boost_lib_suffix, 'boost_system%s' % boost_lib_suffix],
                                 uselib_store='BOOST_LOCALE')
-        dynamic_quickmail(conf)
         dynamic_boost(conf, boost_lib_suffix, boost_thread)
         dynamic_ffmpeg(conf)
         dynamic_openjpeg(conf)
@@ -311,7 +300,6 @@ def configure(conf):
         conf.check_cfg(package='libcxml', atleast_version='0.08', args='--cflags --libs', uselib_store='CXML', mandatory=True)
         conf.check_cfg(package='libxml++-2.6', args='--cflags --libs', uselib_store='XMLPP', mandatory=True)
         conf.check_cfg(package='libcurl', args='--cflags --libs', uselib_store='CURL', mandatory=True)
-        dynamic_quickmail(conf)
         dynamic_boost(conf, boost_lib_suffix, boost_thread)
         dynamic_ffmpeg(conf)
         dynamic_dcp(conf)
@@ -321,7 +309,19 @@ def configure(conf):
     # Dependencies which are always dynamically linked
     conf.check_cfg(package='sndfile', args='--cflags --libs', uselib_store='SNDFILE', mandatory=True)
     conf.check_cfg(package='glib-2.0', args='--cflags --libs', uselib_store='GLIB', mandatory=True)
-    conf.check_cfg(package= '', path=conf.options.magickpp_config, args='--cppflags --cxxflags --libs', uselib_store='MAGICK', mandatory=True)
+    if distutils.spawn.find_executable(conf.options.magickpp_config):
+        conf.check_cfg(package='', path=conf.options.magickpp_config, args='--cppflags --cxxflags --libs', uselib_store='MAGICK', mandatory=True)
+        conf.env.append_value('CXXFLAGS', '-DDCPOMATIC_IMAGE_MAGICK')
+    else:
+        image = conf.check_cfg(package='ImageMagick++', args='--cflags --libs', uselib_store='MAGICK', mandatory=False)
+        graphics = conf.check_cfg(package='GraphicsMagick++', args='--cflags --libs', uselib_store='MAGICK', mandatory=False)
+        if image is None and graphics is None:
+            Logs.pprint('RED', 'Neither ImageMagick++ nor GraphicsMagick++ found: one or the other is required')
+        if image is not None:
+            conf.env.append_value('CXXFLAGS', '-DDCPOMATIC_IMAGE_MAGICK')
+        if graphics is not None:
+            conf.env.append_value('CXXFLAGS', '-DDCPOMATIC_GRAPHICS_MAGICK')
+        
     conf.check_cfg(package='libzip', args='--cflags --libs', uselib_store='ZIP', mandatory=True)
 
     conf.check_cc(fragment="""

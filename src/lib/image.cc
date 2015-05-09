@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -83,16 +83,18 @@ Image::components () const
 
 /** Crop this image, scale it to `inter_size' and then place it in a black frame of `out_size' */
 shared_ptr<Image>
-Image::crop_scale_window (Crop crop, libdcp::Size inter_size, libdcp::Size out_size, Scaler const * scaler, AVPixelFormat out_format, bool out_aligned) const
+Image::crop_scale_window (
+	Crop crop, libdcp::Size inter_size, libdcp::Size out_size, Scaler const * scaler, YUVToRGB yuv_to_rgb, AVPixelFormat out_format, bool out_aligned
+	) const
 {
-	assert (scaler);
+	DCPOMATIC_ASSERT (scaler);
 	/* Empirical testing suggests that sws_scale() will crash if
 	   the input image is not aligned.
 	*/
-	assert (aligned ());
+	DCPOMATIC_ASSERT (aligned ());
 
-	assert (out_size.width >= inter_size.width);
-	assert (out_size.height >= inter_size.height);
+	DCPOMATIC_ASSERT (out_size.width >= inter_size.width);
+	DCPOMATIC_ASSERT (out_size.height >= inter_size.height);
 
 	/* Here's an image of out_size */
 	shared_ptr<Image> out (new Image (out_format, out_size, out_aligned));
@@ -111,6 +113,19 @@ Image::crop_scale_window (Crop crop, libdcp::Size inter_size, libdcp::Size out_s
 	if (!scale_context) {
 		throw StringError (N_("Could not allocate SwsContext"));
 	}
+
+	DCPOMATIC_ASSERT (yuv_to_rgb < YUV_TO_RGB_COUNT);
+	int const lut[YUV_TO_RGB_COUNT] = {
+		SWS_CS_ITU601,
+		SWS_CS_ITU709
+	};
+
+	sws_setColorspaceDetails (
+		scale_context,
+		sws_getCoefficients (lut[yuv_to_rgb]), 0,
+		sws_getCoefficients (lut[yuv_to_rgb]), 0,
+		0, 1 << 16, 1 << 16
+		);
 
 	/* Prepare input data pointers with crop */
 	uint8_t* scale_in_data[components()];
@@ -139,13 +154,13 @@ Image::crop_scale_window (Crop crop, libdcp::Size inter_size, libdcp::Size out_s
 }
 
 shared_ptr<Image>
-Image::scale (libdcp::Size out_size, Scaler const * scaler, AVPixelFormat out_format, bool out_aligned) const
+Image::scale (libdcp::Size out_size, Scaler const * scaler, YUVToRGB yuv_to_rgb, AVPixelFormat out_format, bool out_aligned) const
 {
-	assert (scaler);
+	DCPOMATIC_ASSERT (scaler);
 	/* Empirical testing suggests that sws_scale() will crash if
 	   the input image is not aligned.
 	*/
-	assert (aligned ());
+	DCPOMATIC_ASSERT (aligned ());
 
 	shared_ptr<Image> scaled (new Image (out_format, out_size, out_aligned));
 
@@ -155,6 +170,23 @@ Image::scale (libdcp::Size out_size, Scaler const * scaler, AVPixelFormat out_fo
 		scaler->ffmpeg_id (), 0, 0, 0
 		);
 
+	if (!scale_context) {
+		throw StringError (N_("Could not allocate SwsContext"));
+	}
+
+	DCPOMATIC_ASSERT (yuv_to_rgb < YUV_TO_RGB_COUNT);
+	int const lut[YUV_TO_RGB_COUNT] = {
+		SWS_CS_ITU601,
+		SWS_CS_ITU709
+	};
+
+	sws_setColorspaceDetails (
+		scale_context,
+		sws_getCoefficients (lut[yuv_to_rgb]), 0,
+		sws_getCoefficients (lut[yuv_to_rgb]), 0,
+		0, 1 << 16, 1 << 16
+		);
+	
 	sws_scale (
 		scale_context,
 		data(), stride(),
@@ -319,6 +351,10 @@ Image::make_black ()
 	case PIX_FMT_ABGR:
 	case PIX_FMT_BGRA:
 	case PIX_FMT_RGB555LE:
+	case PIX_FMT_RGB48LE:
+	case PIX_FMT_RGB48BE:
+	case AV_PIX_FMT_XYZ12LE:
+	case AV_PIX_FMT_XYZ12BE:
 		memset (data()[0], 0, lines(0) * stride()[0]);
 		break;
 
@@ -346,8 +382,8 @@ Image::make_black ()
 void
 Image::alpha_blend (shared_ptr<const Image> other, Position<int> position)
 {
-	/* Only implemented for RGBA onto RGB24 so far */
-	assert (_pixel_format == PIX_FMT_RGB24 && other->pixel_format() == PIX_FMT_RGBA);
+	DCPOMATIC_ASSERT (other->pixel_format() == PIX_FMT_RGBA);
+	int const other_bpp = 4;
 
 	int start_tx = position.x;
 	int start_ox = 0;
@@ -365,17 +401,66 @@ Image::alpha_blend (shared_ptr<const Image> other, Position<int> position)
 		start_ty = 0;
 	}
 
-	for (int ty = start_ty, oy = start_oy; ty < size().height && oy < other->size().height; ++ty, ++oy) {
-		uint8_t* tp = data()[0] + ty * stride()[0] + position.x * 3;
-		uint8_t* op = other->data()[0] + oy * other->stride()[0];
-		for (int tx = start_tx, ox = start_ox; tx < size().width && ox < other->size().width; ++tx, ++ox) {
-			float const alpha = float (op[3]) / 255;
-			tp[0] = (tp[0] * (1 - alpha)) + op[0] * alpha;
-			tp[1] = (tp[1] * (1 - alpha)) + op[1] * alpha;
-			tp[2] = (tp[2] * (1 - alpha)) + op[2] * alpha;
-			tp += 3;
-			op += 4;
+	switch (_pixel_format) {
+	case PIX_FMT_RGB24:
+	{
+		int const this_bpp = 3;
+		for (int ty = start_ty, oy = start_oy; ty < size().height && oy < other->size().height; ++ty, ++oy) {
+			uint8_t* tp = data()[0] + ty * stride()[0] + start_tx * this_bpp;
+			uint8_t* op = other->data()[0] + oy * other->stride()[0];
+			for (int tx = start_tx, ox = start_ox; tx < size().width && ox < other->size().width; ++tx, ++ox) {
+				float const alpha = float (op[3]) / 255;
+				tp[0] = op[0] * alpha + tp[0] * (1 - alpha);
+				tp[1] = op[1] * alpha + tp[1] * (1 - alpha);
+				tp[2] = op[2] * alpha + tp[2] * (1 - alpha);
+				
+				tp += this_bpp;
+				op += other_bpp;
+			}
 		}
+		break;
+	}
+	case PIX_FMT_BGRA:
+	case PIX_FMT_RGBA:
+	{
+		int const this_bpp = 4;
+		for (int ty = start_ty, oy = start_oy; ty < size().height && oy < other->size().height; ++ty, ++oy) {
+			uint8_t* tp = data()[0] + ty * stride()[0] + start_tx * this_bpp;
+			uint8_t* op = other->data()[0] + oy * other->stride()[0];
+			for (int tx = start_tx, ox = start_ox; tx < size().width && ox < other->size().width; ++tx, ++ox) {
+				float const alpha = float (op[3]) / 255;
+				tp[0] = op[0] * alpha + (tp[0] * (1 - alpha));
+				tp[1] = op[1] * alpha + (tp[1] * (1 - alpha));
+				tp[2] = op[2] * alpha + (tp[2] * (1 - alpha));
+				tp[3] = op[3] * alpha + (tp[3] * (1 - alpha));
+				
+				tp += this_bpp;
+				op += other_bpp;
+			}
+		}
+		break;
+	}
+	case PIX_FMT_RGB48LE:
+	{
+		int const this_bpp = 6;
+		for (int ty = start_ty, oy = start_oy; ty < size().height && oy < other->size().height; ++ty, ++oy) {
+			uint8_t* tp = data()[0] + ty * stride()[0] + start_tx * this_bpp;
+			uint8_t* op = other->data()[0] + oy * other->stride()[0];
+			for (int tx = start_tx, ox = start_ox; tx < size().width && ox < other->size().width; ++tx, ++ox) {
+				float const alpha = float (op[3]) / 255;
+				/* Blend high bytes */
+				tp[1] = op[0] * alpha + tp[1] * (1 - alpha);
+				tp[3] = op[1] * alpha + tp[3] * (1 - alpha);
+				tp[5] = op[2] * alpha + tp[5] * (1 - alpha);
+				
+				tp += this_bpp;
+				op += other_bpp;
+			}
+		}
+		break;
+	}
+	default:
+		DCPOMATIC_ASSERT (false);
 	}
 }
 
@@ -383,8 +468,8 @@ void
 Image::copy (shared_ptr<const Image> other, Position<int> position)
 {
 	/* Only implemented for RGB24 onto RGB24 so far */
-	assert (_pixel_format == PIX_FMT_RGB24 && other->pixel_format() == PIX_FMT_RGB24);
-	assert (position.x >= 0 && position.y >= 0);
+	DCPOMATIC_ASSERT (_pixel_format == PIX_FMT_RGB24 && other->pixel_format() == PIX_FMT_RGB24);
+	DCPOMATIC_ASSERT (position.x >= 0 && position.y >= 0);
 
 	int const N = min (position.x + other->size().width, size().width) - position.x;
 	for (int ty = position.y, oy = 0; ty < size().height && oy < other->size().height; ++ty, ++oy) {
@@ -545,7 +630,7 @@ Image::Image (shared_ptr<const Image> other, bool aligned)
 	allocate ();
 
 	for (int i = 0; i < components(); ++i) {
-		assert(line_size()[i] == other->line_size()[i]);
+		DCPOMATIC_ASSERT (line_size()[i] == other->line_size()[i]);
 		uint8_t* p = _data[i];
 		uint8_t* q = other->data()[i];
 		for (int j = 0; j < lines(i); ++j) {

@@ -75,6 +75,8 @@ public:
 		return _audio_delay;
 	}
 
+	std::string processing_description () const;
+
 private:
 	/** Gain to apply to audio in dB */
 	double _audio_gain;

@@ -154,6 +154,7 @@ DolbyCertificateDialog::serial_selected ()
 void
 DolbyCertificateDialog::download ()
 {
+	downloaded (false);
 	_message->SetLabel (_("Downloading certificate"));
 
 #ifdef DCPOMATIC_OSX
@@ -189,5 +190,6 @@ DolbyCertificateDialog::finish_download ()
 		_message->SetLabel (std_to_wx (error.get ()));
 	} else {
 		_message->SetLabel (_("Certificate downloaded"));
+		downloaded (true);
 	}
 }

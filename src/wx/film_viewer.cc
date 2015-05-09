@@ -295,7 +295,7 @@ FilmViewer::process_video (shared_ptr<PlayerVideoFrame> pvf, Time t)
 		return;
 	}
 	
-	_frame = pvf->image ();
+	_frame = pvf->image (PIX_FMT_RGB24);
 	_got_frame = true;
 
 	set_position_text (t);
@@ -314,15 +314,7 @@ FilmViewer::set_position_text (Time t)
 	/* Count frame number from 1 ... not sure if this is the best idea */
 	_frame_number->SetLabel (wxString::Format (wxT("%d"), int (rint (t * fps / TIME_HZ)) + 1));
 	
-	double w = static_cast<double>(t) / TIME_HZ;
-	int const h = (w / 3600);
-	w -= h * 3600;
-	int const m = (w / 60);
-	w -= m * 60;
-	int const s = floor (w);
-	w -= s;
-	int const f = rint (w * fps);
-	_timecode->SetLabel (wxString::Format (wxT("%02d:%02d:%02d.%02d"), h, m, s, f));
+	_timecode->SetLabel (time_to_timecode (t, fps));
 }
 
 /** Ask the player to emit its next frame, then update our display */
@@ -348,7 +340,9 @@ FilmViewer::fetch_next_frame ()
 		/* There was a problem opening a content file; we'll let this slide as it
 		   probably means a missing content file, which we're already taking care of.
 		*/
-	}
+	} catch (std::exception& e) {
+		error_dialog (this, wxString::Format (_("Could not decode video for view (%s)"), std_to_wx(e.what()).data()));
+	}		
 
 	_panel->Refresh ();
 	_panel->Update ();

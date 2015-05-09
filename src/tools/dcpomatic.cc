@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <boost/filesystem.hpp>
 #ifdef __WXMSW__
 #include <shellapi.h>
@@ -35,7 +36,6 @@
 #include "wx/film_editor.h"
 #include "wx/job_manager_view.h"
 #include "wx/config_dialog.h"
-#include "wx/job_wrapper.h"
 #include "wx/wx_util.h"
 #include "wx/new_film_dialog.h"
 #include "wx/properties_dialog.h"
@@ -62,9 +62,11 @@
 #include "lib/content_factory.h"
 
 using std::cout;
+using std::wcout;
 using std::string;
 using std::vector;
 using std::wstring;
+using std::wstringstream;
 using std::map;
 using std::make_pair;
 using std::list;
@@ -82,6 +84,8 @@ public:
 		_dialog = new wxMessageDialog (
 			0,
 			wxString::Format (_("Save changes to film \"%s\" before closing?"), std_to_wx (name).data()),
+			/// TRANSLATORS: this is the heading for a dialog box, which tells the user that the current
+			/// project (Film) has been changed since it was last saved.
 			_("Film changed"),
 			wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION
 			);
@@ -119,7 +123,8 @@ enum {
 	ID_file_properties,
 	ID_file_history,
 	/* Allow spare IDs after _history for the recent files list */
-	ID_content_scale_to_fit_width = 100,
+	ID_restore_default_preferences = 100,
+	ID_content_scale_to_fit_width,
 	ID_content_scale_to_fit_height,
 	ID_jobs_make_dcp,
 	ID_jobs_make_kdms,
@@ -127,7 +132,9 @@ enum {
 	ID_jobs_show_dcp,
 	ID_tools_hints,
 	ID_tools_encoding_servers,
-	ID_tools_check_for_updates
+	ID_tools_check_for_updates,
+	/* IDs for shortcuts (with no associated menu item) */
+	ID_add_file
 };
 
 class Frame : public wxFrame
@@ -173,6 +180,7 @@ public:
 		Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&Frame::file_history, this, _1),        ID_file_history, ID_file_history + HISTORY_SIZE);
 		Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&Frame::file_exit, this),               wxID_EXIT);
 		Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&Frame::edit_preferences, this),        wxID_PREFERENCES);
+		Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&Frame::restore_default_preferences, this), ID_restore_default_preferences);
 		Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&Frame::content_scale_to_fit_width, this), ID_content_scale_to_fit_width);
 		Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&Frame::content_scale_to_fit_height, this), ID_content_scale_to_fit_height);
 		Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&Frame::jobs_make_dcp, this),           ID_jobs_make_dcp);
@@ -193,7 +201,7 @@ public:
 
 		_film_editor = new FilmEditor (overall_panel);
 		_film_viewer = new FilmViewer (overall_panel);
-		JobManagerView* job_manager_view = new JobManagerView (overall_panel, static_cast<JobManagerView::Buttons> (0));
+		JobManagerView* job_manager_view = new JobManagerView (overall_panel);
 
 		wxBoxSizer* right_sizer = new wxBoxSizer (wxVERTICAL);
 		right_sizer->Add (_film_viewer, 2, wxEXPAND | wxALL, 6);
@@ -211,6 +219,12 @@ public:
 		JobManager::instance()->ActiveJobsChanged.connect (boost::bind (&Frame::set_menu_sensitivity, this));
 
 		overall_panel->SetSizer (main_sizer);
+
+		wxAcceleratorEntry accel[1];
+		accel[0].Set (wxACCEL_CTRL, static_cast<int>('A'), ID_add_file);
+		Bind (wxEVT_MENU, boost::bind (&FilmEditor::content_add_file_clicked, _film_editor), ID_add_file);
+		wxAcceleratorTable accel_table (1, accel);
+		SetAcceleratorTable (accel_table);
 	}
 
 	void new_film (boost::filesystem::path path)
@@ -368,18 +382,40 @@ private:
 		_config_dialog->Show (this);
 	}
 
+	void restore_default_preferences ()
+	{
+		Config::restore_defaults ();
+	}
+
 	void jobs_make_dcp ()
 	{
 		double required;
 		double available;
+		bool can_hard_link;
 
-		if (!_film->should_be_enough_disk_space (required, available)) {
-			if (!confirm_dialog (this, wxString::Format (_("The DCP for this film will take up about %.1f Gb, and the disk that you are using only has %.1f Gb available.  Do you want to continue anyway?"), required, available))) {
+		if (!_film->should_be_enough_disk_space (required, available, can_hard_link)) {
+			wxString message;
+			if (can_hard_link) {
+				message = wxString::Format (_("The DCP for this film will take up about %.1f Gb, and the disk that you are using only has %.1f Gb available.  Do you want to continue anyway?"), required, available);
+			} else {
+				message = wxString::Format (_("The DCP and intermediate files for this film will take up about %.1f Gb, and the disk that you are using only has %.1f Gb available.  You would need half as much space if the filesystem supported hard links, but it does not.  Do you want to continue anyway?"), required, available);
+			}
+			if (!confirm_dialog (this, message)) {
 				return;
 			}
 		}
-		
-		JobWrapper::make_dcp (this, _film);
+
+		try {
+			/* It seems to make sense to auto-save metadata here, since the make DCP may last
+			   a long time, and crashes/power failures are moderately likely.
+			*/
+			_film->write_metadata ();
+			_film->make_dcp ();
+		} catch (BadSettingError& e) {
+			error_dialog (this, wxString::Format (_("Bad setting for %s (%s)"), std_to_wx(e.setting()).data(), std_to_wx(e.what()).data()));
+		} catch (std::exception& e) {
+			error_dialog (this, wxString::Format (_("Could not make DCP: %s"), std_to_wx(e.what()).data()));
+		}
 	}
 
 	void jobs_make_kdms ()
@@ -407,7 +443,7 @@ private:
 		} catch (exception& e) {
 			error_dialog (this, e.what ());
 		} catch (...) {
-			error_dialog (this, _("An unknown exeception occurred."));
+			error_dialog (this, _("An unknown exception occurred."));
 		}
 	
 		d->Destroy ();
@@ -436,12 +472,14 @@ private:
 
 	void jobs_show_dcp ()
 	{
-#ifdef __WXMSW__
-		string d = _film->directory().string ();
-		wstring w;
-		w.assign (d.begin(), d.end());
-		ShellExecute (0, L"open", w.c_str(), 0, 0, SW_SHOWDEFAULT);
-#else
+#ifdef DCPOMATIC_WINDOWS
+		wstringstream args;
+		args << "/select," << _film->dir (_film->dcp_name(false));
+		wcout << args.str() << "\n";
+		ShellExecute (0, L"open", L"explorer.exe", args.str().c_str(), 0, SW_SHOWDEFAULT);
+#endif
+
+#ifdef DCPOMATIC_LINUX
 		int r = system ("which nautilus");
 		if (WEXITSTATUS (r) == 0) {
 			r = system (string ("nautilus " + _film->directory().string()).c_str ());
@@ -456,6 +494,13 @@ private:
 					error_dialog (this, _("Could not show DCP (could not run konqueror)"));
 				}
 			}
+		}
+#endif
+
+#ifdef DCPOMATIC_OSX
+		int r = system (string ("open -R " + _film->dir (_film->dcp_name (false)).string ()).c_str ());
+		if (WEXITSTATUS (r)) {
+			error_dialog (this, _("Could not show DCP"));
 		}
 #endif		
 	}
@@ -589,10 +634,10 @@ private:
 	void setup_menu (wxMenuBar* m)
 	{
 		_file_menu = new wxMenu;
-		add_item (_file_menu, _("New..."), ID_file_new, ALWAYS);
-		add_item (_file_menu, _("&Open..."), ID_file_open, ALWAYS);
+		add_item (_file_menu, _("New...\tCtrl-N"), ID_file_new, ALWAYS);
+		add_item (_file_menu, _("&Open...\tCtrl-O"), ID_file_open, ALWAYS);
 		_file_menu->AppendSeparator ();
-		add_item (_file_menu, _("&Save"), ID_file_save, NEEDS_FILM);
+		add_item (_file_menu, _("&Save\tCtrl-S"), ID_file_save, NEEDS_FILM);
 		_file_menu->AppendSeparator ();
 		add_item (_file_menu, _("&Properties..."), ID_file_properties, NEEDS_FILM);
 
@@ -608,11 +653,11 @@ private:
 		add_item (_file_menu, _("&Quit"), wxID_EXIT, ALWAYS);
 #endif	
 	
-#ifdef __WXOSX__	
-		add_item (_file_menu, _("&Preferences..."), wxID_PREFERENCES, ALWAYS);
+#ifdef __WXOSX__
+		add_item (_file_menu, _("&Preferences...\tCtrl-P"), wxID_PREFERENCES, ALWAYS);
 #else
 		wxMenu* edit = new wxMenu;
-		add_item (edit, _("&Preferences..."), wxID_PREFERENCES, ALWAYS);
+		add_item (edit, _("&Preferences...\tCtrl-P"), wxID_PREFERENCES, ALWAYS);
 #endif
 
 		wxMenu* content = new wxMenu;
@@ -620,8 +665,8 @@ private:
 		add_item (content, _("Scale to fit &height"), ID_content_scale_to_fit_height, NEEDS_FILM | NEEDS_SELECTED_VIDEO_CONTENT);
 		
 		wxMenu* jobs_menu = new wxMenu;
-		add_item (jobs_menu, _("&Make DCP"), ID_jobs_make_dcp, NEEDS_FILM | NOT_DURING_DCP_CREATION);
-		add_item (jobs_menu, _("Make &KDMs..."), ID_jobs_make_kdms, NEEDS_FILM);
+		add_item (jobs_menu, _("&Make DCP\tCtrl-M"), ID_jobs_make_dcp, NEEDS_FILM | NOT_DURING_DCP_CREATION);
+		add_item (jobs_menu, _("Make &KDMs...\tCtrl-K"), ID_jobs_make_kdms, NEEDS_FILM);
 		add_item (jobs_menu, _("&Send DCP to TMS"), ID_jobs_send_dcp_to_tms, NEEDS_FILM | NOT_DURING_DCP_CREATION | NEEDS_CPL);
 		add_item (jobs_menu, _("S&how DCP"), ID_jobs_show_dcp, NEEDS_FILM | NOT_DURING_DCP_CREATION | NEEDS_CPL);
 
@@ -629,6 +674,8 @@ private:
 		add_item (tools, _("Hints..."), ID_tools_hints, 0);
 		add_item (tools, _("Encoding servers..."), ID_tools_encoding_servers, 0);
 		add_item (tools, _("Check for updates"), ID_tools_check_for_updates, 0);
+		tools->AppendSeparator ();
+		add_item (tools, _("Restore default preferences"), ID_restore_default_preferences, ALWAYS);
 		
 		wxMenu* help = new wxMenu;
 #ifdef __WXOSX__	
@@ -776,7 +823,7 @@ class App : public wxApp
 	}
 	catch (exception& e)
 	{
-		error_dialog (0, wxString::Format ("DCP-o-matic could not start: %s", e.what ()));
+		error_dialog (0, wxString::Format ("DCP-o-matic could not start: %s", std_to_wx(e.what()).data()));
 		return true;
 	}
 
@@ -809,8 +856,10 @@ class App : public wxApp
 	{
 		try {
 			throw;
+		} catch (FileError& e) {
+			error_dialog (0, wxString::Format (_("An exception occurred: %s in %s.\n\nPlease report this problem to the DCP-o-matic author (carl@dcpomatic.com)."), std_to_wx (e.what()).data(), std_to_wx(e.file().string()).data ()));
 		} catch (exception& e) {
-			error_dialog (0, wxString::Format (_("An exception occurred (%s).  Please report this problem to the DCP-o-matic author (carl@dcpomatic.com)."), e.what ()));
+			error_dialog (0, wxString::Format (_("An exception occurred: %s.\n\nPlease report this problem to the DCP-o-matic author (carl@dcpomatic.com)."), std_to_wx(e.what()).data ()));
 		} catch (...) {
 			error_dialog (0, _("An unknown exception occurred.  Please report this problem to the DCP-o-matic author (carl@dcpomatic.com)."));
 		}
@@ -840,30 +889,20 @@ class App : public wxApp
 
 	void update_checker_state_changed ()
 	{
-		switch (UpdateChecker::instance()->state ()) {
-		case UpdateChecker::YES:
-		{
-			string test;
-			if (Config::instance()->check_for_test_updates ()) {
-				test = UpdateChecker::instance()->test ();
-			}
-			UpdateDialog* dialog = new UpdateDialog (_frame, UpdateChecker::instance()->stable (), test);
+		UpdateChecker* uc = UpdateChecker::instance ();
+		if (uc->state() == UpdateChecker::YES && (uc->stable() || uc->test())) {
+			UpdateDialog* dialog = new UpdateDialog (_frame, uc->stable (), uc->test ());
 			dialog->ShowModal ();
 			dialog->Destroy ();
-			break;
-		}
-		case UpdateChecker::NO:
-			if (!UpdateChecker::instance()->last_emit_was_first ()) {
-				error_dialog (_frame, _("There are no new versions of DCP-o-matic available."));
-			}
-			break;
-		case UpdateChecker::FAILED:
+		} else if (uc->state() == UpdateChecker::FAILED) {
 			if (!UpdateChecker::instance()->last_emit_was_first ()) {
 				error_dialog (_frame, _("The DCP-o-matic download server could not be contacted."));
 			}
-		default:
-			break;
-		}
+		} else {
+			if (!UpdateChecker::instance()->last_emit_was_first ()) {
+				error_dialog (_frame, _("There are no new versions of DCP-o-matic available."));
+			}
+		}			
 	}
 
 	Frame* _frame;

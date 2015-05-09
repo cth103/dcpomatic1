@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 */
 
 #include <boost/lexical_cast.hpp>
+#include <boost/foreach.hpp>
 #include <wx/spinctrl.h>
 #include "lib/config.h"
 #include "lib/sound_processor.h"
@@ -32,6 +33,7 @@
 using std::vector;
 using std::cout;
 using std::string;
+using std::pair;
 using boost::dynamic_pointer_cast;
 using boost::lexical_cast;
 using boost::shared_ptr;
@@ -81,11 +83,20 @@ AudioPanel::AudioPanel (FilmEditor* e)
 	add_label_to_grid_bag_sizer (grid, this, _("Stream"), true, wxGBPosition (r, 0));
 	_stream = new wxChoice (this, wxID_ANY);
 	grid->Add (_stream, wxGBPosition (r, 1));
-	_description = add_label_to_grid_bag_sizer (grid, this, "", false, wxGBPosition (r, 3));
+	_stream_description = add_label_to_grid_bag_sizer (grid, this, "", false, wxGBPosition (r, 3));
 	++r;
 	
 	_mapping = new AudioMappingView (this);
 	_sizer->Add (_mapping, 1, wxEXPAND | wxALL, 6);
+	++r;
+
+	_description = new wxStaticText (this, wxID_ANY, wxT (" \n"), wxDefaultPosition, wxDefaultSize);
+	_sizer->Add (_description, 0, wxALL, 12);
+	wxFont font = _description->GetFont();
+	font.SetStyle (wxFONTSTYLE_ITALIC);
+	font.SetPointSize (font.GetPointSize() - 1);
+	_description->SetFont (font);
+	++r;
 
 	_gain->wrapped()->SetRange (-60, 60);
 	_gain->wrapped()->SetDigits (1);
@@ -96,7 +107,7 @@ AudioPanel::AudioPanel (FilmEditor* e)
 	_show->Bind                  (wxEVT_COMMAND_BUTTON_CLICKED,   boost::bind (&AudioPanel::show_clicked, this));
 	_gain_calculate_button->Bind (wxEVT_COMMAND_BUTTON_CLICKED,   boost::bind (&AudioPanel::gain_calculate_button_clicked, this));
 
-	_mapping->Changed.connect (boost::bind (&AudioPanel::mapping_changed, this, _1));
+	_mapping_connection = _mapping->Changed.connect (boost::bind (&AudioPanel::mapping_changed, this, _1));
 }
 
 
@@ -107,6 +118,9 @@ AudioPanel::film_changed (Film::Property property)
 	case Film::AUDIO_CHANNELS:
 		_mapping->set_channels (_editor->film()->audio_channels ());
 		_sizer->Layout ();
+		break;
+	case Film::VIDEO_FRAME_RATE:
+		setup_description ();
 		break;
 	default:
 		break;
@@ -127,22 +141,26 @@ AudioPanel::film_content_changed (int property)
 	if (property == AudioContentProperty::AUDIO_MAPPING) {
 		_mapping->set (acs ? acs->audio_mapping () : AudioMapping ());
 		_sizer->Layout ();
+	} else if (property == AudioContentProperty::AUDIO_FRAME_RATE) {
+		setup_description ();
 	} else if (property == FFmpegContentProperty::AUDIO_STREAM) {
 		setup_stream_description ();
 		_mapping->set (acs ? acs->audio_mapping () : AudioMapping ());
 		_sizer->Layout ();
 	} else if (property == FFmpegContentProperty::AUDIO_STREAMS) {
-		_stream->Clear ();
 		if (fcs) {
-			vector<shared_ptr<FFmpegAudioStream> > a = fcs->audio_streams ();
-			for (vector<shared_ptr<FFmpegAudioStream> >::iterator i = a.begin(); i != a.end(); ++i) {
-				_stream->Append (std_to_wx ((*i)->name), new wxStringClientData (std_to_wx ((*i)->identifier ())));
+			vector<pair<string, string> > data;
+			BOOST_FOREACH (shared_ptr<FFmpegAudioStream> i, fcs->audio_streams ()) {
+				data.push_back (make_pair (i->name, i->identifier ()));
 			}
+			checked_set (_stream, data);
 			
 			if (fcs->audio_stream()) {
 				checked_set (_stream, fcs->audio_stream()->identifier ());
 				setup_stream_description ();
 			}
+		} else {
+			_stream->Clear ();
 		}
 	}
 }
@@ -151,9 +169,9 @@ void
 AudioPanel::gain_calculate_button_clicked ()
 {
 	GainCalculatorDialog* d = new GainCalculatorDialog (this);
-	d->ShowModal ();
+	int const r = d->ShowModal ();
 
-	if (d->wanted_fader() == 0 || d->actual_fader() == 0) {
+	if (r == wxID_CANCEL || d->wanted_fader() == 0 || d->actual_fader() == 0) {
 		d->Destroy ();
 		return;
 	}
@@ -186,7 +204,7 @@ AudioPanel::show_clicked ()
 		return;
 	}
 	
-	_audio_dialog = new AudioDialog (this);
+	_audio_dialog = new AudioDialog (this, _editor->film ());
 	_audio_dialog->Show ();
 	_audio_dialog->set_content (ac.front ());
 }
@@ -220,18 +238,30 @@ AudioPanel::stream_changed ()
 }
 
 void
+AudioPanel::setup_description ()
+{
+	AudioContentList ac = _editor->selected_audio_content ();
+	if (ac.size () != 1) {
+		_description->SetLabel ("");
+		return;
+	}
+
+	_description->SetLabel (std_to_wx (ac.front()->processing_description ()));
+}
+
+void
 AudioPanel::setup_stream_description ()
 {
 	FFmpegContentList fc = _editor->selected_ffmpeg_content ();
 	if (fc.size() != 1) {
-		_description->SetLabel ("");
+		checked_set (_stream_description, wxT (""));
 		return;
 	}
 
 	shared_ptr<FFmpegContent> fcs = fc.front ();
 
 	if (!fcs->audio_stream ()) {
-		_description->SetLabel (wxT (""));
+		_stream_description->SetLabel (wxT (""));
 	} else {
 		wxString s;
 		if (fcs->audio_channels() == 1) {
@@ -240,7 +270,7 @@ AudioPanel::setup_stream_description ()
 			s << fcs->audio_channels() << wxT (" ") << _("channels");
 		}
 		s << wxT (", ") << fcs->content_audio_frame_rate() << _("Hz");
-		_description->SetLabel (s);
+		checked_set (_stream_description, s);
 	}
 }
 
@@ -270,6 +300,7 @@ AudioPanel::content_selection_changed ()
 	_mapping->Enable (sel.size() == 1);
 
 	film_content_changed (AudioContentProperty::AUDIO_MAPPING);
+	film_content_changed (AudioContentProperty::AUDIO_FRAME_RATE);
 	film_content_changed (FFmpegContentProperty::AUDIO_STREAM);
 	film_content_changed (FFmpegContentProperty::AUDIO_STREAMS);
 }

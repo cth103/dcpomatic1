@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 */
 
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "sndfile_content.h"
 #include "sndfile_decoder.h"
 #include "film.h"
@@ -32,7 +32,6 @@
 using std::string;
 using std::cout;
 using boost::shared_ptr;
-using libdcp::raw_convert;
 
 SndfileContent::SndfileContent (shared_ptr<const Film> f, boost::filesystem::path p)
 	: Content (f, p)
@@ -66,26 +65,7 @@ SndfileContent::technical_summary () const
 {
 	return Content::technical_summary() + " - "
 		+ AudioContent::technical_summary ()
-		+ " - sndfile";
-}
-
-string
-SndfileContent::information () const
-{
-	if (_audio_frame_rate == 0) {
-		return "";
-	}
-	
-	SafeStringStream s;
-
-	s << String::compose (
-		_("%1 channels, %2kHz, %3 samples"),
-		audio_channels(),
-		content_audio_frame_rate() / 1000.0,
-		audio_length()
-		);
-	
-	return s.str ();
+		+ N_(" - sndfile");
 }
 
 bool
@@ -104,7 +84,7 @@ SndfileContent::examine (shared_ptr<Job> job)
 	Content::examine (job);
 
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
+	DCPOMATIC_ASSERT (film);
 
 	SndfileDecoder dec (film, shared_from_this());
 
@@ -146,13 +126,10 @@ Time
 SndfileContent::full_length () const
 {
 	shared_ptr<const Film> film = _film.lock ();
-	assert (film);
-
-	FrameRateChange frc = film->active_frame_rate_change (position ());
+	DCPOMATIC_ASSERT (film);
 
 	OutputAudioFrame const len = divide_with_round (
-		audio_length() * output_audio_frame_rate() * frc.source,
-		content_audio_frame_rate() * film->video_frame_rate()
+		audio_length() * output_audio_frame_rate(), content_audio_frame_rate()
 		);
 	
 	return film->audio_frames_to_time (len);

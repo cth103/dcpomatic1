@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
     Copyright (C) 2000-2007 Paul Davis
 
     This program is free software; you can redistribute it and/or modify
@@ -32,6 +32,7 @@
 #include <boost/optional.hpp>
 #include <boost/filesystem.hpp>
 #include <libdcp/util.h>
+#include <libdcp/picture_asset_writer.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavfilter/avfilter.h>
@@ -39,6 +40,7 @@ extern "C" {
 #include "compose.hpp"
 #include "types.h"
 #include "video_content.h"
+#include "exceptions.h"
 
 #undef check
 
@@ -46,6 +48,10 @@ extern "C" {
 #define MAX_DCP_AUDIO_CHANNELS 12
 #define DCPOMATIC_HELLO "Boys, you gotta learn not to talk to nuns that way"
 #define HISTORY_SIZE 10
+
+#define DCPOMATIC_ASSERT(x) if (!(x)) throw ProgrammingError (__FILE__, __LINE__);
+
+extern std::string program_name;
 
 namespace libdcp {
 	class Signer;
@@ -61,7 +67,7 @@ extern double seconds (struct timeval);
 extern void dcpomatic_setup ();
 extern void dcpomatic_setup_gettext_i18n (std::string);
 extern std::vector<std::string> split_at_spaces_considering_quotes (std::string);
-extern std::string md5_digest (std::vector<boost::filesystem::path>, boost::shared_ptr<Job>);
+extern std::string md5_digest_head_tail (std::vector<boost::filesystem::path>, boost::uintmax_t size);
 extern void ensure_ui_thread ();
 extern std::string audio_channel_name (int);
 extern bool valid_image_file (boost::filesystem::path);
@@ -83,6 +89,9 @@ extern int get_optional_int (std::multimap<std::string, std::string> const & kv,
 extern std::string get_optional_string (std::multimap<std::string, std::string> const & kv, std::string k);
 extern void* wrapped_av_malloc (size_t);
 extern int64_t divide_with_round (int64_t a, int64_t b);
+extern void set_backtrace_file (boost::filesystem::path);
+extern libdcp::FrameInfo read_frame_info (FILE* file, int frame, Eyes eyes);
+extern void write_frame_info (FILE* file, int frame, Eyes eyes, libdcp::FrameInfo info);
 
 /** @class Socket
  *  @brief A class to wrap a boost::asio::ip::tcp::socket with some things

@@ -18,7 +18,7 @@
 */
 
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "server_finder.h"
 #include "exceptions.h"
 #include "util.h"
@@ -26,13 +26,14 @@
 #include "cross.h"
 #include "ui_signaller.h"
 
+#include "i18n.h"
+
 using std::string;
 using std::list;
 using std::vector;
 using std::cout;
 using boost::shared_ptr;
 using boost::scoped_array;
-using libdcp::raw_convert;
 
 ServerFinder* ServerFinder::_instance = 0;
 
@@ -102,27 +103,42 @@ void
 ServerFinder::listen_thread ()
 try
 {
+	using namespace boost::asio::ip;
+
+	boost::asio::io_service io_service;
+	boost::scoped_ptr<tcp::acceptor> acceptor;
+	try {
+		acceptor.reset (new tcp::acceptor (io_service, tcp::endpoint (tcp::v4(), Config::instance()->server_port_base() + 1)));
+	} catch (...) {
+		boost::throw_exception (NetworkError (_("Could not listen for remote encode servers.  Perhaps another instance of DCP-o-matic is running.")));
+	}
+
 	while (true) {
-		shared_ptr<Socket> sock (new Socket (60));
+		tcp::socket socket (io_service);
+		acceptor->accept (socket);
 
-		try {
-			sock->accept (Config::instance()->server_port_base() + 1);
-		} catch (std::exception& e) {
-			continue;
-		}
+		/* XXX: these reads should have timeouts, otherwise we will stop finding servers
+		   if one dies during this conversation
+		*/
 
-		uint32_t length = sock->read_uint32 ();
+		uint32_t length = 0;
+		boost::asio::read (socket, boost::asio::buffer (&length, sizeof (uint32_t)));
+		length = ntohl (length);
+
 		scoped_array<char> buffer (new char[length]);
-		sock->read (reinterpret_cast<uint8_t*> (buffer.get()), length);
+		boost::asio::read (socket, boost::asio::buffer (reinterpret_cast<uint8_t*> (buffer.get ()), length));
 		
 		string s (buffer.get());
 		shared_ptr<cxml::Document> xml (new cxml::Document ("ServerAvailable"));
 		xml->read_string (s);
-
-		string const ip = sock->socket().remote_endpoint().address().to_string ();
+		
+		string const ip = socket.remote_endpoint().address().to_string ();
 		if (!server_found (ip)) {
 			ServerDescription sd (ip, xml->number_child<int> ("Threads"));
-			_servers.push_back (sd);
+			{
+				boost::mutex::scoped_lock lm (_mutex);
+				_servers.push_back (sd);
+			}
 			ui_signaller->emit (boost::bind (boost::ref (ServerFound), sd));
 		}
 	}
@@ -144,13 +160,9 @@ ServerFinder::server_found (string ip) const
 	return i != _servers.end ();
 }
 
-void
+boost::signals2::connection
 ServerFinder::connect (boost::function<void (ServerDescription)> fn)
 {
-	if (_disabled) {
-		return;
-	}
-	
 	boost::mutex::scoped_lock lm (_mutex);
 
 	/* Emit the current list of servers */
@@ -158,7 +170,7 @@ ServerFinder::connect (boost::function<void (ServerDescription)> fn)
 		fn (*i);
 	}
 
-	ServerFound.connect (fn);
+	return ServerFound.connect (fn);
 }
 
 ServerFinder*

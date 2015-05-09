@@ -64,7 +64,7 @@ public:
 	void
 	push (boost::shared_ptr<const AudioBuffers> audio, T time)
 	{
-		assert (time >= _last_pull);
+		DCPOMATIC_ASSERT (time >= _last_pull);
 
 		F frame = _t_to_f (time);
 		F after = max (_buffers->frames(), frame + audio->frames() - _t_to_f (_last_pull));

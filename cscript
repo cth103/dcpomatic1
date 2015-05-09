@@ -8,7 +8,6 @@ deb_build_depends = {'debhelper': '8.0.0',
                      'pkg-config': '0.26',
                      'libssh-dev': '0.5.2',
                      'libsndfile1-dev': '1.0.25',
-                     'libmagick++-dev': '8:6.6.9.7',
                      'libgtk2.0-dev': '2.24.10'}
 
 deb_depends = dict()
@@ -156,11 +155,13 @@ def make_control(debian_version, bits, filename, debug):
         print >>f,''
 
 def dependencies(target):
-    return (('ffmpeg-cdist', '7e95caa'),
-            ('libdcp', '2001bef5b3a6256eedf1cada4977a3ba8a3732cd'))
+    return (('ffmpeg-cdist', 'f69bb08'),
+            ('libdcp', 'f1f2e2b'))
 
 def build(target, options):
     cmd = './waf configure --prefix=%s' % target.directory
+    if target.debug:
+        cmd += ' --enable-debug'
     if target.platform == 'windows':
         cmd += ' --target-windows'
     elif target.platform == 'linux':
@@ -172,7 +173,7 @@ def build(target, options):
             if target.version == '6.5':
                 cmd += ' --target-centos-6 --disable-tests'
             elif target.version == '7':
-                cmd += ' --target-centos-7'
+                cmd += ' --target-centos-7 --disable-tests'
 
     target.command(cmd)
     target.command('./waf')
@@ -185,6 +186,7 @@ def package_windows(target):
     target.command('sed -i "s~%%resources%%~%s/platform/windows~g" build/platform/windows/installer2.%s.nsi' % (os.getcwd(), target.bits))
     target.command('sed -i "s~%%static_deps%%~%s~g" build/platform/windows/installer2.%s.nsi' % (target.windows_prefix, target.bits))
     target.command('sed -i "s~%%cdist_deps%%~%s~g" build/platform/windows/installer2.%s.nsi' % (target.directory, target.bits))
+    target.command('sed -i "s~%%mingw%%~%s~g" build/platform/windows/installer2.%s.nsi' % (target.mingw_path, target.bits))
     target.command('sed -i "s~%%binaries%%~%s/build~g" build/platform/windows/installer2.%s.nsi' % (os.getcwd(), target.bits))
     target.command('sed -i "s~%%bits%%~32~g" build/platform/windows/installer2.%s.nsi' % target.bits)
     target.command('makensis build/platform/windows/installer2.%s.nsi' % target.bits)
@@ -207,8 +209,11 @@ def package_debian(target, cpu, version):
     target.set('CDIST_CXXFLAGS', target.get('CXXFLAGS'))
     target.set('CDIST_PKG_CONFIG_PATH', target.get('PKG_CONFIG_PATH'))
     if target.version == 'unstable':
-        target.set('CDIST_EXTRA_CONFIGURE', '--debian-unstable')
-    target.command('dpkg-buildpackage')
+        target.set('CDIST_DEBIAN_UNSTABLE', '--debian-unstable')
+    if target.debug:
+        target.set('CDIST_ENABLE_DEBUG', '--enable-debug')
+        target.set('CDIST_DEBUG_PACKAGE', '--dbg-package=dcpomatic-dbg')
+    target.command('dpkg-buildpackage -uc -us')
     
     debs = []
     for p in glob.glob('../*.deb'):

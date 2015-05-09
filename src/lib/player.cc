@@ -39,6 +39,8 @@
 #include "frame_rate_change.h"
 
 #define LOG_GENERAL(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_GENERAL);
+#define LOG_DEBUG(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_DEBUG);
+#define LOG_DEBUG_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_DEBUG);
 
 using std::list;
 using std::cout;
@@ -66,6 +68,13 @@ Player::Player (shared_ptr<const Film> f, shared_ptr<const Playlist> p)
 	_playlist_content_changed_connection = _playlist->ContentChanged.connect (bind (&Player::content_changed, this, _1, _2, _3));
 	_film_changed_connection = _film->Changed.connect (bind (&Player::film_changed, this, _1));
 	set_video_container_size (_film->frame_size ());
+}
+
+Player::~Player ()
+{
+	for (list<boost::signals2::connection>::iterator i = _decoder_connections.begin(); i != _decoder_connections.end(); ++i) {
+		i->disconnect ();
+	}
 }
 
 void
@@ -145,15 +154,16 @@ Player::pass ()
 
 			if (earliest->decoder->done()) {
 				shared_ptr<AudioContent> ac = dynamic_pointer_cast<AudioContent> (earliest->content);
-				assert (ac);
+				DCPOMATIC_ASSERT (ac);
 				shared_ptr<Resampler> re = resampler (ac, false);
 				if (re) {
+					LOG_DEBUG("Flushing resampler: earliest->audio_position=%1", earliest->audio_position);
 					shared_ptr<const AudioBuffers> b = re->flush ();
 					if (b->frames ()) {
 						process_audio (
 							earliest,
 							b,
-							ac->audio_length() * ac->output_audio_frame_rate() / ac->content_audio_frame_rate(),
+							_film->time_to_audio_frames (earliest->audio_position + ac->trim_start() - ac->position()),
 							true
 							);
 					}
@@ -205,7 +215,7 @@ Player::process_video (weak_ptr<Piece> weak_piece, shared_ptr<const ImageProxy> 
 	}
 
 	shared_ptr<VideoContent> content = dynamic_pointer_cast<VideoContent> (piece->content);
-	assert (content);
+	DCPOMATIC_ASSERT (content);
 
 	FrameRateChange frc (content->video_frame_rate(), _film->video_frame_rate());
 	if (frc.skip && (frame % 2) == 1) {
@@ -275,7 +285,18 @@ Player::process_video (weak_ptr<Piece> weak_piece, shared_ptr<const ImageProxy> 
 	}
 }
 
-/** @param already_resampled true if this data has already been through the chain up to the resampler */
+/** @param frame Frame position within the piece, starting from its start were it to be untrimmed.
+ *  In ASCII art:
+ *                  /--- position
+ *                  |
+ *   ___________________
+ *  |trimmed  |     |   | 
+ *  \_________|_____|___/
+ *
+ *  <---- frame ---->
+ *
+ *  @param already_resampled true if this data has already been through the chain up to the resampler.
+ */
 void
 Player::process_audio (weak_ptr<Piece> weak_piece, shared_ptr<const AudioBuffers> audio, AudioContent::Frame frame, bool already_resampled)
 {
@@ -285,7 +306,7 @@ Player::process_audio (weak_ptr<Piece> weak_piece, shared_ptr<const AudioBuffers
 	}
 
 	shared_ptr<AudioContent> content = dynamic_pointer_cast<AudioContent> (piece->content);
-	assert (content);
+	DCPOMATIC_ASSERT (content);
 
 	if (!already_resampled) {
 		/* Gain */
@@ -310,6 +331,7 @@ Player::process_audio (weak_ptr<Piece> weak_piece, shared_ptr<const AudioBuffers
 		return;
 	}
 
+	/* Compute time in the DCP */
 	Time time = content->position() + (content->audio_delay() * TIME_HZ / 1000) + relative_time - content->trim_start ();
 	
 	/* Remap channels */
@@ -418,6 +440,10 @@ Player::setup_pieces ()
 
 	_pieces.clear ();
 
+	for (list<boost::signals2::connection>::iterator i = _decoder_connections.begin(); i != _decoder_connections.end(); ++i) {
+		i->disconnect ();
+	}
+
 	ContentList content = _playlist->content ();
 	sort (content.begin(), content.end(), ContentSorter ());
 
@@ -435,9 +461,15 @@ Player::setup_pieces ()
 		if (fc) {
 			shared_ptr<FFmpegDecoder> fd (new FFmpegDecoder (_film, fc, _video, _audio));
 			
-			fd->Video.connect (bind (&Player::process_video, this, weak_ptr<Piece> (piece), _1, _2, _3, _4, _5, 0));
-			fd->Audio.connect (bind (&Player::process_audio, this, weak_ptr<Piece> (piece), _1, _2, false));
-			fd->Subtitle.connect (bind (&Player::process_subtitle, this, weak_ptr<Piece> (piece), _1, _2, _3, _4));
+			_decoder_connections.push_back (
+				fd->Video.connect (bind (&Player::process_video, this, weak_ptr<Piece> (piece), _1, _2, _3, _4, _5, 0))
+				);
+			_decoder_connections.push_back (
+				fd->Audio.connect (bind (&Player::process_audio, this, weak_ptr<Piece> (piece), _1, _2, false))
+				);
+			_decoder_connections.push_back (
+				fd->Subtitle.connect (bind (&Player::process_subtitle, this, weak_ptr<Piece> (piece), _1, _2, _3, _4))
+				);
 
 			fd->seek (fc->time_to_content_video_frames (fc->trim_start ()), true);
 			piece->decoder = fd;
@@ -445,28 +477,32 @@ Player::setup_pieces ()
 		
 		shared_ptr<const ImageContent> ic = dynamic_pointer_cast<const ImageContent> (*i);
 		if (ic) {
-			bool reusing = false;
+			shared_ptr<ImageDecoder> id;
 			
 			/* See if we can re-use an old ImageDecoder */
 			for (list<shared_ptr<Piece> >::const_iterator j = old_pieces.begin(); j != old_pieces.end(); ++j) {
 				shared_ptr<ImageDecoder> imd = dynamic_pointer_cast<ImageDecoder> ((*j)->decoder);
 				if (imd && imd->content() == ic) {
-					piece = *j;
-					reusing = true;
+					id = imd;
 				}
 			}
 
-			if (!reusing) {
-				shared_ptr<ImageDecoder> id (new ImageDecoder (_film, ic));
-				id->Video.connect (bind (&Player::process_video, this, weak_ptr<Piece> (piece), _1, _2, _3, _4, _5, 0));
-				piece->decoder = id;
+			if (!id) {
+				id.reset (new ImageDecoder (_film, ic));
 			}
+			
+			_decoder_connections.push_back (
+				id->Video.connect (bind (&Player::process_video, this, weak_ptr<Piece> (piece), _1, _2, _3, _4, _5, 0))
+				);
+			piece->decoder = id;
 		}
 
 		shared_ptr<const SndfileContent> sc = dynamic_pointer_cast<const SndfileContent> (*i);
 		if (sc) {
 			shared_ptr<AudioDecoder> sd (new SndfileDecoder (_film, sc));
-			sd->Audio.connect (bind (&Player::process_audio, this, weak_ptr<Piece> (piece), _1, _2, false));
+			_decoder_connections.push_back (
+				sd->Audio.connect (bind (&Player::process_audio, this, weak_ptr<Piece> (piece), _1, _2, false))
+				);
 
 			piece->decoder = sd;
 		}
@@ -613,6 +649,12 @@ Player::film_changed (Film::Property p)
 void
 Player::process_subtitle (weak_ptr<Piece> weak_piece, shared_ptr<Image> image, dcpomatic::Rect<double> rect, Time from, Time to)
 {
+	shared_ptr<Piece> piece = weak_piece.lock ();
+	DCPOMATIC_ASSERT (piece);
+
+	from -= piece->content->trim_start ();
+	to -= piece->content->trim_start ();
+
 	if (!image) {
 		/* A null image means that we should stop any current subtitles at `from' */
 		for (list<Subtitle>::iterator i = _subtitles.begin(); i != _subtitles.end(); ++i) {

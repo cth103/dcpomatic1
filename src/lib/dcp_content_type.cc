@@ -21,8 +21,8 @@
  *  @brief A description of the type of content for a DCP (e.g. feature, trailer etc.)
  */
 
-#include <cassert>
 #include "dcp_content_type.h"
+#include "util.h"
 
 #include "i18n.h"
 
@@ -80,7 +80,7 @@ DCPContentType::from_isdcf_name (string n)
 DCPContentType const *
 DCPContentType::from_index (int n)
 {
-	assert (n >= 0 && n < int (_dcp_content_types.size ()));
+	DCPOMATIC_ASSERT (n >= 0 && n < int (_dcp_content_types.size ()));
 	return _dcp_content_types[n];
 }
 

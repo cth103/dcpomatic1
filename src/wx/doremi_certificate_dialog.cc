@@ -51,6 +51,7 @@ DoremiCertificateDialog::download ()
 		return;
 	}
 
+	downloaded (false);
 	_message->SetLabel (_("Downloading certificate"));
 
 #ifdef DCPOMATIC_OSX	
@@ -101,6 +102,7 @@ DoremiCertificateDialog::finish_download (string serial)
 		error_dialog (this, std_to_wx (error.get ()));
 	} else {
 		_message->SetLabel (_("Certificate downloaded"));
+		downloaded (true);
 	}
 }
 

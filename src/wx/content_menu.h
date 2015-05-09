@@ -23,6 +23,7 @@
 #include <wx/wx.h>
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
+#include "timeline_content_view.h"
 #include "lib/types.h"
 
 class Film;
@@ -33,12 +34,13 @@ public:
 	ContentMenu (wxWindow *);
 	~ContentMenu ();
 
-	void popup (boost::weak_ptr<Film>, ContentList, wxPoint);
+	void popup (boost::weak_ptr<Film>, ContentList, TimelineContentViewList, wxPoint);
 
 private:
 	void repeat ();
 	void join ();
 	void find_missing ();
+	void properties ();
 	void remove ();
 	void maybe_found_missing (boost::weak_ptr<Job>, boost::weak_ptr<Content>, boost::weak_ptr<Content>);
 	
@@ -47,10 +49,14 @@ private:
 	boost::weak_ptr<Film> _film;
 	wxWindow* _parent;
 	ContentList _content;
+	TimelineContentViewList _views;
 	wxMenuItem* _repeat;
 	wxMenuItem* _join;
 	wxMenuItem* _find_missing;
+	wxMenuItem* _properties;
 	wxMenuItem* _remove;
+
+	boost::signals2::scoped_connection _job_connection;
 };
 
 #endif

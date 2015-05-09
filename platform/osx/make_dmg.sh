@@ -99,7 +99,6 @@ universal_copy_lib $ENV libexpat "$WORK/$libs"
 universal_copy_lib $ENV libltdl "$WORK/$libs"
 universal_copy_lib $ENV libxmlsec1 "$WORK/$libs"
 universal_copy_lib $ENV libzip "$WORK/$libs"
-universal_copy_lib $ENV libquickmail "$WORK/$libs"
 universal_copy_lib $ENV libcurl "$WORK/$libs"
 universal_copy_lib $ENV libffi "$WORK/$libs"
 universal_copy_lib $ENV libiconv "$WORK/$libs"
@@ -122,24 +121,26 @@ for obj in "$WORK/$macos/dcpomatic" "$WORK/$macos/dcpomatic_batch" "$WORK/$macos
   fi
 done
 
-cp build/platform/osx/Info.plist "$WORK/$approot"
-cp icons/dcpomatic.icns "$WORK/$resources/DCP-o-matic.icns"
-cp icons/colour_conversions.png "$WORK/$resources"
-cp icons/defaults.png "$WORK/$resources"
-cp icons/kdm_email.png "$WORK/$resources"
-cp icons/servers.png "$WORK/$resources"
-cp icons/tms.png "$WORK/$resources"
+# It doesn't matter which build we copy i18n etc. from as they
+# should be both the same: use 32-bit.
+
+cp $ROOT/32/src/dcpomatic/build/platform/osx/Info.plist "$WORK/$approot"
+cp $ROOT/32/src/dcpomatic/icons/dcpomatic.icns "$WORK/$resources/DCP-o-matic.icns"
+cp $ROOT/32/src/dcpomatic/icons/defaults.png "$WORK/$resources"
+cp $ROOT/32/src/dcpomatic/icons/kdm_email.png "$WORK/$resources"
+cp $ROOT/32/src/dcpomatic/icons/servers.png "$WORK/$resources"
+cp $ROOT/32/src/dcpomatic/icons/tms.png "$WORK/$resources"
 
 # i18n: DCP-o-matic .mo files
-for lang in de_DE es_ES fr_FR it_IT sv_SE nl_NL; do
+for lang in de_DE es_ES fr_FR it_IT sv_SE nl_NL ru_RU; do
   mkdir -p "$WORK/$resources/$lang/LC_MESSAGES"
-  cp build/src/lib/mo/$lang/*.mo "$WORK/$resources/$lang/LC_MESSAGES"
-  cp build/src/wx/mo/$lang/*.mo "$WORK/$resources/$lang/LC_MESSAGES"
-  cp build/src/tools/mo/$lang/*.mo "$WORK/$resources/$lang/LC_MESSAGES"
+  cp $ROOT/32/src/dcpomatic/build/src/lib/mo/$lang/*.mo "$WORK/$resources/$lang/LC_MESSAGES"
+  cp $ROOT/32/src/dcpomatic/build/src/wx/mo/$lang/*.mo "$WORK/$resources/$lang/LC_MESSAGES"
+  cp $ROOT/32/src/dcpomatic/build/src/tools/mo/$lang/*.mo "$WORK/$resources/$lang/LC_MESSAGES"
 done
 
 # i18n: wxWidgets .mo files
-for lang in de es fr it sv nl; do
+for lang in de es fr it sv nl ru; do
   mkdir "$WORK/$resources/$lang"
   cp $ENV/64/share/locale/$lang/LC_MESSAGES/wxstd.mo "$WORK/$resources/$lang"
 done

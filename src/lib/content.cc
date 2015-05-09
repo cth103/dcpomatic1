@@ -20,7 +20,7 @@
 #include <boost/thread/mutex.hpp>
 #include <libxml++/libxml++.h>
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "content.h"
 #include "util.h"
 #include "content_factory.h"
@@ -28,6 +28,7 @@
 #include "exceptions.h"
 #include "film.h"
 #include "safe_stringstream.h"
+#include "job.h"
 
 #include "i18n.h"
 
@@ -38,7 +39,6 @@ using std::cout;
 using std::vector;
 using std::max;
 using boost::shared_ptr;
-using libdcp::raw_convert;
 
 int const ContentProperty::PATH = 400;
 int const ContentProperty::POSITION = 401;
@@ -84,7 +84,7 @@ Content::Content (shared_ptr<const Film> f, shared_ptr<const cxml::Node> node)
 	for (list<cxml::NodePtr>::const_iterator i = path_children.begin(); i != path_children.end(); ++i) {
 		_paths.push_back ((*i)->content ());
 	}
-	_digest = node->string_child ("Digest");
+	_digest = node->optional_string_child ("Digest").get_value_or ("X");
 	_position = node->number_child<Time> ("Position");
 	_trim_start = node->number_child<Time> ("TrimStart");
 	_trim_end = node->number_child<Time> ("TrimEnd");
@@ -129,11 +129,17 @@ Content::as_xml (xmlpp::Node* node) const
 void
 Content::examine (shared_ptr<Job> job)
 {
+	job->sub (_("Computing digest"));
+	
 	boost::mutex::scoped_lock lm (_mutex);
 	vector<boost::filesystem::path> p = _paths;
 	lm.unlock ();
-	
-	string const d = md5_digest (p, job);
+
+	/* Some content files are very big, so we use a poor man's
+	   digest here: a MD5 of the first and last 1e6 bytes with the
+	   size of the first file tacked on the end as a string.
+	*/
+	string const d = md5_digest_head_tail (p, 1000000) + raw_convert<string> (boost::filesystem::file_size (p.front ()));
 
 	lm.lock ();
 	_digest = d;
@@ -265,7 +271,7 @@ Content::path_summary () const
 {
 	/* XXX: should handle multiple paths more gracefully */
 
-	assert (number_of_paths ());
+	DCPOMATIC_ASSERT (number_of_paths ());
 
 	string s = path(0).filename().string ();
 	if (number_of_paths() > 1) {

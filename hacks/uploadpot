@@ -1,0 +1,5 @@
+#!/bin/bash
+./waf pot
+scp build/src/lib/libdcpomatic.pot web.carlh.net:dcpomatic.com/pot/
+scp build/src/wx/libdcpomatic-wx.pot web.carlh.net:dcpomatic.com/pot/
+scp build/src/tools/dcpomatic.pot web.carlh.net:dcpomatic.com/pot/

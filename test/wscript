@@ -31,6 +31,7 @@ def build(bld):
                  film_metadata_test.cc
                  frame_rate_test.cc
                  image_test.cc
+                 image_filename_sorter_test.cc
                  isdcf_name_test.cc
                  job_test.cc
                  make_black_test.cc
@@ -44,7 +45,9 @@ def build(bld):
                  stream_test.cc
                  test.cc
                  threed_test.cc
+                 update_checker_test.cc
                  util_test.cc
+                 video_content_scale_test.cc
                  """
 
     obj.target = 'unit-tests'

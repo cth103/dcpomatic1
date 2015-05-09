@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2014-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 
 #include <Magick++.h>
 #include <libdcp/util.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "image_proxy.h"
 #include "image.h"
 #include "exceptions.h"
@@ -68,9 +68,9 @@ void
 RawImageProxy::add_metadata (xmlpp::Node* node) const
 {
 	node->add_child("Type")->add_child_text (N_("Raw"));
-	node->add_child("Width")->add_child_text (libdcp::raw_convert<string> (_image->size().width));
-	node->add_child("Height")->add_child_text (libdcp::raw_convert<string> (_image->size().height));
-	node->add_child("PixelFormat")->add_child_text (libdcp::raw_convert<string> (_image->pixel_format ()));
+	node->add_child("Width")->add_child_text (raw_convert<string> (_image->size().width));
+	node->add_child("Height")->add_child_text (raw_convert<string> (_image->size().height));
+	node->add_child("PixelFormat")->add_child_text (raw_convert<string> (_image->pixel_format ()));
 }
 
 void
@@ -114,6 +114,8 @@ MagickImageProxy::MagickImageProxy (shared_ptr<cxml::Node>, shared_ptr<Socket> s
 shared_ptr<Image>
 MagickImageProxy::image () const
 {
+	boost::mutex::scoped_lock lm (_mutex);
+	
 	if (_image) {
 		return _image;
 	}
@@ -156,7 +158,11 @@ MagickImageProxy::image () const
 	/* Write line-by-line here as _image must be aligned, and write() cannot be told about strides */
 	uint8_t* p = _image->data()[0];
 	for (int i = 0; i < size.height; ++i) {
+#ifdef DCPOMATIC_IMAGE_MAGICK		
 		using namespace MagickCore;
+#else
+		using namespace MagickLib;
+#endif
 		magick_image->write (0, i, size.width, 1, "RGB", CharPixel, p);
 		p += _image->stride()[0];
 	}

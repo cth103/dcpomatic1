@@ -21,18 +21,22 @@
 #include <boost/algorithm/string.hpp>
 #include <curl/curl.h>
 #include <libcxml/cxml.h>
-#include <libdcp/raw_convert.h>
+#include "raw_convert.h"
 #include "update.h"
 #include "version.h"
 #include "ui_signaller.h"
 #include "safe_stringstream.h"
+#include "config.h"
+#include "util.h"
 
 #define BUFFER_SIZE 1024
 
 using std::cout;
 using std::min;
 using std::string;
-using libdcp::raw_convert;
+using std::vector;
+using boost::is_any_of;
+using boost::algorithm::ends_with;
 
 UpdateChecker* UpdateChecker::_instance = 0;
 
@@ -105,26 +109,27 @@ UpdateChecker::thread ()
 			string s (_buffer);
 			cxml::Document doc ("Update");
 			doc.read_string (s);
+
+			/* Read the current stable and test version numbers */
+
+			string stable;
+			string test;
 			
 			{
 				boost::mutex::scoped_lock lm (_data_mutex);
-				_stable = doc.string_child ("Stable");
-				_test = doc.string_child ("Test");
+				stable = doc.string_child ("Stable");
+				test = doc.string_child ("Test");
 			}
-			
-			string current = string (dcpomatic_version);
-			bool current_pre = false;
-			if (boost::algorithm::ends_with (current, "pre")) {
-				current = current.substr (0, current.length() - 3);
-				current_pre = true;
+
+			if (version_less_than (dcpomatic_version, stable) && version_less_than (stable, "2.0.0")) {
+				_stable = stable;
 			}
-			
-			float current_float = raw_convert<float> (current);
-			if (current_pre) {
-				current_float -= 0.005;
+
+			if (Config::instance()->check_for_test_updates() && version_less_than (dcpomatic_version, test) && version_less_than (test, "2.0.0")) {
+				_test = test;
 			}
-			
-			if (current_float < raw_convert<float> (_stable)) {
+
+			if (_stable || _test) {
 				set_state (YES);
 			} else {
 				set_state (NO);
@@ -166,4 +171,37 @@ UpdateChecker::instance ()
 	return _instance;
 }
 
+bool
+UpdateChecker::version_less_than (string const & a, string const & b)
+{
+	vector<string> ap;
+	split (ap, a, is_any_of ("."));
+	vector<string> bp;
+	split (bp, b, is_any_of ("."));
+
+	DCPOMATIC_ASSERT (ap.size() == 3 && bp.size() == 3);
+
+	if (ap[0] != bp[0]) {
+		return raw_convert<int> (ap[0]) < raw_convert<int> (bp[0]);
+	}
+
+	if (ap[1] != bp[1]) {
+		return raw_convert<int> (ap[1]) < raw_convert<int> (bp[1]);
+	}
+
+	float am;
+	if (ends_with (ap[2], "devel")) {
+		am = raw_convert<int> (ap[2].substr (0, ap[2].length() - 5)) + 0.5;
+	} else {
+		am = raw_convert<int> (ap[2]);
+	}
 	
+	float bm;
+	if (ends_with (bp[2], "devel")) {
+		bm = raw_convert<int> (bp[2].substr (0, bp[2].length() - 5)) + 0.5;
+	} else {
+		bm = raw_convert<int> (bp[2]);
+	}
+	
+	return am < bm;
+}

@@ -27,11 +27,12 @@ class FFmpegSubtitleStream;
 class FFmpegExaminer : public FFmpeg, public VideoExaminer
 {
 public:
-	FFmpegExaminer (boost::shared_ptr<const FFmpegContent>);
+	FFmpegExaminer (boost::shared_ptr<const FFmpegContent>, boost::shared_ptr<Job> job = boost::shared_ptr<Job> ());
 	
-	float video_frame_rate () const;
+	boost::optional<float> video_frame_rate () const;
 	libdcp::Size video_size () const;
 	VideoContent::Frame video_length () const;
+	boost::optional<float> sample_aspect_ratio () const;
 
 	std::vector<boost::shared_ptr<FFmpegSubtitleStream> > subtitle_streams () const {
 		return _subtitle_streams;
@@ -54,4 +55,8 @@ private:
 	std::vector<boost::shared_ptr<FFmpegSubtitleStream> > _subtitle_streams;
 	std::vector<boost::shared_ptr<FFmpegAudioStream> > _audio_streams;
 	boost::optional<double> _first_video;
+	/** Video length in seconds, either obtained from the header or derived by running
+	    through the whole file.
+	*/
+	double _video_length;
 };
