@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-05-09 15:17+0100\n"
-"PO-Revision-Date: 2015-03-19 16:22+0100\n"
+"PO-Revision-Date: 2015-05-09 18:07+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: de\n"
@@ -452,7 +452,7 @@ msgstr "Überbestimmte Wavelet Entrauschung"
 
 #: src/lib/colour_conversion.cc:361
 msgid "P3 (from SMPTE RP 431-2)"
-msgstr ""
+msgstr "P3 (nach SMPTE RP 431-2)"
 
 #: src/lib/video_content.cc:508
 msgid "Padded with black to %1x%2"

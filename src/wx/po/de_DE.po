@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-05-09 15:17+0100\n"
-"PO-Revision-Date: 2015-03-19 15:57+0100\n"
+"PO-Revision-Date: 2015-05-09 18:47+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: de\n"
@@ -163,7 +163,7 @@ msgstr "Hinzufügen..."
 
 #: src/wx/colour_conversion_editor.cc:141
 msgid "Adjust white point to"
-msgstr ""
+msgstr "Zielweisspunkt"
 
 #: src/wx/hints_dialog.cc:98
 msgid ""
@@ -210,9 +210,8 @@ msgid "Audio channels"
 msgstr "Ton Kanäle"
 
 #: src/wx/content_properties_dialog.cc:61
-#, fuzzy
 msgid "Audio length"
-msgstr "Gesamtlänge"
+msgstr "Audio Länge"
 
 #: src/wx/audio_mapping_view.cc:350
 #, c-format
@@ -236,7 +235,7 @@ msgstr "BCC: Adresse"
 
 #: src/wx/colour_conversion_editor.cc:108
 msgid "Blue chromaticity"
-msgstr ""
+msgstr "Farbort Blau"
 
 #: src/wx/video_panel.cc:121
 msgid "Bottom crop"
@@ -348,9 +347,8 @@ msgid "Content"
 msgstr "Inhalt"
 
 #: src/wx/content_properties_dialog.cc:32
-#, fuzzy
 msgid "Content Properties"
-msgstr "Projekt Eigenschaften"
+msgstr "Datei Eigenschaften"
 
 #: src/wx/film_editor.cc:151
 msgid "Content Type"
@@ -539,9 +537,8 @@ msgid "Fetching..."
 msgstr "Zugriff..."
 
 #: src/wx/content_properties_dialog.cc:36
-#, fuzzy
 msgid "Filename"
-msgstr "Projekt Name"
+msgstr "Dateiname/Ort"
 
 #: src/wx/properties_dialog.cc:36
 msgid "Film Properties"
@@ -572,11 +569,10 @@ msgid "Frames"
 msgstr "Bilder"
 
 #: src/wx/about_dialog.cc:61
-#, fuzzy
 msgid "Free, open-source DCP creation from almost anything."
 msgstr ""
 "Kostenlose Open-Source-Software zur DCP-Erstellung aus nahezu allen "
-"Quellformaten."
+"verbreiteten Quellformaten."
 
 #: src/wx/kdm_dialog.cc:104
 msgid "From"
@@ -617,7 +613,7 @@ msgstr "Allgemein"
 
 #: src/wx/colour_conversion_editor.cc:101
 msgid "Green chromaticity"
-msgstr ""
+msgstr "Farbort Grün"
 
 #: src/wx/audio_mapping_view.cc:301
 msgid "HI"
@@ -660,9 +656,8 @@ msgid "Input gamma"
 msgstr "Eingangs Gamma"
 
 #: src/wx/colour_conversion_editor.cc:47
-#, fuzzy
 msgid "Input gamma correction"
-msgstr "Eingangs Gamma"
+msgstr "Eingangs-Gamma Anpassung"
 
 #: src/wx/film_editor.cc:257
 msgid "Interop"
@@ -694,7 +689,7 @@ msgstr "Lücken in Zeitleiste automatisch schließen"
 
 #: src/wx/film_editor.cc:183 src/wx/key_dialog.cc:26 src/wx/key_dialog.cc:28
 msgid "Key"
-msgstr ""
+msgstr "Schlüssel:"
 
 #: src/wx/audio_mapping_view.cc:277
 msgid "L"
@@ -829,9 +824,8 @@ msgid "Output gamma"
 msgstr "Ziel Gamma"
 
 #: src/wx/colour_conversion_editor.cc:166
-#, fuzzy
 msgid "Output gamma correction"
-msgstr "Ziel Gamma"
+msgstr "Ziel-Gamma Anpassung"
 
 #: src/wx/isdcf_metadata_dialog.cc:53
 msgid "Package Type (e.g. OV)"
@@ -852,7 +846,7 @@ msgstr "Spitze"
 #: src/wx/audio_dialog.cc:248
 #, c-format
 msgid "Peak is %.2fdB at %s"
-msgstr ""
+msgstr "Spitzenwert ist %.2fdB bei %s"
 
 #: src/wx/film_viewer.cc:64
 msgid "Play"
@@ -875,18 +869,16 @@ msgid "Pre-release"
 msgstr "Vorabversion"
 
 #: src/wx/content_menu.cc:57
-#, fuzzy
 msgid "Properties..."
-msgstr "Projekt Eigenschaften"
+msgstr "Eigenschaften..."
 
 #: src/wx/audio_mapping_view.cc:281
 msgid "R"
 msgstr "R"
 
 #: src/wx/colour_conversion_editor.cc:87
-#, fuzzy
 msgid "RGB to XYZ conversion"
-msgstr "Farbumwandlung"
+msgstr "RGB -> XYZ Konvertierung"
 
 #: src/wx/audio_dialog.cc:77
 msgid "RMS"
@@ -894,7 +886,7 @@ msgstr "RMS"
 
 #: src/wx/key_dialog.cc:48
 msgid "Random"
-msgstr ""
+msgstr "Zufällig..."
 
 #: src/wx/isdcf_metadata_dialog.cc:44
 msgid "Rating (e.g. 15)"
@@ -906,11 +898,11 @@ msgstr "Rc"
 
 #: src/wx/colour_conversion_editor.cc:80
 msgid "Rec. 601"
-msgstr ""
+msgstr "Rec. 601 (SD)"
 
 #: src/wx/colour_conversion_editor.cc:81
 msgid "Rec. 709"
-msgstr ""
+msgstr "Rec. 709 (HD)"
 
 #: src/wx/isdcf_metadata_dialog.cc:62
 msgid "Red band"
@@ -918,7 +910,7 @@ msgstr "Red band (USA, für explizite Inhalte)"
 
 #: src/wx/colour_conversion_editor.cc:94
 msgid "Red chromaticity"
-msgstr ""
+msgstr "Farbort Rot"
 
 #: src/wx/content_menu.cc:59 src/wx/film_editor.cc:321
 #: src/wx/editable_list.h:69
@@ -1220,27 +1212,24 @@ msgid "Video frame rate"
 msgstr "Bildrate der Quelle"
 
 #: src/wx/content_properties_dialog.cc:41
-#, fuzzy
 msgid "Video length"
-msgstr "Gesamtlänge"
+msgstr "Video Länge"
 
 #: src/wx/content_properties_dialog.cc:45
-#, fuzzy
 msgid "Video size"
-msgstr "Bild"
+msgstr "Bildgröße"
 
 #: src/wx/config_dialog.cc:825
 msgid "Warnings"
 msgstr "Warnungen"
 
 #: src/wx/colour_conversion_editor.cc:115
-#, fuzzy
 msgid "White point"
-msgstr "Speichern nach"
+msgstr "Weisspunkt"
 
 #: src/wx/colour_conversion_editor.cc:139
 msgid "White point adjustment"
-msgstr ""
+msgstr "Weisspunktkorrektur"
 
 #: src/wx/subtitle_panel.cc:39
 msgid "With Subtitles"
@@ -1248,7 +1237,7 @@ msgstr "Mit Untertitelung"
 
 #: src/wx/about_dialog.cc:98
 msgid "With help from"
-msgstr ""
+msgstr "Mit Hilfe von"
 
 #: src/wx/kdm_dialog.cc:172
 msgid "Write to"
@@ -1275,13 +1264,12 @@ msgid "Y Scale"
 msgstr "Vertikale Größe"
 
 #: src/wx/colour_conversion_editor.cc:76
-#, fuzzy
 msgid "YUV to RGB conversion"
-msgstr "Farbumwandlung"
+msgstr "YUV -> RGB Konvertierung"
 
 #: src/wx/colour_conversion_editor.cc:78
 msgid "YUV to RGB matrix"
-msgstr ""
+msgstr "YUV -> RGB matrix"
 
 #: src/wx/hints_dialog.cc:123
 #, c-format
@@ -1315,9 +1303,8 @@ msgid "audio"
 msgstr "Ton"
 
 #: src/wx/content_properties_dialog.cc:62
-#, fuzzy
 msgid "audio frames"
-msgstr "Ton Kanäle"
+msgstr "audio blöcke"
 
 #: src/wx/audio_panel.cc:270
 msgid "channels"
@@ -1333,9 +1320,8 @@ msgid "f"
 msgstr "f"
 
 #: src/wx/content_properties_dialog.cc:50
-#, fuzzy
 msgid "frames per second"
-msgstr "Bilder bereits bearbeitet"
+msgstr "Bilder pro Sekunde"
 
 #. // TRANSLATORS: this is an abbreviation for "hours"
 #: src/wx/timing_panel.cc:45
@@ -1370,17 +1356,16 @@ msgid "video"
 msgstr "Bild"
 
 #: src/wx/content_properties_dialog.cc:42
-#, fuzzy
 msgid "video frames"
-msgstr "Bildrate der Quelle"
+msgstr "Bilder"
 
 #: src/wx/colour_conversion_editor.cc:89
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: src/wx/colour_conversion_editor.cc:90
 msgid "y"
-msgstr ""
+msgstr "y"
 
 #~ msgid "Colour Conversions"
 #~ msgstr "Farbumwandlung"

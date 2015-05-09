@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-05-09 15:17+0100\n"
-"PO-Revision-Date: 2015-03-19 15:35+0100\n"
+"PO-Revision-Date: 2015-05-09 18:10+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: de\n"
@@ -205,7 +205,7 @@ msgstr "Neu...\tCtrl-N"
 
 #: src/tools/dcpomatic.cc:678
 msgid "Restore default preferences"
-msgstr ""
+msgstr "Voreinstellungen zurück setzen"
 
 #: src/tools/dcpomatic.cc:671
 msgid "S&how DCP"
@@ -229,15 +229,17 @@ msgid "Select film to open"
 msgstr "Zu öffnendes Projekt auswählen"
 
 #: src/tools/dcpomatic.cc:401
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The DCP and intermediate files for this film will take up about %.1f Gb, and "
 "the disk that you are using only has %.1f Gb available.  You would need half "
 "as much space if the filesystem supported hard links, but it does not.  Do "
 "you want to continue anyway?"
 msgstr ""
-"Das DCP für diesen Film wird etwa %.1f Gbyte groß. Auf dem ausgewählten "
-"Laufwerk sind aber nur %.1f Gbyte frei. Möchten Sie trotzdem weitermachen ?"
+"Das DCP und für dessen Erzeugung benötigte Zwischenprodukte für diesen Film "
+"wird etwa %.1f Gbyte groß. Auf dem ausgewählten Laufwerk sind aber nur %.1f "
+"Gbyte frei. Mit einem Dateisystem, das 'hard links' unterstützt würden Sie "
+"nur die Hälfte an Platz benötigen. Möchten Sie trotzdem weitermachen ?"
 
 #: src/tools/dcpomatic.cc:399
 #, c-format
