@@ -233,6 +233,7 @@ void
 AudioDialog::setup_peak_time ()
 {
 	if (!_analysis || !_analysis->peak ()) {
+		_peak_time->SetLabel (wxT (""));
 		return;
 	}
 
