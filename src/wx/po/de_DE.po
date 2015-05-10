@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-05-09 22:02+0100\n"
-"PO-Revision-Date: 2015-05-09 18:47+0100\n"
+"PO-Revision-Date: 2015-05-10 20:19+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: de\n"
@@ -596,7 +596,7 @@ msgstr "Verstärkung (+/-)"
 
 #: src/wx/gain_calculator_dialog.cc:27
 msgid "Gain Calculator"
-msgstr "Fader Rechner"
+msgstr "Dolby-Fader Rechner für Kinoprozessoren"
 
 #: src/wx/audio_gain_dialog.cc:28
 #, c-format
@@ -657,7 +657,7 @@ msgstr "Eingangs Gamma"
 
 #: src/wx/colour_conversion_editor.cc:47
 msgid "Input gamma correction"
-msgstr "Eingangs-Gamma Anpassung"
+msgstr "Eingangs-Gamma Korrektur"
 
 #: src/wx/film_editor.cc:257
 msgid "Interop"
@@ -689,7 +689,7 @@ msgstr "Lücken in Zeitleiste automatisch schließen"
 
 #: src/wx/film_editor.cc:183 src/wx/key_dialog.cc:26 src/wx/key_dialog.cc:28
 msgid "Key"
-msgstr "Schlüssel:"
+msgstr "Schlüssel"
 
 #: src/wx/audio_mapping_view.cc:277
 msgid "L"
@@ -709,7 +709,7 @@ msgstr "LFE"
 
 #: src/wx/colour_conversion_editor.cc:54
 msgid "Linearise input gamma curve for low values"
-msgstr "Linearisiere Eingangs Gamma für niedrige Werte"
+msgstr "Linearisiere Eingangs Gamma für niedrige Helligkeitswerte"
 
 #: src/wx/screen_dialog.cc:46
 msgid "Load from file..."
@@ -870,7 +870,7 @@ msgstr "Vorabversion"
 
 #: src/wx/content_menu.cc:57
 msgid "Properties..."
-msgstr "Eigenschaften..."
+msgstr "Datei Eigenschaften..."
 
 #: src/wx/audio_mapping_view.cc:281
 msgid "R"
@@ -878,7 +878,7 @@ msgstr "R"
 
 #: src/wx/colour_conversion_editor.cc:87
 msgid "RGB to XYZ conversion"
-msgstr "RGB -> XYZ Konvertierung"
+msgstr "RGB - XYZ Konvertierung"
 
 #: src/wx/audio_dialog.cc:77
 msgid "RMS"
@@ -970,9 +970,8 @@ msgid "SMPTE"
 msgstr "SMPTE"
 
 #: src/wx/content_properties_dialog.cc:69
-#, fuzzy
 msgid "Sampling rate"
-msgstr "Bildrate"
+msgstr "Abtastrate"
 
 #: src/wx/video_panel.cc:132
 msgid "Scale to"
@@ -980,7 +979,7 @@ msgstr "Skaliere auf"
 
 #: src/wx/film_editor.cc:225
 msgid "Scaler"
-msgstr "Skalierverfahren"
+msgstr "Skalierungsverfahren"
 
 #: src/wx/kdm_dialog.cc:60
 msgid "Screens"
@@ -1270,11 +1269,11 @@ msgstr "Vertikale Größe"
 
 #: src/wx/colour_conversion_editor.cc:76
 msgid "YUV to RGB conversion"
-msgstr "YUV -> RGB Konvertierung"
+msgstr "YUV - RGB Konvertierung"
 
 #: src/wx/colour_conversion_editor.cc:78
 msgid "YUV to RGB matrix"
-msgstr "YUV -> RGB matrix"
+msgstr "YUV - RGB matrix"
 
 #: src/wx/hints_dialog.cc:123
 #, c-format
@@ -1309,7 +1308,7 @@ msgstr "Ton"
 
 #: src/wx/content_properties_dialog.cc:74
 msgid "audio frames"
-msgstr "audio blöcke"
+msgstr "Audioblöcke"
 
 #: src/wx/audio_panel.cc:270
 msgid "channels"

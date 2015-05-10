@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-05-09 22:02+0100\n"
-"PO-Revision-Date: 2015-05-09 18:07+0100\n"
+"PO-Revision-Date: 2015-05-10 20:24+0100\n"
 "Last-Translator: Carsten Kurz\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: de\n"
@@ -344,7 +344,7 @@ msgstr "1.85:1 (Flat/BW)"
 
 #: src/lib/ratio.cc:41
 msgid "Full frame"
-msgstr "Ganzes Bild"
+msgstr "Full Container (DCI)"
 
 #: src/lib/scaler.cc:65
 msgid "Gaussian"
@@ -412,7 +412,7 @@ msgstr "Bewegungskompensierender De-Interlacer"
 
 #: src/lib/video_content_scale.cc:108
 msgid "No scale"
-msgstr "Unskaliert"
+msgstr "Originalgröße"
 
 #: src/lib/video_content_scale.cc:105
 msgid "No stretch"
@@ -452,11 +452,11 @@ msgstr "Überbestimmte Wavelet Entrauschung"
 
 #: src/lib/colour_conversion.cc:361
 msgid "P3 (from SMPTE RP 431-2)"
-msgstr "P3 (nach SMPTE RP 431-2)"
+msgstr "P3 (SMPTE RP 431-2)"
 
 #: src/lib/video_content.cc:508
 msgid "Padded with black to %1x%2"
-msgstr "...mit Schwarz gefüllt auf %1x%2"
+msgstr "Mit Schwarz erweitert auf %1x%2"
 
 #: src/lib/dcp_content_type.cc:51
 msgid "Policy"
@@ -623,7 +623,7 @@ msgstr "Sie müssen erst Inhalte hinzufügen bevor Sie ein DCP erstellen können
 
 #: src/lib/image_content.cc:75
 msgid "[moving images]"
-msgstr "[Bewegte Bilder]"
+msgstr "[Bildsequenz]"
 
 #: src/lib/image_content.cc:73
 msgid "[still]"
