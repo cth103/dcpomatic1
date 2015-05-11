@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-05-09 22:02+0100\n"
-"PO-Revision-Date: 2015-05-03 21:18+0100\n"
+"PO-Revision-Date: 2015-05-11 17:12+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -212,7 +212,7 @@ msgstr ""
 
 #: src/lib/job.cc:96
 msgid "Could not open %1"
-msgstr "Lecture de %1 impossible"
+msgstr "Ouverture de %1 impossible"
 
 #: src/lib/scp_dcp_job.cc:183
 msgid "Could not open %1 to send"
@@ -248,7 +248,7 @@ msgid ""
 "an unexpected format."
 msgstr ""
 "DCP-o-matic ne peut pas ouvrir le fichier %1. Soit il n'existe pas, soit il "
-"n'est pas au bon format."
+"est dans un format non reconnu."
 
 #: src/lib/ffmpeg_content.cc:92
 msgid ""
@@ -431,11 +431,11 @@ msgstr "OK (processus %1)"
 
 #: src/lib/content.cc:102
 msgid "Only the first piece of content to be joined can have a start trim."
-msgstr "Seul le premier contenu à ajouter peut être rogné au point d'entrée."
+msgstr "Seul le premier contenu ajouté peut être rogné au point d'entrée."
 
 #: src/lib/content.cc:106
 msgid "Only the last piece of content to be joined can have an end trim."
-msgstr "Seul le dernier contenu à ajouter peut être rogné au point de sortie."
+msgstr "Seul le dernier contenu ajouté peut être rogné au point de sortie."
 
 #: src/lib/job.cc:109
 msgid "Out of memory"

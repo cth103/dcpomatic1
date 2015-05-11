@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-05-09 22:02+0100\n"
-"PO-Revision-Date: 2015-05-03 21:28+0100\n"
+"PO-Revision-Date: 2015-05-11 15:01+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -837,7 +837,7 @@ msgstr "Crête"
 #: src/wx/audio_dialog.cc:248
 #, c-format
 msgid "Peak is %.2fdB at %s"
-msgstr ""
+msgstr "La crête est de %.2fdB à %s"
 
 #: src/wx/film_viewer.cc:64
 msgid "Play"
@@ -961,9 +961,8 @@ msgid "SMPTE"
 msgstr "SMPTE"
 
 #: src/wx/content_properties_dialog.cc:69
-#, fuzzy
 msgid "Sampling rate"
-msgstr "Vitesse image"
+msgstr "Taux d'échantillonnage"
 
 #: src/wx/video_panel.cc:132
 msgid "Scale to"
