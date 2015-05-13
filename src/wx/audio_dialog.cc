@@ -18,6 +18,7 @@
 */
 
 #include <boost/filesystem.hpp>
+#include <libxml++/libxml++.h>
 #include "lib/audio_analysis.h"
 #include "lib/film.h"
 #include "lib/audio_content.h"
@@ -118,30 +119,26 @@ AudioDialog::set_content (shared_ptr<AudioContent> c)
 void
 AudioDialog::try_to_load_analysis ()
 {
-	LOG_DEBUG_NC ("AudioDialog::try_to_load_analysis");
-	
 	if (!IsShown ()) {
-		LOG_DEBUG_NC ("(window not shown)");
 		return;
 	}
 
 	if (!boost::filesystem::exists (_content->audio_analysis_path())) {
-		LOG_DEBUG ("%1 does not exist; starting analysis job", _content->audio_analysis_path());
 		_plot->set_analysis (shared_ptr<AudioAnalysis> ());
 		_analysis.reset ();
 		_analysis_finished_connection = _content->analyse_audio (bind (&AudioDialog::analysis_finished, this));
 		return;
 	}
-	
-	LOG_DEBUG ("%1 exists; loading it", _content->audio_analysis_path ());
-	
-	_analysis.reset (new AudioAnalysis (_content->audio_analysis_path ()));
-	_plot->set_analysis (_analysis);
 
-	LOG_DEBUG ("Loaded %1 channels", _analysis->channels());
-	if (_analysis->channels() > 0) {
-		LOG_DEBUG ("Loaded %1 points on channel 0", _analysis->points(0));
+	try {
+		_analysis.reset (new AudioAnalysis (_content->audio_analysis_path ()));
+	} catch (xmlpp::exception& e) {
+		/* Probably an old-style analysis file: recreate it */
+		_analysis_finished_connection = _content->analyse_audio (bind (&AudioDialog::analysis_finished, this));
+		return;
 	}
+	
+	_plot->set_analysis (_analysis);
 
 	setup_peak_time ();
 
