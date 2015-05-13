@@ -1,3 +1,8 @@
+2015-05-13  c.hetherington  <cth@carlh.net>
+
+	* Replace audio analysis saving code with new approach
+	which is (hopefully) more robust.
+
 2015-05-11  Carl Hetherington  <cth@carlh.net>
 
 	* Updated fr_FR translation from Thierry Journet.

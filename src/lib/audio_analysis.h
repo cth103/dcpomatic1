@@ -24,6 +24,7 @@
 #include <list>
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
+#include <libcxml/cxml.h>
 #include "types.h"
 
 class AudioPoint
@@ -36,11 +37,11 @@ public:
 	};
 
 	AudioPoint ();
-	AudioPoint (FILE *);
+	AudioPoint (cxml::ConstNodePtr node);
 	AudioPoint (AudioPoint const &);
 	AudioPoint& operator= (AudioPoint const &);
 
-	void write (FILE *) const;
+	void as_xml (xmlpp::Element *) const;
 	
 	float& operator[] (int t) {
 		return _data[t];
