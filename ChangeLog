@@ -1,3 +1,7 @@
+2015-05-13  Carl Hetherington  <cth@carlh.net>
+
+	* Version 1.78.14 released.
+
 2015-05-13  c.hetherington  <cth@carlh.net>
 
 	* Replace audio analysis saving code with new approach
