@@ -44,6 +44,10 @@ BOOST_AUTO_TEST_CASE (audio_analysis_test)
 		}
 	}
 
+	float const peak = random_float ();
+	Time const peak_time = rand ();
+	a.set_peak (peak, peak_time);
+
 	a.write ("build/test/audio_analysis_test");
 
 	srand (1);
@@ -57,4 +61,9 @@ BOOST_AUTO_TEST_CASE (audio_analysis_test)
 			BOOST_CHECK_CLOSE (p[AudioPoint::RMS],  random_float (), 1);
 		}
 	}
+
+	BOOST_CHECK (b.peak ());
+	BOOST_CHECK_CLOSE (b.peak().get(), peak, 1);
+	BOOST_CHECK (b.peak_time ());
+	BOOST_CHECK_EQUAL (b.peak_time().get(), peak_time);
 }
