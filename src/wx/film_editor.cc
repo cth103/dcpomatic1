@@ -138,9 +138,15 @@ FilmEditor::make_dcp_panel ()
 		++r;
 	}
 
-	add_label_to_grid_bag_sizer (grid, _dcp_panel, _("DCP Name"), true, wxGBPosition (r, 0));
-	_dcp_name = new wxStaticText (_dcp_panel, wxID_ANY, wxT (""));
-	grid->Add (_dcp_name, wxGBPosition(r, 1), wxDefaultSpan, wxALIGN_CENTER_VERTICAL);
+	/* wxST_ELLIPSIZE_MIDDLE works around a bug in GTK2 and/or wxWidgets, see
+	   http://trac.wxwidgets.org/ticket/12539
+	*/
+	_dcp_name = new wxStaticText (
+		_dcp_panel, wxID_ANY, wxT (""), wxDefaultPosition, wxDefaultSize,
+		wxALIGN_CENTRE_HORIZONTAL | wxST_NO_AUTORESIZE | wxST_ELLIPSIZE_MIDDLE
+		);
+
+	grid->Add (_dcp_name, wxGBPosition(r, 0), wxGBSpan (1, 2), wxALIGN_CENTER_VERTICAL | wxEXPAND);
 	++r;
 
 	add_label_to_grid_bag_sizer (grid, _dcp_panel, _("Container"), true, wxGBPosition (r, 0));
@@ -796,13 +802,7 @@ FilmEditor::active_jobs_changed (bool a)
 void
 FilmEditor::setup_dcp_name ()
 {
-	string s = _film->dcp_name (true);
-	if (s.length() > 28) {
-		_dcp_name->SetLabel (std_to_wx (s.substr (0, 28)) + N_("..."));
-		_dcp_name->SetToolTip (std_to_wx (s));
-	} else {
-		_dcp_name->SetLabel (std_to_wx (s));
-	}
+	_dcp_name->SetLabel (std_to_wx (_film->dcp_name (true)));
 }
 
 void

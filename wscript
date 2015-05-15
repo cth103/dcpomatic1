@@ -15,6 +15,7 @@ def options(opt):
     opt.add_option('--enable-debug',      action='store_true', default=False, help='build with debugging information and without optimisation')
     opt.add_option('--disable-gui',       action='store_true', default=False, help='disable building of GUI tools')
     opt.add_option('--disable-tests',     action='store_true', default=False, help='disable building of tests')
+    opt.add_option('--target-arm',        action='store_true', default=False, help='set up to build for ARM')
     opt.add_option('--target-windows',    action='store_true', default=False, help='set up to do a cross-compile to make a Windows package')
     opt.add_option('--target-debian',     action='store_true', default=False, help='set up to compile for a Debian/Ubuntu package')
     opt.add_option('--debian-unstable',   action='store_true', default=False, help='add extra libraries to static-build correctly on Debian unstable')
@@ -156,6 +157,7 @@ def configure(conf):
         conf.load('winres')
 
     # conf.options -> conf.env
+    conf.env.TARGET_ARM = conf.options.target_arm
     conf.env.TARGET_WINDOWS = conf.options.target_windows
     conf.env.DISABLE_GUI = conf.options.disable_gui
     conf.env.DISABLE_TESTS = conf.options.disable_tests
@@ -176,7 +178,7 @@ def configure(conf):
 
     # Common CXXFLAGS
     conf.env.append_value('CXXFLAGS', ['-D__STDC_CONSTANT_MACROS', '-D__STDC_LIMIT_MACROS', '-D__STDC_FORMAT_MACROS',
-                                       '-msse', '-ffast-math', '-fno-strict-aliasing',
+                                       '-ffast-math', '-fno-strict-aliasing',
                                        '-Wall', '-Wno-attributes', '-Wextra', '-D_FILE_OFFSET_BITS=64'])
 
     if conf.options.enable_debug:
@@ -191,6 +193,9 @@ def configure(conf):
     #
     # Platform-specific CFLAGS hacks and other tinkering
     #
+
+    if not conf.env.TARGET_ARM:
+        conf.env.append_value('CXXFLAGS', '-msse')
 
     # Windows
     if conf.env.TARGET_WINDOWS:
@@ -225,7 +230,8 @@ def configure(conf):
 
     # Linux
     if conf.env.TARGET_LINUX:
-        conf.env.append_value('CXXFLAGS', '-mfpmath=sse')
+        if not conf.env.TARGET_ARM:
+            conf.env.append_value('CXXFLAGS', '-mfpmath=sse')
         conf.env.append_value('CXXFLAGS', '-DDCPOMATIC_LINUX')
 
     if conf.env.TARGET_DEBIAN:
