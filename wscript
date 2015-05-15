@@ -3,6 +3,7 @@ import os
 import sys
 import distutils
 import distutils.spawn
+import waflib.Logs
 
 APPNAME = 'dcpomatic'
 VERSION = '1.78.14devel'
@@ -316,7 +317,7 @@ def configure(conf):
         image = conf.check_cfg(package='ImageMagick++', args='--cflags --libs', uselib_store='MAGICK', mandatory=False)
         graphics = conf.check_cfg(package='GraphicsMagick++', args='--cflags --libs', uselib_store='MAGICK', mandatory=False)
         if image is None and graphics is None:
-            Logs.pprint('RED', 'Neither ImageMagick++ nor GraphicsMagick++ found: one or the other is required')
+            waflib.Logs.pprint('RED', 'Neither ImageMagick++ nor GraphicsMagick++ found: one or the other is required')
         if image is not None:
             conf.env.append_value('CXXFLAGS', '-DDCPOMATIC_IMAGE_MAGICK')
         if graphics is not None:
