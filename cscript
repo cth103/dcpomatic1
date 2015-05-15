@@ -101,7 +101,7 @@ deb_depends['8'] = {'libc6': '2.19-18',
                     'libzip2': '0.11.2',
                     'libwxgtk3.0-0': '3.0.2',
                     'libxcb-xfixes0': '1.10',
-                    'libxcb-shape': '1.10'}
+                    'libxcb-shape0': '1.10'}
 
 deb_depends['unstable'] = {'libc6': '2.13',
                     'libssh-4': '0.5.4',
