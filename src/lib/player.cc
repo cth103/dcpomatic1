@@ -163,7 +163,11 @@ Player::pass ()
 						process_audio (
 							earliest,
 							b,
-							_film->time_to_audio_frames (earliest->audio_position + ac->trim_start() - ac->position()),
+							_film->time_to_audio_frames (
+								earliest->audio_position +
+								ac->trim_start() -
+								ac->position() -
+								ac->audio_delay() * TIME_HZ / 1000),
 							true
 							);
 					}
