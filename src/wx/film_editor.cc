@@ -573,6 +573,7 @@ FilmEditor::film_changed (Film::Property p)
 		break;
 	case Film::INTEROP:
 		checked_set (_standard, _film->interop() ? 1 : 0);
+		setup_dcp_name ();
 		break;
 	default:
 		break;

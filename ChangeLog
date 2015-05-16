@@ -1,7 +1,9 @@
 2015-05-16  Carl Hetherington  <cth@carlh.net>
 
+	* Update DCP name on changing DCP standard (#570).
+
 	* Fix `programming error' on audio analysis
-	with a -ve delay.
+	with a -ve delay (#571).
 
 2015-05-15  Carl Hetherington  <cth@carlh.net>
 
