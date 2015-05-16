@@ -29,6 +29,7 @@
 #include "lib/job.h"
 #include "lib/cross.h"
 #include "lib/server_finder.h"
+#include "lib/ratio.h"
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE dcpomatic_test
 #include <boost/test/unit_test.hpp>
@@ -40,6 +41,8 @@ using std::cout;
 using std::cerr;
 using std::list;
 using boost::shared_ptr;
+
+boost::filesystem::path private_data = boost::filesystem::path ("..") / boost::filesystem::path ("dcpomatic-test-private");
 
 class TestUISignaller : public UISignaller
 {
@@ -60,7 +63,7 @@ struct TestConfig
 		Config::instance()->set_num_local_encoding_threads (1);
 		Config::instance()->set_server_port_base (61920);
 		Config::instance()->set_default_isdcf_metadata (ISDCFMetadata ());
-		Config::instance()->set_default_container (static_cast<Ratio*> (0));
+		Config::instance()->set_default_container (Ratio::from_id ("185"));
 		Config::instance()->set_default_dcp_content_type (static_cast<DCPContentType*> (0));
 		Config::instance()->set_default_j2k_bandwidth (100000000);
 

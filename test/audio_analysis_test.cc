@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,6 +19,13 @@
 
 #include <boost/test/unit_test.hpp>
 #include "lib/audio_analysis.h"
+#include "lib/ffmpeg_content.h"
+#include "lib/sndfile_content.h"
+#include "lib/film.h"
+#include "lib/ratio.h"
+#include "test.h"
+
+using boost::shared_ptr;
 
 static float
 random_float ()
@@ -27,7 +34,7 @@ random_float ()
 }
 
 /* Check serialisation of audio analyses */
-BOOST_AUTO_TEST_CASE (audio_analysis_test)
+BOOST_AUTO_TEST_CASE (audio_analysis_serialisation_test)
 {
 	int const channels = 3;
 	int const points = 4096;
@@ -67,3 +74,24 @@ BOOST_AUTO_TEST_CASE (audio_analysis_test)
 	BOOST_CHECK (b.peak_time ());
 	BOOST_CHECK_EQUAL (b.peak_time().get(), peak_time);
 }
+
+static void
+finished ()
+{
+
+}
+
+/* Check that audio analysis works (i.e. runs without error) with a -ve delay */
+BOOST_AUTO_TEST_CASE (audio_analysis_negative_delay_test)
+{
+	shared_ptr<Film> film = new_test_film ("audio_analysis_negative_delay_test");
+	film->set_name ("audio_analysis_negative_delay_test");
+	shared_ptr<AudioContent> c (new FFmpegContent (film, private_data / "boon_telly.mkv"));
+	c->set_audio_delay (-250);
+	film->examine_and_add_content (c);
+	wait_for_jobs ();
+
+	c->analyse_audio (boost::bind (&finished));
+	wait_for_jobs ();
+}
+
