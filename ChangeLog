@@ -1,5 +1,7 @@
 2015-05-17  Carl Hetherington  <cth@carlh.net>
 
+	* Fix failure to import some video MXFs (#566).
+
 	* Updated ru_RU translation from Igor Voytovich.
 
 	* Version 1.79.1 released.
