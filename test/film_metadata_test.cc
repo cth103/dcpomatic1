@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE (film_metadata_test)
 
 	shared_ptr<Film> f (new Film (test_film));
 	f->_isdcf_date = boost::gregorian::from_undelimited_string ("20130211");
-	BOOST_CHECK (f->container() == 0);
+	BOOST_CHECK (f->container() == Ratio::from_id ("185"));
 	BOOST_CHECK (f->dcp_content_type() == 0);
 
 	f->set_name ("fred");
