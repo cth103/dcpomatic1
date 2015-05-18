@@ -375,10 +375,17 @@ FFmpegDecoder::seek (VideoContent::Frame frame, bool accurate)
 
 	while (true) {
 		int r = av_read_frame (_format_context, &_packet);
-		if (r < 0) {
-			return;
+
+		if (r == AVERROR_EOF) {
+			/* Move on to flushing */
+			break;
 		}
 
+		if (r < 0) {
+			/* For any other errors we just give up */
+			return;
+		}
+		
 		if (_packet.stream_index != _video_stream) {
 			av_free_packet (&_packet);
 			continue;
@@ -392,18 +399,42 @@ FFmpegDecoder::seek (VideoContent::Frame frame, bool accurate)
 				);
 
 			if (_video_position >= (frame - 1)) {
+				/* _video_position should be the next thing to be emitted, which will the one after the thing
+				   we just saw.
+				*/
+				_video_position++;
 				av_free_packet (&_packet);
-				break;
+				return;
 			}
 		}
 		
 		av_free_packet (&_packet);
 	}
 
-	/* _video_position should be the next thing to be emitted, which will the one after the thing
-	   we just saw.
-	*/
-	_video_position++;
+	/* Flush */
+
+	_packet.data = 0;
+	_packet.size = 0;
+	while (true) {
+		int finished = 0;
+		int r = avcodec_decode_video2 (video_codec_context(), _frame, &finished, &_packet);
+		if (r < 0 || !finished) {
+			return;
+		}
+
+		_video_position = rint (
+			(av_frame_get_best_effort_timestamp (_frame) * time_base + _pts_offset) * _ffmpeg_content->original_video_frame_rate()
+			);		
+
+		if (_video_position >= (frame - 1)) {
+			/* _video_position should be the next thing to be emitted, which will the one after the thing
+			   we just saw.
+			*/
+			_video_position++;
+			av_free_packet (&_packet);
+			return;
+		}
+	}
 }
 
 void
