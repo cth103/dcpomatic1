@@ -55,6 +55,7 @@ extern std::string program_name;
 
 namespace libdcp {
 	class Signer;
+	class Asset;
 }
 
 class Job;
@@ -92,6 +93,8 @@ extern int64_t divide_with_round (int64_t a, int64_t b);
 extern void set_backtrace_file (boost::filesystem::path);
 extern libdcp::FrameInfo read_frame_info (FILE* file, int frame, Eyes eyes);
 extern void write_frame_info (FILE* file, int frame, Eyes eyes, libdcp::FrameInfo info);
+extern std::string video_mxf_filename (boost::shared_ptr<libdcp::Asset> asset);
+extern std::string audio_mxf_filename (boost::shared_ptr<libdcp::Asset> asset);
 
 /** @class Socket
  *  @brief A class to wrap a boost::asio::ip::tcp::socket with some things

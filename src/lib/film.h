@@ -67,9 +67,6 @@ public:
 	boost::filesystem::path internal_video_mxf_filename () const;
 	boost::filesystem::path audio_analysis_dir () const;
 
-	boost::filesystem::path video_mxf_filename () const;
-	boost::filesystem::path audio_mxf_filename () const;
-
 	void send_dcp_to_tms ();
 	void make_dcp ();
 

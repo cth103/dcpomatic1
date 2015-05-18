@@ -55,6 +55,7 @@
 #include <libdcp/util.h>
 #include <libdcp/signer_chain.h>
 #include <libdcp/signer.h>
+#include <libdcp/asset.h>
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -1088,6 +1089,18 @@ write_frame_info (FILE* file, int frame, Eyes eyes, libdcp::FrameInfo info)
 	fwrite (&info.offset, sizeof (info.offset), 1, file);
 	fwrite (&info.size, sizeof (info.size), 1, file);
 	fwrite (info.hash.c_str(), 1, info.hash.size(), file);
+}
+
+string
+video_mxf_filename (shared_ptr<libdcp::Asset> asset)
+{
+	return "j2c_" + asset->uuid() + ".mxf";
+}
+
+string
+audio_mxf_filename (shared_ptr<libdcp::Asset> asset)
+{
+	return "pcm_" + asset->uuid() + ".mxf";
 }
 
 ScopedTemporary::ScopedTemporary ()

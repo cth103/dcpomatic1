@@ -1,3 +1,7 @@
+2015-05-18  c.hetherington  <cth@carlh.net>
+
+	* Use better filenames for DCP components (#366).
+
 2015-05-17  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.79.2 released.

@@ -222,18 +222,6 @@ Film::internal_video_mxf_filename () const
 	return video_identifier() + ".mxf";
 }
 
-boost::filesystem::path
-Film::video_mxf_filename () const
-{
-	return filename_safe_name() + "_video.mxf";
-}
-
-boost::filesystem::path
-Film::audio_mxf_filename () const
-{
-	return filename_safe_name() + "_audio.mxf";
-}
-
 string
 Film::filename_safe_name () const
 {

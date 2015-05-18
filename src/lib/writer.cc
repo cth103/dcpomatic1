@@ -109,7 +109,8 @@ Writer::Writer (shared_ptr<const Film> f, weak_ptr<Job> j)
 	_picture_asset_writer = _picture_asset->start_write (_first_nonexistant_frame > 0);
 
 	if (_film->audio_channels ()) {
-		_sound_asset.reset (new libdcp::SoundAsset (_film->directory (), _film->audio_mxf_filename ()));
+		_sound_asset.reset (new libdcp::SoundAsset (_film->directory (), ""));
+		_sound_asset->set_file_name (audio_mxf_filename (_sound_asset));
 		_sound_asset->set_edit_rate (_film->video_frame_rate ());
 		_sound_asset->set_channels (_film->audio_channels ());
 		_sound_asset->set_sampling_rate (_film->audio_frame_rate ());
@@ -451,7 +452,7 @@ Writer::finish ()
 
 	boost::filesystem::path video_to;
 	video_to /= _film->dir (_film->dcp_name());
-	video_to /= _film->video_mxf_filename ();
+	video_to /= video_mxf_filename (_picture_asset);
 
 	boost::system::error_code ec;
 	boost::filesystem::create_hard_link (video_from, video_to, ec);
@@ -467,7 +468,7 @@ Writer::finish ()
 	/* And update the asset */
 
 	_picture_asset->set_directory (_film->dir (_film->dcp_name ()));
-	_picture_asset->set_file_name (_film->video_mxf_filename ());
+	_picture_asset->set_file_name (video_mxf_filename (_picture_asset));
 
 	/* Move the audio MXF into the DCP */
 	LOG_GENERAL_NC (N_("Moving audio MXF into DCP"));
@@ -475,12 +476,13 @@ Writer::finish ()
 	if (_sound_asset) {
 		boost::filesystem::path audio_to;
 		audio_to /= _film->dir (_film->dcp_name ());
-		audio_to /= _film->audio_mxf_filename ();
+		audio_to /= audio_mxf_filename (_sound_asset);
 		
-		boost::filesystem::rename (_film->file (_film->audio_mxf_filename ()), audio_to, ec);
+		boost::filesystem::rename (_film->file (audio_mxf_filename (_sound_asset)), audio_to, ec);
 		if (ec) {
 			throw FileError (
-				String::compose (_("could not move audio MXF into the DCP (%1)"), ec.value ()), _film->file (_film->audio_mxf_filename ())
+				String::compose (_("could not move audio MXF into the DCP (%1)"), ec.value ()),
+				_film->file (audio_mxf_filename (_sound_asset))
 				);
 		}
 		
