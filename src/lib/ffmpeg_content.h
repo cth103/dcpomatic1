@@ -137,8 +137,6 @@ public:
 	
 	/* AudioContent */
 	AudioContent::Frame audio_length () const;
-	AudioMapping audio_mapping () const;
-	void set_audio_mapping (AudioMapping);
 	std::vector<AudioStreamPtr> audio_streams () const;
 
 	void set_filters (std::vector<Filter const *> const &);

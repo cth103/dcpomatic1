@@ -17,6 +17,7 @@
 
 */
 
+#include <boost/foreach.hpp>
 #include "content_properties_dialog.h"
 #include "wx_util.h"
 #include "lib/raw_convert.h"
@@ -25,6 +26,7 @@
 #include "lib/audio_content.h"
 
 using std::string;
+using std::vector;
 using boost::shared_ptr;
 using boost::dynamic_pointer_cast;
 
@@ -61,22 +63,28 @@ ContentPropertiesDialog::ContentPropertiesDialog (wxWindow* parent, shared_ptr<C
 
 	shared_ptr<AudioContent> audio = dynamic_pointer_cast<AudioContent> (content);
 	if (audio) {
-		add_property (
-			_("Audio channels"),
-			std_to_wx (raw_convert<string> (audio->audio_channels ()))
-			);
-		add_property (
-			_("Sampling rate"),
-			std_to_wx (raw_convert<string> (audio->content_audio_frame_rate ())) + " " + _("Hz")
-			);
-		add_property (
-			_("Audio length"),
-			std_to_wx (raw_convert<string> (audio->audio_length())) + " " + _("audio frames")
-			);
-		add_property (
-			wxT (""),
-			time_to_timecode (audio->audio_length() * TIME_HZ / audio->content_audio_frame_rate(), audio->content_audio_frame_rate())
-			);
+		vector<AudioStreamPtr> streams = audio->audio_streams ();
+		int n = 1;
+		BOOST_FOREACH (AudioStreamPtr const & i, streams) {
+			add_property (wxString::Format ("Stream %d", n), wxT (""));
+			add_property (
+				_("Audio channels"),
+				std_to_wx (raw_convert<string> (i->channels ()))
+				);
+			add_property (
+				_("Sampling rate"),
+				std_to_wx (raw_convert<string> (i->frame_rate ())) + " " + _("Hz")
+				);
+			add_property (
+				_("Audio length"),
+				std_to_wx (raw_convert<string> (audio->audio_length())) + " " + _("audio frames")
+				);
+			add_property (
+				wxT (""),
+				time_to_timecode (audio->audio_length() * TIME_HZ / i->frame_rate(), i->frame_rate())
+				);
+			++n;
+		}
 	}
 	
 	layout ();
