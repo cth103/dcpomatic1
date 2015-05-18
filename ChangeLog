@@ -1,5 +1,8 @@
 2015-05-18  c.hetherington  <cth@carlh.net>
 
+	* Present all audio streams of content in the
+	audio matrix, not just the selected one (#274).
+
 	* Use better filenames for DCP components (#366).
 
 2015-05-17  Carl Hetherington  <cth@carlh.net>
