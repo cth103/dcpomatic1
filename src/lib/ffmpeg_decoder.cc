@@ -657,7 +657,7 @@ FFmpegDecoder::done () const
 
 	for (map<AudioStreamPtr, AudioContent::Frame>::const_iterator i = _audio_position.begin(); i != _audio_position.end(); ++i) {
 		Time const ap = film->audio_frames_to_time (i->second);
-		if (_decode_audio && (ap - _ffmpeg_content->trim_start()) >= _ffmpeg_content->length_after_trim ()) {
+		if (_decode_audio && (ap - _ffmpeg_content->trim_start()) < _ffmpeg_content->length_after_trim ()) {
 			return false;
 		}
 	}
