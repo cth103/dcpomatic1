@@ -55,6 +55,7 @@ Config* Config::_instance = 0;
 
 /** Construct default configuration */
 Config::Config ()
+	: _write_on_change (true)
 {
 	set_defaults ();
 
@@ -381,7 +382,9 @@ Config::drop ()
 void
 Config::changed ()
 {
-	write ();
+	if (_write_on_change) {
+		write ();
+	}
 	Changed ();
 }
 

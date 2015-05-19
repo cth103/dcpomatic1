@@ -359,6 +359,13 @@ public:
 	
 	boost::filesystem::path signer_chain_directory () const;
 
+	/** Set whether or not to write config changes to disk
+	 *  automatically.
+	 */
+	void set_write_on_change (bool write_on_change) {
+		_write_on_change = write_on_change;
+	}
+	
 	void changed ();
 	boost::signals2::signal<void ()> Changed;
 
@@ -434,6 +441,8 @@ private:
 	int _maximum_j2k_bandwidth;
 	int _log_types;
 	std::vector<boost::filesystem::path> _history;
+
+	bool _write_on_change;
 	
 	/** Singleton instance, or 0 */
 	static Config* _instance;

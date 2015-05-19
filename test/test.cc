@@ -60,6 +60,7 @@ struct TestConfig
 	{
 		dcpomatic_setup();
 
+		Config::instance()->set_write_on_change (false);
 		Config::instance()->set_num_local_encoding_threads (1);
 		Config::instance()->set_server_port_base (61920);
 		Config::instance()->set_default_isdcf_metadata (ISDCFMetadata ());
