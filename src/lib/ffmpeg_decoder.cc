@@ -449,14 +449,17 @@ FFmpegDecoder::decode_audio_packet ()
 	
 	AVPacket copy_packet = _packet;
 
-	/* BXXX: inefficient */
+	/* XXX: inefficient */
 	vector<shared_ptr<FFmpegAudioStream> > streams = ffmpeg_content()->ffmpeg_audio_streams ();
 	vector<shared_ptr<FFmpegAudioStream> >::const_iterator stream = streams.begin ();
 	while (stream != streams.end () && !(*stream)->uses_index (_format_context, copy_packet.stream_index)) {
 		++stream;
 	}
 
-	DCPOMATIC_ASSERT (stream != streams.end ());
+	if (stream == streams.end ()) {
+		/* The packet's stream may not be an audio one; just ignore it in this method if so */
+		return;
+	}
 
 	/* This is just for LOG_WARNING */
 	shared_ptr<const Film> film = _film.lock ();

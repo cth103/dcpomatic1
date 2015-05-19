@@ -90,8 +90,10 @@ SndfileContent::examine (shared_ptr<Job> job)
 	{
 		boost::mutex::scoped_lock lm (_mutex);
 		_audio_length = dec.audio_length ();
-		_audio_stream.reset (new AudioStream (dec.audio_length (), dec.audio_channels ()));
+		_audio_stream.reset (new AudioStream (dec.audio_frame_rate (), dec.audio_channels ()));
 	}
+
+	set_default_audio_mapping ();
 	
 	signal_changed (AudioContentProperty::AUDIO_CHANNELS);
 	signal_changed (AudioContentProperty::AUDIO_LENGTH);

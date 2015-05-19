@@ -299,3 +299,13 @@ AudioContent::audio_channels () const
 	return channels;
 }
 
+void
+AudioContent::set_default_audio_mapping ()
+{
+	vector<AudioStreamPtr> s = audio_streams ();
+	if (!s.empty ()) {
+		AudioMapping m (audio_channels ());
+		m.make_default (s.front()->channels ());
+		set_audio_mapping (m);
+	}
+}

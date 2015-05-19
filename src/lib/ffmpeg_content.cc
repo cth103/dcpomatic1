@@ -181,12 +181,7 @@ FFmpegContent::examine (shared_ptr<Job> job)
 	}
 
 	take_from_video_examiner (examiner);
-
-	if (!_audio_streams.empty ()) {
-		AudioMapping m (audio_channels ());
-		m.make_default (_audio_streams.front()->channels ());
-		set_audio_mapping (m);
-	}
+	set_default_audio_mapping ();
 
 	signal_changed (ContentProperty::LENGTH);
 	signal_changed (FFmpegContentProperty::SUBTITLE_STREAMS);

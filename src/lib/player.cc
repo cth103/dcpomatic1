@@ -350,14 +350,14 @@ Player::process_audio (
 
 	/* Compute time in the DCP */
 	Time time = content->position() + (content->audio_delay() * TIME_HZ / 1000) + relative_time - content->trim_start ();
-	
+
 	/* Remap channels */
 	shared_ptr<AudioBuffers> dcp_mapped (new AudioBuffers (_film->audio_channels(), audio->frames()));
 	dcp_mapped->make_silent ();
 
 	AudioMapping map = stream->mapping ();
 	for (int i = 0; i < map.content_channels(); ++i) {
-		for (int j = 0; j < stream->channels(); ++j) {
+		for (int j = 0; j < dcp_mapped->channels(); ++j) {
 			if (map.get (i, static_cast<libdcp::Channel> (j)) > 0) {
 				dcp_mapped->accumulate_channel (
 					audio.get(),

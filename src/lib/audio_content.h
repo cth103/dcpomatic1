@@ -79,6 +79,9 @@ public:
 
 	std::string processing_description () const;
 
+protected:
+	void set_default_audio_mapping ();
+
 private:
 	/** Gain to apply to audio in dB */
 	double _audio_gain;

@@ -18,6 +18,7 @@
 */
 
 #include <iostream>
+#include <boost/foreach.hpp>
 #include "audio_decoder.h"
 #include "audio_buffers.h"
 #include "exceptions.h"
@@ -36,16 +37,14 @@ AudioDecoder::AudioDecoder (shared_ptr<const Film> film, shared_ptr<const AudioC
 	: Decoder (film)
 	, _audio_content (content)
 {
-
+	BOOST_FOREACH (AudioStreamPtr i, content->audio_streams ()) {
+		_audio_position[i] = 0;
+	}
 }
 
 void
 AudioDecoder::audio (shared_ptr<const AudioBuffers> data, AudioStreamPtr stream, AudioContent::Frame frame)
 {
-	if (_audio_position.find (stream) == _audio_position.end ()) {
-		_audio_position[stream] = 0;
-	}
-	
 	Audio (data, stream, frame);
 	_audio_position[stream] = frame + data->frames ();
 }
