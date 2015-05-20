@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2013 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ public:
 
 private:
 	void edit_filters_clicked ();
-	void enable_colour_conversion_clicked ();
+	void colour_conversion_changed ();
 	void edit_colour_conversion_clicked ();
 
 	void setup_description ();
@@ -51,7 +51,6 @@ private:
 	wxStaticText* _description;
 	wxStaticText* _filters;
 	wxButton* _filters_button;
-	wxCheckBox* _enable_colour_conversion;
-	wxStaticText* _colour_conversion;
-	wxButton* _colour_conversion_button;
+	wxChoice* _colour_conversion;
+	wxButton* _edit_colour_conversion_button;
 };

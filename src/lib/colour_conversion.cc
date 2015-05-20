@@ -358,7 +358,7 @@ PresetColourConversion::setup_colour_conversion_presets ()
 
 	_presets.push_back (
 		PresetColourConversion (
-			_("P3 (from SMPTE RP 431-2)"), 2.6, false, YUV_TO_RGB_REC709,
+			_("P3"), 2.6, false, YUV_TO_RGB_REC709,
 			Chromaticity (0.68, 0.32), Chromaticity (0.265, 0.69), Chromaticity (0.15, 0.06), Chromaticity (0.314, 0.351), 2.6
 			)
 		);

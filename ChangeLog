@@ -1,3 +1,8 @@
+2015-05-20  Carl Hetherington  <cth@carlh.net>
+
+	* Tweak colour conversion controls so that it's
+	easier to use a preset without seeing the details.
+
 2015-05-18  c.hetherington  <cth@carlh.net>
 
 	* Present all audio streams of content in the

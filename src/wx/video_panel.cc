@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 
 */
 
+#include <boost/foreach.hpp>
 #include <wx/spinctrl.h>
 #include "lib/filter.h"
 #include "lib/ffmpeg_content.h"
@@ -157,22 +158,26 @@ VideoPanel::VideoPanel (FilmEditor* e)
 		grid->Add (s, wxGBPosition (r, 1), wxDefaultSpan, wxALIGN_CENTER_VERTICAL);
 	}
 	++r;
-	
-	{
-		_enable_colour_conversion = new wxCheckBox (this, wxID_ANY, _("Colour conversion"));
-		grid->Add (_enable_colour_conversion, wxGBPosition (r, 0), wxDefaultSpan, wxALIGN_CENTER_VERTICAL);
 
+	add_label_to_grid_bag_sizer (grid, this, _("Colour conversion"), true, wxGBPosition (r, 0));
+	{
 		wxSizer* s = new wxBoxSizer (wxHORIZONTAL);
 
 		wxClientDC dc (this);
 		wxSize size = dc.GetTextExtent (wxT ("A quite long-ish name"));
 		size.SetHeight (-1);
 		
-		_colour_conversion = new wxStaticText (this, wxID_ANY, wxT (""), wxDefaultPosition, size);
-
+		_colour_conversion = new wxChoice (this, wxID_ANY, wxDefaultPosition, size);
+		_colour_conversion->Append (_("None"));
+		BOOST_FOREACH (PresetColourConversion const & i, PresetColourConversion::all()) {
+			_colour_conversion->Append (std_to_wx (i.name));
+		}
+		_colour_conversion->Append (_("Custom"));
 		s->Add (_colour_conversion, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxRIGHT, 6);
-		_colour_conversion_button = new wxButton (this, wxID_ANY, _("Edit..."));
-		s->Add (_colour_conversion_button, 0, wxALIGN_CENTER_VERTICAL);
+		
+		_edit_colour_conversion_button = new wxButton (this, wxID_ANY, _("Edit..."));
+		s->Add (_edit_colour_conversion_button, 0, wxALIGN_CENTER_VERTICAL);
+		
 		grid->Add (s, wxGBPosition (r, 1), wxDefaultSpan, wxALIGN_CENTER_VERTICAL);
 	}
 	++r;
@@ -203,9 +208,9 @@ VideoPanel::VideoPanel (FilmEditor* e)
 	_frame_type->wrapped()->Append (_("3D left only"));
 	_frame_type->wrapped()->Append (_("3D right only"));
 
-	_filters_button->Bind           (wxEVT_COMMAND_BUTTON_CLICKED,   boost::bind (&VideoPanel::edit_filters_clicked, this));
-	_enable_colour_conversion->Bind (wxEVT_COMMAND_CHECKBOX_CLICKED, boost::bind (&VideoPanel::enable_colour_conversion_clicked, this));
-	_colour_conversion_button->Bind (wxEVT_COMMAND_BUTTON_CLICKED,   boost::bind (&VideoPanel::edit_colour_conversion_clicked, this));
+	_filters_button->Bind                (wxEVT_COMMAND_BUTTON_CLICKED,  boost::bind (&VideoPanel::edit_filters_clicked, this));
+	_colour_conversion->Bind             (wxEVT_COMMAND_CHOICE_SELECTED, boost::bind (&VideoPanel::colour_conversion_changed, this));
+	_edit_colour_conversion_button->Bind (wxEVT_COMMAND_BUTTON_CLICKED,  boost::bind (&VideoPanel::edit_colour_conversion_clicked, this));
 }
 
 void
@@ -243,23 +248,21 @@ VideoPanel::film_content_changed (int property)
 		setup_description ();
 	} else if (property == VideoContentProperty::COLOUR_CONVERSION) {
 		if (!vcs) {
-			checked_set (_colour_conversion, wxT (""));
+			checked_set (_colour_conversion, 0);
+			_edit_colour_conversion_button->Enable (false);
 		} else if (vcs->colour_conversion ()) {
 			optional<size_t> preset = vcs->colour_conversion().get().preset ();
+			vector<PresetColourConversion> cc = PresetColourConversion::all ();
 			if (preset) {
-				vector<PresetColourConversion> cc = PresetColourConversion::all ();
-				checked_set (_colour_conversion, cc[preset.get()].name);
+				checked_set (_colour_conversion, preset.get() + 1);
+				_edit_colour_conversion_button->Enable (false);
 			} else {
-				checked_set (_colour_conversion, _("Custom"));
+				checked_set (_colour_conversion, cc.size () + 1);
+				_edit_colour_conversion_button->Enable (true);
 			}
-			_enable_colour_conversion->SetValue (true);
-			_colour_conversion->Enable (true);
-			_colour_conversion_button->Enable (true);
 		} else {
-			checked_set (_colour_conversion, _("None"));
-			_enable_colour_conversion->SetValue (false);
-			_colour_conversion->Enable (false);
-			_colour_conversion_button->Enable (false);
+			checked_set (_colour_conversion, 0);
+			_edit_colour_conversion_button->Enable (false);
 		}
 	} else if (property == FFmpegContentProperty::FILTERS) {		
 		if (fcs) {
@@ -315,6 +318,26 @@ VideoPanel::setup_description ()
 }
 
 void
+VideoPanel::colour_conversion_changed ()
+{
+	VideoContentList vc = _editor->selected_video_content ();
+	if (vc.size() != 1) {
+		return;
+	}
+
+	int const s = _colour_conversion->GetSelection ();
+	vector<PresetColourConversion> all = PresetColourConversion::all ();
+
+	if (s == 0) {
+		vc.front()->unset_colour_conversion ();
+	} else if (s == int (all.size() + 1)) {
+		edit_colour_conversion_clicked ();
+	} else {
+		vc.front()->set_colour_conversion (all[s - 1].conversion);
+	}
+}
+
+void
 VideoPanel::edit_colour_conversion_clicked ()
 {
 	VideoContentList vc = _editor->selected_video_content ();
@@ -322,15 +345,9 @@ VideoPanel::edit_colour_conversion_clicked ()
 		return;
 	}
 
-	if (!vc.front()->colour_conversion ()) {
-		return;
-	}
-
-	ColourConversion conversion = vc.front()->colour_conversion().get ();
 	ContentColourConversionDialog* d = new ContentColourConversionDialog (this);
-	d->set (conversion);
+	d->set (vc.front()->colour_conversion().get_value_or (PresetColourConversion::all().front ().conversion));
 	d->ShowModal ();
-
 	vc.front()->set_colour_conversion (d->get ());
 	d->Destroy ();
 }
@@ -351,25 +368,9 @@ VideoPanel::content_selection_changed ()
 	_scale->set_content (video_sel);
 
 	_filters_button->Enable (single && !ffmpeg_sel.empty ());
-	_colour_conversion_button->Enable (single);
 
 	film_content_changed (VideoContentProperty::VIDEO_CROP);
 	film_content_changed (VideoContentProperty::VIDEO_FRAME_RATE);
 	film_content_changed (VideoContentProperty::COLOUR_CONVERSION);
 	film_content_changed (FFmpegContentProperty::FILTERS);
-}
-
-void
-VideoPanel::enable_colour_conversion_clicked ()
-{
-	VideoContentList vc = _editor->selected_video_content ();
-	if (vc.size() != 1) {
-		return;
-	}
-
-	if (_enable_colour_conversion->GetValue()) {
-		vc.front()->set_default_colour_conversion ();
-	} else {
-		vc.front()->unset_colour_conversion ();
-	}
 }
