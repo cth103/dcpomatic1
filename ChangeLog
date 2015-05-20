@@ -1,5 +1,9 @@
 2015-05-20  Carl Hetherington  <cth@carlh.net>
 
+	* Version 1.79.3 released.
+
+2015-05-20  Carl Hetherington  <cth@carlh.net>
+
 	* Tweak colour conversion controls so that it's
 	easier to use a preset without seeing the details.
 
