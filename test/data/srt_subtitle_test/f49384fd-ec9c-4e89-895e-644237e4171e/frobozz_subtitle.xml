@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <DCSubtitle Version="1.0">
-  <SubtitleID>dd8369d4-e0c4-40e5-9186-7dc09458f219</SubtitleID>
+  <SubtitleID>f49384fd-ec9c-4e89-895e-644237e4171e</SubtitleID>
   <MovieTitle>frobozz</MovieTitle>
   <ReelNumber>1</ReelNumber>
-  <Language></Language>
+  <Language>Unknown</Language>
+  <LoadFont Id="font" URI="LiberationSans-Regular.ttf"/>
   <Font Id="font" Italic="no" Color="FFFFFFFF" Size="48" Effect="none" EffectColor="FFFFFFFF" Script="normal" Underlined="no" Weight="normal">
-    <Subtitle SpotNumber="1" TimeIn="0:0:0:0" TimeOut="0:0:2:0" FadeUpTime="0" FadeDownTime="0">
+    <Subtitle SpotNumber="1" TimeIn="00:00:00:000" TimeOut="00:00:02:000" FadeUpTime="0" FadeDownTime="0">
       <Text VAlign="top" VPosition="80">Hello world!</Text>
     </Subtitle>
   </Font>
