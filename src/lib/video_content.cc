@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013-2014 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2013-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -58,17 +58,6 @@ using boost::dynamic_pointer_cast;
 VideoContent::VideoContent (shared_ptr<const Film> f)
 	: Content (f)
 	, _video_length (0)
-	, _original_video_frame_rate (0)
-	, _video_frame_rate (0)
-	, _video_frame_type (VIDEO_FRAME_TYPE_2D)
-	, _scale (VideoContentScale (Ratio::from_id ("178")))
-{
-	set_default_colour_conversion ();
-}
-
-VideoContent::VideoContent (shared_ptr<const Film> f, Time s, VideoContent::Frame len)
-	: Content (f, s)
-	, _video_length (len)
 	, _original_video_frame_rate (0)
 	, _video_frame_rate (0)
 	, _video_frame_type (VIDEO_FRAME_TYPE_2D)
