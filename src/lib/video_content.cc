@@ -63,7 +63,7 @@ VideoContent::VideoContent (shared_ptr<const Film> f)
 	, _video_frame_type (VIDEO_FRAME_TYPE_2D)
 	, _scale (VideoContentScale (Ratio::from_id ("178")))
 {
-	set_default_colour_conversion (false);
+	set_default_colour_conversion ();
 }
 
 VideoContent::VideoContent (shared_ptr<const Film> f, Time s, VideoContent::Frame len)
@@ -74,7 +74,7 @@ VideoContent::VideoContent (shared_ptr<const Film> f, Time s, VideoContent::Fram
 	, _video_frame_type (VIDEO_FRAME_TYPE_2D)
 	, _scale (VideoContentScale (Ratio::from_id ("178")))
 {
-	set_default_colour_conversion (false);
+	set_default_colour_conversion ();
 }
 
 VideoContent::VideoContent (shared_ptr<const Film> f, boost::filesystem::path p)
@@ -85,7 +85,7 @@ VideoContent::VideoContent (shared_ptr<const Film> f, boost::filesystem::path p)
 	, _video_frame_type (VIDEO_FRAME_TYPE_2D)
 	, _scale (VideoContentScale (Ratio::from_id ("178")))
 {
-	set_default_colour_conversion (false);
+	set_default_colour_conversion ();
 }
 
 VideoContent::VideoContent (shared_ptr<const Film> f, shared_ptr<const cxml::Node> node, int version)
@@ -184,19 +184,14 @@ VideoContent::as_xml (xmlpp::Node* node) const
 }
 
 void
-VideoContent::set_default_colour_conversion (bool signal)
+VideoContent::set_default_colour_conversion ()
 {
-	{
-		boost::mutex::scoped_lock lm (_mutex);
-		_colour_conversion = PresetColourConversion (
-			_("Rec. 709"), 2.2, false, YUV_TO_RGB_REC709,
-			Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
-			).conversion;
-	}
-
-	if (signal) {
-		signal_changed (VideoContentProperty::COLOUR_CONVERSION);
-	}
+	boost::mutex::scoped_lock lm (_mutex);
+	
+	_colour_conversion = PresetColourConversion (
+		_("Rec. 709"), 2.2, false, YUV_TO_RGB_REC709,
+		Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
+		).conversion;
 }
 
 void

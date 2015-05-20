@@ -93,7 +93,7 @@ public:
 	void set_scale (VideoContentScale);
 	void unset_colour_conversion ();
 	void set_colour_conversion (ColourConversion);
-	void set_default_colour_conversion (bool signal = true);
+	void set_default_colour_conversion ();
 	
 	VideoFrameType video_frame_type () const {
 		boost::mutex::scoped_lock lm (_mutex);
