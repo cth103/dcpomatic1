@@ -622,11 +622,11 @@ Player::resampler (shared_ptr<AudioContent> content, AudioStreamPtr stream, bool
 		"Creating new resampler from %1 to %2 with %3 channels",
 		stream->frame_rate(),
 		content->output_audio_frame_rate(),
-		content->audio_channels()
+		stream->channels()
 		);
 
 	shared_ptr<Resampler> r (
-		new Resampler (stream->frame_rate(), content->output_audio_frame_rate(), content->audio_channels())
+		new Resampler (stream->frame_rate(), content->output_audio_frame_rate(), stream->channels())
 		);
 	
 	_resamplers[make_pair(content, stream)] = r;
