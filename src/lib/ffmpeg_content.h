@@ -134,6 +134,9 @@ public:
 	Time full_length () const;
 
 	std::string identifier () const;
+
+	/* VideoContent */
+	void set_default_colour_conversion ();
 	
 	/* AudioContent */
 	AudioContent::Frame audio_length () const;

@@ -51,6 +51,8 @@ public:
 	void as_xml (xmlpp::Node *) const;
 	std::string technical_summary () const;
 	virtual std::string identifier () const;
+	
+	virtual void set_default_colour_conversion ();
 
 	VideoContent::Frame video_length () const {
 		boost::mutex::scoped_lock lm (_mutex);
@@ -92,7 +94,6 @@ public:
 	void set_scale (VideoContentScale);
 	void unset_colour_conversion ();
 	void set_colour_conversion (ColourConversion);
-	void set_default_colour_conversion ();
 	
 	VideoFrameType video_frame_type () const {
 		boost::mutex::scoped_lock lm (_mutex);
@@ -156,6 +157,7 @@ protected:
 	VideoContent::Frame _video_length;
 	float _original_video_frame_rate;
 	float _video_frame_rate;
+	boost::optional<ColourConversion> _colour_conversion;
 
 private:
 	friend class ffmpeg_pts_offset_test;
@@ -167,7 +169,6 @@ private:
 	VideoFrameType _video_frame_type;
 	Crop _crop;
 	VideoContentScale _scale;
-	boost::optional<ColourConversion> _colour_conversion;
 	/** Sample aspect ratio obtained from the content file's header,
 	    if there is one.
 	*/

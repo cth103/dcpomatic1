@@ -97,15 +97,22 @@ class PresetColourConversion
 public:
 	PresetColourConversion ();
 	PresetColourConversion (
-		std::string, double, bool, YUVToRGB yuv_to_rgb_, Chromaticity red_, Chromaticity green_, Chromaticity blue_, Chromaticity white_, double
+		std::string, std::string,
+		double, bool, YUVToRGB yuv_to_rgb_,
+		Chromaticity red_, Chromaticity green_, Chromaticity blue_, Chromaticity white_,
+		double
 		);
 
 	std::string name;
+	/** an internal short (non-internationalised) name for this preset */
+	std::string id;
 	ColourConversion conversion;
 
 	static std::vector<PresetColourConversion> all () {
 		return _presets;
 	}
+
+	static PresetColourConversion from_id (std::string i);
 
 	static void setup_colour_conversion_presets ();
 

@@ -17,6 +17,7 @@
 
 */
 
+#include <boost/foreach.hpp>
 #include <libxml++/libxml++.h>
 #include <libdcp/colour_matrix.h>
 #include <libcxml/cxml.h>
@@ -270,9 +271,10 @@ PresetColourConversion::PresetColourConversion ()
 }
 
 PresetColourConversion::PresetColourConversion (
-	string n, double i, bool il, YUVToRGB yuv_to_rgb, Chromaticity red, Chromaticity green, Chromaticity blue, Chromaticity white, double o
+	string name_, string id_, double i, bool il, YUVToRGB yuv_to_rgb, Chromaticity red, Chromaticity green, Chromaticity blue, Chromaticity white, double o
 	)
-	: name (n)
+	: name (name_)
+	, id (id_)
 	, conversion (i, il, yuv_to_rgb, red, green, blue, white, o)
 {
 
@@ -337,29 +339,41 @@ PresetColourConversion::setup_colour_conversion_presets ()
 {
 	_presets.push_back (
 		PresetColourConversion (
-			_("sRGB"), 2.4, true, YUV_TO_RGB_REC601,
+			_("sRGB"), "srgb", 2.4, true, YUV_TO_RGB_REC601,
 			Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
 			)
 		);
 
 	_presets.push_back (
 		PresetColourConversion (
-			_("Rec. 601"), 2.2, false, YUV_TO_RGB_REC601,
+			_("Rec. 601"), "rec601", 2.2, false, YUV_TO_RGB_REC601,
 			Chromaticity (0.63, 0.34), Chromaticity (0.31, 0.595), Chromaticity (0.155, 0.07), Chromaticity (0.3127, 0.329), 2.6
 			)
 		);
 
 	_presets.push_back (
 		PresetColourConversion (
-			_("Rec. 709"), 2.2, false, YUV_TO_RGB_REC709,
+			_("Rec. 709"), "rec709", 2.2, false, YUV_TO_RGB_REC709,
 			Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
 			)
 		);
 
 	_presets.push_back (
 		PresetColourConversion (
-			_("P3"), 2.6, false, YUV_TO_RGB_REC709,
+			_("P3"), "p3", 2.6, false, YUV_TO_RGB_REC709,
 			Chromaticity (0.68, 0.32), Chromaticity (0.265, 0.69), Chromaticity (0.15, 0.06), Chromaticity (0.314, 0.351), 2.6
 			)
 		);
+}
+
+PresetColourConversion
+PresetColourConversion::from_id (string s)
+{
+	BOOST_FOREACH (PresetColourConversion const & i, _presets) {
+		if (i.id == s) {
+			return i;
+		}
+	}
+
+	DCPOMATIC_ASSERT (false);
 }

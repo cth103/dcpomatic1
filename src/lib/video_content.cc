@@ -175,12 +175,9 @@ VideoContent::as_xml (xmlpp::Node* node) const
 void
 VideoContent::set_default_colour_conversion ()
 {
+	/* If there's no better offer we'll use Rec. 709 */
 	boost::mutex::scoped_lock lm (_mutex);
-	
-	_colour_conversion = PresetColourConversion (
-		_("Rec. 709"), 2.2, false, YUV_TO_RGB_REC709,
-		Chromaticity (0.64, 0.33), Chromaticity (0.3, 0.6), Chromaticity (0.15, 0.06), Chromaticity (0.3127, 0.329), 2.6
-		).conversion;
+	_colour_conversion = PresetColourConversion::from_id ("rec709").conversion;
 }
 
 void
@@ -205,7 +202,9 @@ VideoContent::take_from_video_examiner (shared_ptr<VideoExaminer> d)
 			Ratio::nearest_from_ratio (float (_video_size.width) * ar.get_value_or (1) / _video_size.height)
 			);
 	}
-	
+
+	set_default_colour_conversion ();
+
 	signal_changed (VideoContentProperty::VIDEO_SIZE);
 	signal_changed (VideoContentProperty::VIDEO_FRAME_RATE);
 	signal_changed (VideoContentProperty::VIDEO_SCALE);

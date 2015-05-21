@@ -383,3 +383,16 @@ FFmpegContent::audio_streams () const
 	return s;
 }
 
+void
+FFmpegContent::set_default_colour_conversion ()
+{
+	libdcp::Size const s = video_size ();
+	
+	boost::mutex::scoped_lock lm (_mutex);
+
+	if (s.width < 1080) {
+		_colour_conversion = PresetColourConversion::from_id ("rec601").conversion;
+	} else {
+		_colour_conversion = PresetColourConversion::from_id ("rec709").conversion;
+	}
+}
