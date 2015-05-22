@@ -155,7 +155,7 @@ FilmEditor::make_dcp_panel ()
 		_container = new wxChoice (_dcp_panel, wxID_ANY);
 		s->Add (_container, 1, wxEXPAND | wxRIGHT, DCPOMATIC_SIZER_X_GAP);
 		_container_size = new wxStaticText (_dcp_panel, wxID_ANY, wxT (""));
-		s->Add (_container_size, 1, wxEXPAND | wxLEFT | wxALIGN_CENTER_VERTICAL);
+		s->Add (_container_size, 1, wxLEFT | wxALIGN_CENTER_VERTICAL);
 		grid->Add (s, wxGBPosition (r, 1), wxDefaultSpan, wxEXPAND);
 		++r;
 	}
