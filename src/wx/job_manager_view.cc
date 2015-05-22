@@ -52,15 +52,15 @@ public:
 		_name->SetLabelMarkup (std_to_wx (jn));
 		table->Insert (n, _name, 0, wxALIGN_CENTER_VERTICAL | wxALL, 6);
 		++n;
-	
+
+		wxBoxSizer* gauge_message = new wxBoxSizer (wxVERTICAL);
 		_gauge = new wxGauge (panel, wxID_ANY, 100);
 		/* This seems to be required to allow the gauge to shrink under OS X */
 		_gauge->SetMinSize (wxSize (0, -1));
-		table->Insert (n, _gauge, 1, wxEXPAND | wxLEFT | wxRIGHT);
-		++n;
-		
+		gauge_message->Add (_gauge, 1, wxEXPAND | wxLEFT | wxRIGHT);
 		_message = new wxStaticText (panel, wxID_ANY, std_to_wx (""));
-		table->Insert (n, _message, 1, wxALIGN_CENTER_VERTICAL | wxALL, 6);
+		gauge_message->Add (_message, 1, wxALIGN_CENTER_VERTICAL | wxALL, 6);
+		table->Insert (n, gauge_message, 1, wxEXPAND | wxLEFT | wxRIGHT);
 		++n;
 	
 		_cancel = new wxButton (panel, wxID_ANY, _("Cancel"));
