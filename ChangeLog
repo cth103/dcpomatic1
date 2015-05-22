@@ -1,6 +1,7 @@
 2015-05-22  Carl Hetherington  <cth@carlh.net>
 
-	* Tweak layout of jobs view.
+	* Tweak layout of jobs view; stop disappearing
+	buttons with long messages (#578).
 
 	* Fix corrupted sound when resampling in some cases.
 

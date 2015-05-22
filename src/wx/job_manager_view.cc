@@ -58,8 +58,8 @@ public:
 		/* This seems to be required to allow the gauge to shrink under OS X */
 		_gauge->SetMinSize (wxSize (0, -1));
 		gauge_message->Add (_gauge, 1, wxEXPAND | wxLEFT | wxRIGHT);
-		_message = new wxStaticText (panel, wxID_ANY, std_to_wx (""));
-		gauge_message->Add (_message, 1, wxALIGN_CENTER_VERTICAL | wxALL, 6);
+		_message = new wxStaticText (panel, wxID_ANY, wxT (""), wxDefaultPosition, wxDefaultSize, wxST_ELLIPSIZE_END);
+		gauge_message->Add (_message, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxALL, 6);
 		table->Insert (n, gauge_message, 1, wxEXPAND | wxLEFT | wxRIGHT);
 		++n;
 	
