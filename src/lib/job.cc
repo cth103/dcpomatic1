@@ -383,6 +383,10 @@ Job::cancel ()
 		return;
 	}
 
+	if (paused ()) {
+		resume ();
+	}
+
 	_thread->interrupt ();
 	_thread->join ();
 }
