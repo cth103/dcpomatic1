@@ -81,6 +81,8 @@ public:
 	void repeat (int f, Eyes);
 	void finish ();
 
+	void set_encoder_threads (int threads);
+
 private:
 
 	void thread ();
@@ -117,7 +119,7 @@ private:
 	/** maximum number of frames to hold in memory, for when we are managing
 	    ordering
 	*/
-	static const int _maximum_frames_in_memory;
+	int _maximum_frames_in_memory;
 
 	/** number of FULL written frames */
 	int _full_written;

@@ -88,6 +88,8 @@ Encoder::add_worker_threads (ServerDescription d)
 	for (int i = 0; i < d.threads(); ++i) {
 		_threads.push_back (new boost::thread (boost::bind (&Encoder::encoder_thread, this, d)));
 	}
+
+	_writer->set_encoder_threads (_threads.size ());
 }
 
 void
@@ -98,6 +100,8 @@ Encoder::process_begin ()
 	}
 
 	_writer.reset (new Writer (_film, _job));
+	_writer->set_encoder_threads (_threads.size ());
+	
 	if (!ServerFinder::instance()->disabled ()) {
 		_server_found_connection = ServerFinder::instance()->connect (boost::bind (&Encoder::server_found, this, _1));
 	}

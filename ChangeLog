@@ -1,3 +1,9 @@
+2015-05-22  c.hetherington  <cth@carlh.net>
+
+	* Increase the number of images that DCP-o-matic will
+	keep around in memory before resorting to pushing them
+	to disk.
+
 2015-05-22  carl  <cth@carlh.net>
 
 	* Display DCP container size beside the choice

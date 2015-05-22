@@ -62,8 +62,7 @@ using std::cout;
 using boost::shared_ptr;
 using boost::weak_ptr;
 
-int const Writer::_maximum_frames_in_memory = Config::instance()->num_local_encoding_threads() + 4;
-
+/** @param encoder_threads Total number of threads (local and remote) that the encoder is using */
 Writer::Writer (shared_ptr<const Film> f, weak_ptr<Job> j)
 	: _film (f)
 	, _job (j)
@@ -73,6 +72,7 @@ Writer::Writer (shared_ptr<const Film> f, weak_ptr<Job> j)
 	, _queued_full_in_memory (0)
 	, _last_written_frame (-1)
 	, _last_written_eyes (EYES_RIGHT)
+	, _maximum_frames_in_memory (0)
 	, _full_written (0)
 	, _fake_written (0)
 	, _repeat_written (0)
@@ -125,6 +125,8 @@ Writer::Writer (shared_ptr<const Film> f, weak_ptr<Job> j)
 		*/
 		_sound_asset_writer = _sound_asset->start_write ();
 	}
+
+	set_encoder_threads (Config::instance()->num_local_encoding_threads ());
 
 	_thread = new boost::thread (boost::bind (&Writer::thread, this));
 
@@ -373,7 +375,8 @@ try
 			lock.unlock ();
 
 			LOG_DEBUG (
-				"Writer full (awaiting %1 [last eye was %2]); pushes %3 to disk",
+				"Writer full with %1 (awaiting %2 [last eye was %3]); pushes %4 to disk",
+				_queued_full_in_memory,
 				_last_written_frame + 1,
 				_last_written_eyes, qi.frame
 				);
@@ -655,4 +658,10 @@ bool
 operator== (QueueItem const & a, QueueItem const & b)
 {
 	return a.frame == b.frame && a.eyes == b.eyes;
+}
+
+void
+Writer::set_encoder_threads (int threads)
+{
+	_maximum_frames_in_memory = rint (threads * 1.1);
 }
