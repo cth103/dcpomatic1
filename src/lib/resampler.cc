@@ -63,7 +63,15 @@ Resampler::~Resampler ()
 pair<shared_ptr<const AudioBuffers>, AudioContent::Frame>
 Resampler::run (shared_ptr<const AudioBuffers> in, AudioContent::Frame frame)
 {
-	AudioContent::Frame const resamp_time = swr_next_pts (_swr_context, frame * _out_rate) / _in_rate;
+	if (!_next_in || !_next_out || _next_in.get() != frame) {
+		/* Either there was a discontinuity in the input or this is the first input;
+		   ask FFmpeg what the output frame will be.
+		*/
+		_next_out = swr_next_pts (_swr_context, frame * _out_rate) / _in_rate;
+	}
+
+	/* Expected next input frame */
+	_next_in = frame + in->frames ();
 		
 	/* Compute the resampled frames count and add 32 for luck */
 	int const max_resampled_frames = ceil ((double) in->frames() * _out_rate / _in_rate) + 32;
@@ -78,9 +86,14 @@ Resampler::run (shared_ptr<const AudioBuffers> in, AudioContent::Frame frame)
 		av_strerror (resampled_frames, buf, sizeof(buf));
 		throw EncodeError (String::compose (_("could not run sample-rate converter for %1 samples (%2) (%3)"), in->frames(), resampled_frames, buf));
 	}
+
+	AudioContent::Frame out_frame = _next_out.get ();
+
+	/* Expected next output frame */
+	_next_out = _next_out.get() + resampled_frames;
 	
 	resampled->set_frames (resampled_frames);
-	return make_pair (resampled, resamp_time);
+	return make_pair (resampled, out_frame);
 }	
 
 shared_ptr<const AudioBuffers>

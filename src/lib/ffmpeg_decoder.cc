@@ -503,7 +503,7 @@ FFmpegDecoder::decode_audio_packet ()
 						int64_t const this_time = min (frames, (int64_t) (*stream)->frame_rate() / 2);
 						
 						shared_ptr<AudioBuffers> silence (
-							new AudioBuffers (_ffmpeg_content->audio_channels(), this_time)
+							new AudioBuffers ((*stream)->channels(), this_time)
 							);
 					
 						silence->make_silent ();

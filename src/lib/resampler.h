@@ -41,4 +41,6 @@ private:
 	int _in_rate;
 	int _out_rate;
 	int _channels;
+	boost::optional<AudioContent::Frame> _next_in;
+	boost::optional<AudioContent::Frame> _next_out;
 };
