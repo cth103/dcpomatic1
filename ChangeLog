@@ -1,3 +1,8 @@
+2015-05-22  carl  <cth@carlh.net>
+
+	* Display DCP container size beside the choice
+	in the DCP tab.
+
 2015-05-21  c.hetherington  <cth@carlh.net>
 
 	* Updated ru_RU translation from Igor Voytovich.

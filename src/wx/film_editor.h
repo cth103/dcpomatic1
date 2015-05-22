@@ -140,6 +140,7 @@ private:
 	wxStaticText* _dcp_name;
 	wxCheckBox* _use_isdcf_name;
 	wxChoice* _container;
+	wxStaticText* _container_size;
 	wxListCtrl* _content;
 	wxButton* _content_add_file;
 	wxButton* _content_add_folder;
