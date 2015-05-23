@@ -105,7 +105,7 @@ private:
 
 	void finished ()
 	{
-		checked_set (_message, _job->status ());
+		progress ();
 		
 		if (!_job->finished_cancelled ()) {
 			_gauge->SetValue (100);
