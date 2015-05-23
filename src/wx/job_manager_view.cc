@@ -47,12 +47,6 @@ public:
 	{
 		int n = 0;
 		
-		_name = new wxStaticText (panel, wxID_ANY, "");
-		string const jn = "<b>" + _job->name () + "</b>";
-		_name->SetLabelMarkup (std_to_wx (jn));
-		table->Insert (n, _name, 0, wxALIGN_CENTER_VERTICAL | wxALL, 6);
-		++n;
-
 		wxBoxSizer* gauge_message = new wxBoxSizer (wxVERTICAL);
 		_gauge = new wxGauge (panel, wxID_ANY, 100);
 		/* This seems to be required to allow the gauge to shrink under OS X */
@@ -95,23 +89,13 @@ public:
 
 private:
 
-	void update_job_name ()
-	{
-		string n = "<b>" + _job->name () + "</b>";
-		if (!_job->sub_name().empty ()) {
-			n += "\n" + _job->sub_name ();
-		}
-		
-		if (n != _last_name) {
-			_name->SetLabelMarkup (std_to_wx (n));
-			_last_name = n;
-		}
-	}
-
 	void progress ()
 	{
-		checked_set (_message, _job->status ());
-		update_job_name ();
+		string whole = "<b>" + _job->name() + "</b>: " + _job->sub_name() + " " + _job->status ();
+		if (whole != _last_message) {
+			_message->SetLabelMarkup (whole);
+			_last_message = whole;
+		}
 		if (_job->progress ()) {
 			_gauge->SetValue (min (100.0f, _job->progress().get() * 100));
 		}
@@ -122,7 +106,6 @@ private:
 	void finished ()
 	{
 		checked_set (_message, _job->status ());
-		update_job_name ();
 		
 		if (!_job->finished_cancelled ()) {
 			_gauge->SetValue (100);
@@ -165,13 +148,12 @@ private:
 	wxScrolledWindow* _window;
 	wxPanel* _panel;
 	wxFlexGridSizer* _table;
-	wxStaticText* _name;
 	wxGauge* _gauge;
 	wxStaticText* _message;
 	wxButton* _cancel;
 	wxButton* _pause;
 	wxButton* _details;
-	std::string _last_name;
+	string _last_message;
 
 	boost::signals2::scoped_connection _progress_connection;
 	boost::signals2::scoped_connection _finished_connection;
@@ -186,8 +168,8 @@ JobManagerView::JobManagerView (wxWindow* parent)
 	sizer->Add (_panel, 1, wxEXPAND);
 	SetSizer (sizer);
 
-	_table = new wxFlexGridSizer (5, 5, 6);
-	_table->AddGrowableCol (1, 1);
+	_table = new wxFlexGridSizer (4, 4, 6);
+	_table->AddGrowableCol (0, 1);
 	_panel->SetSizer (_table);
 
 	SetScrollRate (0, 32);
