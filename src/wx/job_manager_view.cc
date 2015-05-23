@@ -186,7 +186,7 @@ JobManagerView::JobManagerView (wxWindow* parent)
 	sizer->Add (_panel, 1, wxEXPAND);
 	SetSizer (sizer);
 
-	_table = new wxFlexGridSizer (6, 6, 6);
+	_table = new wxFlexGridSizer (5, 5, 6);
 	_table->AddGrowableCol (1, 1);
 	_panel->SetSizer (_table);
 
