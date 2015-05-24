@@ -1,3 +1,8 @@
+2015-05-24  Carl Hetherington  <cth@carlh.net>
+
+	* Block all but alphanumeric characters with a few
+	bits of punctation from DCP names.
+
 2015-05-22  Carl Hetherington  <cth@carlh.net>
 
 	* Tweak layout of jobs view; stop disappearing
