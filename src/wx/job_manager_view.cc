@@ -59,25 +59,24 @@ public:
 	
 		_cancel = new wxButton (panel, wxID_ANY, _("Cancel"));
 		_cancel->Bind (wxEVT_COMMAND_BUTTON_CLICKED, &JobRecord::cancel_clicked, this);
-		table->Insert (n, _cancel, 1, wxALIGN_CENTER_VERTICAL | wxALL, 6);
+		table->Insert (n, _cancel, 1, wxALIGN_CENTER_VERTICAL | wxALL, 3);
 		++n;
 	
 		_pause = new wxButton (_panel, wxID_ANY, _("Pause"));
 		_pause->Bind (wxEVT_COMMAND_BUTTON_CLICKED, &JobRecord::pause_clicked, this);
-		table->Insert (n, _pause, 1, wxALIGN_CENTER_VERTICAL | wxALL, 6);
+		table->Insert (n, _pause, 1, wxALIGN_CENTER_VERTICAL | wxALL, 3);
 		++n;
 	
 		_details = new wxButton (_panel, wxID_ANY, _("Details..."));
 		_details->Bind (wxEVT_COMMAND_BUTTON_CLICKED, &JobRecord::details_clicked, this);
 		_details->Enable (false);
-		table->Insert (n, _details, 1, wxALIGN_CENTER_VERTICAL | wxALL, 6);
+		table->Insert (n, _details, 1, wxALIGN_CENTER_VERTICAL | wxALL, 3);
 		++n;
 	
 		_progress_connection = job->Progress.connect (boost::bind (&JobRecord::progress, this));
 		_finished_connection = job->Finished.connect (boost::bind (&JobRecord::finished, this));
 	
 		table->Layout ();
-		panel->FitInside ();
 	}
 
 	void maybe_pulse ()
@@ -99,8 +98,6 @@ private:
 		if (_job->progress ()) {
 			_gauge->SetValue (min (100.0f, _job->progress().get() * 100));
 		}
-		_table->Layout ();
-		_window->FitInside ();
 	}
 
 	void finished ()
@@ -116,9 +113,6 @@ private:
 		if (!_job->error_details().empty ()) {
 			_details->Enable (true);
 		}
-		
-		_table->Layout ();
-		_window->FitInside ();
 	}
 
 	void details_clicked (wxCommandEvent &)
@@ -179,16 +173,7 @@ JobManagerView::JobManagerView (wxWindow* parent)
 	_timer.reset (new wxTimer (this));
 	_timer->Start (1000);
 
-	Bind (wxEVT_SIZE, boost::bind (&JobManagerView::sized, this, _1));
 	JobManager::instance()->JobAdded.connect (bind (&JobManagerView::job_added, this, _1));
-}
-
-void
-JobManagerView::sized (wxSizeEvent& ev)
-{
-	_table->FitInside (_panel);
-	_table->Layout ();
-	ev.Skip ();
 }
 
 void
