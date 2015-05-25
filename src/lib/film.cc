@@ -698,7 +698,7 @@ Film::dcp_name (bool if_created_now) const
 	*/
 
 	string filtered;
-	string const allowed = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -_";
+	string const allowed = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_";
 	for (size_t i = 0; i < unfiltered.size(); ++i) {
 		if (allowed.find (unfiltered[i]) != string::npos) {
 			filtered += unfiltered[i];
