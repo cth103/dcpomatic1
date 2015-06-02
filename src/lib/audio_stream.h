@@ -42,7 +42,7 @@ public:
 		boost::mutex::scoped_lock lm (_mutex);
 		return _mapping;
 	}
-	
+
 	int channels () const;
 
 protected:

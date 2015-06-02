@@ -79,7 +79,18 @@ FFmpegContent::FFmpegContent (shared_ptr<const Film> f, shared_ptr<const cxml::N
 
 	c = node->node_children ("AudioStream");
 	for (list<cxml::NodePtr>::const_iterator i = c.begin(); i != c.end(); ++i) {
-		_audio_streams.push_back (shared_ptr<FFmpegAudioStream> (new FFmpegAudioStream (*i, version)));
+		shared_ptr<FFmpegAudioStream> stream (new FFmpegAudioStream (*i, version));
+		if (f->state_version() >= 11 && version < 11 && !(*i)->optional_number_child<int> ("Selected")) {
+			/* We are straddling a transition between a single selected audio stream
+			   being mapped and all streams being mapped.  Handle this nicely by
+			   removing the mapping for unselected streams.
+			*/
+
+			AudioMapping m = stream->mapping ();
+			m.make_zero ();
+			stream->set_mapping (m);
+		}
+		_audio_streams.push_back (stream);
 	}
 
 	c = node->node_children ("Filter");

@@ -94,8 +94,10 @@ using libdcp::Signer;
  * DCI -> ISDCF.
  * 9 -> 10
  * Subtitle X and Y scale.
+ * 10 -> 11
+ * All audio streams are available for mapping, not just the selected one.
  */
-int const Film::current_state_version = 10;
+int const Film::current_state_version = 11;
 
 /** Construct a Film object in a given directory.
  *
