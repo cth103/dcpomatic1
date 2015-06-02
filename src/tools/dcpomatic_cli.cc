@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2012 Carl Hetherington <cth@carlh.net>
+    Copyright (C) 2012-2015 Carl Hetherington <cth@carlh.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #include <iostream>
 #include <iomanip>
 #include <getopt.h>
+#include <boost/foreach.hpp>
 #include <libdcp/version.h>
 #include "lib/film.h"
 #include "lib/filter.h"
@@ -34,6 +35,8 @@
 #include "lib/ui_signaller.h"
 #include "lib/server_finder.h"
 #include "lib/json_server.h"
+#include "lib/ratio.h"
+#include "lib/audio_content.h"
 
 using std::string;
 using std::cerr;
@@ -43,6 +46,7 @@ using std::pair;
 using std::list;
 using boost::shared_ptr;
 using boost::optional;
+using boost::dynamic_pointer_cast;
 
 static void
 help (string n)
@@ -56,8 +60,58 @@ help (string n)
 	     << "  -r, --no-remote    do not use any remote servers\n"
 	     << "  -j, --json <port>  run a JSON server on the specified port\n"
 	     << "  -k, --keep-going   keep running even when the job is complete\n"
+	     << "      --dump         just dump a summary of the film's settings; don't encode\n"
 	     << "\n"
 	     << "<FILM> is the film directory.\n";
+}
+
+static void
+print_dump (shared_ptr<Film> film)
+{
+	cout << film->dcp_name (true) << "\n"
+	     << film->container()->nickname() << " at " << ((film->resolution() == RESOLUTION_2K) ? "2K" : "4K") << "\n"
+	     << (film->j2k_bandwidth() / 1000000) << "Mbit/s" << "\n"
+	     << "Output " << film->video_frame_rate() << "fps " << (film->three_d() ? "3D" : "2D") << " " << (film->audio_frame_rate() / 1000) << "kHz\n"
+	     << (film->interop() ? "Inter-Op" : "SMPTE") << " " << (film->encrypted() ? "encrypted" : "unencrypted") << "\n";
+
+	BOOST_FOREACH (shared_ptr<Content> c, film->content ()) {
+		cout << "\n"
+		     << c->path(0) << "\n"
+		     << "\tat " << (c->position() / float (TIME_HZ))
+		     << " length " << (c->full_length() / float (TIME_HZ))
+		     << " start trim " << (c->trim_start() / float (TIME_HZ))
+		     << " end trim " << (c->trim_end() / float (TIME_HZ)) << "\n";
+
+		shared_ptr<VideoContent> video = dynamic_pointer_cast<VideoContent> (c);
+		if (video) {
+			cout << "\t" << video->video_size().width << "x" << video->video_size().height << "\n"
+			     << "\t" << video->video_frame_rate() << "fps\n"
+			     << "\tcrop left " << video->left_crop()
+			     << " right " << video->right_crop()
+			     << " top " << video->top_crop()
+			     << " bottom " << video->bottom_crop() << "\n"
+			     << "\tscale " << video->scale().name() << "\n";
+			if (video->colour_conversion()) {
+				if (video->colour_conversion().get().preset()) {
+					cout << "\tcolour conversion "
+					     << PresetColourConversion::all()[video->colour_conversion().get().preset().get()].name
+					     << "\n";
+				} else {
+					cout << "\tcustom colour conversion\n";
+				}
+			} else {
+				cout << "\tno colour conversion\n";
+			}
+					
+		}
+
+		shared_ptr<AudioContent> audio = dynamic_pointer_cast<AudioContent> (c);
+		if (audio) {
+			cout << "\t" << audio->audio_channels() << " channels\n"
+			     << "\t" << audio->audio_delay() << " delay\n"
+			     << "\t" << audio->audio_gain() << " gain\n";
+		}
+	}
 }
 
 int
@@ -68,6 +122,7 @@ main (int argc, char* argv[])
 	bool no_remote = false;
 	optional<int> json_port;
 	bool keep_going = false;
+	bool dump = false;
 
 	int option_index = 0;
 	while (true) {
@@ -80,10 +135,12 @@ main (int argc, char* argv[])
 			{ "no-remote", no_argument, 0, 'r'},
 			{ "json", required_argument, 0, 'j'},
 			{ "keep-going", no_argument, 0, 'k' },
+			/* Just using A, B, C ... from here on */
+			{ "dump", no_argument, 0, 'A' },
 			{ 0, 0, 0, 0 }
 		};
 
-		int c = getopt_long (argc, argv, "vhdfnrj:k", long_options, &option_index);
+		int c = getopt_long (argc, argv, "vhdfnrj:kA", long_options, &option_index);
 
 		if (c == -1) {
 			break;
@@ -114,6 +171,9 @@ main (int argc, char* argv[])
 		case 'k':
 			keep_going = true;
 			break;
+		case 'A':
+			dump = true;
+			break;
 		}
 	}
 
@@ -126,7 +186,7 @@ main (int argc, char* argv[])
 			
 	dcpomatic_setup ();
 	ui_signaller = new UISignaller ();
-	
+
 	if (no_remote) {
 		ServerFinder::instance()->disable ();
 	}
@@ -144,6 +204,11 @@ main (int argc, char* argv[])
 		exit (EXIT_FAILURE);
 	}
 
+	if (dump) {
+		print_dump (film);
+		exit (EXIT_SUCCESS);
+	}
+	
 	ContentList content = film->content ();
 	for (ContentList::const_iterator i = content.begin(); i != content.end(); ++i) {
 		vector<boost::filesystem::path> paths = (*i)->paths ();
