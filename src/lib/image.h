@@ -75,8 +75,6 @@ public:
 		return _pixel_format;
 	}
 
-	std::string digest () const;
-
 private:
 	friend class pixel_formats_test;
 	

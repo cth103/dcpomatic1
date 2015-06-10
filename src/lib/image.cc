@@ -710,16 +710,3 @@ Image::aligned () const
 {
 	return _aligned;
 }
-
-string
-Image::digest () const
-{
-	MD5Digester digester;
-
-	for (int i = 0; i < components(); ++i) {
-		digester.add (data()[i], line_size()[i]);
-	}
-
-	return digester.get ();
-}
-	
