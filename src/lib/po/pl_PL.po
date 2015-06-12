@@ -1,0 +1,785 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-13 13:35+0000\n"
+"PO-Revision-Date: 2015-06-11 19:19+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.8.1\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"Language: pl_PL\n"
+
+#: src/lib/sndfile_content.cc:60
+msgid "%1 [audio]"
+msgstr "%1 [dźwięk]"
+
+#: src/lib/ffmpeg_content.cc:210
+msgid "%1 [movie]"
+msgstr "%1 [obraz]"
+
+#: src/lib/ratio.cc:34
+msgid "1.19"
+msgstr "1.19"
+
+#: src/lib/ratio.cc:37
+msgid "1.66"
+msgstr "1.66"
+
+#: src/lib/ratio.cc:38
+msgid "16:9"
+msgstr "16:9"
+
+#: src/lib/filter.cc:70
+msgid "3D denoiser"
+msgstr "Odszumianie 3D"
+
+#: src/lib/ratio.cc:35
+msgid "4:3"
+msgstr "4:3"
+
+#: src/lib/ratio.cc:36
+msgid "Academy"
+msgstr "1.38"
+
+#: src/lib/dcp_content_type.cc:53
+msgid "Advertisement"
+msgstr "Reklamowy"
+
+#: src/lib/job.cc:77
+msgid "An error occurred whilst handling the file %1."
+msgstr "Wystąpił błąd podczas przetwarzania pliku %1."
+
+#: src/lib/analyse_audio_job.cc:56
+msgid "Analyse audio"
+msgstr "Analizuj dźwięk"
+
+#: src/lib/scaler.cc:64
+msgid "Area"
+msgstr "Pole"
+
+#: src/lib/audio_content.cc:194
+msgid "Audio will be resampled from %1kHz to %2kHz."
+msgstr "Dźwięk będzie przesamplowany z %1kHz na %2kHz."
+
+#: src/lib/audio_content.cc:196
+msgid "Audio will not be resampled."
+msgstr "Dźwięk nie będzie przesamplowany."
+
+#: src/lib/scaler.cc:62
+msgid "Bicubic"
+msgstr "Dwusześcienny"
+
+#: src/lib/scaler.cc:69
+msgid "Bilinear"
+msgstr "Dwuliniowy"
+
+#: src/lib/job.cc:339
+msgid "Cancelled"
+msgstr "Anulowane"
+
+#: src/lib/exceptions.cc:60
+msgid "Cannot handle pixel format %1 during %2"
+msgstr "Nie można było obsłużyć formatu %1 kiedy %2"
+
+#: src/lib/util.cc:869
+msgid "Centre"
+msgstr "Środek"
+
+#: src/lib/writer.cc:98
+msgid "Checking existing image data"
+msgstr "Sprwdzanie istniejących danych obrazu"
+
+#: src/lib/writer.cc:519
+msgid "Computing audio digest"
+msgstr "Obliczanie danych dźwięku"
+
+#: src/lib/content.cc:132
+msgid "Computing digest"
+msgstr "Obliczanie danych"
+
+#: src/lib/writer.cc:515
+msgid "Computing image digest"
+msgstr "Obliczanie danych obrazu"
+
+#: src/lib/frame_rate_change.cc:86
+msgid "Content and DCP have the same rate.\n"
+msgstr "Plik i DCP mają taką samą ilość kl/s.\n"
+
+#: src/lib/video_content.cc:515
+msgid "Content frame rate"
+msgstr "Ilość kl/s pliku to"
+
+#: src/lib/audio_content.cc:85
+msgid "Content to be joined must have the same audio delay."
+msgstr "Łączone pliki muszą mieć takie samo opóźnienie dźwięku."
+
+#: src/lib/audio_content.cc:81
+msgid "Content to be joined must have the same audio gain."
+msgstr "Łączone pliki muszą mieć takie samo gain dźwięku."
+
+#: src/lib/video_content.cc:151
+msgid "Content to be joined must have the same colour conversion."
+msgstr "Łączone pliki muszą mieć takią samą konwersję kolorów."
+
+#: src/lib/video_content.cc:143
+msgid "Content to be joined must have the same crop."
+msgstr "Łączone pliki muszą mieć takie samo kadrowanie."
+
+#: src/lib/video_content.cc:131
+msgid "Content to be joined must have the same picture size."
+msgstr "Łączone pliki muszą mieć taki sam rozmiar obrazu."
+
+#: src/lib/video_content.cc:147
+msgid "Content to be joined must have the same scale setting."
+msgstr "Łączone pliki muszą mieć takie samo skalowanie."
+
+#: src/lib/subtitle_content.cc:80
+msgid "Content to be joined must have the same subtitle X offset."
+msgstr "Łączone pliki muszą mieć takie samo przesunięcie X napisów."
+
+#: src/lib/subtitle_content.cc:88
+msgid "Content to be joined must have the same subtitle X scale."
+msgstr "Łączone pliki muszą mieć taki sam rozmiar X napisów."
+
+#: src/lib/subtitle_content.cc:84
+msgid "Content to be joined must have the same subtitle Y offset."
+msgstr "Łączone pliki muszą mieć takie samo przesunięcie Y napisów."
+
+#: src/lib/subtitle_content.cc:92
+msgid "Content to be joined must have the same subtitle Y scale."
+msgstr "Łączone pliki muszą mieć taki sam rozmiar Y napisów."
+
+#: src/lib/video_content.cc:135
+msgid "Content to be joined must have the same video frame rate."
+msgstr "Łączone pliki muszą mieć taką samą ilość kl/s."
+
+#: src/lib/video_content.cc:139
+msgid "Content to be joined must have the same video frame type."
+msgstr "Łączone pliki muszą mieć taki sam typ klatki."
+
+#: src/lib/ffmpeg_content.cc:115
+msgid "Content to be joined must use the same audio stream."
+msgstr "Łączone pliki muszą używać tego samego strumienia dźwięku."
+
+#: src/lib/ffmpeg_content.cc:111
+msgid "Content to be joined must use the same subtitle stream."
+msgstr "Łączone pliki muszą używać tego samego strumienia napisów."
+
+#: src/lib/video_content.cc:466
+msgid "Content video is %1x%2"
+msgstr "Rozdzielczość materiału to %1x%2"
+
+#: src/lib/scp_dcp_job.cc:111
+msgid "Copy DCP to TMS"
+msgstr "Kopiuj DCP do TMS"
+
+#: src/lib/scp_dcp_job.cc:136
+msgid "Could not connect to server %1 (%2)"
+msgstr "Nie można połączyć z serwerem %1 (%2)"
+
+#: src/lib/scp_dcp_job.cc:158
+msgid "Could not create remote directory %1 (%2)"
+msgstr "Nie można utworzyć folderu zdalnego %1 (%2)"
+
+#: src/lib/image_proxy.cc:149
+msgid "Could not decode image file (%1)"
+msgstr "Nie można odkodować obrazu (%1)"
+
+#: src/lib/server_finder.cc:113
+msgid ""
+"Could not listen for remote encode servers.  Perhaps another instance of DCP-"
+"o-matic is running."
+msgstr ""
+"Nie można nasłuchiwać serwerów zdalnych. Druga instancja DCP-o-matic jest "
+"już prawdopodobnie uruchomiona. "
+
+#: src/lib/job.cc:96
+msgid "Could not open %1"
+msgstr "Nie udało się otworzyć %1"
+
+#: src/lib/scp_dcp_job.cc:183
+msgid "Could not open %1 to send"
+msgstr "Nie udało się otworzyć %1 do wysłania"
+
+#: src/lib/internet.cc:77
+msgid "Could not open downloaded ZIP file"
+msgstr "Nie udało się otworzyć pobranego archiwum ZIP"
+
+#: src/lib/scp_dcp_job.cc:153
+msgid "Could not start SCP session (%1)"
+msgstr "Nie udało się rozpocząć sesji SCP (%1)"
+
+#: src/lib/scp_dcp_job.cc:197
+msgid "Could not write to remote file (%1)"
+msgstr "Nie udało się zapisać do pliku zdalnego (%1)"
+
+#: src/lib/video_content.cc:484
+msgid "Cropped to %1x%2"
+msgstr "Przycięty do"
+
+#: src/lib/frame_rate_change.cc:98
+msgid "DCP will run at %1%% of the content speed.\n"
+msgstr "DCP będzie odtwarzany z %1%% prędkości materiału.\n"
+
+#: src/lib/frame_rate_change.cc:89
+msgid "DCP will use every other frame of the content.\n"
+msgstr "DCP będzie używał każdej pozostałej klatki materiału.\n"
+
+#: src/lib/job.cc:97
+msgid ""
+"DCP-o-matic could not open the file %1.  Perhaps it does not exist or is in "
+"an unexpected format."
+msgstr ""
+"DCP-o-matic nie mógł otworzyć pliku %1. Plik nie istnieje, lub jest w  "
+"niewspieranym formacie."
+
+#: src/lib/ffmpeg_content.cc:92
+msgid ""
+"DCP-o-matic no longer supports the `%1' filter, so it has been turned off."
+msgstr "DCP-o-matic nie używa już filtru `%1', więc został on wyłączony."
+
+#: src/lib/filter.cc:65 src/lib/filter.cc:66 src/lib/filter.cc:67
+msgid "De-interlacing"
+msgstr "Usuwanie przeplotu"
+
+#: src/lib/config.cc:392
+msgid ""
+"Dear Projectionist\n"
+"\n"
+"Please find attached KDMs for $CPL_NAME.\n"
+"\n"
+"Cinema: $CINEMA_NAME\n"
+"Screen(s): $SCREENS\n"
+"\n"
+"The KDMs are valid from $START_TIME until $END_TIME.\n"
+"\n"
+"Best regards,\n"
+"DCP-o-matic"
+msgstr ""
+"Drogi Kinooperatorze\n"
+"\n"
+"W załączniku dodane są klucze dla $CPL_NAME.\n"
+"\n"
+"Kino: $CINEMA_NAME\n"
+"Sala(e): $SCREENS\n"
+"\n"
+"Klucze są ważne od $START_TIME do $END_TIME.\n"
+"\n"
+"Z poważaniem,\n"
+"DCP-o-matic"
+
+#: src/lib/video_content.cc:478
+msgid "Display aspect ratio"
+msgstr "Proporcje obrazu"
+
+#: src/lib/dolby_cp750.cc:27
+msgid "Dolby CP650 and CP750"
+msgstr "Dolby CP650 i CP750"
+
+#: src/lib/internet.cc:70
+msgid "Download failed (%1/%2 error %3)"
+msgstr "Pobieranie nie udało się (%1/%2 error %3)"
+
+#: src/lib/frame_rate_change.cc:91
+msgid "Each content frame will be doubled in the DCP.\n"
+msgstr "Każda klatka materiału będzie zdublowana.\n"
+
+#: src/lib/frame_rate_change.cc:93
+msgid "Each content frame will be repeated %1 more times in the DCP.\n"
+msgstr "Każda klatka materiału będzie powtórzona %1 razy.\n"
+
+#: src/lib/send_kdm_email_job.cc:52
+msgid "Email KDMs for %1"
+msgstr "Wyślij klucze do %1"
+
+#: src/lib/writer.cc:130
+msgid "Encoding image data"
+msgstr "Kodowanie obrazu"
+
+#: src/lib/job.cc:337
+msgid "Error (%1)"
+msgstr "Błąd (%1)"
+
+#: src/lib/examine_content_job.cc:47
+msgid "Examine content"
+msgstr "Sprawdzanie materiału"
+
+#: src/lib/scp_dcp_job.cc:146
+msgid "Failed to authenticate with server (%1)"
+msgstr "Błąd uwierzytelniania na serwerze (%1)"
+
+#: src/lib/scaler.cc:70
+msgid "Fast Bilinear"
+msgstr "Szybki dwuliniowy"
+
+#: src/lib/dcp_content_type.cc:44
+msgid "Feature"
+msgstr "Pełnometrażowy"
+
+#: src/lib/ffmpeg_examiner.cc:72
+msgid "Finding length"
+msgstr "Ustalanie długości"
+
+#: src/lib/ratio.cc:39
+msgid "Flat"
+msgstr "1.85"
+
+#: src/lib/ratio.cc:41
+msgid "Full frame"
+msgstr "Pełna klatka"
+
+#: src/lib/scaler.cc:65
+msgid "Gaussian"
+msgstr "Gausowski"
+
+#: src/lib/filter.cc:68
+msgid "Gradient debander"
+msgstr "Zachowaj przejścia tonalne"
+
+#: src/lib/util.cc:873
+msgid "Hearing impaired"
+msgstr "Dla niesłyszących"
+
+#: src/lib/filter.cc:71
+msgid "High quality 3D denoiser"
+msgstr "Odszumianie 3D wysokiej jakości"
+
+#: src/lib/job.cc:117 src/lib/job.cc:127
+msgid ""
+"It is not known what caused this error.  Please report the problem to the "
+"DCP-o-matic author (carl@dcpomatic.com)."
+msgstr ""
+"Nie udało się ustalić, co spowodowało błąd. Prosimy o zgłoszenie błędu do "
+"autora DCP-o-matic (carl@dcpomatic.com)."
+
+#: src/lib/config.cc:207
+msgid "KDM delivery: $CPL_NAME"
+msgstr "Wysyłka klucza: $CPL_NAME"
+
+#: src/lib/filter.cc:66
+msgid "Kernel deinterlacer"
+msgstr "Usuwanie przeplotu metodą Kernel"
+
+#: src/lib/scaler.cc:66
+msgid "Lanczos"
+msgstr "Lanczos"
+
+#: src/lib/util.cc:867
+msgid "Left"
+msgstr "Lewy"
+
+#: src/lib/util.cc:875
+msgid "Left centre"
+msgstr "Lewy centralny"
+
+#: src/lib/util.cc:877
+msgid "Left rear surround"
+msgstr "Lewy tylny surround"
+
+#: src/lib/util.cc:871
+msgid "Left surround"
+msgstr "Lewy surround"
+
+#: src/lib/util.cc:870
+msgid "Lfe (sub)"
+msgstr "Lfe (subwoofer)"
+
+#: src/lib/filter.cc:68 src/lib/filter.cc:69 src/lib/filter.cc:72
+msgid "Misc"
+msgstr "Różne"
+
+#: src/lib/filter.cc:65
+msgid "Motion compensating deinterlacer"
+msgstr "Usuwanie przeplotu z kompensacją ruchu"
+
+#: src/lib/video_content_scale.cc:108
+msgid "No scale"
+msgstr "Nie skaluj"
+
+#: src/lib/video_content_scale.cc:105
+msgid "No stretch"
+msgstr "Nie rozciągaj"
+
+#: src/lib/image_content.cc:52
+msgid "No valid image files were found in the folder."
+msgstr "W folderze nie znaleziono obsługiwanych plików"
+
+#: src/lib/filter.cc:70 src/lib/filter.cc:71 src/lib/filter.cc:73
+msgid "Noise reduction"
+msgstr "Redukcja szumu"
+
+#: src/lib/job.cc:335
+msgid "OK (ran for %1)"
+msgstr "OK (minęło %1)"
+
+#: src/lib/content.cc:102
+msgid "Only the first piece of content to be joined can have a start trim."
+msgstr "Tylko pierwszy z łączonych plików może być przycięta na początku."
+
+#: src/lib/content.cc:106
+msgid "Only the last piece of content to be joined can have an end trim."
+msgstr "Tylko ostatni z łączonych plików może być przycięty na końcu."
+
+#: src/lib/job.cc:109
+msgid "Out of memory"
+msgstr "Zabrakło pamięci RAM"
+
+#: src/lib/filter.cc:73
+msgid "Overcomplete wavelet denoiser"
+msgstr "Odszumianie DWT"
+
+#: src/lib/colour_conversion.cc:361
+msgid "P3 (from SMPTE RP 431-2)"
+msgstr "P3 (z SMPTE RP 431-2)"
+
+#: src/lib/video_content.cc:508
+msgid "Padded with black to %1x%2"
+msgstr "Dodano kaszetę do rozdzielczości %1x%2"
+
+#: src/lib/dcp_content_type.cc:51
+msgid "Policy"
+msgstr "Umowa"
+
+#: src/lib/exceptions.cc:66
+msgid "Programming error at %1:%2"
+msgstr "Błąd programowania w lini %1:%2"
+
+#: src/lib/dcp_content_type.cc:52
+msgid "Public Service Announcement"
+msgstr "Komunikat publiczny"
+
+#: src/lib/dcp_content_type.cc:49
+msgid "Rating"
+msgstr "Klasyfikacja"
+
+#: src/lib/colour_conversion.cc:347
+msgid "Rec. 601"
+msgstr "Rec. 601"
+
+#: src/lib/colour_conversion.cc:354 src/lib/video_content.cc:192
+msgid "Rec. 709"
+msgstr "Rec. 709"
+
+#: src/lib/util.cc:868
+msgid "Right"
+msgstr "Prawy"
+
+#: src/lib/util.cc:876
+msgid "Right centre"
+msgstr "Prawy centralny"
+
+#: src/lib/util.cc:878
+msgid "Right rear surround"
+msgstr "Prawy centralny surround"
+
+#: src/lib/util.cc:872
+msgid "Right surround"
+msgstr "Prawy surround"
+
+#: src/lib/scp_dcp_job.cc:141
+msgid "SSH error (%1)"
+msgstr "Błąd SSH (%1)"
+
+#: src/lib/video_content.cc:499
+msgid "Scaled to %1x%2"
+msgstr "Przeskalowany do %1x%2"
+
+#: src/lib/ratio.cc:40
+msgid "Scope"
+msgstr "2.39"
+
+#: src/lib/dcp_content_type.cc:45
+msgid "Short"
+msgstr "Krótkometrażowy"
+
+#: src/lib/scaler.cc:67
+msgid "Sinc"
+msgstr "Sinc"
+
+#: src/lib/scaler.cc:68
+msgid "Spline"
+msgstr "Klin"
+
+#: src/lib/dcp_content_type.cc:50
+msgid "Teaser"
+msgstr "Zapowiedź"
+
+#: src/lib/filter.cc:72
+msgid "Telecine filter"
+msgstr "Filtr Telecine"
+
+#: src/lib/dcp_content_type.cc:47
+msgid "Test"
+msgstr "Testowy"
+
+#: src/lib/job.cc:83
+msgid ""
+"The drive that the film is stored on is low in disc space.  Free some more "
+"space and try again."
+msgstr ""
+"Dysk na którym zapisany jest film ma mało wolnego miejsca. Zwolnij miejsce "
+"na dysku i spróbuj ponownie."
+
+#: src/lib/job.cc:109
+msgid "There was not enough memory to do this."
+msgstr "Zabrakło pamięci RAM."
+
+#: src/lib/film.cc:405
+msgid ""
+"This film was created with a newer version of DCP-o-matic, and it cannot be "
+"loaded into this version.  Sorry!"
+msgstr ""
+"Film został utworzony przy pomocy nowszej wersji DCP-o-matic i nie może być "
+"otwarty w tej wersji. Przepraszamy!"
+
+#: src/lib/film.cc:397
+msgid ""
+"This film was created with an older version of DCP-o-matic, and "
+"unfortunately it cannot be loaded into this version.  You will need to "
+"create a new Film, re-add your content and set it up again.  Sorry!"
+msgstr ""
+"Projekt został utworzony przy pomocy starszej wersji DCP-o-matic i nie może "
+"być otwarty w tej wersji. Musisz stworzyć nowy Projekt i ponownie dodać "
+"materiały i ustawienia. Przepraszamy!"
+
+#: src/lib/dcp_content_type.cc:46
+msgid "Trailer"
+msgstr "Zwiastun"
+
+#: src/lib/transcode_job.cc:53
+msgid "Transcode %1"
+msgstr "Transkodowanie %1"
+
+#: src/lib/dcp_content_type.cc:48
+msgid "Transitional"
+msgstr "Tymczasowy"
+
+#: src/lib/internet.cc:82
+msgid "Unexpected ZIP file contents"
+msgstr "Archiwum ZIP zawiera nieobsługiwane pliki"
+
+#: src/lib/image_proxy.cc:199
+msgid "Unexpected image type received by server"
+msgstr "Serwer otrzymał nieobsługiwany typ obrazu"
+
+#: src/lib/job.cc:126
+msgid "Unknown error"
+msgstr "Nieznany błąd"
+
+#: src/lib/ffmpeg_decoder.cc:307
+msgid "Unrecognised audio sample format (%1)"
+msgstr "Nieznany rodzaj pliku audio (%1)"
+
+#: src/lib/filter.cc:69
+msgid "Unsharp mask and Gaussian blur"
+msgstr "Wyostrzanie i filtr Gausowski"
+
+#: src/lib/colour_conversion.cc:267
+msgid "Untitled"
+msgstr "Nowy"
+
+#: src/lib/util.cc:874
+msgid "Visually impaired"
+msgstr "Dla niedowidzących"
+
+#: src/lib/scp_dcp_job.cc:103
+msgid "Waiting"
+msgstr "Czekam"
+
+#: src/lib/scaler.cc:63
+msgid "X"
+msgstr "X"
+
+#: src/lib/filter.cc:67
+msgid "Yet Another Deinterlacing Filter"
+msgstr "I jeszcze jeden filtr usuwania przeplotu"
+
+#: src/lib/film.cc:321
+msgid "You must add some content to the DCP before creating it"
+msgstr "Musisz dodać pliki zanim utworzysz DCP"
+
+#: src/lib/image_content.cc:75
+msgid "[moving images]"
+msgstr "[ruchome obrazy]"
+
+#: src/lib/image_content.cc:73
+msgid "[still]"
+msgstr "[stopklatka]"
+
+#: src/lib/film.cc:266
+msgid "cannot contain slashes"
+msgstr "nie może zawierać ukośników"
+
+#: src/lib/util.cc:649
+msgid "connect timed out"
+msgstr "minął czas połączenia"
+
+#: src/lib/scp_dcp_job.cc:127
+msgid "connecting"
+msgstr "łączenie"
+
+#: src/lib/film.cc:317
+msgid "container"
+msgstr "kontener"
+
+#: src/lib/film.cc:325
+msgid "content type"
+msgstr "typ kontentu"
+
+#: src/lib/scp_dcp_job.cc:176
+msgid "copying %1"
+msgstr "kopiowanie %1"
+
+#: src/lib/exceptions.cc:36
+msgid "could not create file %1"
+msgstr "nie udało się utworzyć pliku %1"
+
+#: src/lib/ffmpeg.cc:186
+msgid "could not find audio decoder"
+msgstr "nie udało się znaleźć dekodera audio"
+
+#: src/lib/ffmpeg.cc:106
+msgid "could not find stream information"
+msgstr "nie udało się znaleźć właściwości strumienia"
+
+#: src/lib/ffmpeg.cc:165
+msgid "could not find video decoder"
+msgstr "nie udało się znaleźć dekodera video"
+
+#: src/lib/writer.cc:483
+msgid "could not move audio MXF into the DCP (%1)"
+msgstr "nie udało się przenieść pliku audio MXF do DCP (%1)"
+
+#: src/lib/sndfile_decoder.cc:56
+msgid "could not open audio file for reading (%1)"
+msgstr "nie udało się odczytać pliku audio (%1)"
+
+#: src/lib/exceptions.cc:29
+msgid "could not open file %1"
+msgstr "nie udało się otworzyć pliku (%1)"
+
+#: src/lib/dcp_video_frame.cc:349
+msgid "could not open file for reading"
+msgstr "nie udało się odczytać pliku"
+
+#: src/lib/dcp_video_frame.cc:355
+msgid "could not read encoded data"
+msgstr "nie udało się odczytać danych zaszyfrowanych"
+
+#: src/lib/exceptions.cc:42
+msgid "could not read from file %1 (%2)"
+msgstr "nie udało czytać z pliku %1 (%2)"
+
+#: src/lib/resampler.cc:98
+msgid "could not run sample-rate converter"
+msgstr "nie udało się uruchomić konwertera częstotliwości próbkowania"
+
+#: src/lib/resampler.cc:79
+msgid "could not run sample-rate converter for %1 samples (%2) (%3)"
+msgstr ""
+"nie udało się uruchomić konwertera częstotliwości próbkowania dla %1 próbek "
+"(%2) (%3)"
+
+#: src/lib/scp_dcp_job.cc:88
+msgid "could not start SCP session (%1)"
+msgstr "nie udało się uruchomić sesji SCP (%1)"
+
+#: src/lib/scp_dcp_job.cc:54
+msgid "could not start SSH session"
+msgstr "nie udało się uruchomić sesji SSH"
+
+#: src/lib/exceptions.cc:48
+msgid "could not write to file %1 (%2)"
+msgstr "nie udało się zapisać do pliku %1 (%2)"
+
+#: src/lib/util.cc:669
+msgid "error during async_accept (%1)"
+msgstr "Nastąpił błąd podczas async_accept (%1)"
+
+#: src/lib/util.cc:645
+msgid "error during async_connect (%1)"
+msgstr "Nastąpił błąd podczas async_connect (%1)"
+
+#: src/lib/util.cc:718
+msgid "error during async_read (%1)"
+msgstr "Nastąpił błąd podczas async_read (%1)"
+
+#: src/lib/util.cc:690
+msgid "error during async_write (%1)"
+msgstr "Nastąpił błąd podczas async_write (%1)"
+
+#: src/lib/transcode_job.cc:103
+msgid "frames per second"
+msgstr "klatek na sekundę"
+
+#: src/lib/util.cc:163
+msgid "hour"
+msgstr "godzina"
+
+#: src/lib/util.cc:159 src/lib/util.cc:165
+msgid "hours"
+msgstr "godzin"
+
+#: src/lib/util.cc:181
+msgid "minute"
+msgstr "minuta"
+
+#: src/lib/util.cc:177 src/lib/util.cc:183
+msgid "minutes"
+msgstr "minut"
+
+#: src/lib/util.cc:790
+msgid "missing key %1 in key-value set"
+msgstr "brakuje klucza %1 w gałęzi key-value"
+
+#: src/lib/exceptions.cc:54
+msgid "missing required setting %1"
+msgstr "brakuje wymaganych ustawień %1"
+
+#: src/lib/ffmpeg_decoder.cc:635
+msgid "multi-part subtitles not yet supported"
+msgstr "pliki kilkuczęściowe nie są jeszcze obsługiwane "
+
+#: src/lib/film.cc:266 src/lib/film.cc:329
+msgid "name"
+msgstr "nazwa"
+
+#: src/lib/ffmpeg_decoder.cc:650
+msgid "non-bitmap subtitles not yet supported"
+msgstr "na razie obsługiwane są tylko napisy w bitmapie"
+
+#: src/lib/video_content.cc:474
+msgid "pixel aspect ratio"
+msgstr "proporcje obrazu"
+
+#. / TRANSLATORS: remaining here follows an amount of time that is remaining
+#. / on an operation.
+#: src/lib/job.cc:332
+msgid "remaining"
+msgstr "pozostało"
+
+#: src/lib/colour_conversion.cc:340
+msgid "sRGB"
+msgstr "sRGB"
+
+#: src/lib/util.cc:196
+msgid "second"
+msgstr "sekunda"
+
+#: src/lib/util.cc:198
+msgid "seconds"
+msgstr "sekund"
+
+#: src/lib/ffmpeg_examiner.cc:197
+msgid "unknown"
+msgstr "nieznany"

@@ -153,6 +153,7 @@ private:
 		_language->Append (wxT ("Nederlands"));
 		_language->Append (wxT ("Svenska"));
 		_language->Append (wxT ("русский"));
+		_language->Append (wxT ("Polski"));
 		table->Add (_language);
 		
 		wxStaticText* restart = add_label_to_sizer (table, panel, _("(restart DCP-o-matic to see language changes)"), false);
@@ -204,6 +205,8 @@ private:
 			checked_set (_language, 5);
 		} else if (config->language().get_value_or ("") == "ru") {
 			checked_set (_language, 7);
+		} else if (config->language().get_value_or ("") == "pl") {
+			checked_set (_language, 8);
 		} else {
 			checked_set (_language, 1);
 		}
@@ -256,6 +259,9 @@ private:
 			break;
 		case 7:
 			Config::instance()->set_language ("ru");
+			break;
+		case 8:
+			Config::instance()->set_language ("pl");
 			break;
 		}
 	}
