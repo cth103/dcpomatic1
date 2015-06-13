@@ -152,7 +152,7 @@ private:
 		_language->Append (wxT ("Italiano"));
 		_language->Append (wxT ("Nederlands"));
 		_language->Append (wxT ("Svenska"));
-		_language->Append (wxT ("русский"));
+		_language->Append (wxT ("Русский"));
 		_language->Append (wxT ("Polski"));
 		table->Add (_language);
 		
