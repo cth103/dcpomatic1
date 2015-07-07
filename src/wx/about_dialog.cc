@@ -31,7 +31,7 @@ AboutDialog::AboutDialog (wxWindow* parent)
 {
 	wxBoxSizer* overall_sizer = new wxBoxSizer (wxVERTICAL);
 	wxBoxSizer* sizer = new wxBoxSizer (wxVERTICAL);
-	
+
 	wxFont title_font (*wxNORMAL_FONT);
 	title_font.SetPointSize (title_font.GetPointSize() + 12);
 	title_font.SetWeight (wxFONTWEIGHT_BOLD);
@@ -41,7 +41,7 @@ AboutDialog::AboutDialog (wxWindow* parent)
 
 	wxFont version_font (*wxNORMAL_FONT);
 	version_font.SetWeight (wxFONTWEIGHT_BOLD);
-	
+
 	wxStaticText* t = new wxStaticText (this, wxID_ANY, _("DCP-o-matic"));
 	t->SetFont (title_font);
 	sizer->Add (t, wxSizerFlags().Centre().Border(wxALL, 16));
@@ -62,7 +62,7 @@ AboutDialog::AboutDialog (wxWindow* parent)
 		wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER
 		);
 	t->SetFont (subtitle_font);
-	
+
 	sizer->Add (t, wxSizerFlags().Centre().Border(wxALL, 8));
 
 	wxHyperlinkCtrl* h = new wxHyperlinkCtrl (
@@ -78,7 +78,7 @@ AboutDialog::AboutDialog (wxWindow* parent)
 		_("(C) 2012-2015 Carl Hetherington, Terrence Meiczinger, Paul Davis, Ole Laursen"),
 		wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER
 		);
-	
+
 	sizer->Add (t, wxSizerFlags().Centre().Border(wxLEFT | wxRIGHT, 16));
 
 	_notebook = new wxNotebook (this, wxID_ANY);
@@ -136,6 +136,7 @@ AboutDialog::AboutDialog (wxWindow* parent)
 	supported_by.Add (wxT ("Unwana Essien"));
 	supported_by.Add (wxT ("Maxime Estoppey"));
 	supported_by.Add (wxT ("Frechen-Film e.V."));
+	supported_by.Add (wxT ("Rasitha Ferdinando");
 	supported_by.Add (wxT ("Jose Angel Velasco Fernandez"));
 	supported_by.Add (wxT ("Andres Fink"));
 	supported_by.Add (wxT ("Evan Freeze"));
@@ -237,7 +238,7 @@ AboutDialog::AboutDialog (wxWindow* parent)
 	tested_by.Add (wxT ("Paul Willmott"));
 	tested_by.Add (wxT ("Wolfgang Woehl"));
 	add_section (_("Tested by"), tested_by);
-	
+
 	sizer->Add (_notebook, wxSizerFlags().Centre().Border(wxALL, 16).Expand());
 
 	overall_sizer->Add (sizer);
@@ -246,7 +247,7 @@ AboutDialog::AboutDialog (wxWindow* parent)
 	if (buttons) {
 		overall_sizer->Add (buttons, 1, wxEXPAND | wxALL, 4);
 	}
-	
+
 	SetSizerAndFit (overall_sizer);
 }
 
@@ -260,7 +261,7 @@ AboutDialog::add_section (wxString name, wxArrayString credits)
 	wxSizer* overall_sizer = new wxBoxSizer (wxHORIZONTAL);
 
 	vector<wxSizer*> sizers;
-	
+
 	for (int i = 0; i < N; ++i) {
 		sizers.push_back (new wxBoxSizer (wxVERTICAL));
 		overall_sizer->Add (sizers.back (), 1, wxEXPAND | wxALL, 6);
