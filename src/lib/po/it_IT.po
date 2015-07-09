@@ -74,12 +74,11 @@ msgstr "L'Audio sarà ricampionato da %1kHz a %2kHz"
 #: src/lib/audio_content.cc:230
 #, fuzzy
 msgid "Audio will be resampled to %1kHz"
-msgstr "L'Audio sarà ricampionato da %1kHz a %2kHz"
+msgstr "L'Audio sarà ricampionato a %1kHz"
 
 #: src/lib/audio_content.cc:219
-#, fuzzy
 msgid "Audio will not be resampled"
-msgstr "L'Audio sarà ricampionato da %1kHz a %2kHz"
+msgstr ""
 
 #: src/lib/scaler.cc:62
 msgid "Bicubic"

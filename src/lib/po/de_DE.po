@@ -74,7 +74,7 @@ msgstr "Audioabtastrate wird von %1kHz auf %2kHz angepasst."
 #: src/lib/audio_content.cc:230
 #, fuzzy
 msgid "Audio will be resampled to %1kHz"
-msgstr "Audioabtastrate wird von %1kHz auf %2kHz angepasst."
+msgstr "Audioabtastrate wird auf %1kHz angepasst."
 
 #: src/lib/audio_content.cc:219
 #, fuzzy

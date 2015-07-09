@@ -73,7 +73,7 @@ msgstr "Le son sera ré-échantillonné de %1kHz à %2kHz."
 #: src/lib/audio_content.cc:230
 #, fuzzy
 msgid "Audio will be resampled to %1kHz"
-msgstr "Le son sera ré-échantillonné de %1kHz à %2kHz."
+msgstr "Le son sera ré-échantillonné à %1kHz."
 
 #: src/lib/audio_content.cc:219
 #, fuzzy

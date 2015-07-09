@@ -75,7 +75,7 @@ msgstr "Аудио будет ресэмплировано из %1kHz в %2kHz."
 #: src/lib/audio_content.cc:230
 #, fuzzy
 msgid "Audio will be resampled to %1kHz"
-msgstr "Аудио будет ресэмплировано из %1kHz в %2kHz."
+msgstr "Аудио будет ресэмплировано в %1kHz."
 
 #: src/lib/audio_content.cc:219
 #, fuzzy

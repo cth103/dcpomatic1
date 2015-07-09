@@ -73,7 +73,7 @@ msgstr "Audio kommer att samplas om från %1kHz till %2kHz."
 #: src/lib/audio_content.cc:230
 #, fuzzy
 msgid "Audio will be resampled to %1kHz"
-msgstr "Audio kommer att samplas om från %1kHz till %2kHz."
+msgstr "Audio kommer att samplas om till %1kHz."
 
 #: src/lib/audio_content.cc:219
 #, fuzzy
