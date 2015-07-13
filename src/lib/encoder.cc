@@ -65,6 +65,8 @@ Encoder::Encoder (shared_ptr<const Film> f, weak_ptr<Job> j)
 	: _film (f)
 	, _job (j)
 	, _video_frames_out (0)
+	, _left_done (false)
+	, _right_done (false)
 	, _terminate (false)
 {
 	_have_a_real_frame[EYES_BOTH] = false;
@@ -121,7 +123,7 @@ Encoder::process_end ()
 	}
 
 	lock.unlock ();
-	
+
 	terminate_threads ();
 
 	LOG_GENERAL (N_("Mopping up %1"), _queue.size());
@@ -144,12 +146,12 @@ Encoder::process_end ()
 			LOG_ERROR (N_("Local encode failed (%1)"), e.what ());
 		}
 	}
-		
+
 	_writer->finish ();
 	_writer.reset ();
 
 	LOG_GENERAL_NC (N_("Encoder::process_end finished"));
-}	
+}
 
 /** @return an estimate of the current number of frames we are encoding per second,
  *  or 0 if not known.
@@ -183,7 +185,7 @@ void
 Encoder::frame_done ()
 {
 	boost::mutex::scoped_lock lock (_state_mutex);
-	
+
 	struct timeval tv;
 	gettimeofday (&tv, 0);
 	_time_history.push_front (tv);
@@ -192,11 +194,14 @@ Encoder::frame_done ()
 	}
 }
 
+/** Called with video frames in ascending order.  3D may arrive either
+ *  L then R or R then L.
+ */
 void
 Encoder::process_video (shared_ptr<PlayerVideoFrame> pvf, bool same)
 {
 	LOG_DEBUG_NC ("-> Encoder::process_video");
-	
+
 	_waker.nudge ();
 
 	boost::mutex::scoped_lock lock (_mutex);
@@ -247,8 +252,25 @@ Encoder::process_video (shared_ptr<PlayerVideoFrame> pvf, bool same)
 		_have_a_real_frame[pvf->eyes()] = true;
 	}
 
-	if (pvf->eyes() != EYES_LEFT) {
+	/* Update _video_frames_out, taking 3D into account */
+
+	switch (pvf->eyes ()) {
+	case EYES_BOTH:
 		++_video_frames_out;
+		break;
+	case EYES_LEFT:
+		_left_done = true;
+		break;
+	case EYES_RIGHT:
+		_right_done = true;
+		break;
+	default:
+		break;
+	}
+
+	if (_left_done && _right_done) {
+		++_video_frames_out;
+		_left_done = _right_done = false;
 	}
 
 	LOG_DEBUG_NC ("<- Encoder::process_video");
@@ -289,7 +311,7 @@ try
 	   encodings.
 	*/
 	int remote_backoff = 0;
-	
+
 	while (true) {
 
 		LOG_TIMING ("[%1] encoder thread sleeps", boost::this_thread::get_id());
@@ -307,7 +329,7 @@ try
 		shared_ptr<DCPVideoFrame> vf = _queue.front ();
 		LOG_TIMING ("[%1] encoder thread pops frame %2 (%3) from queue", boost::this_thread::get_id(), vf->index(), vf->eyes ());
 		_queue.pop_front ();
-		
+
 		lock.unlock ();
 
 		shared_ptr<EncodedData> encoded;
@@ -319,10 +341,10 @@ try
 				if (remote_backoff > 0) {
 					LOG_GENERAL ("%1 was lost, but now she is found; removing backoff", server->host_name ());
 				}
-				
+
 				/* This job succeeded, so remove any backoff */
 				remote_backoff = 0;
-				
+
 			} catch (std::exception& e) {
 				if (remote_backoff < 60) {
 					/* back off more */
@@ -333,7 +355,7 @@ try
 					vf->index(), server->host_name(), e.what(), remote_backoff
 					);
 			}
-				
+
 		} else {
 			try {
 				LOG_TIMING ("[%1] encoder thread begins local encode of %2", boost::this_thread::get_id(), vf->index());

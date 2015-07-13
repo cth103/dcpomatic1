@@ -82,9 +82,9 @@ public:
 	int video_frames_out () const;
 
 private:
-	
+
 	void frame_done ();
-	
+
 	void encoder_thread (boost::optional<ServerDescription>);
 	void terminate_threads ();
 	void add_worker_threads (ServerDescription);
@@ -105,6 +105,8 @@ private:
 
 	/** Number of video frames written for the DCP so far */
 	int _video_frames_out;
+	bool _left_done;
+	bool _right_done;
 
 	bool _have_a_real_frame[EYES_COUNT];
 	bool _terminate;
