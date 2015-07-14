@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: DCP-o-matic FRENCH\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-09 14:09+0100\n"
-"PO-Revision-Date: 2015-05-11 17:12+0100\n"
+"PO-Revision-Date: 2015-07-14 14:10+0100\n"
 "Last-Translator: Grégoire AUSINA <gregoire@gisele-productions.eu>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -66,19 +66,16 @@ msgid "Area"
 msgstr "Surface"
 
 #: src/lib/audio_content.cc:228
-#, fuzzy
 msgid "Audio will be resampled from %1kHz to %2kHz"
-msgstr "Le son sera ré-échantillonné de %1kHz à %2kHz."
+msgstr "Le son sera ré-échantillonné de %1kHz à %2kHz"
 
 #: src/lib/audio_content.cc:230
-#, fuzzy
 msgid "Audio will be resampled to %1kHz"
-msgstr "Le son sera ré-échantillonné à %1kHz."
+msgstr "Le son sera ré-échantillonné à %1kHz"
 
 #: src/lib/audio_content.cc:219
-#, fuzzy
 msgid "Audio will not be resampled"
-msgstr "Le son ne sera pas ré-échantillonné."
+msgstr "Le son ne sera pas ré-échantillonné"
 
 #: src/lib/scaler.cc:62
 msgid "Bicubic"
@@ -450,12 +447,11 @@ msgstr "Réduction de bruit par ondelettes"
 
 #: src/lib/colour_conversion.cc:363
 msgid "P3"
-msgstr ""
+msgstr "P3"
 
 #: src/lib/video_content.cc:491
-#, fuzzy
 msgid "Padded with black to fit container %1 (%2x%3)"
-msgstr "Bordure noire de %1x%2"
+msgstr "Bordures noires pour remplir le format image %1 (%2x%3)"
 
 #: src/lib/dcp_content_type.cc:51
 msgid "Policy"
@@ -518,9 +514,8 @@ msgid "Sinc"
 msgstr "Sinc"
 
 #: src/lib/audio_content.cc:223
-#, fuzzy
 msgid "Some audio will be resampled to %1kHz"
-msgstr "Le son sera ré-échantillonné de %1kHz à %2kHz."
+msgstr "Certains sons seront ré-échantillonnés à %1kHz"
 
 #: src/lib/scaler.cc:68
 msgid "Spline"
