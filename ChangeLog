@@ -1,3 +1,8 @@
+2015-07-24  Carl Hetherington  <cth@carlh.net>
+
+	* Fix non-display of forthcoming jobs
+	in the batch processor.
+
 2015-07-14  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.79.10 released.
@@ -2505,4 +2510,3 @@
 2013-08-28  Carl Hetherington  <cth@carlh.net>
 
 	* Initial DCP-o-matic release.
-
