@@ -185,7 +185,7 @@ def configure(conf):
             conf.env.append_value('CXXFLAGS', '-DDCPOMATIC_IMAGE_MAGICK')
         if graphics is not None:
             conf.env.append_value('CXXFLAGS', '-DDCPOMATIC_GRAPHICS_MAGICK')
-        
+
     conf.check_cfg(package='libzip', args='--cflags --libs', uselib_store='ZIP', mandatory=True)
 
     # libcxml
@@ -215,12 +215,12 @@ def configure(conf):
 
     # libdcp
     if conf.options.static_dcp:
-        conf.check_cfg(package='libdcp', atleast_version='0.100', args='--cflags', uselib_store='DCP', mandatory=True)
+        conf.check_cfg(package='libdcp', atleast_version='0.103.0', args='--cflags', uselib_store='DCP', mandatory=True)
         conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
         conf.env.STLIB_DCP = ['dcp', 'asdcp-libdcp', 'kumu-libdcp']
         conf.env.LIB_DCP = ['glibmm-2.4', 'ssl', 'crypto', 'bz2', 'xslt']
     else:
-        conf.check_cfg(package='libdcp', atleast_version='0.100.0', args='--cflags --libs', uselib_store='DCP', mandatory=True)
+        conf.check_cfg(package='libdcp', atleast_version='0.103.0', args='--cflags --libs', uselib_store='DCP', mandatory=True)
         conf.env.DEFINES_DCP = [f.replace('\\', '') for f in conf.env.DEFINES_DCP]
 
     # libxml++
@@ -334,11 +334,11 @@ def configure(conf):
     # Other stuff
 
     conf.find_program('msgfmt', var='MSGFMT')
-    
+
     datadir = conf.env.DATADIR
     if not datadir:
         datadir = os.path.join(conf.env.PREFIX, 'share')
-    
+
     conf.define('LOCALEDIR', os.path.join(datadir, 'locale'))
     conf.define('DATADIR', datadir)
 
@@ -424,7 +424,7 @@ def create_version_cc(version, cxx_flags):
     if commit is None and os.path.exists('.git_revision'):
         f = open('.git_revision', 'r')
         commit = f.readline().strip()
-    
+
     if commit is None:
         commit = 'release'
 
@@ -446,7 +446,7 @@ def create_version_cc(version, cxx_flags):
     except IOError:
         print('Could not open src/lib/version.cc for writing\n')
         sys.exit(-1)
-    
+
 def post(ctx):
     if ctx.cmd == 'install':
         ctx.exec_command('/sbin/ldconfig')

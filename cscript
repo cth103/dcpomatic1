@@ -245,7 +245,7 @@ def make_spec(filename, version, target):
 
 def dependencies(target):
     return (('ffmpeg-cdist', 'bd17594'),
-            ('libdcp', '130b5dc'))
+            ('libdcp', 'v0.103.0'))
 
 def build(target, options):
     target.command('./waf configure --prefix=%s %s' % (target.directory, configure_options(target)))
