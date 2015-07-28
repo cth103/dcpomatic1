@@ -3,6 +3,10 @@
 	* Notice when content is modified and offer to save the project
 	on closing DCP-o-matic.
 
+	* Version 1.81.1 released.
+
+2015-07-28  c.hetherington  <cth@carlh.net>
+
 	* Recognise .w64 and .flac as audio files.
 
 2015-07-26  Carl Hetherington  <cth@carlh.net>
