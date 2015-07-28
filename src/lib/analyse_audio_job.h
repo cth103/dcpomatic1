@@ -42,7 +42,7 @@ private:
 	std::vector<AudioPoint> _current;
 	float _overall_peak;
 	OutputAudioFrame _overall_peak_frame;
-	
+
 	boost::shared_ptr<AudioAnalysis> _analysis;
 
 	boost::signals2::scoped_connection _player_connection;

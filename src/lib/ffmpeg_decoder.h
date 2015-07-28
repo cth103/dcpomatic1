@@ -76,7 +76,7 @@ private:
 
 	AVCodecContext* _subtitle_codec_context; ///< may be 0 if there is no subtitle
 	AVCodec* _subtitle_codec;		 ///< may be 0 if there is no subtitle
-	
+
 	std::list<boost::shared_ptr<FilterGraph> > _filter_graphs;
 	boost::mutex _filter_graphs_mutex;
 

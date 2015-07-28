@@ -47,7 +47,7 @@ public:
 	std::string name () const {
 		return _name;
 	}
-	
+
 	static std::vector<SoundProcessor const *> all ();
 	static void setup_sound_processors ();
 	static SoundProcessor const * from_id (std::string id);

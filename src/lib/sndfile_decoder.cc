@@ -49,10 +49,10 @@ SndfileDecoder::SndfileDecoder (shared_ptr<const Film> f, shared_ptr<const Sndfi
 	/* Here be monsters.  See fopen_boost for similar shenanigans */
 #ifdef DCPOMATIC_WINDOWS
 	_sndfile = sf_wchar_open (_sndfile_content->path(0).c_str(), SFM_READ, &_info);
-#else	
+#else
 	_sndfile = sf_open (_sndfile_content->path(0).string().c_str(), SFM_READ, &_info);
 #endif
-	
+
 	if (!_sndfile) {
 		throw DecodeError (String::compose (_("could not open audio file for reading (%1)"), sf_strerror (0)));
 	}
@@ -77,7 +77,7 @@ SndfileDecoder::pass ()
 	sf_count_t const this_time = min (block, _remaining);
 
 	int const channels = _sndfile_content->audio_channels ();
-	
+
 	shared_ptr<AudioBuffers> data (new AudioBuffers (channels, this_time));
 
 	if (_sndfile_content->audio_channels() == 1) {
@@ -100,7 +100,7 @@ SndfileDecoder::pass ()
 			}
 		}
 	}
-		
+
 	data->set_frames (this_time);
 	audio (data, _sndfile_content->audio_stream(), _done);
 	_done += this_time;

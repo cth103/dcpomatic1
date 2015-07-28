@@ -30,7 +30,7 @@ public:
 	void film_changed (Film::Property);
 	void film_content_changed (int);
 	void content_selection_changed ();
-	
+
 private:
 	void with_subtitles_toggled ();
 	void x_offset_changed ();
@@ -40,7 +40,7 @@ private:
 	void stream_changed ();
 
 	void setup_sensitivity ();
-	
+
 	wxCheckBox* _with_subtitles;
 	wxSpinCtrl* _x_offset;
 	wxSpinCtrl* _y_offset;

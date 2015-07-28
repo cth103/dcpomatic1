@@ -84,13 +84,13 @@ string
 VideoContentScale::id () const
 {
 	SafeStringStream s;
-	
+
 	if (_ratio) {
 		s << _ratio->id ();
 	} else {
 		s << (_scale ? "S1" : "S0");
 	}
-	
+
 	return s.str ();
 }
 
@@ -122,7 +122,7 @@ VideoContentScale::from_id (string id)
 
 	return VideoContentScale (true);
 }
-		
+
 /** @param display_container Size of the container that we are
  *  displaying this content in.
  */
@@ -132,7 +132,7 @@ VideoContentScale::size (shared_ptr<const VideoContent> c, libdcp::Size display_
 	/* Work out the size of the content if it were put inside film_container */
 
 	libdcp::Size video_size_after_crop = c->video_size_after_crop ();
-	
+
 	libdcp::Size size;
 	if (_ratio) {
 		/* Stretch to fit the requested ratio */
@@ -153,7 +153,7 @@ VideoContentScale::size (shared_ptr<const VideoContent> c, libdcp::Size display_
 			float (display_container.width) / film_container.width,
 			float (display_container.height) / film_container.height
 			);
-		
+
 		size.width = rint (size.width * scale);
 		size.height = rint (size.height * scale);
 	}

@@ -62,7 +62,7 @@ try
         socket.set_option (boost::asio::socket_base::broadcast (true));
 
 	string const data = DCPOMATIC_HELLO;
-	
+
 	while (true) {
 		if (Config::instance()->use_any_servers ()) {
 			/* Broadcast to look for servers */
@@ -90,7 +90,7 @@ try
 
 			}
 		}
-		
+
 		dcpomatic_sleep (10);
 	}
 }
@@ -127,11 +127,11 @@ try
 
 		scoped_array<char> buffer (new char[length]);
 		boost::asio::read (socket, boost::asio::buffer (reinterpret_cast<uint8_t*> (buffer.get ()), length));
-		
+
 		string s (buffer.get());
 		shared_ptr<cxml::Document> xml (new cxml::Document ("ServerAvailable"));
 		xml->read_string (s);
-		
+
 		string const ip = socket.remote_endpoint().address().to_string ();
 		if (!server_found (ip)) {
 			ServerDescription sd (ip, xml->number_child<int> ("Threads"));
@@ -183,5 +183,5 @@ ServerFinder::instance ()
 	return _instance;
 }
 
-	
-       
+
+

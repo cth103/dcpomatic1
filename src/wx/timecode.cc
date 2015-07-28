@@ -42,7 +42,7 @@ Timecode::Timecode (wxWindow* parent)
 	validator.SetIncludes (list);
 
 	_sizer = new wxBoxSizer (wxHORIZONTAL);
-	
+
 	_editable = new wxPanel (this);
 	wxSizer* editable_sizer = new wxBoxSizer (wxHORIZONTAL);
 	_hours = new wxTextCtrl (_editable, wxID_ANY, wxT(""), wxDefaultPosition, s, 0, validator);
@@ -66,7 +66,7 @@ Timecode::Timecode (wxWindow* parent)
 	_sizer->Add (_editable);
 
 	_fixed = add_label_to_sizer (_sizer, this, wxT ("42"), false);
-	
+
 	_hours->Bind	  (wxEVT_COMMAND_TEXT_UPDATED,   boost::bind (&Timecode::changed, this));
 	_minutes->Bind	  (wxEVT_COMMAND_TEXT_UPDATED,   boost::bind (&Timecode::changed, this));
 	_seconds->Bind	  (wxEVT_COMMAND_TEXT_UPDATED,   boost::bind (&Timecode::changed, this));
@@ -87,7 +87,7 @@ Timecode::set (Time t, float fps)
 	   to a frame boundary at the start rather than the end.
 	*/
 	int64_t f = divide_with_round (t * fps, TIME_HZ);
-	
+
 	int const h = f / (3600 * fps);
 	f -= h * 3600 * fps;
 	int const m = f / (60 * fps);

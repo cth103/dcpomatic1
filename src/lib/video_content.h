@@ -51,7 +51,7 @@ public:
 	void as_xml (xmlpp::Node *) const;
 	std::string technical_summary () const;
 	virtual std::string identifier () const;
-	
+
 	virtual void set_default_colour_conversion ();
 
 	VideoContent::Frame video_length () const {
@@ -64,7 +64,7 @@ public:
 		if (_video_frame_type == VIDEO_FRAME_TYPE_3D_ALTERNATE) {
 			return _video_length / 2;
 		}
-		
+
 		return _video_length;
 	}
 
@@ -72,7 +72,7 @@ public:
 		boost::mutex::scoped_lock lm (_mutex);
 		return _video_size;
 	}
-	
+
 	float video_frame_rate () const {
 		boost::mutex::scoped_lock lm (_mutex);
 		return _video_frame_rate;
@@ -82,7 +82,7 @@ public:
 		boost::mutex::scoped_lock lm (_mutex);
 		return _original_video_frame_rate;
 	}
-	
+
 	void set_video_frame_type (VideoFrameType);
 	void set_video_frame_rate (float);
 
@@ -94,7 +94,7 @@ public:
 	void set_scale (VideoContentScale);
 	void unset_colour_conversion ();
 	void set_colour_conversion (ColourConversion);
-	
+
 	VideoFrameType video_frame_type () const {
 		boost::mutex::scoped_lock lm (_mutex);
 		return _video_frame_type;

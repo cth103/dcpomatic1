@@ -52,7 +52,7 @@ public:
 		: x (x_)
 		, y (y_)
 	{}
-		
+
 	double x;
 	double y;
 

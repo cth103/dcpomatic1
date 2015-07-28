@@ -40,7 +40,7 @@ public:
 	float** data () const {
 		return _data;
 	}
-	
+
 	float* data (int) const;
 
 	int channels () const {
@@ -67,7 +67,7 @@ public:
 private:
 	void allocate (int, int);
 	void deallocate ();
-	
+
 	/** Number of channels */
 	int _channels;
 	/** Number of frames (where a frame is one sample across all channels) */

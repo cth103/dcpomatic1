@@ -67,9 +67,9 @@ FilmViewer::FilmViewer (wxWindow* p)
 #ifndef __WXOSX__
 	_panel->SetDoubleBuffered (true);
 #endif
-	
+
 	_panel->SetBackgroundStyle (wxBG_STYLE_PAINT);
-	
+
 	_v_sizer = new wxBoxSizer (wxVERTICAL);
 	SetSizer (_v_sizer);
 
@@ -104,7 +104,7 @@ FilmViewer::FilmViewer (wxWindow* p)
 	_forward_button->Bind (wxEVT_COMMAND_BUTTON_CLICKED,       boost::bind (&FilmViewer::forward_clicked, this));
 
 	set_film (shared_ptr<Film> ());
-	
+
 	JobManager::instance()->ActiveJobsChanged.connect (
 		bind (&FilmViewer::active_jobs_changed, this, _1)
 		);
@@ -120,10 +120,10 @@ FilmViewer::set_film (shared_ptr<Film> f)
 	_film = f;
 
 	_frame.reset ();
-	
+
 	_slider->SetValue (0);
 	set_position_text (0);
-	
+
 	if (!_film) {
 		return;
 	}
@@ -135,7 +135,7 @@ FilmViewer::set_film (shared_ptr<Film> f)
 		_film.reset ();
 		return;
 	}
-	
+
 	_player->disable_audio ();
 	_player->Video.connect (boost::bind (&FilmViewer::process_video, this, _1, _3));
 	_player->Changed.connect (boost::bind (&FilmViewer::player_changed, this, _1));
@@ -159,7 +159,7 @@ FilmViewer::fetch_current_frame_again ()
 	if (!_player->repeat_last_video ()) {
 		fetch_next_frame ();
 	}
-	
+
 	_panel->Refresh ();
 	_panel->Update ();
 }
@@ -170,7 +170,7 @@ FilmViewer::timer ()
 	if (!_player) {
 		return;
 	}
-	
+
 	fetch_next_frame ();
 
 	Time const len = _film->length ();
@@ -212,7 +212,7 @@ FilmViewer::paint_panel ()
 		dc.SetPen (p);
 		dc.SetBrush (b);
 		dc.DrawRectangle (0, _out_size.height, _panel_size.width, _panel_size.height - _out_size.height);
-	}		
+	}
 }
 
 
@@ -247,10 +247,10 @@ FilmViewer::calculate_sizes ()
 	}
 
 	Ratio const * container = _film->container ();
-	
+
 	float const panel_ratio = _panel_size.ratio ();
 	float const film_ratio = container ? container->ratio () : 1.78;
-			
+
 	if (panel_ratio < film_ratio) {
 		/* panel is less widscreen than the film; clamp width */
 		_out_size.width = _panel_size.width;
@@ -280,7 +280,7 @@ FilmViewer::check_play_state ()
 	if (!_film || _film->video_frame_rate() == 0) {
 		return;
 	}
-	
+
 	if (_play_button->GetValue()) {
 		_timer.Start (1000 / _film->video_frame_rate());
 	} else {
@@ -294,7 +294,7 @@ FilmViewer::process_video (shared_ptr<PlayerVideoFrame> pvf, Time t)
 	if (pvf->eyes() == EYES_RIGHT) {
 		return;
 	}
-	
+
 	_frame = pvf->image (PIX_FMT_RGB24);
 	_got_frame = true;
 
@@ -309,11 +309,11 @@ FilmViewer::set_position_text (Time t)
 		_timecode->SetLabel ("0:0:0.0");
 		return;
 	}
-		
+
 	double const fps = _film->video_frame_rate ();
 	/* Count frame number from 1 ... not sure if this is the best idea */
 	_frame_number->SetLabel (wxString::Format (wxT("%d"), int (rint (t * fps / TIME_HZ)) + 1));
-	
+
 	_timecode->SetLabel (time_to_timecode (t, fps));
 }
 
@@ -329,7 +329,7 @@ FilmViewer::fetch_next_frame ()
 	}
 
 	_got_frame = false;
-	
+
 	try {
 		while (!_got_frame && !_player->pass ()) {}
 	} catch (DecodeError& e) {
@@ -342,7 +342,7 @@ FilmViewer::fetch_next_frame ()
 		*/
 	} catch (std::exception& e) {
 		error_dialog (this, wxString::Format (_("Could not decode video for view (%s)"), std_to_wx(e.what()).data()));
-	}		
+	}
 
 	_panel->Refresh ();
 	_panel->Update ();
@@ -353,17 +353,17 @@ FilmViewer::active_jobs_changed (bool a)
 {
 	if (a) {
 		list<shared_ptr<Job> > jobs = JobManager::instance()->get ();
-		list<shared_ptr<Job> >::iterator i = jobs.begin ();		
+		list<shared_ptr<Job> >::iterator i = jobs.begin ();
 		while (i != jobs.end() && boost::dynamic_pointer_cast<ExamineContentJob> (*i) == 0) {
 			++i;
 		}
-		
+
 		if (i == jobs.end() || (*i)->finished()) {
 			/* no examine content job running, so we're ok to use the viewer */
 			a = false;
 		}
 	}
-			
+
 	_slider->Enable (!a);
 	_play_button->Enable (!a);
 }
@@ -383,7 +383,7 @@ FilmViewer::back_clicked ()
 	if (p < 0) {
 		p = 0;
 	}
-	
+
 	_player->seek (p, true);
 	fetch_next_frame ();
 }

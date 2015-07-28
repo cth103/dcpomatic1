@@ -28,7 +28,7 @@ class AudioStream
 public:
 	AudioStream (int frame_rate, int channels);
 	AudioStream (int frame_rate, AudioMapping mapping);
-	
+
 	void set_mapping (AudioMapping mapping);
 	void set_frame_rate (int frame_rate);
 	void set_channels (int channels);

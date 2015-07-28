@@ -52,7 +52,7 @@ public:
 private:
 	virtual void do_log (std::string m) = 0;
 	void config_changed ();
-	
+
 	/** mutex to protect the log */
 	boost::mutex _mutex;
 	/** bit-field of log types which should be put into the log (others are ignored) */
@@ -75,7 +75,7 @@ class NullLog : public Log
 {
 public:
 
-private:	
+private:
 	void do_log (std::string) {}
 };
 

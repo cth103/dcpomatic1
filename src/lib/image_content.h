@@ -44,10 +44,10 @@ public:
 	Time full_length () const;
 
 	std::string identifier () const;
-	
+
 	/* VideoContent */
 	void set_default_colour_conversion ();
-	
+
 	void set_video_length (VideoContent::Frame);
 	bool still () const;
 	void set_video_frame_rate (float);

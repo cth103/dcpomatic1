@@ -86,7 +86,7 @@ ContentPropertiesDialog::ContentPropertiesDialog (wxWindow* parent, shared_ptr<C
 			++n;
 		}
 	}
-	
+
 	layout ();
 }
 

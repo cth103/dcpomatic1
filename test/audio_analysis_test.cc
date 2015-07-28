@@ -38,9 +38,9 @@ BOOST_AUTO_TEST_CASE (audio_analysis_serialisation_test)
 {
 	int const channels = 3;
 	int const points = 4096;
-	
+
 	srand (1);
-	
+
 	AudioAnalysis a (3);
 	for (int i = 0; i < channels; ++i) {
 		for (int j = 0; j < points; ++j) {

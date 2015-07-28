@@ -72,7 +72,7 @@ AudioDialog::AudioDialog (wxWindow* parent, shared_ptr<Film> film)
 		m->SetFont (subheading_font);
 		right->Add (m, 1, wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM, 16);
 	}
-	
+
 	wxString const types[] = {
 		_("Peak"),
 		_("RMS")
@@ -89,7 +89,7 @@ AudioDialog::AudioDialog (wxWindow* parent, shared_ptr<Film> film)
 		m->SetFont (subheading_font);
 		right->Add (m, 1, wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM, 16);
 	}
-	
+
 	_smoothing = new wxSlider (this, wxID_ANY, AudioPlot::max_smoothing / 2, 1, AudioPlot::max_smoothing);
 	_smoothing->Bind (wxEVT_SCROLL_THUMBTRACK, boost::bind (&AudioDialog::smoothing_changed, this));
 	right->Add (_smoothing, 0, wxEXPAND);
@@ -137,13 +137,13 @@ AudioDialog::try_to_load_analysis ()
 		_analysis_finished_connection = _content->analyse_audio (bind (&AudioDialog::analysis_finished, this));
 		return;
 	}
-	
+
 	_plot->set_analysis (_analysis);
 
 	setup_peak_time ();
 
 	/* Set up some defaults if no check boxes are checked */
-	
+
 	int i = 0;
 	while (i < MAX_DCP_AUDIO_CHANNELS && (!_channel_checkbox[i] || !_channel_checkbox[i]->GetValue ())) {
 		++i;
@@ -240,7 +240,7 @@ AudioDialog::setup_peak_time ()
 	}
 
 	float peak_dB = 20 * log10 (_analysis->peak().get()) + _content->audio_gain();
-	
+
 	_peak_time->SetLabel (
 		wxString::Format (
 			_("Peak is %.2fdB at %s"),

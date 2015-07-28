@@ -47,7 +47,7 @@ public:
 	 *  Fourth parameter is the frame within our source.
 	 */
 	boost::signals2::signal<void (boost::shared_ptr<const ImageProxy>, Eyes, Part, bool, VideoContent::Frame)> Video;
-	
+
 protected:
 
 	void video (boost::shared_ptr<const ImageProxy>, bool, VideoContent::Frame);

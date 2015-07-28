@@ -78,10 +78,10 @@ Subtitle::update (shared_ptr<const Film> film, libdcp::Size video_container_size
 	 *
 	 * Combining these two translations gives these expressions.
 	 */
-	
+
 	_out_position.x = rint (video_container_size.width * (in_rect.x + (in_rect.width * (1 - sc->subtitle_x_scale ()) / 2)));
 	_out_position.y = rint (video_container_size.height * (in_rect.y + (in_rect.height * (1 - sc->subtitle_y_scale ()) / 2)));
-	
+
 	_out_image = _in_image->scale (
 		scaled_size,
 		Scaler::from_id ("bicubic"),
@@ -98,7 +98,7 @@ Subtitle::update (shared_ptr<const Film> film, libdcp::Size video_container_size
 		from = rint (from * vc->video_frame_rate() / film->video_frame_rate());
 		to = rint (to * vc->video_frame_rate() / film->video_frame_rate());
 	}
-	
+
 	_out_from = from + piece->content->position ();
 	_out_to = to + piece->content->position ();
 

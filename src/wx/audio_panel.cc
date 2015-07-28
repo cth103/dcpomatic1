@@ -59,7 +59,7 @@ AudioPanel::AudioPanel (FilmEditor* e)
 		boost::mem_fn (&AudioContent::audio_gain),
 		boost::mem_fn (&AudioContent::set_audio_gain)
 		);
-	
+
 	_gain->add (grid, wxGBPosition (r, 1));
 	add_label_to_grid_bag_sizer (grid, this, _("dB"), false, wxGBPosition (r, 2));
 	_gain_calculate_button = new wxButton (this, wxID_ANY, _("Calculate..."));
@@ -74,7 +74,7 @@ AudioPanel::AudioPanel (FilmEditor* e)
 		boost::mem_fn (&AudioContent::audio_delay),
 		boost::mem_fn (&AudioContent::set_audio_delay)
 		);
-	
+
 	_delay->add (grid, wxGBPosition (r, 1));
 	/// TRANSLATORS: this is an abbreviation for milliseconds, the unit of time
 	add_label_to_grid_bag_sizer (grid, this, _("ms"), false, wxGBPosition (r, 2));
@@ -130,7 +130,7 @@ AudioPanel::film_content_changed (int property)
 		acs = ac.front ();
 		fcs = dynamic_pointer_cast<FFmpegContent> (acs);
 	}
-	
+
 	if (property == AudioContentProperty::AUDIO_MAPPING) {
 		_mapping->set (acs ? acs->audio_mapping () : AudioMapping ());
 		_sizer->Layout ();
@@ -151,7 +151,7 @@ AudioPanel::gain_calculate_button_clicked ()
 		d->Destroy ();
 		return;
 	}
-	
+
 	_gain->wrapped()->SetValue (
 		Config::instance()->sound_processor()->db_for_fader_change (
 			d->wanted_fader (),
@@ -163,7 +163,7 @@ AudioPanel::gain_calculate_button_clicked ()
 	   I think.
 	*/
 	_gain->view_changed ();
-	
+
 	d->Destroy ();
 }
 
@@ -179,7 +179,7 @@ AudioPanel::show_clicked ()
 	if (ac.size() != 1) {
 		return;
 	}
-	
+
 	_audio_dialog = new AudioDialog (this, _editor->film ());
 	_audio_dialog->Show ();
 	_audio_dialog->set_content (ac.front ());
@@ -214,7 +214,7 @@ AudioPanel::content_selection_changed ()
 	if (_audio_dialog && sel.size() == 1) {
 		_audio_dialog->set_content (sel.front ());
 	}
-	
+
 	_gain->set_content (sel);
 	_delay->set_content (sel);
 

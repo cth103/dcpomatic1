@@ -16,7 +16,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
- 
+
 /** @file src/film_editor.h
  *  @brief A wx widget to edit a film's metadata, and perform various functions.
  */
@@ -54,7 +54,7 @@ public:
 	boost::signals2::signal<void (boost::filesystem::path)> FileChanged;
 
 	/* Stuff for panels */
-	
+
 	wxNotebook* content_notebook () const {
 		return _content_notebook;
 	}
@@ -70,12 +70,12 @@ public:
 	FFmpegContentList selected_ffmpeg_content ();
 
 	void content_add_file_clicked ();
-	
+
 private:
 	void make_dcp_panel ();
 	void make_content_panel ();
 	void connect_to_widgets ();
-	
+
 	/* Handle changes to the view */
 	void name_changed ();
 	void use_isdcf_name_toggled ();
@@ -115,7 +115,7 @@ private:
 	void setup_container ();
 	void setup_content_sensitivity ();
 	void setup_frame_rate_widget ();
-	
+
 	void active_jobs_changed (bool);
 	void config_changed ();
 

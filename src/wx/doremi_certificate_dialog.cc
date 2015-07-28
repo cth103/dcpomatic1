@@ -54,10 +54,10 @@ DoremiCertificateDialog::download ()
 	downloaded (false);
 	_message->SetLabel (_("Downloading certificate"));
 
-#ifdef DCPOMATIC_OSX	
+#ifdef DCPOMATIC_OSX
 	/* This is necessary on OS X, otherwise the SetLabel() above has no visible effect */
 	wxMilliSleep (200);
-#endif	
+#endif
 
 	ui_signaller->when_idle (boost::bind (&DoremiCertificateDialog::finish_download, this, serial));
 }

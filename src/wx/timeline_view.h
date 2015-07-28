@@ -34,19 +34,19 @@ class TimelineView : public boost::noncopyable
 public:
 	TimelineView (Timeline& t);
 	virtual ~TimelineView () {}
-		
+
 	void paint (wxGraphicsContext* g);
 	void force_redraw ();
 
 	virtual dcpomatic::Rect<int> bbox () const = 0;
-	
+
 protected:
 	int time_x (Time t) const;
 	Timeline& _timeline;
 
 private:
 	virtual void do_paint (wxGraphicsContext *) = 0;
-	
+
 	dcpomatic::Rect<int> _last_paint_bbox;
 };
 

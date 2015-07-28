@@ -70,7 +70,7 @@ public:
 	boost::shared_ptr<Image> image () const;
 	void add_metadata (xmlpp::Node *) const;
 	void send_binary (boost::shared_ptr<Socket>) const;
-	
+
 private:
 	boost::shared_ptr<Image> _image;
 };
@@ -85,7 +85,7 @@ public:
 	void add_metadata (xmlpp::Node *) const;
 	void send_binary (boost::shared_ptr<Socket>) const;
 
-private:	
+private:
 	Magick::Blob _blob;
 	mutable boost::shared_ptr<Image> _image;
 	/** Mutex to handle simultaneous thread calls to image() */

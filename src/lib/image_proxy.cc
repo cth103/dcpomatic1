@@ -83,19 +83,19 @@ MagickImageProxy::MagickImageProxy (boost::filesystem::path path, shared_ptr<Log
 	: ImageProxy (log)
 {
 	/* Read the file into a Blob */
-	
+
 	boost::uintmax_t const size = boost::filesystem::file_size (path);
 	FILE* f = fopen_boost (path, "rb");
 	if (!f) {
 		throw OpenFileError (path);
 	}
-		
+
 	uint8_t* data = new uint8_t[size];
 	if (fread (data, 1, size, f) != size) {
 		delete[] data;
 		throw ReadFileError (path);
 	}
-	
+
 	fclose (f);
 	_blob.update (data, size);
 	delete[] data;
@@ -115,7 +115,7 @@ shared_ptr<Image>
 MagickImageProxy::image () const
 {
 	boost::mutex::scoped_lock lm (_mutex);
-	
+
 	if (_image) {
 		return _image;
 	}
@@ -158,7 +158,7 @@ MagickImageProxy::image () const
 	/* Write line-by-line here as _image must be aligned, and write() cannot be told about strides */
 	uint8_t* p = _image->data()[0];
 	for (int i = 0; i < size.height; ++i) {
-#ifdef DCPOMATIC_IMAGE_MAGICK		
+#ifdef DCPOMATIC_IMAGE_MAGICK
 		using namespace MagickCore;
 #else
 		using namespace MagickLib;

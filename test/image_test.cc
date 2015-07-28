@@ -174,24 +174,24 @@ read_file (string file)
 
 	boost::shared_ptr<Image> image (new Image (PIX_FMT_RGB24, size, true));
 
-#ifdef DCPOMATIC_IMAGE_MAGICK	
+#ifdef DCPOMATIC_IMAGE_MAGICK
 	using namespace MagickCore;
-#endif	
-	
+#endif
+
 	uint8_t* p = image->data()[0];
 	for (int y = 0; y < size.height; ++y) {
 		uint8_t* q = p;
 		for (int x = 0; x < size.width; ++x) {
 			Magick::Color c = magick_image.pixelColor (x, y);
-#ifdef DCPOMATIC_IMAGE_MAGICK			
+#ifdef DCPOMATIC_IMAGE_MAGICK
 			*q++ = c.redQuantum() * 255 / QuantumRange;
 			*q++ = c.greenQuantum() * 255 / QuantumRange;
 			*q++ = c.blueQuantum() * 255 / QuantumRange;
-#else			
+#else
 			*q++ = c.redQuantum() * 255 / MaxRGB;
 			*q++ = c.greenQuantum() * 255 / MaxRGB;
 			*q++ = c.blueQuantum() * 255 / MaxRGB;
-#endif			
+#endif
 		}
 		p += image->stride()[0];
 	}
@@ -203,10 +203,10 @@ static
 void
 write_file (shared_ptr<Image> image, string file)
 {
-#ifdef DCPOMATIC_IMAGE_MAGICK	
+#ifdef DCPOMATIC_IMAGE_MAGICK
 	using namespace MagickCore;
-#endif	
-	
+#endif
+
 	Magick::Image magick_image (Magick::Geometry (image->size().width, image->size().height), Magick::Color (0, 0, 0));
 	uint8_t*p = image->data()[0];
 	for (int y = 0; y < image->size().height; ++y) {
@@ -214,15 +214,15 @@ write_file (shared_ptr<Image> image, string file)
 		for (int x = 0; x < image->size().width; ++x) {
 #ifdef DCPOMATIC_IMAGE_MAGICK
 			Magick::Color c (q[0] * QuantumRange / 256, q[1] * QuantumRange / 256, q[2] * QuantumRange / 256);
-#else			
+#else
 			Magick::Color c (q[0] * MaxRGB / 256, q[1] * MaxRGB / 256, q[2] * MaxRGB / 256);
-#endif			
+#endif
 			magick_image.pixelColor (x, y, c);
 			q += 3;
 		}
 		p += image->stride()[0];
 	}
-	
+
 	magick_image.write (file.c_str ());
 }
 
@@ -241,7 +241,7 @@ crop_scale_window_single (AVPixelFormat in_format, libdcp::Size in_size, Crop cr
 			}
 		}
 	}
-				
+
 	/* Convert using separate methods */
 	boost::shared_ptr<Image> sep = test->crop (crop, true);
 	sep = sep->scale (inter_size, Scaler::from_id ("bicubic"), YUV_TO_RGB_REC601, PIX_FMT_RGB24, true);

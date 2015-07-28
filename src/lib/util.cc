@@ -223,21 +223,21 @@ demangle (string l)
 	if ((p - b) <= 1) {
 		return l;
 	}
-	
+
 	string const fn = l.substr (b + 1, p - b - 1);
 
 	int status;
 	try {
-		
+
 		char* realname = abi::__cxa_demangle (fn.c_str(), 0, 0, &status);
 		string d (realname);
 		free (realname);
 		return d;
-		
+
 	} catch (std::exception) {
-		
+
 	}
-	
+
 	return l;
 }
 
@@ -251,12 +251,12 @@ stacktrace (ostream& out, int levels)
 	void *array[200];
 	size_t size = backtrace (array, 200);
 	char** strings = backtrace_symbols (array, size);
-     
+
 	if (strings) {
 		for (size_t i = 0; i < size && (levels == 0 || i < size_t(levels)); i++) {
 			out << N_("  ") << demangle (strings[i]) << "\n";
 		}
-		
+
 		free (strings);
 	}
 }
@@ -303,7 +303,7 @@ int
 addr2line (void const * const addr)
 {
 	char addr2line_cmd[512] = {0};
-	sprintf(addr2line_cmd, "addr2line -f -p -e %.256s %p > %s", program_name.c_str(), addr, backtrace_file.string().c_str()); 
+	sprintf(addr2line_cmd, "addr2line -f -p -e %.256s %p > %s", program_name.c_str(), addr, backtrace_file.string().c_str());
 	return system(addr2line_cmd);
 }
 
@@ -317,19 +317,19 @@ exception_handler (struct _EXCEPTION_POINTERS * info)
  	FILE* f = fopen_boost (backtrace_file, "w");
 	fprintf (f, "C-style exception %d\n", info->ExceptionRecord->ExceptionCode);
 	fclose(f);
-	
+
 	if (info->ExceptionRecord->ExceptionCode != EXCEPTION_STACK_OVERFLOW) {
 		CONTEXT* context = info->ContextRecord;
 		SymInitialize (GetCurrentProcess (), 0, true);
-	
+
 		STACKFRAME frame = { 0 };
-	
+
 		/* setup initial stack frame */
 #if _WIN64
 		frame.AddrPC.Offset    = context->Rip;
 		frame.AddrStack.Offset = context->Rsp;
 		frame.AddrFrame.Offset = context->Rbp;
-#else	
+#else
 		frame.AddrPC.Offset    = context->Eip;
 		frame.AddrStack.Offset = context->Esp;
 		frame.AddrFrame.Offset = context->Ebp;
@@ -337,7 +337,7 @@ exception_handler (struct _EXCEPTION_POINTERS * info)
 		frame.AddrPC.Mode      = AddrModeFlat;
 		frame.AddrStack.Mode   = AddrModeFlat;
 		frame.AddrFrame.Mode   = AddrModeFlat;
-	
+
 		while (
 			StackWalk (
 				IMAGE_FILE_MACHINE_I386,
@@ -354,17 +354,17 @@ exception_handler (struct _EXCEPTION_POINTERS * info)
 			addr2line((void *) frame.AddrPC.Offset);
 		}
 	} else {
-#ifdef _WIN64		
+#ifdef _WIN64
 		addr2line ((void *) info->ContextRecord->Rip);
-#else		
+#else
 		addr2line ((void *) info->ContextRecord->Eip);
-#endif		
+#endif
  	}
 
  	return EXCEPTION_CONTINUE_SEARCH;
 }
 #endif
- 
+
 void
 set_backtrace_file (boost::filesystem::path p)
 {
@@ -393,7 +393,7 @@ terminate ()
 			  << e.what() << std::endl;
 	}
 	catch (...) {
-		std::cerr << __FUNCTION__ << " caught unknown/unhandled exception." 
+		std::cerr << __FUNCTION__ << " caught unknown/unhandled exception."
 			  << std::endl;
 	}
 
@@ -429,8 +429,8 @@ dcpomatic_setup ()
 	*/
 	std::locale::global (boost::locale::generator().generate (""));
 	boost::filesystem::path::imbue (std::locale ());
-#endif	
-	
+#endif
+
 	avfilter_register_all ();
 
 #ifdef DCPOMATIC_OSX
@@ -445,7 +445,7 @@ dcpomatic_setup ()
 	set_terminate (terminate);
 
 	libdcp::init ();
-	
+
 	Ratio::setup_ratios ();
 	PresetColourConversion::setup_colour_conversion_presets ();
 	VideoContentScale::setup_scales ();
@@ -504,7 +504,7 @@ dcpomatic_setup_gettext_i18n (string lang)
 #if defined(DCPOMATIC_WINDOWS) || defined(DCPOMATIC_OSX)
 	bindtextdomain ("libdcpomatic", mo_path().string().c_str());
 	bind_textdomain_codeset ("libdcpomatic", "UTF8");
-#endif	
+#endif
 
 #ifdef DCPOMATIC_LINUX
 	bindtextdomain ("libdcpomatic", POSIX_LOCALE_PREFIX);
@@ -580,7 +580,7 @@ md5_digest_head_tail (vector<boost::filesystem::path> files, boost::uintmax_t si
 		fclose (f);
 
 		--i;
-	}		
+	}
 	digester.add (buffer.get(), size - to_do);
 
 	return digester.get ();
@@ -642,7 +642,7 @@ void
 Socket::accept (int port)
 {
 	_acceptor = new boost::asio::ip::tcp::acceptor (_io_service, boost::asio::ip::tcp::endpoint (boost::asio::ip::tcp::v4(), port));
-	
+
 	_deadline.expires_from_now (boost::posix_time::seconds (_timeout));
 	boost::system::error_code ec = boost::asio::error::would_block;
 	_acceptor->async_accept (_socket, boost::lambda::var(ec) = boost::lambda::_1);
@@ -652,7 +652,7 @@ Socket::accept (int port)
 
 	delete _acceptor;
 	_acceptor = 0;
-	
+
 	if (ec) {
 		throw NetworkError (String::compose (_("error during async_accept (%1)"), ec.value ()));
 	}
@@ -669,7 +669,7 @@ Socket::write (uint8_t const * data, int size)
 	boost::system::error_code ec = boost::asio::error::would_block;
 
 	boost::asio::async_write (_socket, boost::asio::buffer (data, size), boost::lambda::var(ec) = boost::lambda::_1);
-	
+
 	do {
 		_io_service.run_one ();
 	} while (ec == boost::asio::error::would_block);
@@ -701,7 +701,7 @@ Socket::read (uint8_t* data, int size)
 	do {
 		_io_service.run_one ();
 	} while (ec == boost::asio::error::would_block);
-	
+
 	if (ec) {
 		throw NetworkError (String::compose (_("error during async_read (%1)"), ec.value ()));
 	}
@@ -736,10 +736,10 @@ stride_round_up (int c, int const * stride, int t)
  *  @return key/value pairs.
  */
 multimap<string, string>
-read_key_value (istream &s) 
+read_key_value (istream &s)
 {
 	multimap<string, string> kv;
-	
+
 	string line;
 	while (getline (s, line)) {
 		if (line.empty ()) {
@@ -773,7 +773,7 @@ get_required_string (multimap<string, string> const & kv, string k)
 	}
 
 	multimap<string, string>::const_iterator i = kv.find (k);
-	
+
 	if (i == kv.end ()) {
 		throw StringError (String::compose (_("missing key %1 in key-value set"), k));
 	}
@@ -876,7 +876,7 @@ valid_image_file (boost::filesystem::path f)
 	if (boost::starts_with (f.leaf().string(), "._")) {
 		return false;
 	}
-	
+
 	string ext = f.extension().string();
 	transform (ext.begin(), ext.end(), ext.begin(), ::tolower);
 	return (ext == ".tif" || ext == ".tiff" || ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp" || ext == ".tga" || ext == ".dpx");
@@ -903,7 +903,7 @@ make_signer ()
 	boost::filesystem::path const sd = Config::instance()->signer_chain_directory ();
 
 	/* Remake the chain if any of it is missing */
-	
+
 	list<boost::filesystem::path> files;
 	files.push_back ("ca.self-signed.pem");
 	files.push_back ("intermediate.signed.pem");
@@ -923,7 +923,7 @@ make_signer ()
 
 		++i;
 	}
-	
+
 	libdcp::CertificateChain chain;
 
 	{
@@ -958,7 +958,7 @@ split_get_request (string url)
 		KEY,
 		VALUE
 	} state = AWAITING_QUESTION_MARK;
-	
+
 	map<string, string> r;
 	string k;
 	string v;
@@ -1002,7 +1002,7 @@ fit_ratio_within (float ratio, libdcp::Size full_frame)
 	if (ratio < full_frame.ratio ()) {
 		return libdcp::Size (rint (full_frame.height * ratio), full_frame.height);
 	}
-	
+
 	return libdcp::Size (full_frame.width, rint (full_frame.width / ratio));
 }
 
@@ -1015,7 +1015,7 @@ wrapped_av_malloc (size_t s)
 	}
 	return p;
 }
-		
+
 string
 entities_to_text (string e)
 {
@@ -1038,7 +1038,7 @@ long
 frame_info_position (int frame, Eyes eyes)
 {
 	static int const info_size = 48;
-	
+
 	switch (eyes) {
 	case EYES_BOTH:
 		return frame * info_size;
@@ -1060,7 +1060,7 @@ read_frame_info (FILE* file, int frame, Eyes eyes)
 	dcpomatic_fseek (file, frame_info_position (frame, eyes), SEEK_SET);
 	fread (&info.offset, sizeof (info.offset), 1, file);
 	fread (&info.size, sizeof (info.size), 1, file);
-	
+
 	char hash_buffer[33];
 	fread (hash_buffer, 1, 32, file);
 	hash_buffer[32] = '\0';
@@ -1098,7 +1098,7 @@ ScopedTemporary::ScopedTemporary ()
 
 ScopedTemporary::~ScopedTemporary ()
 {
-	close ();	
+	close ();
 	boost::system::error_code ec;
 	boost::filesystem::remove (_file, ec);
 }

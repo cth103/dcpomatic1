@@ -75,7 +75,7 @@ AudioContent::AudioContent (shared_ptr<const Film> f, vector<shared_ptr<Content>
 {
 	shared_ptr<AudioContent> ref = dynamic_pointer_cast<AudioContent> (c[0]);
 	DCPOMATIC_ASSERT (ref);
-	
+
 	for (size_t i = 0; i < c.size(); ++i) {
 		shared_ptr<AudioContent> ac = dynamic_pointer_cast<AudioContent> (c[i]);
 
@@ -108,7 +108,7 @@ AudioContent::set_audio_gain (double g)
 		boost::mutex::scoped_lock lm (_mutex);
 		_audio_gain = g;
 	}
-	
+
 	signal_changed (AudioContentProperty::AUDIO_GAIN);
 }
 
@@ -119,7 +119,7 @@ AudioContent::set_audio_delay (int d)
 		boost::mutex::scoped_lock lm (_mutex);
 		_audio_delay = d;
 	}
-	
+
 	signal_changed (AudioContentProperty::AUDIO_DELAY);
 }
 
@@ -128,7 +128,7 @@ AudioContent::analyse_audio (boost::function<void()> finished)
 {
 	shared_ptr<const Film> film = _film.lock ();
 	DCPOMATIC_ASSERT (film);
-	
+
 	shared_ptr<AnalyseAudioJob> job (new AnalyseAudioJob (film, dynamic_pointer_cast<AudioContent> (shared_from_this())));
 	boost::signals2::connection c = job->Finished.connect (finished);
 	JobManager::instance()->add (job);
@@ -163,7 +163,7 @@ AudioContent::output_audio_frame_rate () const
 {
 	shared_ptr<const Film> film = _film.lock ();
 	DCPOMATIC_ASSERT (film);
-	
+
 	/* Resample to a DCI-approved sample rate */
 	double t = has_rate_above_48k() ? 96000 : 48000;
 
@@ -261,7 +261,7 @@ AudioContent::set_audio_mapping (AudioMapping mapping)
 		}
 		i->set_mapping (stream_mapping);
 	}
-		
+
 	signal_changed (AudioContentProperty::AUDIO_MAPPING);
 }
 
@@ -270,7 +270,7 @@ AudioMapping
 AudioContent::audio_mapping () const
 {
 	AudioMapping merged (audio_channels ());
-	
+
 	int c = 0;
 	int s = 0;
 	BOOST_FOREACH (AudioStreamPtr i, audio_streams ()) {

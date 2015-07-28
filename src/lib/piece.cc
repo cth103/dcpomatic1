@@ -88,7 +88,7 @@ Piece::repeat (Player* player)
 		repeat_video.frame,
 		(repeat_done + 1) * (TIME_HZ / player->_film->video_frame_rate ())
 		);
-	
+
 	++repeat_done;
 }
 

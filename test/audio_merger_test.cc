@@ -89,17 +89,17 @@ BOOST_AUTO_TEST_CASE (audio_merger_test2)
 	TimedAudioBuffers<int> tb = merger.pull (9);
 	BOOST_CHECK_EQUAL (tb.audio->frames(), 9);
 	BOOST_CHECK_EQUAL (tb.time, 0);
-	
+
 	for (int i = 0; i < 9; ++i) {
 		BOOST_CHECK_EQUAL (tb.audio->data()[0][i], 0);
 	}
-	
+
 	tb = merger.flush ();
 
 	/* That flush should give us 64 samples at 9 */
 	BOOST_CHECK_EQUAL (tb.audio->frames(), 64);
 	BOOST_CHECK_EQUAL (tb.time, 9);
-	
+
 	/* Check the sample values */
 	for (int i = 0; i < 64; ++i) {
 		BOOST_CHECK_EQUAL (tb.audio->data()[0][i], i);

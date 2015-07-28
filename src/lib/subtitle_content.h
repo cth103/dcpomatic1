@@ -37,7 +37,7 @@ public:
 	SubtitleContent (boost::shared_ptr<const Film>, boost::filesystem::path);
 	SubtitleContent (boost::shared_ptr<const Film>, boost::shared_ptr<const cxml::Node>, int version);
 	SubtitleContent (boost::shared_ptr<const Film>, std::vector<boost::shared_ptr<Content> >);
-	
+
 	void as_xml (xmlpp::Node *) const;
 
 	void set_subtitle_x_offset (double);
@@ -64,7 +64,7 @@ public:
 		boost::mutex::scoped_lock lm (_mutex);
 		return _subtitle_y_scale;
 	}
-	
+
 private:
 	friend class ffmpeg_pts_offset_test;
 

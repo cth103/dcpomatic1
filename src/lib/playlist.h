@@ -72,7 +72,7 @@ public:
 	std::string video_identifier () const;
 
 	Time length () const;
-	
+
 	int best_dcp_frame_rate () const;
 	Time video_end () const;
 	FrameRateChange active_frame_rate_change (Time, int dcp_frame_rate) const;
@@ -89,7 +89,7 @@ public:
 	 *  Third parameter is true if signals are currently being emitted frequently.
 	 */
 	mutable boost::signals2::signal<void (boost::weak_ptr<Content>, int, bool)> ContentChanged;
-	
+
 private:
 	void content_changed (boost::weak_ptr<Content>, int, bool);
 	void reconnect ();

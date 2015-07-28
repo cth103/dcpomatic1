@@ -75,7 +75,7 @@ Log::log (string message, int type)
 	if (type & TYPE_WARNING) {
 		s << "WARNING: ";
 	}
-	
+
 	s << message;
 	do_log (s.str ());
 }
@@ -95,7 +95,7 @@ Log::microsecond_log (string m, int t)
 	SafeStringStream s;
 	s << tv.tv_sec << N_(":") << tv.tv_usec << N_(" ") << m;
 	do_log (s.str ());
-}	
+}
 
 void
 Log::set_types (int t)

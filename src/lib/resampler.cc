@@ -20,7 +20,7 @@
 extern "C" {
 #include "libavutil/channel_layout.h"
 #include "libavutil/opt.h"
-}	
+}
 #include "resampler.h"
 #include "audio_buffers.h"
 #include "exceptions.h"
@@ -51,7 +51,7 @@ Resampler::Resampler (int in, int out, int channels)
 	/* Sample rates */
 	av_opt_set_int (_swr_context, "isr", _in_rate, 0);
 	av_opt_set_int (_swr_context, "osr", _out_rate, 0);
-	
+
 	swr_init (_swr_context);
 }
 
@@ -72,7 +72,7 @@ Resampler::run (shared_ptr<const AudioBuffers> in, AudioContent::Frame frame)
 
 	/* Expected next input frame */
 	_next_in = frame + in->frames ();
-		
+
 	/* Compute the resampled frames count and add 32 for luck */
 	int const max_resampled_frames = ceil ((double) in->frames() * _out_rate / _in_rate) + 32;
 	shared_ptr<AudioBuffers> resampled (new AudioBuffers (_channels, max_resampled_frames));
@@ -80,7 +80,7 @@ Resampler::run (shared_ptr<const AudioBuffers> in, AudioContent::Frame frame)
 	int const resampled_frames = swr_convert (
 		_swr_context, (uint8_t **) resampled->data(), max_resampled_frames, (uint8_t const **) in->data(), in->frames()
 		);
-	
+
 	if (resampled_frames < 0) {
 		char buf[256];
 		av_strerror (resampled_frames, buf, sizeof(buf));
@@ -91,10 +91,10 @@ Resampler::run (shared_ptr<const AudioBuffers> in, AudioContent::Frame frame)
 
 	/* Expected next output frame */
 	_next_out = _next_out.get() + resampled_frames;
-	
+
 	resampled->set_frames (resampled_frames);
 	return make_pair (resampled, out_frame);
-}	
+}
 
 shared_ptr<const AudioBuffers>
 Resampler::flush ()
@@ -106,11 +106,11 @@ Resampler::flush ()
 
 	while (true) {
 		int const frames = swr_convert (_swr_context, (uint8_t **) pass->data(), pass_size, 0, 0);
-		
+
 		if (frames < 0) {
 			throw EncodeError (_("could not run sample-rate converter"));
 		}
-		
+
 		if (frames == 0) {
 			break;
 		}

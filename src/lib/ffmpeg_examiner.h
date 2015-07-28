@@ -28,7 +28,7 @@ class FFmpegExaminer : public FFmpeg, public VideoExaminer
 {
 public:
 	FFmpegExaminer (boost::shared_ptr<const FFmpegContent>, boost::shared_ptr<Job> job = boost::shared_ptr<Job> ());
-	
+
 	boost::optional<float> video_frame_rate () const;
 	libdcp::Size video_size () const;
 	VideoContent::Frame video_length () const;
@@ -37,7 +37,7 @@ public:
 	std::vector<boost::shared_ptr<FFmpegSubtitleStream> > subtitle_streams () const {
 		return _subtitle_streams;
 	}
-	
+
 	std::vector<boost::shared_ptr<FFmpegAudioStream> > audio_streams () const {
 		return _audio_streams;
 	}
@@ -45,13 +45,13 @@ public:
 	boost::optional<double> first_video () const {
 		return _first_video;
 	}
-	
+
 private:
 	std::string stream_name (AVStream* s) const;
 	std::string audio_stream_name (AVStream* s) const;
 	std::string subtitle_stream_name (AVStream* s) const;
 	boost::optional<double> frame_time (AVStream* s) const;
-	
+
 	std::vector<boost::shared_ptr<FFmpegSubtitleStream> > _subtitle_streams;
 	std::vector<boost::shared_ptr<FFmpegAudioStream> > _audio_streams;
 	boost::optional<double> _first_video;

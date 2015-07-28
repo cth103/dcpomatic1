@@ -93,7 +93,7 @@ new_test_film (string name)
 	if (boost::filesystem::exists (p)) {
 		boost::filesystem::remove_all (p);
 	}
-	
+
 	shared_ptr<Film> f = shared_ptr<Film> (new Film (p.string()));
 	f->write_metadata ();
 	return f;
@@ -108,7 +108,7 @@ check_file (boost::filesystem::path ref, boost::filesystem::path check)
 	BOOST_CHECK (ref_file);
 	FILE* check_file = fopen_boost (check, "rb");
 	BOOST_CHECK (check_file);
-	
+
 	int const buffer_size = 65536;
 	uint8_t* ref_buffer = new uint8_t[buffer_size];
 	uint8_t* check_buffer = new uint8_t[buffer_size];
@@ -169,7 +169,7 @@ check_xml (xmlpp::Element* ref, xmlpp::Element* test, list<string> ignore)
 	if (find (ignore.begin(), ignore.end(), ref->get_name()) != ignore.end ()) {
 		return;
 	}
-	    
+
 	xmlpp::Element::NodeList ref_children = ref->get_children ();
 	xmlpp::Element::NodeList test_children = test->get_children ();
 	BOOST_CHECK_EQUAL (ref_children.size (), test_children.size ());
@@ -177,7 +177,7 @@ check_xml (xmlpp::Element* ref, xmlpp::Element* test, list<string> ignore)
 	xmlpp::Element::NodeList::iterator k = ref_children.begin ();
 	xmlpp::Element::NodeList::iterator l = test_children.begin ();
 	while (k != ref_children.end ()) {
-		
+
 		/* XXX: should be doing xmlpp::EntityReference, xmlpp::XIncludeEnd, xmlpp::XIncludeStart */
 
 		xmlpp::Element* ref_el = dynamic_cast<xmlpp::Element*> (*k);
@@ -234,7 +234,7 @@ wait_for_jobs ()
 			}
 		}
 	}
-		
+
 	BOOST_CHECK (!jm->errors());
 
 	ui_signaller->ui_idle ();

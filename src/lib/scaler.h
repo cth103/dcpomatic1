@@ -50,7 +50,7 @@ public:
 	std::string name () const {
 		return _name;
 	}
-	
+
 	static std::vector<Scaler const *> all ();
 	static void setup_scalers ();
 	static Scaler const * from_id (std::string id);

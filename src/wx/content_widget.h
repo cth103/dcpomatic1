@@ -84,7 +84,7 @@ public:
 		}
 
 		_connections.clear ();
-		
+
 		_content = content;
 
 		_wrapped->Enable (!_content.empty ());
@@ -134,9 +134,9 @@ public:
 		}
 		_ignore_model_changes = false;
 	}
-	
+
 private:
-	
+
 	void set_single ()
 	{
 		if (_wrapped->IsShown ()) {
@@ -155,7 +155,7 @@ private:
 		if (_button->IsShown ()) {
 			return;
 		}
-		
+
 		_wrapped->Hide ();
 		_sizer->Detach (_wrapped);
 		_button->Show ();
@@ -177,7 +177,7 @@ private:
 			update_from_model ();
 		}
 	}
-	
+
 	T* _wrapped;
 	wxGridBagSizer* _sizer;
 	wxGBPosition _position;

@@ -59,7 +59,7 @@ Config::Config ()
 {
 	set_defaults ();
 
-#ifdef DCPOMATIC_OSX	
+#ifdef DCPOMATIC_OSX
 	/* Check for preferences in ~/.config and move them to ~/Library if
 	   we haven't already.
 	*/
@@ -79,11 +79,11 @@ Config::Config ()
 			boost::filesystem::directory_iterator i (old_path / "crypt");
 			i != boost::filesystem::directory_iterator();
 			++i) {
-			
+
 			boost::filesystem::copy_file (*i, new_path / "crypt" / i->path().filename ());
 		}
 	}
-#endif	
+#endif
 }
 
 void
@@ -113,7 +113,7 @@ Config::set_defaults ()
 	_allowed_dcp_frame_rates.push_back (48);
 	_allowed_dcp_frame_rates.push_back (50);
 	_allowed_dcp_frame_rates.push_back (60);
-	
+
 	set_kdm_email_to_default ();
 }
 
@@ -153,7 +153,7 @@ Config::read ()
 			_servers.push_back ((*i)->content ());
 		}
 	}
-	
+
 	_tms_ip = f.string_child ("TMSIP");
 	_tms_path = f.string_child ("TMSPath");
 	_tms_user = f.string_child ("TMSUser");
@@ -181,13 +181,13 @@ Config::read ()
 	} else if (f.optional_string_child ("DCPIssuer")) {
 		_dcp_issuer = f.string_child ("DCPIssuer");
 	}
-	
+
 	if (version && version.get() >= 2) {
 		_default_isdcf_metadata = ISDCFMetadata (f.node_child ("ISDCFMetadata"));
 	} else {
 		_default_isdcf_metadata = ISDCFMetadata (f.node_child ("DCIMetadata"));
 	}
-	
+
 	_default_still_length = f.optional_number_child<int>("DefaultStillLength").get_value_or (10);
 	_default_j2k_bandwidth = f.optional_number_child<int>("DefaultJ2KBandwidth").get_value_or (200000000);
 	_default_audio_delay = f.optional_number_child<int>("DefaultAudioDelay").get_value_or (0);
@@ -234,7 +234,7 @@ Config::base_directory () const
 	p /= "Library";
 	p /= "Preferences";
 	p /= "com.dcpomatic";
-#else	
+#else
 	p /= g_get_user_config_dir ();
 	p /= "dcpomatic";
 #endif
@@ -294,7 +294,7 @@ Config::write () const
 	root->add_child("DefaultDirectory")->add_child_text (_default_directory.string ());
 	root->add_child("ServerPortBase")->add_child_text (raw_convert<string> (_server_port_base));
 	root->add_child("UseAnyServers")->add_child_text (_use_any_servers ? "1" : "0");
-	
+
 	for (vector<string>::const_iterator i = _servers.begin(); i != _servers.end(); ++i) {
 		root->add_child("Server")->add_child_text (*i);
 	}
@@ -399,7 +399,7 @@ Config::set_kdm_email_to_default ()
 		"The KDMs are valid from $START_TIME until $END_TIME.\n\n"
 		"Best regards,\nDCP-o-matic"
 		);
-}	
+}
 
 void
 Config::reset_kdm_email ()
@@ -413,7 +413,7 @@ Config::add_to_history (boost::filesystem::path p)
 {
 	/* Remove existing instances of this path in the history */
 	_history.erase (remove (_history.begin(), _history.end(), p), _history.end ());
-	
+
 	_history.insert (_history.begin (), p);
 	if (_history.size() > HISTORY_SIZE) {
 		_history.pop_back ();

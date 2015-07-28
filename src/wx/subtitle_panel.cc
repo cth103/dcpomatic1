@@ -39,7 +39,7 @@ SubtitlePanel::SubtitlePanel (FilmEditor* e)
 	_with_subtitles = new wxCheckBox (this, wxID_ANY, _("With Subtitles"));
 	grid->Add (_with_subtitles, 1);
 	grid->AddSpacer (0);
-	
+
 	{
 		add_label_to_sizer (grid, this, _("X Offset"), true);
 		wxBoxSizer* s = new wxBoxSizer (wxHORIZONTAL);
@@ -57,7 +57,7 @@ SubtitlePanel::SubtitlePanel (FilmEditor* e)
 		add_label_to_sizer (s, this, _("%"), false);
 		grid->Add (s);
 	}
-	
+
 	{
 		add_label_to_sizer (grid, this, _("X Scale"), true);
 		wxBoxSizer* s = new wxBoxSizer (wxHORIZONTAL);
@@ -75,11 +75,11 @@ SubtitlePanel::SubtitlePanel (FilmEditor* e)
 		add_label_to_sizer (s, this, _("%"), false);
 		grid->Add (s);
 	}
-	
+
 	add_label_to_sizer (grid, this, _("Stream"), true);
 	_stream = new wxChoice (this, wxID_ANY);
 	grid->Add (_stream, 1, wxEXPAND);
-	
+
 	_x_offset->SetRange (-100, 100);
 	_y_offset->SetRange (-100, 100);
 	_x_scale->SetRange (10, 1000);
@@ -124,7 +124,7 @@ SubtitlePanel::film_content_changed (int property)
 	if (sc.size() == 1) {
 		scs = sc.front ();
 	}
-	
+
 	if (property == FFmpegContentProperty::SUBTITLE_STREAMS) {
 		_stream->Clear ();
 		if (fcs) {
@@ -132,7 +132,7 @@ SubtitlePanel::film_content_changed (int property)
 			for (vector<shared_ptr<FFmpegSubtitleStream> >::iterator i = s.begin(); i != s.end(); ++i) {
 				_stream->Append (std_to_wx ((*i)->name), new wxStringClientData (std_to_wx ((*i)->identifier ())));
 			}
-			
+
 			if (fcs->subtitle_stream()) {
 				checked_set (_stream, fcs->subtitle_stream()->identifier ());
 			} else {
@@ -170,7 +170,7 @@ SubtitlePanel::setup_sensitivity ()
 		h = _editor->film()->has_subtitles ();
 		j = _editor->film()->with_subtitles ();
 	}
-	
+
 	_with_subtitles->Enable (h);
 	_x_offset->Enable (j);
 	_y_offset->Enable (j);
@@ -188,7 +188,7 @@ SubtitlePanel::stream_changed ()
 	}
 
 	shared_ptr<FFmpegContent> fcs = fc.front ();
-	
+
 	vector<shared_ptr<FFmpegSubtitleStream> > a = fcs->subtitle_streams ();
 	vector<shared_ptr<FFmpegSubtitleStream> >::iterator i = a.begin ();
 	string const s = string_client_data (_stream->GetClientObject (_stream->GetSelection ()));

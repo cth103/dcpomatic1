@@ -41,7 +41,7 @@ class Image;
 class Resampler;
 class PlayerVideoFrame;
 class ImageProxy;
- 
+
 /** @class Player
  *  @brief A class which can `play' a Playlist; emitting its audio and video.
  */
@@ -71,7 +71,7 @@ public:
 	 *  Third parameter is the time.
 	 */
 	boost::signals2::signal<void (boost::shared_ptr<PlayerVideoFrame>, bool, Time)> Video;
-	
+
 	/** Emitted when some audio data is ready */
 	boost::signals2::signal<void (boost::shared_ptr<const AudioBuffers>, Time)> Audio;
 
@@ -103,7 +103,7 @@ private:
 
 	boost::shared_ptr<const Film> _film;
 	boost::shared_ptr<const Playlist> _playlist;
-	
+
 	bool _video;
 	bool _audio;
 

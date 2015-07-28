@@ -53,7 +53,7 @@ private:
 		_log = m;
 	}
 
-	string _log;	
+	string _log;
 };
 
 static shared_ptr<MemoryLog> memory_log (new MemoryLog);
@@ -95,7 +95,7 @@ class TaskBarIcon : public wxTaskBarIcon
 public:
 	TaskBarIcon ()
 	{
-#ifdef __WXMSW__		
+#ifdef __WXMSW__
 		wxIcon icon (std_to_wx ("taskbar_icon"));
 #endif
 #ifdef __WXGTK__
@@ -107,12 +107,12 @@ public:
 #ifndef __WXOSX__
 		/* XXX: fix this for OS X */
 		SetIcon (icon, std_to_wx ("DCP-o-matic encode server"));
-#endif		
+#endif
 
 		Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&TaskBarIcon::status, this), ID_status);
 		Bind (wxEVT_COMMAND_MENU_SELECTED, boost::bind (&TaskBarIcon::quit, this), ID_quit);
 	}
-	
+
 	wxMenu* CreatePopupMenu ()
 	{
 		wxMenu* menu = new wxMenu;
@@ -143,14 +143,14 @@ public:
 		, _icon (0)
 	{}
 
-private:	
-	
+private:
+
 	bool OnInit ()
 	{
 		if (!wxApp::OnInit ()) {
 			return false;
 		}
-		
+
 		dcpomatic_setup ();
 
 		_icon = new TaskBarIcon;
@@ -159,7 +159,7 @@ private:
 		Bind (wxEVT_TIMER, boost::bind (&App::check, this));
 		_timer.reset (new wxTimer (this));
 		_timer->Start (1000);
-		
+
 		return true;
 	}
 

@@ -63,12 +63,12 @@ struct TimedAudioBuffers
 	TimedAudioBuffers ()
 		: time (0)
 	{}
-	
+
 	TimedAudioBuffers (boost::shared_ptr<AudioBuffers> a, T t)
 		: audio (a)
 		, time (t)
 	{}
-	
+
 	boost::shared_ptr<AudioBuffers> audio;
 	T time;
 };
@@ -131,7 +131,7 @@ struct Crop
 		if (s.height < minimum) {
 			s.height = minimum;
 		}
-		
+
 		return s;
 	}
 
@@ -146,7 +146,7 @@ struct CPLSummary
 		, cpl_annotation_text (a)
 		, cpl_file (f)
 	{}
-	
+
 	std::string dcp_directory;
 	std::string cpl_id;
 	std::string cpl_annotation_text;

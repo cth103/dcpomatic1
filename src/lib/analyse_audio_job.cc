@@ -74,7 +74,7 @@ AnalyseAudioJob::run ()
 	playlist->add (content);
 	shared_ptr<Player> player (new Player (_film, playlist));
 	player->disable_video ();
-	
+
 	_player_connection = player->Audio.connect (bind (&AnalyseAudioJob::audio, this, _1, _2));
 
 	_samples_per_point = max (int64_t (1), _film->time_to_audio_frames (_film->length()) / _num_points);
@@ -109,7 +109,7 @@ AnalyseAudioJob::audio (shared_ptr<const AudioBuffers> b, Time)
 			_current[j][AudioPoint::RMS] += pow (s, 2);
 
 			float const as = fabsf (s);
-			
+
 			_current[j][AudioPoint::PEAK] = max (_current[j][AudioPoint::PEAK], as);
 
 			if (as > _overall_peak) {

@@ -109,7 +109,7 @@ public:
 
 	uint64_t required_disk_space () const;
 	bool should_be_enough_disk_space (double& required, double& available, bool& can_hard_link) const;
-	
+
 	/* Proxies for some Playlist methods */
 
 	ContentList content () const;
@@ -126,7 +126,7 @@ public:
 		boost::posix_time::ptime until,
 		libdcp::KDM::Formulation formulation
 		) const;
-	
+
 	std::list<libdcp::KDM> make_kdms (
 		std::list<boost::shared_ptr<Screen> >,
 		boost::filesystem::path cpl_file,
@@ -205,7 +205,7 @@ public:
 	bool is_signed () const {
 		return _signed;
 	}
-	
+
 	bool encrypted () const {
 		return _encrypted;
 	}
@@ -242,7 +242,7 @@ public:
 	bool interop () const {
 		return _interop;
 	}
-	
+
 
 	/* SET */
 
@@ -299,7 +299,7 @@ private:
 	 *  must not be relative.
 	 */
 	boost::filesystem::path _directory;
-	
+
 	/** Name for DCP-o-matic */
 	std::string _name;
 	/** True if a auto-generated ISDCF-compliant name should be used for our DCP */

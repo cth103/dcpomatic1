@@ -38,20 +38,20 @@ public:
 	pull (T time)
 	{
 		TimedAudioBuffers<T> out;
-		
+
 		F const to_return = _t_to_f (time - _last_pull);
 		out.audio.reset (new AudioBuffers (_buffers->channels(), to_return));
 		/* And this is how many we will get from our buffer */
 		F const to_return_from_buffers = min (to_return, _buffers->frames ());
-		
+
 		/* Copy the data that we have to the back end of the return buffer */
 		out.audio->copy_from (_buffers.get(), to_return_from_buffers, 0, to_return - to_return_from_buffers);
 		/* Silence any gap at the start */
 		out.audio->make_silent (0, to_return - to_return_from_buffers);
-		
+
 		out.time = _last_pull;
 		_last_pull = time;
-		
+
 		/* And remove the data we're returning from our buffers */
 		if (_buffers->frames() > to_return_from_buffers) {
 			_buffers->move (to_return_from_buffers, 0, _buffers->frames() - to_return_from_buffers);
@@ -90,17 +90,17 @@ public:
 
 		return b;
 	}
-		
+
 	TimedAudioBuffers<T>
 	flush ()
 	{
 		if (_buffers->frames() == 0) {
 			return TimedAudioBuffers<T> ();
 		}
-		
+
 		return TimedAudioBuffers<T> (_buffers, _last_pull);
 	}
-	
+
 private:
 	boost::shared_ptr<AudioBuffers> _buffers;
 	T _last_pull;

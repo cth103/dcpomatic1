@@ -23,7 +23,7 @@ class TimelineAudioContentView : public TimelineContentView
 {
 public:
 	TimelineAudioContentView (Timeline& tl, boost::shared_ptr<Content> c);
-	
+
 private:
 	wxString type () const;
 	wxColour colour () const;

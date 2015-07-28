@@ -64,7 +64,7 @@ FFmpeg::~FFmpeg ()
 	}
 
 	av_frame_free (&_frame);
-	
+
 	avformat_close_input (&_format_context);
 }
 
@@ -90,14 +90,14 @@ FFmpeg::setup_general ()
 	_avio_context = avio_alloc_context (_avio_buffer, _avio_buffer_size, 0, this, avio_read_wrapper, 0, avio_seek_wrapper);
 	_format_context = avformat_alloc_context ();
 	_format_context->pb = _avio_context;
-	
+
 	AVDictionary* options = 0;
 	/* These durations are in microseconds, and represent how far into the content file
 	   we will look for streams.
 	*/
 	av_dict_set (&options, "analyzeduration", raw_convert<string> (5 * 60 * 1000000).c_str(), 0);
 	av_dict_set (&options, "probesize", raw_convert<string> (5 * 60 * 1000000).c_str(), 0);
-	
+
 	if (avformat_open_input (&_format_context, 0, 0, &options) < 0) {
 		throw OpenFileError (_ffmpeg_content->path(0).string ());
 	}
@@ -157,7 +157,7 @@ FFmpeg::setup_general ()
 			used.insert (j);
 		}
 	}
-	
+
 	_frame = av_frame_alloc ();
 	if (_frame == 0) {
 		throw DecodeError (N_("could not allocate frame"));
@@ -204,7 +204,7 @@ FFmpeg::setup_audio ()
 		*/
 		AVDictionary* options = 0;
 		av_dict_set (&options, "disable_footer", "1", 0);
-		
+
 		if (avcodec_open2 (context, codec, &options) < 0) {
 			throw DecodeError (N_("could not open audio decoder"));
 		}
@@ -230,6 +230,6 @@ FFmpeg::avio_seek (int64_t const pos, int whence)
 	if (whence == AVSEEK_SIZE) {
 		return _file_group.length ();
 	}
-	
+
 	return _file_group.seek (pos, whence);
 }

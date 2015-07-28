@@ -43,7 +43,7 @@ class AudioContent : public virtual Content
 {
 public:
 	typedef int64_t Frame;
-	
+
 	AudioContent (boost::shared_ptr<const Film>, Time);
 	AudioContent (boost::shared_ptr<const Film>, boost::filesystem::path);
 	AudioContent (boost::shared_ptr<const Film>, boost::shared_ptr<const cxml::Node>);
@@ -61,12 +61,12 @@ public:
 	AudioMapping audio_mapping () const;
 	void set_audio_mapping (AudioMapping);
 	bool has_rate_above_48k () const;
-	
+
 	boost::signals2::connection analyse_audio (boost::function<void()>);
 
 	void set_audio_gain (double);
 	void set_audio_delay (int);
-	
+
 	double audio_gain () const {
 		boost::mutex::scoped_lock lm (_mutex);
 		return _audio_gain;

@@ -47,11 +47,11 @@ TimelineTimeAxisView::do_paint (wxGraphicsContext* gc)
 	if (!_timeline.pixels_per_time_unit()) {
 		return;
 	}
-	
+
 	double const pptu = _timeline.pixels_per_time_unit().get ();
-	
+
 	gc->SetPen (*wxThePenList->FindOrCreatePen (wxColour (0, 0, 0), 1, wxPENSTYLE_SOLID));
-	
+
 	int mark_interval = rint (128 / (TIME_HZ * pptu));
 	if (mark_interval > 5) {
 		mark_interval -= mark_interval % 5;
@@ -65,42 +65,42 @@ TimelineTimeAxisView::do_paint (wxGraphicsContext* gc)
 	if (mark_interval > 3600) {
 		mark_interval -= mark_interval % 3600;
 	}
-	
+
 	if (mark_interval < 1) {
 		mark_interval = 1;
 	}
-	
+
 	wxGraphicsPath path = gc->CreatePath ();
 	path.MoveToPoint (_timeline.x_offset(), _y);
 	path.AddLineToPoint (_timeline.width(), _y);
 	gc->StrokePath (path);
-	
+
 	Time t = 0;
 	while ((t * pptu) < _timeline.width()) {
 		wxGraphicsPath path = gc->CreatePath ();
 		path.MoveToPoint (time_x (t), _y - 4);
 		path.AddLineToPoint (time_x (t), _y + 4);
 		gc->StrokePath (path);
-		
+
 		int tc = t / TIME_HZ;
 		int const h = tc / 3600;
 		tc -= h * 3600;
 		int const m = tc / 60;
 		tc -= m * 60;
 		int const s = tc;
-		
+
 		wxString str = wxString::Format (wxT ("%02d:%02d:%02d"), h, m, s);
 		wxDouble str_width;
 		wxDouble str_height;
 		wxDouble str_descent;
 		wxDouble str_leading;
 		gc->GetTextExtent (str, &str_width, &str_height, &str_descent, &str_leading);
-		
+
 		int const tx = _timeline.x_offset() + t * pptu;
 		if ((tx + str_width) < _timeline.width()) {
 			gc->DrawText (str, time_x (t), _y + 16);
 		}
-		
+
 		t += mark_interval * TIME_HZ;
 	}
 }

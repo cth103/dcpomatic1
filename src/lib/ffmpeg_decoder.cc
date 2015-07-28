@@ -123,7 +123,7 @@ FFmpegDecoder::FFmpegDecoder (shared_ptr<const Film> f, shared_ptr<const FFmpegC
 	if (video && c->first_video ()) {
 		double first_video = c->first_video().get() + _pts_offset;
 		double const old_first_video = first_video;
-		
+
 		/* Round the first video up to a frame boundary */
 		if (fabs (rint (first_video * c->video_frame_rate()) - first_video * c->video_frame_rate()) > 1e-6) {
 			first_video = ceil (first_video * c->video_frame_rate()) / c->video_frame_rate ();
@@ -146,16 +146,16 @@ void
 FFmpegDecoder::flush ()
 {
 	/* Get any remaining frames */
-	
+
 	_packet.data = 0;
 	_packet.size = 0;
-	
+
 	/* XXX: should we reset _packet.data and size after each *_decode_* call? */
-	
+
 	if (_decode_video) {
 		while (decode_video_packet ()) {}
 	}
-	
+
 	if (_decode_audio) {
 		decode_audio_packet ();
 	}
@@ -191,7 +191,7 @@ FFmpegDecoder::pass ()
 	DCPOMATIC_ASSERT (film);
 
 	int const si = _packet.stream_index;
-	
+
 	if (si == _video_stream && _decode_video) {
 		decode_video_packet ();
 	} else if (_decode_audio) {
@@ -238,7 +238,7 @@ FFmpegDecoder::deinterleave_audio (shared_ptr<const FFmpegAudioStream> stream, u
 		}
 	}
 	break;
-	
+
 	case AV_SAMPLE_FMT_S16:
 	{
 		int16_t* p = reinterpret_cast<int16_t *> (data[0]);
@@ -266,7 +266,7 @@ FFmpegDecoder::deinterleave_audio (shared_ptr<const FFmpegAudioStream> stream, u
 		}
 	}
 	break;
-	
+
 	case AV_SAMPLE_FMT_S32:
 	{
 		int32_t* p = reinterpret_cast<int32_t *> (data[0]);
@@ -300,7 +300,7 @@ FFmpegDecoder::deinterleave_audio (shared_ptr<const FFmpegAudioStream> stream, u
 		}
 	}
 	break;
-		
+
 	case AV_SAMPLE_FMT_FLTP:
 	{
 		float** p = reinterpret_cast<float**> (data);
@@ -367,10 +367,10 @@ FFmpegDecoder::seek (VideoContent::Frame frame, bool accurate)
 	if (!accurate) {
 		_just_sought = true;
 	}
-	
+
 	_video_position = frame;
 	_stop = false;
-	
+
 	if (frame == 0 || !accurate) {
 		/* We're already there, or we're as close as we need to be */
 		return;
@@ -388,12 +388,12 @@ FFmpegDecoder::seek (VideoContent::Frame frame, bool accurate)
 			/* For any other errors we just give up */
 			return;
 		}
-		
+
 		if (_packet.stream_index != _video_stream) {
 			av_free_packet (&_packet);
 			continue;
 		}
-		
+
 		int finished = 0;
 		r = avcodec_decode_video2 (video_codec_context(), _frame, &finished, &_packet);
 		if (r >= 0 && finished) {
@@ -410,7 +410,7 @@ FFmpegDecoder::seek (VideoContent::Frame frame, bool accurate)
 				return;
 			}
 		}
-		
+
 		av_free_packet (&_packet);
 	}
 
@@ -427,7 +427,7 @@ FFmpegDecoder::seek (VideoContent::Frame frame, bool accurate)
 
 		_video_position = rint (
 			(av_frame_get_best_effort_timestamp (_frame) * time_base + _pts_offset) * _ffmpeg_content->original_video_frame_rate()
-			);		
+			);
 
 		if (_video_position >= (frame - 1)) {
 			/* _video_position should be the next thing to be emitted, which will the one after the thing
@@ -446,7 +446,7 @@ FFmpegDecoder::decode_audio_packet ()
 	/* Audio packets can contain multiple frames, so we may have to call avcodec_decode_audio4
 	   several times.
 	*/
-	
+
 	AVPacket copy_packet = _packet;
 
 	/* XXX: inefficient */
@@ -463,7 +463,7 @@ FFmpegDecoder::decode_audio_packet ()
 
 	/* This is just for LOG_WARNING */
 	shared_ptr<const Film> film = _film.lock ();
-	
+
 	while (copy_packet.size > 0) {
 
 		int frame_finished;
@@ -476,7 +476,7 @@ FFmpegDecoder::decode_audio_packet ()
 
 			   Returning from the method here caused mantis #352.
 			*/
-			
+
 			shared_ptr<const Film> film = _film.lock ();
 			DCPOMATIC_ASSERT (film);
 			LOG_WARNING ("avcodec_decode_audio4 failed (%1)", decode_result);
@@ -488,7 +488,7 @@ FFmpegDecoder::decode_audio_packet ()
 		}
 
 		if (frame_finished) {
-			
+
 			if (_audio_position[*stream] == 0) {
 				/* Where we are in the source, in seconds */
 				double const pts = av_q2d (_format_context->streams[copy_packet.stream_index]->time_base)
@@ -501,25 +501,25 @@ FFmpegDecoder::decode_audio_packet ()
 					int64_t frames = pts * (*stream)->frame_rate ();
 					while (frames > 0) {
 						int64_t const this_time = min (frames, (int64_t) (*stream)->frame_rate() / 2);
-						
+
 						shared_ptr<AudioBuffers> silence (
 							new AudioBuffers ((*stream)->channels(), this_time)
 							);
-					
+
 						silence->make_silent ();
 						audio (silence, *stream, _audio_position[*stream]);
 						frames -= this_time;
 					}
 				}
 			}
-			
+
 			int const data_size = av_samples_get_buffer_size (
 				0, (*stream)->stream(_format_context)->codec->channels, _frame->nb_samples, audio_sample_format (*stream), 1
 				);
 
 			audio (deinterleave_audio (*stream, _frame->data, data_size), *stream, _audio_position[*stream]);
 		}
-			
+
 		copy_packet.data += decode_result;
 		copy_packet.size -= decode_result;
 	}
@@ -536,7 +536,7 @@ FFmpegDecoder::decode_video_packet ()
 	boost::mutex::scoped_lock lm (_filter_graphs_mutex);
 
 	shared_ptr<FilterGraph> graph;
-	
+
 	list<shared_ptr<FilterGraph> >::iterator i = _filter_graphs.begin();
 	while (i != _filter_graphs.end() && !(*i)->can_process (libdcp::Size (_frame->width, _frame->height), (AVPixelFormat) _frame->format)) {
 		++i;
@@ -562,7 +562,7 @@ FFmpegDecoder::decode_video_packet ()
 	for (list<pair<shared_ptr<Image>, int64_t> >::iterator i = images.begin(); i != images.end(); ++i) {
 
 		shared_ptr<Image> image = i->first;
-		
+
 		if (i->second != AV_NOPTS_VALUE) {
 
 			double const pts = i->second * av_q2d (_format_context->streams[_video_stream]->time_base) + _pts_offset;
@@ -592,7 +592,7 @@ FFmpegDecoder::decode_video_packet ()
 						true
 						)
 					);
-				
+
 				shared_ptr<const Film> film = _film.lock ();
 				DCPOMATIC_ASSERT (film);
 
@@ -605,7 +605,7 @@ FFmpegDecoder::decode_video_packet ()
 				/* This PTS is within a frame of being right; emit this (otherwise it will be dropped) */
 				video (shared_ptr<ImageProxy> (new RawImageProxy (image, film->log())), false, _video_position);
 			}
-				
+
 		} else {
 			LOG_WARNING_NC ("Dropping frame without PTS");
 		}
@@ -614,12 +614,12 @@ FFmpegDecoder::decode_video_packet ()
 	return true;
 }
 
-	
+
 void
 FFmpegDecoder::setup_subtitle ()
 {
 	boost::mutex::scoped_lock lm (_mutex);
-	
+
 	if (!_ffmpeg_content->subtitle_stream()) {
 		return;
 	}
@@ -634,7 +634,7 @@ FFmpegDecoder::setup_subtitle ()
 	if (_subtitle_codec == 0) {
 		throw DecodeError (N_("could not find subtitle decoder"));
 	}
-	
+
 	if (avcodec_open2 (_subtitle_codec_context, _subtitle_codec, 0) < 0) {
 		throw DecodeError (N_("could not open subtitle decoder"));
 	}
@@ -646,7 +646,7 @@ FFmpegDecoder::done () const
 	if (_stop) {
 		return true;
 	}
-		
+
 	shared_ptr<const Film> film = _film.lock ();
 	DCPOMATIC_ASSERT (film);
 
@@ -664,7 +664,7 @@ FFmpegDecoder::done () const
 
 	return true;
 }
-	
+
 void
 FFmpegDecoder::decode_subtitle_packet ()
 {
@@ -683,7 +683,7 @@ FFmpegDecoder::decode_subtitle_packet ()
 	} else if (sub.num_rects > 1) {
 		throw DecodeError (_("multi-part subtitles not yet supported"));
 	}
-		
+
 	/* Subtitle PTS in seconds (within the source, not taking into account any of the
 	   source that we may have chopped off for the DCP)
 	*/
@@ -737,7 +737,7 @@ FFmpegDecoder::decode_subtitle_packet ()
 		from,
 		to
 		);
-			  
-	
+
+
 	avsubtitle_free (&sub);
 }

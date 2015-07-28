@@ -41,7 +41,7 @@ JobManager::JobManager ()
 	, _last_active_jobs (false)
 	, _scheduler (new boost::thread (boost::bind (&JobManager::scheduler, this)))
 {
-	
+
 }
 
 JobManager::~JobManager ()
@@ -67,7 +67,7 @@ JobManager::add (shared_ptr<Job> j)
 	if (ui_signaller) {
 		ui_signaller->emit (boost::bind (boost::ref (JobAdded), weak_ptr<Job> (j)));
 	}
-	
+
 	return j;
 }
 
@@ -101,7 +101,7 @@ JobManager::errors () const
 	}
 
 	return false;
-}	
+}
 
 void
 JobManager::scheduler ()
@@ -115,21 +115,21 @@ JobManager::scheduler ()
 			if (_terminate) {
 				return;
 			}
-			
+
 			for (list<shared_ptr<Job> >::iterator i = _jobs.begin(); i != _jobs.end(); ++i) {
 
 				if (!(*i)->finished ()) {
 					active_jobs = true;
 				}
-				
+
 				if ((*i)->running ()) {
 					/* Something is already happening */
 					break;
 				}
-				
+
 				if ((*i)->is_new()) {
 					(*i)->start ();
-					
+
 					/* Only start one job at once */
 					break;
 				}

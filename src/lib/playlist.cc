@@ -67,11 +67,11 @@ Playlist::content_changed (weak_ptr<Content> content, int property, bool frequen
 	   - any other position changes will be timeline drags which should not result in content
 	   being sequenced.
 	*/
-	
+
 	if (property == ContentProperty::LENGTH || property == VideoContentProperty::VIDEO_FRAME_TYPE) {
 		maybe_sequence_video ();
 	}
-	
+
 	ContentChanged (content, property, frequent);
 }
 
@@ -81,9 +81,9 @@ Playlist::maybe_sequence_video ()
 	if (!_sequence_video || _sequencing_video) {
 		return;
 	}
-	
+
 	_sequencing_video = true;
-	
+
 	ContentList cl = _content;
 	Time next_left = 0;
 	Time next_right = 0;
@@ -92,7 +92,7 @@ Playlist::maybe_sequence_video ()
 		if (!vc) {
 			continue;
 		}
-	
+
 		if (vc->video_frame_type() == VIDEO_FRAME_TYPE_3D_RIGHT) {
 			vc->set_position (next_right);
 			next_right = vc->end() + 1;
@@ -103,7 +103,7 @@ Playlist::maybe_sequence_video ()
 	}
 
 	/* This won't change order, so it does not need a sort */
-	
+
 	_sequencing_video = false;
 }
 
@@ -111,7 +111,7 @@ string
 Playlist::video_identifier () const
 {
 	string t;
-	
+
 	for (ContentList::const_iterator i = _content.begin(); i != _content.end(); ++i) {
 		shared_ptr<const VideoContent> vc = dynamic_pointer_cast<const VideoContent> (*i);
 		if (vc) {
@@ -163,7 +163,7 @@ Playlist::remove (shared_ptr<Content> c)
 	while (i != _content.end() && *i != c) {
 		++i;
 	}
-	
+
 	if (i != _content.end ()) {
 		_content.erase (i);
 		Changed ();
@@ -180,14 +180,14 @@ Playlist::remove (ContentList c)
 		while (j != _content.end() && *j != *i) {
 			++j;
 		}
-	
+
 		if (j != _content.end ()) {
 			_content.erase (j);
 		}
 	}
 
 	/* This won't change order, so it does not need a sort */
-	
+
 	Changed ();
 }
 
@@ -263,7 +263,7 @@ Playlist::best_dcp_frame_rate () const
 	if (!best) {
 		return 24;
 	}
-	
+
 	return best->dcp;
 }
 
@@ -286,7 +286,7 @@ Playlist::reconnect ()
 	}
 
 	_content_connections.clear ();
-		
+
 	for (ContentList::iterator i = _content.begin(); i != _content.end(); ++i) {
 		_content_connections.push_back ((*i)->Changed.connect (bind (&Playlist::content_changed, this, _1, _2, _3)));
 	}
@@ -346,7 +346,7 @@ Playlist::repeat (ContentList c, int n)
 	}
 
 	sort (_content.begin(), _content.end(), ContentSorter ());
-	
+
 	reconnect ();
 	Changed ();
 }
@@ -355,7 +355,7 @@ void
 Playlist::move_earlier (shared_ptr<Content> c)
 {
 	sort (_content.begin(), _content.end(), ContentSorter ());
-	
+
 	ContentList::iterator previous = _content.end ();
 	ContentList::iterator i = _content.begin();
 	while (i != _content.end() && *i != c) {
@@ -368,7 +368,7 @@ Playlist::move_earlier (shared_ptr<Content> c)
 		return;
 	}
 
-	
+
 	Time const p = (*previous)->position ();
 	(*previous)->set_position (p + c->length_after_trim ());
 	c->set_position (p);
@@ -379,7 +379,7 @@ void
 Playlist::move_later (shared_ptr<Content> c)
 {
 	sort (_content.begin(), _content.end(), ContentSorter ());
-	
+
 	ContentList::iterator i = _content.begin();
 	while (i != _content.end() && *i != c) {
 		++i;

@@ -90,7 +90,7 @@ FilmEditor::FilmEditor (wxWindow* parent)
 	_main_notebook->AddPage (_content_panel, _("Content"), true);
 	make_dcp_panel ();
 	_main_notebook->AddPage (_dcp_panel, _("DCP"), false);
-	
+
 	connect_to_widgets ();
 
 	JobManager::instance()->ActiveJobsChanged.connect (
@@ -114,16 +114,16 @@ FilmEditor::make_dcp_panel ()
 	_dcp_sizer->Add (grid, 0, wxEXPAND | wxALL, 8);
 
 	int r = 0;
-	
+
 	add_label_to_grid_bag_sizer (grid, _dcp_panel, _("Name"), true, wxGBPosition (r, 0));
 	_name = new wxTextCtrl (_dcp_panel, wxID_ANY);
 	grid->Add (_name, wxGBPosition(r, 1), wxDefaultSpan, wxEXPAND | wxLEFT | wxRIGHT);
 	++r;
-	
+
 	int flags = wxALIGN_CENTER_VERTICAL;
 #ifdef __WXOSX__
 	flags |= wxALIGN_RIGHT;
-#endif	
+#endif
 
 	_use_isdcf_name = new wxCheckBox (_dcp_panel, wxID_ANY, _("Use ISDCF name"));
 	grid->Add (_use_isdcf_name, wxGBPosition (r, 0), wxDefaultSpan, flags);
@@ -182,7 +182,7 @@ FilmEditor::make_dcp_panel ()
 	_signed = new wxCheckBox (_dcp_panel, wxID_ANY, _("Signed"));
 	grid->Add (_signed, wxGBPosition (r, 0), wxGBSpan (1, 2));
 	++r;
-	
+
 	_encrypted = new wxCheckBox (_dcp_panel, wxID_ANY, _("Encrypted"));
 	grid->Add (_encrypted, wxGBPosition (r, 0), wxGBSpan (1, 2));
 	++r;
@@ -313,7 +313,7 @@ FilmEditor::make_content_panel ()
 
 	{
 		wxBoxSizer* s = new wxBoxSizer (wxHORIZONTAL);
-		
+
 		_content = new wxListCtrl (_content_panel, wxID_ANY, wxDefaultPosition, wxSize (320, 160), wxLC_REPORT | wxLC_NO_HEADER);
 		s->Add (_content, 1, wxEXPAND | wxTOP | wxBOTTOM, 6);
 
@@ -325,19 +325,19 @@ FilmEditor::make_content_panel ()
 		_content_add_file = new wxButton (_content_panel, wxID_ANY, _("Add file(s)..."));
 		_content_add_file->SetToolTip (_("Add video, image or sound files to the film."));
 		b->Add (_content_add_file,   0, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
-		
+
 		_content_add_folder = new wxButton (_content_panel, wxID_ANY, _("Add image\nsequence..."));
 		_content_add_folder->SetToolTip (_("Add a directory of image files which will be used as a moving image sequence."));
 		b->Add (_content_add_folder, 1, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
-		
+
 		_content_remove = new wxButton (_content_panel, wxID_ANY, _("Remove"));
 		_content_remove->SetToolTip (_("Remove the selected piece of content from the film."));
 		b->Add (_content_remove, 0, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
-		
+
 		_content_earlier = new wxButton (_content_panel, wxID_ANY, _("Up"));
 		_content_earlier->SetToolTip (_("Move the selected piece of content earlier in the film."));
 		b->Add (_content_earlier, 0, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
-		
+
 		_content_later = new wxButton (_content_panel, wxID_ANY, _("Down"));
 		_content_later->SetToolTip (_("Move the selected piece of content later in the film."));
 		b->Add (_content_later, 0, wxEXPAND | wxALL, DCPOMATIC_BUTTON_STACK_GAP);
@@ -383,7 +383,7 @@ FilmEditor::j2k_bandwidth_changed ()
 	if (!_film) {
 		return;
 	}
-	
+
 	_film->set_j2k_bandwidth (_j2k_bandwidth->GetValue() * 1000000);
 }
 
@@ -416,7 +416,7 @@ FilmEditor::edit_key_clicked ()
 	}
 	d->Destroy ();
 }
-			       
+
 /** Called when the frame rate choice widget has been changed */
 void
 FilmEditor::frame_rate_choice_changed ()
@@ -481,7 +481,7 @@ void
 FilmEditor::film_changed (Film::Property p)
 {
 	ensure_ui_thread ();
-	
+
 	if (!_film) {
 		return;
 	}
@@ -491,7 +491,7 @@ FilmEditor::film_changed (Film::Property p)
 	for (list<FilmEditorPanel*>::iterator i = _panels.begin(); i != _panels.end(); ++i) {
 		(*i)->film_changed (p);
 	}
-		
+
 	switch (p) {
 	case Film::NONE:
 		break;
@@ -591,7 +591,7 @@ void
 FilmEditor::film_content_changed (int property)
 {
 	ensure_ui_thread ();
-	
+
 	if (!_film) {
 		/* We call this method ourselves (as well as using it as a signal handler)
 		   so _film can be 0.
@@ -622,7 +622,7 @@ FilmEditor::setup_container ()
 		++i;
 		++n;
 	}
-	
+
 	if (i == ratios.end()) {
 		checked_set (_container, -1);
 		checked_set (_container_size, wxT (""));
@@ -631,9 +631,9 @@ FilmEditor::setup_container ()
 		libdcp::Size const size = fit_ratio_within (_film->container()->ratio (), _film->full_frame ());
 		checked_set (_container_size, wxString::Format("%dx%d", size.width, size.height));
 	}
-	
+
 	setup_dcp_name ();
-}	
+}
 
 /** Called when the container widget has been changed */
 void
@@ -674,7 +674,7 @@ FilmEditor::set_film (shared_ptr<Film> f)
 	if (_film == f) {
 		return;
 	}
-	
+
 	_film = f;
 
 	if (_film) {
@@ -737,7 +737,7 @@ FilmEditor::set_general_sensitivity (bool s)
 		si = false;
 	}
 	_signed->Enable (si);
-	
+
 	_encrypted->Enable (s);
 	_key->Enable (s && _film && _film->encrypted ());
 	_edit_key->Enable (s && _film && _film->encrypted ());
@@ -820,7 +820,7 @@ FilmEditor::best_frame_rate_clicked ()
 	if (!_film) {
 		return;
 	}
-	
+
 	_film->set_video_frame_rate (_film->best_video_frame_rate ());
 }
 
@@ -829,7 +829,7 @@ FilmEditor::setup_content ()
 {
 	ContentList content = _film->content ();
 	sort (content.begin(), content.end(), ContentSorter ());
-	
+
 	/* First, check to see if anything has changed and bail if not; this avoids
 	   flickering on OS X.
 	*/
@@ -850,19 +850,19 @@ FilmEditor::setup_content ()
 
 		proposed.push_back (s);
 	}
-	
+
 	if (existing == proposed) {
 		return;
 	}
-      
+
 	/* Something has changed: set up the control */
-	
+
 	string selected_summary;
 	int const s = _content->GetNextItem (-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 	if (s != -1) {
 		selected_summary = wx_to_std (_content->GetItemText (s));
 	}
-	
+
 	_content->DeleteAllItems ();
 
 	for (ContentList::iterator i = content.begin(); i != content.end(); ++i) {
@@ -922,7 +922,7 @@ FilmEditor::add_files (list<string> path_list)
 	/* It has been reported that the paths returned from e.g. wxFileDialog are not always sorted;
 	   I can't reproduce that, but sort them anyway.
 	*/
-	
+
 	path_list.sort (ImageFilenameSorter ());
 
 	/* XXX: check for lots of files here and do something */
@@ -944,7 +944,7 @@ FilmEditor::content_add_folder_clicked ()
 	int r = d->ShowModal ();
 	boost::filesystem::path const path (wx_to_std (d->GetPath ()));
 	d->Destroy ();
-	
+
 	if (r != wxID_OK) {
 		return;
 	}
@@ -959,7 +959,7 @@ FilmEditor::content_add_folder_clicked ()
 	}
 
 	shared_ptr<ImageContent> ic;
-	
+
 	try {
 		ic.reset (new ImageContent (_film, path));
 	} catch (FileError& e) {
@@ -1028,7 +1028,7 @@ FilmEditor::selected_content ()
 	*/
 	ContentList content = _film->content ();
 	sort (content.begin(), content.end(), ContentSorter ());
-	
+
 	long int s = -1;
 	while (true) {
 		s = _content->GetNextItem (s, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
@@ -1049,7 +1049,7 @@ FilmEditor::selected_video_content ()
 {
 	ContentList c = selected_content ();
 	VideoContentList vc;
-	
+
 	for (ContentList::iterator i = c.begin(); i != c.end(); ++i) {
 		shared_ptr<VideoContent> t = dynamic_pointer_cast<VideoContent> (*i);
 		if (t) {
@@ -1065,7 +1065,7 @@ FilmEditor::selected_audio_content ()
 {
 	ContentList c = selected_content ();
 	AudioContentList ac;
-	
+
 	for (ContentList::iterator i = c.begin(); i != c.end(); ++i) {
 		shared_ptr<AudioContent> t = dynamic_pointer_cast<AudioContent> (*i);
 		if (t) {
@@ -1081,7 +1081,7 @@ FilmEditor::selected_subtitle_content ()
 {
 	ContentList c = selected_content ();
 	SubtitleContentList sc;
-	
+
 	for (ContentList::iterator i = c.begin(); i != c.end(); ++i) {
 		shared_ptr<SubtitleContent> t = dynamic_pointer_cast<SubtitleContent> (*i);
 		if (t) {
@@ -1097,7 +1097,7 @@ FilmEditor::selected_ffmpeg_content ()
 {
 	ContentList c = selected_content ();
 	FFmpegContentList sc;
-	
+
 	for (ContentList::iterator i = c.begin(); i != c.end(); ++i) {
 		shared_ptr<FFmpegContent> t = dynamic_pointer_cast<FFmpegContent> (*i);
 		if (t) {
@@ -1115,7 +1115,7 @@ FilmEditor::content_timeline_clicked ()
 		_timeline_dialog->Destroy ();
 		_timeline_dialog = 0;
 	}
-	
+
 	_timeline_dialog = new TimelineDialog (this, _film);
 	_timeline_dialog->Show ();
 }
@@ -1196,14 +1196,14 @@ FilmEditor::content_files_dropped (wxDropFilesEvent& event)
 	if (!_film) {
 		return;
 	}
-	
+
 	wxString* paths = event.GetFiles ();
 	list<string> path_list;
 	for (int i = 0; i < event.GetNumberOfFiles(); i++) {
 		path_list.push_back (wx_to_std (paths[i]));
 	}
 
-	add_files (path_list);				     
+	add_files (path_list);
 }
 
 void

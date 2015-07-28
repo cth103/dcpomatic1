@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE (recover_test)
 		"build/test/recover_test/video/185_2K_f9e82cfefc42c63e62aba2bcb4633cd7_24_bicubic_100000000_P_S_3D.mxf",
 		"build/test/recover_test/original.mxf"
 		);
-	
+
 	boost::filesystem::resize_file ("build/test/recover_test/video/185_2K_f9e82cfefc42c63e62aba2bcb4633cd7_24_bicubic_100000000_P_S_3D.mxf", 2 * 1024 * 1024);
 
 	film->make_dcp ();

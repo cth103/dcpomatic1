@@ -48,7 +48,7 @@ public:
 protected:
 
 	virtual void flush () {};
-	
+
 	/** The Film that we are decoding in */
 	boost::weak_ptr<const Film> _film;
 };

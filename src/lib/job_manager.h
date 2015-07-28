@@ -50,11 +50,11 @@ public:
 private:
 	/* This function is part of the test suite */
 	friend void ::wait_for_jobs ();
-	
+
 	JobManager ();
 	~JobManager ();
 	void scheduler ();
-	
+
 	mutable boost::mutex _mutex;
 	std::list<boost::shared_ptr<Job> > _jobs;
 	bool _terminate;

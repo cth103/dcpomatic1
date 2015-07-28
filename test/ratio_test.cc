@@ -26,7 +26,7 @@
 using std::ostream;
 
 namespace libdcp {
-	
+
 ostream&
 operator<< (ostream& s, libdcp::Size const & t)
 {

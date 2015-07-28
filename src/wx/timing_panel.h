@@ -29,7 +29,7 @@ public:
 	void film_changed (Film::Property);
 	void film_content_changed (int);
 	void content_selection_changed ();
-	
+
 private:
 	void position_changed ();
 	void full_length_changed ();
@@ -40,7 +40,7 @@ private:
 	void set_video_frame_rate ();
 	void update_full_length ();
 	void update_play_length ();
-	
+
 	Timecode* _position;
 	Timecode* _full_length;
 	Timecode* _trim_start;

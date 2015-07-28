@@ -25,7 +25,7 @@
 TimelineView::TimelineView (Timeline& t)
 	: _timeline (t)
 {
-	
+
 }
 
 void

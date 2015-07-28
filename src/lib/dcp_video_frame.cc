@@ -88,7 +88,7 @@ DCPVideoFrame::DCPVideoFrame (
 	, _resolution (r)
 	, _log (l)
 {
-	
+
 }
 
 DCPVideoFrame::DCPVideoFrame (shared_ptr<const PlayerVideoFrame> frame, shared_ptr<const cxml::Node> node, shared_ptr<Log> log)
@@ -117,11 +117,11 @@ DCPVideoFrame::encode_locally ()
 		} else {
 			in_lut = libdcp::GammaLUT::cache.get (12, conversion.input_gamma);
 		}
-		
+
 		/* XXX: libdcp should probably use boost */
 
 		boost::numeric::ublas::matrix<double> A = conversion.rgb_to_xyz ();
-		
+
 		double rgb_to_xyz[3][3];
 		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
@@ -137,7 +137,7 @@ DCPVideoFrame::encode_locally ()
 				bradford[i][j] = B (i, j);
 			}
 		}
-		
+
 		xyz = libdcp::rgb_to_xyz (
 			_frame->image(AV_PIX_FMT_RGB48LE),
 			in_lut,
@@ -171,11 +171,11 @@ DCPVideoFrame::encode_locally ()
 	parameters.tile_size_on = false;
 	parameters.cp_tdx = 1;
 	parameters.cp_tdy = 1;
-	
+
 	/* Tile part */
 	parameters.tp_flag = 'C';
 	parameters.tp_on = 1;
-	
+
 	/* Tile and Image shall be at (0,0) */
 	parameters.cp_tx0 = 0;
 	parameters.cp_ty0 = 0;
@@ -186,19 +186,19 @@ DCPVideoFrame::encode_locally ()
 	parameters.cblockw_init = 32;
 	parameters.cblockh_init = 32;
 	parameters.csty |= 0x01;
-	
+
 	/* The progression order shall be CPRL */
 	parameters.prog_order = CPRL;
-	
+
 	/* No ROI */
 	parameters.roi_compno = -1;
-	
+
 	parameters.subsampling_dx = 1;
 	parameters.subsampling_dy = 1;
-	
+
 	/* 9-7 transform */
 	parameters.irreversible = 1;
-	
+
 	parameters.tcp_rates[0] = 0;
 	parameters.tcp_numlayers++;
 	parameters.cp_disto_alloc = 1;
@@ -206,27 +206,27 @@ DCPVideoFrame::encode_locally ()
 	if (_resolution == RESOLUTION_4K) {
 		parameters.numpocs = 2;
 		parameters.POC[0].tile = 1;
-		parameters.POC[0].resno0 = 0; 
+		parameters.POC[0].resno0 = 0;
 		parameters.POC[0].compno0 = 0;
 		parameters.POC[0].layno1 = 1;
 		parameters.POC[0].resno1 = parameters.numresolution - 1;
 		parameters.POC[0].compno1 = 3;
 		parameters.POC[0].prg1 = CPRL;
 		parameters.POC[1].tile = 1;
-		parameters.POC[1].resno0 = parameters.numresolution - 1; 
+		parameters.POC[1].resno0 = parameters.numresolution - 1;
 		parameters.POC[1].compno0 = 0;
 		parameters.POC[1].layno1 = 1;
 		parameters.POC[1].resno1 = parameters.numresolution;
 		parameters.POC[1].compno1 = 3;
 		parameters.POC[1].prg1 = CPRL;
 	}
-	
+
 	parameters.cp_comment = strdup (N_("DCP-o-matic"));
 	parameters.cp_cinema = _resolution == RESOLUTION_2K ? CINEMA2K_24 : CINEMA4K_24;
 
 	/* 3 components, so use MCT */
 	parameters.tcp_mct = 1;
-	
+
 	/* set max image */
 	parameters.max_comp_size = max_comp_size;
 	parameters.tcp_rates[0] = ((float) (3 * xyz->size().width * xyz->size().height * 12)) / (max_cs_len * 8);
@@ -296,7 +296,7 @@ DCPVideoFrame::encode_remotely (ServerDescription serv)
 	add_metadata (root);
 
 	LOG_GENERAL (N_("Sending frame %1 to remote"), _index);
-	
+
 	/* Send XML metadata */
 	string xml = doc.write_to_string ("UTF-8");
 	socket->write (xml.length() + 1);
@@ -312,7 +312,7 @@ DCPVideoFrame::encode_remotely (ServerDescription serv)
 	socket->read (e->data(), e->size());
 
 	LOG_GENERAL (N_("Finished remotely-encoded frame %1"), _index);
-	
+
 	return e;
 }
 
@@ -348,13 +348,13 @@ EncodedData::EncodedData (boost::filesystem::path file)
 	if (!f) {
 		throw FileError (_("could not open file for reading"), file);
 	}
-	
+
 	size_t const r = fread (_data, 1, _size, f);
 	if (r != size_t (_size)) {
 		fclose (f);
 		throw FileError (_("could not read encoded data"), file);
 	}
-		
+
 	fclose (f);
 }
 
@@ -374,7 +374,7 @@ EncodedData::write (shared_ptr<const Film> film, int frame, Eyes eyes) const
 	boost::filesystem::path const tmp_j2c = film->j2c_path (frame, eyes, true);
 
 	FILE* f = fopen_boost (tmp_j2c, "wb");
-	
+
 	if (!f) {
 		throw WriteFileError (tmp_j2c, errno);
 	}

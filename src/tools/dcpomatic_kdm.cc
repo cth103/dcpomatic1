@@ -113,7 +113,7 @@ int main (int argc, char* argv[])
 	libdcp::KDM::Formulation formulation = libdcp::KDM::MODIFIED_TRANSITIONAL_1;
 
 	program_name = argv[0];
-	
+
 	int option_index = 0;
 	while (true) {
 		static struct option long_options[] = {
@@ -212,7 +212,7 @@ int main (int argc, char* argv[])
 	}
 
 	string const film_dir = argv[optind];
-			
+
 	dcpomatic_setup ();
 
 	shared_ptr<Film> film;
@@ -246,7 +246,7 @@ int main (int argc, char* argv[])
 		if (output.empty ()) {
 			error ("you must specify --output");
 		}
-		
+
 		shared_ptr<libdcp::Certificate> certificate (new libdcp::Certificate (boost::filesystem::path (certificate_file)));
 		libdcp::KDM kdm = film->make_kdm (certificate, cpl, valid_from.get(), valid_to.get(), formulation);
 		kdm.as_xml (output);

@@ -37,7 +37,7 @@ TimelineVideoContentView::type () const
 	} else {
 		return _("still");
 	}
-}	
+}
 
 wxColour
 TimelineVideoContentView::colour () const

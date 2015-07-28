@@ -58,7 +58,7 @@ VideoDecoder::video (shared_ptr<const ImageProxy> image, bool same, VideoContent
 		Video (image, EYES_RIGHT, PART_WHOLE, same, frame);
 		break;
 	}
-	
+
 	_video_position = frame + 1;
 }
 

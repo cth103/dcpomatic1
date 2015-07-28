@@ -47,7 +47,7 @@ ReadFileError::ReadFileError (boost::filesystem::path f, int e)
 WriteFileError::WriteFileError (boost::filesystem::path f, int e)
 	: FileError (String::compose (_("could not write to file %1 (%2)"), f.string(), strerror (e)), f)
 {
-	
+
 }
 
 MissingSettingError::MissingSettingError (string s)

@@ -80,4 +80,4 @@ Screen::as_xml (xmlpp::Element* parent) const
 	parent->add_child("Certificate")->add_child_text (certificate->certificate (true));
 }
 
-		
+

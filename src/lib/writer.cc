@@ -105,7 +105,7 @@ Writer::Writer (shared_ptr<const Film> f, weak_ptr<Job> j)
 	if (_film->encrypted ()) {
 		_picture_asset->set_key (_film->key ());
 	}
-	
+
 	_picture_asset_writer = _picture_asset->start_write (_first_nonexistant_frame > 0);
 
 	if (_film->audio_channels ()) {
@@ -119,7 +119,7 @@ Writer::Writer (shared_ptr<const Film> f, weak_ptr<Job> j)
 		if (_film->encrypted ()) {
 			_sound_asset->set_key (_film->key ());
 		}
-		
+
 		/* Write the sound asset into the film directory so that we leave the creation
 		   of the DCP directory until the last minute.
 		*/
@@ -180,14 +180,14 @@ Writer::fake_write (int frame, Eyes eyes)
 		/* The queue is too big; wait until that is sorted out */
 		_full_condition.wait (lock);
 	}
-	
+
 	FILE* file = fopen_boost (_film->info_file (), "rb");
 	if (!file) {
 		throw ReadFileError (_film->info_file ());
 	}
 	libdcp::FrameInfo info = read_frame_info (file, frame, eyes);
 	fclose (file);
-	
+
 	QueueItem qi;
 	qi.type = QueueItem::FAKE;
 	qi.size = info.size;
@@ -257,7 +257,7 @@ try
 		bool done_something = false;
 
 		while (true) {
-			
+
 			if (_finish || _queued_full_in_memory > _maximum_frames_in_memory || have_sequenced_image_at_queue_head ()) {
 				/* We've got something to do: go and do it */
 				break;
@@ -324,7 +324,7 @@ try
 					_last_written[qi.eyes]->data(),
 					_last_written[qi.eyes]->size()
 					);
-				
+
 				_last_written[qi.eyes]->write_info (_film, qi.frame, qi.eyes, fin);
 				++_repeat_written;
 				break;
@@ -334,7 +334,7 @@ try
 
 			_last_written_frame = qi.frame;
 			_last_written_eyes = qi.eyes;
-			
+
 			if (_film->length()) {
 				shared_ptr<Job> job = _job.lock ();
 				DCPOMATIC_ASSERT (job);
@@ -380,7 +380,7 @@ try
 				_last_written_frame + 1,
 				_last_written_eyes, qi.frame
 				);
-			
+
 			to_write->write (_film, qi.frame, qi.eyes);
 
 			lock.lock ();
@@ -411,7 +411,7 @@ Writer::terminate_thread (bool can_throw)
 	if (_thread == 0) {
 		return;
 	}
-	
+
 	_finish = true;
 	_empty_condition.notify_all ();
 	_full_condition.notify_all ();
@@ -421,10 +421,10 @@ Writer::terminate_thread (bool can_throw)
 	if (can_throw) {
 		rethrow ();
 	}
-	
+
 	delete _thread;
 	_thread = 0;
-}	
+}
 
 void
 Writer::finish ()
@@ -434,23 +434,23 @@ Writer::finish ()
 	}
 
 	LOG_DEBUG_NC (N_("Terminating writer thread"));
-	
+
 	terminate_thread (true);
 
 	LOG_DEBUG_NC (N_("Finalizing writers"));
-	
+
 	_picture_asset_writer->finalize ();
 	if (_sound_asset_writer) {
 		_sound_asset_writer->finalize ();
 	}
-	
+
 	int const frames = _last_written_frame + 1;
 
 	_picture_asset->set_duration (frames);
 
 	/* Hard-link the video MXF into the DCP */
 	LOG_GENERAL_NC (N_("Hard-linking video MXF into DCP"));
-	
+
 	boost::filesystem::path video_from = _picture_asset->path ();
 
 	boost::filesystem::path video_to;
@@ -480,7 +480,7 @@ Writer::finish ()
 		boost::filesystem::path audio_to;
 		audio_to /= _film->dir (_film->dcp_name ());
 		audio_to /= audio_mxf_filename (_sound_asset);
-		
+
 		boost::filesystem::rename (_film->file (audio_mxf_filename (_sound_asset)), audio_to, ec);
 		if (ec) {
 			throw FileError (
@@ -488,11 +488,11 @@ Writer::finish ()
 				_film->file (audio_mxf_filename (_sound_asset))
 				);
 		}
-		
+
 		_sound_asset->set_directory (_film->dir (_film->dcp_name ()));
 		_sound_asset->set_duration (frames);
 	}
-	
+
 	libdcp::DCP dcp (_film->dir (_film->dcp_name()));
 
 	shared_ptr<libdcp::CPL> cpl (
@@ -504,7 +504,7 @@ Writer::finish ()
 			_film->video_frame_rate ()
 			)
 		);
-	
+
 	dcp.add_cpl (cpl);
 
 	cpl->add_reel (shared_ptr<libdcp::Reel> (new libdcp::Reel (
@@ -546,7 +546,7 @@ Writer::repeat (int f, Eyes e)
 		/* The queue is too big; wait until that is sorted out */
 		_full_condition.wait (lock);
 	}
-	
+
 	QueueItem qi;
 	qi.type = QueueItem::REPEAT;
 	qi.frame = f;

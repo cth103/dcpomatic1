@@ -84,7 +84,7 @@ ISDCFMetadata::read_old_metadata (string k, string v)
 	} else if (k == N_("package_type")) {
 		package_type = v;
 	}
-}	
+}
 
 bool
 operator== (ISDCFMetadata const & a, ISDCFMetadata const & b)

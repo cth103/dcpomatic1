@@ -51,7 +51,7 @@ void
 AudioMapping::setup (int c)
 {
 	_content_channels = c;
-	
+
 	_gain.resize (_content_channels);
 	for (int i = 0; i < _content_channels; ++i) {
 		_gain[i].resize (MAX_DCP_AUDIO_CHANNELS);
@@ -77,7 +77,7 @@ void
 AudioMapping::make_default (int use)
 {
 	make_zero ();
-	
+
 	if (use == 1) {
 		/* Mono -> Centre */
 		set (0, libdcp::CENTRE, 1);
@@ -161,7 +161,7 @@ AudioMapping::mapped_dcp_channels () const
 	static float const minus_96_db = 0.000015849;
 
 	list<libdcp::Channel> mapped;
-	
+
 	for (vector<vector<float> >::const_iterator i = _gain.begin(); i != _gain.end(); ++i) {
 		for (size_t j = 0; j < i->size(); ++j) {
 			if (abs ((*i)[j]) > minus_96_db) {
@@ -172,7 +172,7 @@ AudioMapping::mapped_dcp_channels () const
 
 	mapped.sort ();
 	mapped.unique ();
-	
+
 	return mapped;
 }
 
@@ -185,7 +185,7 @@ AudioMapping::unmap_all ()
 		}
 	}
 }
-	
+
 void
 AudioMapping::set_name (int channel, string name)
 {

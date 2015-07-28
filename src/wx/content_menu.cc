@@ -84,9 +84,9 @@ ContentMenu::popup (weak_ptr<Film> f, ContentList c, TimelineContentViewList v, 
 			++n;
 		}
 	}
-	
+
 	_join->Enable (n > 1);
-	
+
 	_find_missing->Enable (_content.size() == 1 && !_content.front()->paths_valid ());
 	_properties->Enable (_content.size() == 1);
 	_remove->Enable (!_content.empty ());
@@ -99,7 +99,7 @@ ContentMenu::repeat ()
 	if (_content.empty ()) {
 		return;
 	}
-		
+
 	RepeatDialog* d = new RepeatDialog (_parent);
 	if (d->ShowModal() != wxID_OK) {
 		d->Destroy ();
@@ -170,7 +170,7 @@ ContentMenu::remove ()
 			if (!fc) {
 				continue;
 			}
-			
+
 			shared_ptr<TimelineVideoContentView> video;
 			shared_ptr<TimelineAudioContentView> audio;
 
@@ -212,7 +212,7 @@ ContentMenu::find_missing ()
 	if (!film) {
 		return;
 	}
-	
+
 	shared_ptr<Content> content;
 
 	/* XXX: a bit nasty */
@@ -238,7 +238,7 @@ ContentMenu::find_missing ()
 	}
 
 	shared_ptr<Job> j (new ExamineContentJob (film, content));
-	
+
 	_job_connection = j->Finished.connect (
 		bind (
 			&ContentMenu::maybe_found_missing,
@@ -248,7 +248,7 @@ ContentMenu::find_missing ()
 			boost::weak_ptr<Content> (content)
 			)
 		);
-	
+
 	JobManager::instance()->add (j);
 }
 

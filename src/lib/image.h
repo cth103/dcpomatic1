@@ -46,7 +46,7 @@ public:
 	Image (boost::shared_ptr<const Image>, bool);
 	Image& operator= (Image const &);
 	~Image ();
-	
+
 	uint8_t ** data () const;
 	int * line_size () const;
 	int * stride () const;
@@ -63,27 +63,27 @@ public:
 	boost::shared_ptr<Image> crop_scale_window (
 		Crop c, libdcp::Size, libdcp::Size, Scaler const *, YUVToRGB yuv_to_rgb, AVPixelFormat, bool aligned
 		) const;
-	
+
 	void make_black ();
 	void alpha_blend (boost::shared_ptr<const Image> image, Position<int> pos);
 	void copy (boost::shared_ptr<const Image> image, Position<int> pos);
 
 	void read_from_socket (boost::shared_ptr<Socket>);
 	void write_to_socket (boost::shared_ptr<Socket>) const;
-	
+
 	AVPixelFormat pixel_format () const {
 		return _pixel_format;
 	}
 
 private:
 	friend class pixel_formats_test;
-	
+
 	void allocate ();
 	void swap (Image &);
 	float bytes_per_pixel (int) const;
 	void yuv_16_black (uint16_t, bool);
 	static uint16_t swap_16 (uint16_t);
-	
+
 	AVPixelFormat _pixel_format; ///< FFmpeg's way of describing the pixel format of this Image
 	uint8_t** _data; ///< array of pointers to components
 	int* _line_size; ///< array of sizes of the data in each line, in pixels (without any alignment padding bytes)

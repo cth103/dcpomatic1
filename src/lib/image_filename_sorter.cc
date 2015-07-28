@@ -40,7 +40,7 @@ private:
 	boost::optional<int> extract_number (boost::filesystem::path p)
 	{
 		p = p.leaf ();
-		
+
 		std::list<std::string> numbers;
 
 		std::string current;

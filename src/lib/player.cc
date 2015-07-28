@@ -207,7 +207,7 @@ Player::pass ()
 			_audio_position += _film->audio_frames_to_time (tb.audio->frames ());
 		}
 	}
-		
+
 	return false;
 }
 
@@ -223,7 +223,7 @@ Player::process_video (weak_ptr<Piece> weak_piece, shared_ptr<const ImageProxy> 
 	_last_incoming_video.same = same;
 	_last_incoming_video.frame = frame;
 	_last_incoming_video.extra = extra;
-	
+
 	shared_ptr<Piece> piece = weak_piece.lock ();
 	if (!piece) {
 		return;
@@ -257,7 +257,7 @@ Player::process_video (weak_ptr<Piece> weak_piece, shared_ptr<const ImageProxy> 
 			content->colour_conversion()
 			)
 		);
-	
+
 	if (_film->with_subtitles ()) {
 		for (list<Subtitle>::const_iterator i = _subtitles.begin(); i != _subtitles.end(); ++i) {
 			if (i->covers (time)) {
@@ -268,7 +268,7 @@ Player::process_video (weak_ptr<Piece> weak_piece, shared_ptr<const ImageProxy> 
 					(_video_container_size.width - image_size.width) / 2,
 					(_video_container_size.height - image_size.width) / 2
 					);
-				
+
 				pi->set_subtitle (i->out_image(), i->out_position() + container_offset);
 			}
 		}
@@ -278,7 +278,7 @@ Player::process_video (weak_ptr<Piece> weak_piece, shared_ptr<const ImageProxy> 
 	for (list<Subtitle>::iterator i = _subtitles.begin(); i != _subtitles.end(); ) {
 		list<Subtitle>::iterator j = i;
 		++j;
-		
+
 		if (i->ends_before (time)) {
 			_subtitles.erase (i);
 		}
@@ -305,7 +305,7 @@ Player::process_video (weak_ptr<Piece> weak_piece, shared_ptr<const ImageProxy> 
  *                  /--- position
  *                  |
  *   ___________________
- *  |trimmed  |     |   | 
+ *  |trimmed  |     |   |
  *  \_________|_____|___/
  *
  *  <---- frame ---->
@@ -332,7 +332,7 @@ Player::process_audio (
 			gain->apply_gain (content->audio_gain ());
 			audio = gain;
 		}
-		
+
 		/* Resample */
 		if (stream->frame_rate() != content->output_audio_frame_rate()) {
 			shared_ptr<Resampler> r = resampler (content, stream, true);
@@ -341,7 +341,7 @@ Player::process_audio (
 			frame = ro.second;
 		}
 	}
-	
+
 	Time const relative_time = _film->audio_frames_to_time (frame);
 
 	if (content->trimmed (relative_time)) {
@@ -405,7 +405,7 @@ Player::flush ()
 	while (_audio && _audio_position < _video_position) {
 		emit_silence (_film->time_to_audio_frames (_video_position - _audio_position));
 	}
-	
+
 }
 
 /** Seek so that the next pass() will yield (approximately) the requested frame.
@@ -480,7 +480,7 @@ Player::setup_pieces ()
 		shared_ptr<const FFmpegContent> fc = dynamic_pointer_cast<const FFmpegContent> (*i);
 		if (fc) {
 			shared_ptr<FFmpegDecoder> fd (new FFmpegDecoder (_film, fc, _video, _audio));
-			
+
 			_decoder_connections.push_back (
 				fd->Video.connect (bind (&Player::process_video, this, weak_ptr<Piece> (piece), _1, _2, _3, _4, _5, 0))
 				);
@@ -494,11 +494,11 @@ Player::setup_pieces ()
 			fd->seek (fc->time_to_content_video_frames (fc->trim_start ()), true);
 			piece->decoder = fd;
 		}
-		
+
 		shared_ptr<const ImageContent> ic = dynamic_pointer_cast<const ImageContent> (*i);
 		if (ic) {
 			shared_ptr<ImageDecoder> id;
-			
+
 			/* See if we can re-use an old ImageDecoder */
 			for (list<shared_ptr<Piece> >::const_iterator j = old_pieces.begin(); j != old_pieces.end(); ++j) {
 				shared_ptr<ImageDecoder> imd = dynamic_pointer_cast<ImageDecoder> ((*j)->decoder);
@@ -510,7 +510,7 @@ Player::setup_pieces ()
 			if (!id) {
 				id.reset (new ImageDecoder (_film, ic));
 			}
-			
+
 			_decoder_connections.push_back (
 				id->Video.connect (bind (&Player::process_video, this, weak_ptr<Piece> (piece), _1, _2, _3, _4, _5, 0))
 				);
@@ -544,9 +544,9 @@ Player::content_changed (weak_ptr<Content> w, int property, bool frequent)
 	if (
 		property == ContentProperty::POSITION || property == ContentProperty::LENGTH ||
 		property == ContentProperty::TRIM_START || property == ContentProperty::TRIM_END ||
-		property == VideoContentProperty::VIDEO_FRAME_TYPE 
+		property == VideoContentProperty::VIDEO_FRAME_TYPE
 		) {
-		
+
 		_have_valid_pieces = false;
 		Changed (frequent);
 
@@ -560,14 +560,14 @@ Player::content_changed (weak_ptr<Content> w, int property, bool frequent)
 		for (list<Subtitle>::iterator i = _subtitles.begin(); i != _subtitles.end(); ++i) {
 			i->update (_film, _video_container_size);
 		}
-		
+
 		Changed (frequent);
 
 	} else if (
 		property == VideoContentProperty::VIDEO_CROP || property == VideoContentProperty::VIDEO_SCALE ||
 		property == VideoContentProperty::VIDEO_FRAME_RATE
 		) {
-		
+
 		Changed (frequent);
 
 	} else if (property == ContentProperty::PATH) {
@@ -591,7 +591,7 @@ Player::set_video_container_size (libdcp::Size s)
 
 	shared_ptr<Image> im (new Image (PIX_FMT_RGB24, _video_container_size, true));
 	im->make_black ();
-	
+
 	_black_frame.reset (
 		new PlayerVideoFrame (
 			shared_ptr<ImageProxy> (new RawImageProxy (im, _film->log ())),
@@ -628,7 +628,7 @@ Player::resampler (shared_ptr<AudioContent> content, AudioStreamPtr stream, bool
 	shared_ptr<Resampler> r (
 		new Resampler (stream->frame_rate(), content->output_audio_frame_rate(), stream->channels())
 		);
-	
+
 	_resamplers[make_pair(content, stream)] = r;
 	return r;
 }
@@ -651,7 +651,7 @@ Player::emit_silence (OutputAudioFrame most)
 	if (most == 0) {
 		return;
 	}
-	
+
 	OutputAudioFrame N = min (most, _film->audio_frame_rate() / 2);
 	shared_ptr<AudioBuffers> silence (new AudioBuffers (_film->audio_channels(), N));
 	silence->make_silent ();

@@ -36,7 +36,7 @@ public:
 	std::pair<boost::shared_ptr<const AudioBuffers>, AudioContent::Frame> run (boost::shared_ptr<const AudioBuffers>, AudioContent::Frame);
 	boost::shared_ptr<const AudioBuffers> flush ();
 
-private:	
+private:
 	SwrContext* _swr_context;
 	int _in_rate;
 	int _out_rate;

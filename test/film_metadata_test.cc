@@ -32,7 +32,7 @@ using boost::shared_ptr;
 BOOST_AUTO_TEST_CASE (film_metadata_test)
 {
 	string const test_film = "build/test/film_metadata_test";
-	
+
 	if (boost::filesystem::exists (test_film)) {
 		boost::filesystem::remove_all (test_film);
 	}
@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE (film_metadata_test)
 	BOOST_CHECK_EQUAL (g->name(), "fred");
 	BOOST_CHECK_EQUAL (g->dcp_content_type(), DCPContentType::from_pretty_name ("Short"));
 	BOOST_CHECK_EQUAL (g->container(), Ratio::from_id ("185"));
-	
+
 	g->write_metadata ();
 	check_xml ("test/data/metadata.xml.ref", test_film + "/metadata.xml", ignore);
 }

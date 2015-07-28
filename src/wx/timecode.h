@@ -39,7 +39,7 @@ public:
 private:
 	void changed ();
 	void set_clicked ();
-	
+
 	wxSizer* _sizer;
 	wxPanel* _editable;
 	wxTextCtrl* _hours;

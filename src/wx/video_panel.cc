@@ -85,7 +85,7 @@ VideoPanel::VideoPanel (FilmEditor* e)
 		);
 	_frame_type->add (grid, wxGBPosition (r, 1));
 	++r;
-	
+
 	add_label_to_grid_bag_sizer (grid, this, _("Left crop"), true, wxGBPosition (r, 0));
 	_left_crop = new ContentSpinCtrl<VideoContent> (
 		this,
@@ -107,7 +107,7 @@ VideoPanel::VideoPanel (FilmEditor* e)
 		);
 	_right_crop->add (grid, wxGBPosition (r, 1));
 	++r;
-	
+
 	add_label_to_grid_bag_sizer (grid, this, _("Top crop"), true, wxGBPosition (r, 0));
 	_top_crop = new ContentSpinCtrl<VideoContent> (
 		this,
@@ -118,7 +118,7 @@ VideoPanel::VideoPanel (FilmEditor* e)
 		);
 	_top_crop->add (grid, wxGBPosition (r,1 ));
 	++r;
-	
+
 	add_label_to_grid_bag_sizer (grid, this, _("Bottom crop"), true, wxGBPosition (r, 0));
 	_bottom_crop = new ContentSpinCtrl<VideoContent> (
 		this,
@@ -150,7 +150,7 @@ VideoPanel::VideoPanel (FilmEditor* e)
 		wxClientDC dc (this);
 		wxSize size = dc.GetTextExtent (wxT ("A quite long-ish name"));
 		size.SetHeight (-1);
-		
+
 		_filters = new wxStaticText (this, wxID_ANY, _("None"), wxDefaultPosition, size);
 		s->Add (_filters, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxRIGHT, 6);
 		_filters_button = new wxButton (this, wxID_ANY, _("Edit..."));
@@ -166,7 +166,7 @@ VideoPanel::VideoPanel (FilmEditor* e)
 		wxClientDC dc (this);
 		wxSize size = dc.GetTextExtent (wxT ("A quite long-ish name"));
 		size.SetHeight (-1);
-		
+
 		_colour_conversion = new wxChoice (this, wxID_ANY, wxDefaultPosition, size);
 		_colour_conversion->Append (_("None"));
 		BOOST_FOREACH (PresetColourConversion const & i, PresetColourConversion::all()) {
@@ -174,10 +174,10 @@ VideoPanel::VideoPanel (FilmEditor* e)
 		}
 		_colour_conversion->Append (_("Custom"));
 		s->Add (_colour_conversion, 1, wxEXPAND | wxALIGN_CENTER_VERTICAL | wxTOP | wxBOTTOM | wxRIGHT, 6);
-		
+
 		_edit_colour_conversion_button = new wxButton (this, wxID_ANY, _("Edit..."));
 		s->Add (_edit_colour_conversion_button, 0, wxALIGN_CENTER_VERTICAL);
-		
+
 		grid->Add (s, wxGBPosition (r, 1), wxDefaultSpan, wxALIGN_CENTER_VERTICAL);
 	}
 	++r;
@@ -237,7 +237,7 @@ VideoPanel::film_content_changed (int property)
 		vcs = vc.front ();
 		fcs = dynamic_pointer_cast<FFmpegContent> (vcs);
 	}
-	
+
 	if (property == VideoContentProperty::VIDEO_FRAME_TYPE) {
 		setup_description ();
 	} else if (property == VideoContentProperty::VIDEO_CROP) {
@@ -264,7 +264,7 @@ VideoPanel::film_content_changed (int property)
 			checked_set (_colour_conversion, 0);
 			_edit_colour_conversion_button->Enable (false);
 		}
-	} else if (property == FFmpegContentProperty::FILTERS) {		
+	} else if (property == FFmpegContentProperty::FILTERS) {
 		if (fcs) {
 			string p = Filter::ffmpeg_string (fcs->filters ());
 			if (p.empty ()) {
@@ -357,7 +357,7 @@ VideoPanel::content_selection_changed ()
 {
 	VideoContentList video_sel = _editor->selected_video_content ();
 	FFmpegContentList ffmpeg_sel = _editor->selected_ffmpeg_content ();
-	
+
 	bool const single = video_sel.size() == 1;
 
 	_left_crop->set_content (video_sel);

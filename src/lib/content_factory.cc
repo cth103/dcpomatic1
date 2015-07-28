@@ -33,7 +33,7 @@ content_factory (shared_ptr<const Film> film, cxml::NodePtr node, int version, l
 	string const type = node->string_child ("Type");
 
 	boost::shared_ptr<Content> content;
-	
+
 	if (type == "FFmpeg") {
 		content.reset (new FFmpegContent (film, node, version, notes));
 	} else if (type == "Image") {
@@ -49,7 +49,7 @@ shared_ptr<Content>
 content_factory (shared_ptr<const Film> film, boost::filesystem::path path)
 {
 	shared_ptr<Content> content;
-		
+
 	if (valid_image_file (path)) {
 		content.reset (new ImageContent (film, path));
 	} else if (SndfileContent::valid_file (path)) {

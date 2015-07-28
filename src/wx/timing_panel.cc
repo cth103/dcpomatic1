@@ -39,35 +39,35 @@ TimingPanel::TimingPanel (FilmEditor* e)
 	_sizer->Add (grid, 0, wxALL, 8);
 
 	wxSize size = Timecode::size (this);
-	
+
 	wxSizer* labels = new wxBoxSizer (wxHORIZONTAL);
 	//// TRANSLATORS: this is an abbreviation for "hours"
 	wxStaticText* t = new wxStaticText (this, wxID_ANY, _("h"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
 #ifdef DCPOMATIC_LINUX
 	/* Hack to work around failure to centre text on GTK */
 	gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
-#endif		
+#endif
 	labels->Add (t, 1, wxEXPAND);
 	add_label_to_sizer (labels, this, wxT (":"), false);
 	//// TRANSLATORS: this is an abbreviation for "minutes"
 	t = new wxStaticText (this, wxID_ANY, _("m"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
 #ifdef DCPOMATIC_LINUX
 	gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
-#endif		
+#endif
 	labels->Add (t, 1, wxEXPAND);
 	add_label_to_sizer (labels, this, wxT (":"), false);
 	//// TRANSLATORS: this is an abbreviation for "seconds"
 	t = new wxStaticText (this, wxID_ANY, _("s"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
 #ifdef DCPOMATIC_LINUX
 	gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
-#endif		
+#endif
 	labels->Add (t, 1, wxEXPAND);
 	add_label_to_sizer (labels, this, wxT (":"), false);
 	//// TRANSLATORS: this is an abbreviation for "frames"
 	t = new wxStaticText (this, wxID_ANY, _("f"), wxDefaultPosition, size, wxALIGN_CENTRE_HORIZONTAL);
 #ifdef DCPOMATIC_LINUX
 	gtk_label_set_line_wrap (GTK_LABEL (t->GetHandle()), FALSE);
-#endif		
+#endif
 	labels->Add (t, 1, wxEXPAND);
 	grid->Add (new wxStaticText (this, wxID_ANY, wxT ("")));
 	grid->Add (labels);
@@ -118,7 +118,7 @@ TimingPanel::TimingPanel (FilmEditor* e)
 			++current;
 		}
 	}
-	
+
 	t = new wxStaticText (this, wxID_ANY, wxT (""));
 	t->SetLabelMarkup (out);
 	grid->Add (t, 0, wxALIGN_CENTER_VERTICAL | wxLEFT | wxRIGHT, 6);
@@ -141,7 +141,7 @@ TimingPanel::update_full_length ()
 	for (ContentList::const_iterator i = cl.begin (); i != cl.end(); ++i) {
 		check.insert ((*i)->full_length ());
 	}
-	
+
 	if (check.size() == 1) {
 		_full_length->set (cl.front()->full_length (), _editor->film()->video_frame_rate ());
 	} else {
@@ -158,7 +158,7 @@ TimingPanel::update_play_length ()
 	for (ContentList::const_iterator i = cl.begin (); i != cl.end(); ++i) {
 		check.insert ((*i)->length_after_trim ());
 	}
-	
+
 	if (check.size() == 1) {
 		_play_length->set (cl.front()->length_after_trim (), _editor->film()->video_frame_rate ());
 	} else {
@@ -175,7 +175,7 @@ TimingPanel::film_content_changed (int property)
 	/* Here we check to see if we have exactly one different value of various
 	   properties, and fill the controls with that value if so.
 	*/
-	
+
 	if (property == ContentProperty::POSITION) {
 
 		set<Time> check;
@@ -188,7 +188,7 @@ TimingPanel::film_content_changed (int property)
 		} else {
 			_position->clear ();
 		}
-		
+
 	} else if (
 		property == ContentProperty::LENGTH ||
 		property == VideoContentProperty::VIDEO_FRAME_RATE ||
@@ -203,20 +203,20 @@ TimingPanel::film_content_changed (int property)
 		for (ContentList::const_iterator i = cl.begin (); i != cl.end(); ++i) {
 			check.insert ((*i)->trim_start ());
 		}
-		
+
 		if (check.size() == 1) {
 			_trim_start->set (cl.front()->trim_start (), film_video_frame_rate);
 		} else {
 			_trim_start->clear ();
 		}
-		
+
 	} else if (property == ContentProperty::TRIM_END) {
 
 		set<Time> check;
 		for (ContentList::const_iterator i = cl.begin (); i != cl.end(); ++i) {
 			check.insert ((*i)->trim_end ());
 		}
-		
+
 		if (check.size() == 1) {
 			_trim_end->set (cl.front()->trim_end (), film_video_frame_rate);
 		} else {
@@ -346,7 +346,7 @@ TimingPanel::content_selection_changed ()
 	_trim_end->Enable (e);
 	_play_length->Enable (e);
 	_video_frame_rate->Enable (e);
-	
+
 	film_content_changed (ContentProperty::POSITION);
 	film_content_changed (ContentProperty::LENGTH);
 	film_content_changed (ContentProperty::TRIM_START);

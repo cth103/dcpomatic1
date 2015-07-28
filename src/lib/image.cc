@@ -52,7 +52,7 @@ Image::line_factor (int n) const
 	if (!d) {
 		throw PixelFormatError ("lines()", _pixel_format);
 	}
-	
+
 	return pow (2.0f, d->log2_chroma_h);
 }
 
@@ -77,7 +77,7 @@ Image::components () const
 	if ((d->flags & PIX_FMT_PLANAR) == 0) {
 		return 1;
 	}
-	
+
 	return d->nb_components;
 }
 
@@ -150,7 +150,7 @@ Image::crop_scale_window (
 
 	sws_freeContext (scale_context);
 
-	return out;	
+	return out;
 }
 
 shared_ptr<Image>
@@ -186,7 +186,7 @@ Image::scale (libdcp::Size out_size, Scaler const * scaler, YUVToRGB yuv_to_rgb,
 		sws_getCoefficients (lut[yuv_to_rgb]), 0,
 		0, 1 << 16, 1 << 16
 		);
-	
+
 	sws_scale (
 		scale_context,
 		data(), stride(),
@@ -265,7 +265,7 @@ Image::make_black ()
 	static uint16_t const ten_bit_uv =	(1 << 9) - 1;
 	/* U/V black value for 16-bit colour */
 	static uint16_t const sixteen_bit_uv =	(1 << 15) - 1;
-	
+
 	switch (_pixel_format) {
 	case PIX_FMT_YUV420P:
 	case PIX_FMT_YUV422P:
@@ -293,7 +293,7 @@ Image::make_black ()
 	case PIX_FMT_YUV444P9BE:
 		yuv_16_black (swap_16 (nine_bit_uv), false);
 		break;
-		
+
 	case PIX_FMT_YUV422P10LE:
 	case PIX_FMT_YUV444P10LE:
 		yuv_16_black (ten_bit_uv, false);
@@ -303,7 +303,7 @@ Image::make_black ()
 	case PIX_FMT_YUV444P16LE:
 		yuv_16_black (sixteen_bit_uv, false);
 		break;
-		
+
 	case PIX_FMT_YUV444P10BE:
 	case PIX_FMT_YUV422P10BE:
 		yuv_16_black (swap_16 (ten_bit_uv), false);
@@ -314,31 +314,31 @@ Image::make_black ()
 	case AV_PIX_FMT_YUVA444P9BE:
 		yuv_16_black (swap_16 (nine_bit_uv), true);
 		break;
-		
+
 	case AV_PIX_FMT_YUVA420P9LE:
 	case AV_PIX_FMT_YUVA422P9LE:
 	case AV_PIX_FMT_YUVA444P9LE:
 		yuv_16_black (nine_bit_uv, true);
 		break;
-		
+
 	case AV_PIX_FMT_YUVA420P10BE:
 	case AV_PIX_FMT_YUVA422P10BE:
 	case AV_PIX_FMT_YUVA444P10BE:
 		yuv_16_black (swap_16 (ten_bit_uv), true);
 		break;
-		
+
 	case AV_PIX_FMT_YUVA420P10LE:
 	case AV_PIX_FMT_YUVA422P10LE:
 	case AV_PIX_FMT_YUVA444P10LE:
 		yuv_16_black (ten_bit_uv, true);
 		break;
-		
+
 	case AV_PIX_FMT_YUVA420P16BE:
 	case AV_PIX_FMT_YUVA422P16BE:
 	case AV_PIX_FMT_YUVA444P16BE:
 		yuv_16_black (swap_16 (sixteen_bit_uv), true);
 		break;
-		
+
 	case AV_PIX_FMT_YUVA420P16LE:
 	case AV_PIX_FMT_YUVA422P16LE:
 	case AV_PIX_FMT_YUVA444P16LE:
@@ -413,7 +413,7 @@ Image::alpha_blend (shared_ptr<const Image> other, Position<int> position)
 				tp[0] = op[0] * alpha + tp[0] * (1 - alpha);
 				tp[1] = op[1] * alpha + tp[1] * (1 - alpha);
 				tp[2] = op[2] * alpha + tp[2] * (1 - alpha);
-				
+
 				tp += this_bpp;
 				op += other_bpp;
 			}
@@ -433,7 +433,7 @@ Image::alpha_blend (shared_ptr<const Image> other, Position<int> position)
 				tp[1] = op[1] * alpha + (tp[1] * (1 - alpha));
 				tp[2] = op[2] * alpha + (tp[2] * (1 - alpha));
 				tp[3] = op[3] * alpha + (tp[3] * (1 - alpha));
-				
+
 				tp += this_bpp;
 				op += other_bpp;
 			}
@@ -452,7 +452,7 @@ Image::alpha_blend (shared_ptr<const Image> other, Position<int> position)
 				tp[1] = op[0] * alpha + tp[1] * (1 - alpha);
 				tp[3] = op[1] * alpha + tp[3] * (1 - alpha);
 				tp[5] = op[2] * alpha + tp[5] * (1 - alpha);
-				
+
 				tp += this_bpp;
 				op += other_bpp;
 			}
@@ -477,7 +477,7 @@ Image::copy (shared_ptr<const Image> other, Position<int> position)
 		uint8_t * const op = other->data()[0] + oy * other->stride()[0];
 		memcpy (tp, op, N * 3);
 	}
-}	
+}
 
 void
 Image::read_from_socket (shared_ptr<Socket> socket)
@@ -528,7 +528,7 @@ Image::bytes_per_pixel (int c) const
 	if (d->nb_components > 3) {
 		bpp[3] = floor ((d->comp[3].depth_minus1 + 1 + 7) / 8) / pow (2.0f, d->log2_chroma_w);
 	}
-	
+
 	if ((d->flags & PIX_FMT_PLANAR) == 0) {
 		/* Not planar; sum them up */
 		return bpp[0] + bpp[1] + bpp[2] + bpp[3];
@@ -556,10 +556,10 @@ Image::allocate ()
 {
 	_data = (uint8_t **) wrapped_av_malloc (4 * sizeof (uint8_t *));
 	_data[0] = _data[1] = _data[2] = _data[3] = 0;
-	
+
 	_line_size = (int *) wrapped_av_malloc (4 * sizeof (int));
 	_line_size[0] = _line_size[1] = _line_size[2] = _line_size[3] = 0;
-	
+
 	_stride = (int *) wrapped_av_malloc (4 * sizeof (int));
 	_stride[0] = _stride[1] = _stride[2] = _stride[3] = 0;
 
@@ -657,7 +657,7 @@ void
 Image::swap (Image & other)
 {
 	libdcp::Image::swap (other);
-	
+
 	std::swap (_pixel_format, other._pixel_format);
 
 	for (int i = 0; i < 4; ++i) {

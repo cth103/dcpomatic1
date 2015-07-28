@@ -42,7 +42,7 @@ public:
 	PlayerVideoFrame (boost::shared_ptr<cxml::Node>, boost::shared_ptr<Socket>, boost::shared_ptr<Log>);
 
 	void set_subtitle (boost::shared_ptr<const Image>, Position<int>);
-	
+
 	boost::shared_ptr<Image> image (AVPixelFormat) const;
 
 	void add_metadata (xmlpp::Node* node) const;

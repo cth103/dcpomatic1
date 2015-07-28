@@ -38,7 +38,7 @@ ExamineContentJob::ExamineContentJob (shared_ptr<const Film> f, shared_ptr<Conte
 
 ExamineContentJob::~ExamineContentJob ()
 {
-	
+
 }
 
 string

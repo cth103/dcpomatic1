@@ -215,14 +215,14 @@ VideoContent::set_left_crop (int c)
 {
 	{
 		boost::mutex::scoped_lock lm (_mutex);
-		
+
 		if (_crop.left == c) {
 			return;
 		}
-		
+
 		_crop.left = c;
 	}
-	
+
 	signal_changed (VideoContentProperty::VIDEO_CROP);
 }
 
@@ -234,10 +234,10 @@ VideoContent::set_right_crop (int c)
 		if (_crop.right == c) {
 			return;
 		}
-		
+
 		_crop.right = c;
 	}
-	
+
 	signal_changed (VideoContentProperty::VIDEO_CROP);
 }
 
@@ -249,10 +249,10 @@ VideoContent::set_top_crop (int c)
 		if (_crop.top == c) {
 			return;
 		}
-		
+
 		_crop.top = c;
 	}
-	
+
 	signal_changed (VideoContentProperty::VIDEO_CROP);
 }
 
@@ -264,7 +264,7 @@ VideoContent::set_bottom_crop (int c)
 		if (_crop.bottom == c) {
 			return;
 		}
-		
+
 		_crop.bottom = c;
 	}
 
@@ -387,7 +387,7 @@ VideoContent::time_to_content_video_frames (Time t) const
 {
 	shared_ptr<const Film> film = _film.lock ();
 	DCPOMATIC_ASSERT (film);
-	
+
 	FrameRateChange frc (video_frame_rate(), film->video_frame_rate());
 
 	/* Here we are converting from time (in the DCP) to a frame number in the content.
@@ -431,10 +431,10 @@ VideoContent::set_video_frame_rate (float r)
 		if (_video_frame_rate == r) {
 			return;
 		}
-		
+
 		_video_frame_rate = r;
 	}
-	
+
 	signal_changed (VideoContentProperty::VIDEO_FRAME_RATE);
 }
 
@@ -485,7 +485,7 @@ VideoContent::processing_description () const
 
 		d << " (" << fixed << setprecision(2) << scaled.ratio() << ":1)\n";
 	}
-	
+
 	if (scaled != container_size) {
 		d << String::compose (
 			_("Padded with black to fit container %1 (%2x%3)"),
@@ -498,7 +498,7 @@ VideoContent::processing_description () const
 
 	d << _("Content frame rate");
 	d << " " << fixed << setprecision(4) << video_frame_rate() << "\n";
-	
+
 	FrameRateChange frc (video_frame_rate(), film->video_frame_rate ());
 	d << frc.description () << "\n";
 

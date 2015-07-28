@@ -130,7 +130,7 @@ void
 Content::examine (shared_ptr<Job> job)
 {
 	job->sub (_("Computing digest"));
-	
+
 	boost::mutex::scoped_lock lm (_mutex);
 	vector<boost::filesystem::path> p = _paths;
 	lm.unlock ();
@@ -161,7 +161,7 @@ Content::set_position (Time p)
 		if (p == _position) {
 			return;
 		}
-		
+
 		_position = p;
 	}
 
@@ -198,7 +198,7 @@ Content::clone () const
 	if (!film) {
 		return shared_ptr<Content> ();
 	}
-	
+
 	/* This is a bit naughty, but I can't think of a compelling reason not to do it ... */
 	xmlpp::Document doc;
 	xmlpp::Node* node = doc.create_root_node ("Content");
@@ -237,7 +237,7 @@ string
 Content::identifier () const
 {
 	SafeStringStream s;
-	
+
 	s << Content::digest()
 	  << "_" << position()
 	  << "_" << trim_start()

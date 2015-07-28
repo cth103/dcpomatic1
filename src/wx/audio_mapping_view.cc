@@ -79,7 +79,7 @@ public:
 		}
 
 		height = max (0, height);
-		
+
 		if (value > 0) {
 			/* Make sure we get a little bit of the marker if there is any gain */
 			height = max (3, height);
@@ -93,7 +93,7 @@ public:
 	{
 		return wxSize (INDICATOR_SIZE + 4, INDICATOR_SIZE + 4);
 	}
-	
+
 	wxGridCellRenderer* Clone () const
 	{
 		return new ValueRenderer;
@@ -146,7 +146,7 @@ AudioMappingView::map_changed ()
 	update_cells ();
 	Changed (_map);
 	_last_tooltip_column = -1;
-}	
+}
 
 void
 AudioMappingView::left_click (wxGridEvent& ev)
@@ -156,7 +156,7 @@ AudioMappingView::left_click (wxGridEvent& ev)
 	}
 
 	libdcp::Channel d = static_cast<libdcp::Channel> (ev.GetCol() - 1);
-	
+
 	if (_map.get (ev.GetRow(), d) > 0) {
 		_map.set (ev.GetRow(), d, 0);
 	} else {
@@ -203,13 +203,13 @@ void
 AudioMappingView::edit ()
 {
 	libdcp::Channel d = static_cast<libdcp::Channel> (_menu_column - 1);
-	
+
 	AudioGainDialog* dialog = new AudioGainDialog (this, _menu_row, _menu_column - 1, _map.get (_menu_row, d));
 	if (dialog->ShowModal () == wxID_OK) {
 		_map.set (_menu_row, d, dialog->value ());
 		map_changed ();
 	}
-	
+
 	dialog->Destroy ();
 }
 
@@ -234,7 +234,7 @@ AudioMappingView::update_cells ()
 			_grid->SetCellRenderer (i, j + 1, new ValueRenderer);
 		}
 	}
-	
+
 	for (int i = 0; i < _map.content_channels(); ++i) {
 		_grid->SetCellValue (i, 0, std_to_wx (_map.name (i)));
 
@@ -266,33 +266,33 @@ void
 AudioMappingView::set_column_labels ()
 {
 	int const c = _grid->GetNumberCols ();
-	
+
 	_grid->SetColLabelValue (0, _("Content"));
 
 #if MAX_DCP_AUDIO_CHANNELS != 12
 #warning AudioMappingView::set_column_labels() is expecting the wrong MAX_DCP_AUDIO_CHANNELS
-#endif	
-	
+#endif
+
 	if (c > 0) {
 		_grid->SetColLabelValue (1, _("L"));
 	}
-	
+
 	if (c > 1) {
 		_grid->SetColLabelValue (2, _("R"));
 	}
-	
+
 	if (c > 2) {
 		_grid->SetColLabelValue (3, _("C"));
 	}
-	
+
 	if (c > 3) {
 		_grid->SetColLabelValue (4, _("Lfe"));
 	}
-	
+
 	if (c > 4) {
 		_grid->SetColLabelValue (5, _("Ls"));
 	}
-	
+
 	if (c > 5) {
 		_grid->SetColLabelValue (6, _("Rs"));
 	}
@@ -352,7 +352,7 @@ AudioMappingView::mouse_moved (wxMouseEvent& ev)
 			float const dB = 20 * log10 (gain);
 			s = wxString::Format (_("Audio will be passed from content channel %d to DCP channel %d with gain %.1fdB."), row + 1, column, dB);
 		}
-		
+
 		_grid->GetGridWindow()->SetToolTip (s + " " + _("Right click to change gain."));
 		_last_tooltip_row = row;
 		_last_tooltip_column = column;

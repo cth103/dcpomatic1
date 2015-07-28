@@ -185,7 +185,7 @@ FFmpegContent::examine (shared_ptr<Job> job)
 		if (!_subtitle_streams.empty ()) {
 			_subtitle_stream = _subtitle_streams.front ();
 		}
-		
+
 		_audio_streams = examiner->audio_streams ();
 
 		_first_video = examiner->first_video ();
@@ -217,7 +217,7 @@ FFmpegContent::technical_summary () const
 	}
 
 	string filt = Filter::ffmpeg_string (_filters);
-	
+
 	return Content::technical_summary() + " - "
 		+ VideoContent::technical_summary() + " - "
 		+ AudioContent::technical_summary() + " - "
@@ -242,7 +242,7 @@ FFmpegContent::audio_length () const
 {
 	float const vfr = video_frame_rate ();
 	VideoContent::Frame const vl = video_length_after_3d_combine ();
-	
+
 	boost::mutex::scoped_lock lm (_mutex);
 
 	AudioContent::Frame length = 0;
@@ -334,7 +334,7 @@ FFmpegStream::stream (AVFormatContext const * fc) const
 FFmpegSubtitleStream::FFmpegSubtitleStream (shared_ptr<const cxml::Node> node)
 	: FFmpegStream (node)
 {
-	
+
 }
 
 void
@@ -348,7 +348,7 @@ FFmpegContent::full_length () const
 {
 	shared_ptr<const Film> film = _film.lock ();
 	DCPOMATIC_ASSERT (film);
-	
+
 	FrameRateChange frc (video_frame_rate (), film->video_frame_rate ());
 	return video_length_after_3d_combine() * frc.factor() * TIME_HZ / film->video_frame_rate ();
 }
@@ -388,7 +388,7 @@ vector<AudioStreamPtr>
 FFmpegContent::audio_streams () const
 {
 	boost::mutex::scoped_lock lm (_mutex);
-	
+
 	vector<AudioStreamPtr> s;
 	copy (_audio_streams.begin(), _audio_streams.end(), back_inserter (s));
 	return s;
@@ -398,7 +398,7 @@ void
 FFmpegContent::set_default_colour_conversion ()
 {
 	libdcp::Size const s = video_size ();
-	
+
 	boost::mutex::scoped_lock lm (_mutex);
 
 	if (s.width < 1080) {

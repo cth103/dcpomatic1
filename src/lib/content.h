@@ -54,7 +54,7 @@ public:
 	Content (boost::shared_ptr<const Film>, boost::shared_ptr<const cxml::Node>);
 	Content (boost::shared_ptr<const Film>, std::vector<boost::shared_ptr<Content> >);
 	virtual ~Content () {}
-	
+
 	virtual void examine (boost::shared_ptr<Job>);
 	virtual std::string summary () const = 0;
 	/** @return Technical details of this content; these are written to logs to
@@ -86,7 +86,7 @@ public:
 		boost::mutex::scoped_lock lm (_mutex);
 		return _paths[i];
 	}
-	
+
 	bool paths_valid () const;
 
 	/** @return Digest of the content's file(s).  Note: this is
@@ -116,18 +116,18 @@ public:
 	}
 
 	void set_trim_end (Time);
-	
+
 	Time trim_end () const {
 		boost::mutex::scoped_lock lm (_mutex);
 		return _trim_end;
 	}
-	
+
 	Time end () const {
 		return position() + length_after_trim() - 1;
 	}
 
 	Time length_after_trim () const;
-	
+
 	void set_change_signals_frequent (bool f) {
 		_change_signals_frequent = f;
 	}
@@ -140,7 +140,7 @@ public:
 	boost::shared_ptr<const Film> film () const {
 		return _film.lock ();
 	}
-	
+
 protected:
 	void signal_changed (int);
 
@@ -153,7 +153,7 @@ protected:
 
 	/** Paths of our data files */
 	std::vector<boost::filesystem::path> _paths;
-	
+
 private:
 	std::string _digest;
 	Time _position;

@@ -41,7 +41,7 @@ public:
 	boost::shared_ptr<SndfileContent> shared_from_this () {
 		return boost::dynamic_pointer_cast<SndfileContent> (Content::shared_from_this ());
 	}
-	
+
 	void examine (boost::shared_ptr<Job>);
 	std::string summary () const;
 	std::string technical_summary () const;

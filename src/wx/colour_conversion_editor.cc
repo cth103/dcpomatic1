@@ -74,7 +74,7 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 	/* YUV to RGB conversion */
 
 	subhead (table, this, _("YUV to RGB conversion"), r);
-	
+
 	add_label_to_grid_bag_sizer (table, this, _("YUV to RGB matrix"), true, wxGBPosition (r, 0));
 	_yuv_to_rgb = new wxChoice (this, wxID_ANY);
 	_yuv_to_rgb->Append (_("Rec. 601"));
@@ -121,7 +121,7 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 
         size = dc.GetTextExtent (wxT ("0.12345678"));
         size.SetHeight (-1);
-	
+
 	wxFlexGridSizer* rgb_to_xyz_sizer = new wxFlexGridSizer (3, DCPOMATIC_SIZER_X_GAP, DCPOMATIC_SIZER_Y_GAP);
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
@@ -135,7 +135,7 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 
         size = dc.GetTextExtent (wxT ("-0.12345678"));
         size.SetHeight (-1);
-	
+
 	subhead (table, this, _("White point adjustment"), r);
 
 	_adjust_white = new wxCheckBox (this, wxID_ANY, _("Adjust white point to"));
@@ -151,7 +151,7 @@ ColourConversionEditor::ColourConversionEditor (wxWindow* parent)
 
         size = dc.GetTextExtent (wxT ("0.12345678"));
         size.SetHeight (-1);
-	
+
 	wxFlexGridSizer* bradford_sizer = new wxFlexGridSizer (3, DCPOMATIC_SIZER_X_GAP, DCPOMATIC_SIZER_Y_GAP);
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
@@ -273,7 +273,7 @@ ColourConversion
 ColourConversionEditor::get () const
 {
 	ColourConversion conversion;
-	
+
 	conversion.input_gamma = _input_gamma->GetValue ();
 	conversion.input_gamma_linearised = _input_gamma_linearised->GetValue ();
 	conversion.yuv_to_rgb = static_cast<YUVToRGB> (_yuv_to_rgb->GetSelection ());
@@ -326,7 +326,7 @@ ColourConversionEditor::update_bradford ()
 {
 	_adjusted_white_x->Enable (_adjust_white->GetValue ());
 	_adjusted_white_y->Enable (_adjust_white->GetValue ());
-	
+
 	boost::numeric::ublas::matrix<double> m = get().bradford ();
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
@@ -364,7 +364,7 @@ ColourConversionEditor::changed (wxSpinCtrlDouble* sc)
 	if (fabs (_last_spin_ctrl_value[sc] - sc->GetValue()) < 1e-3) {
 		return;
 	}
-	
+
 	Changed ();
 }
 

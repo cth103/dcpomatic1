@@ -69,7 +69,7 @@ void test_audio_delay (int delay_in_ms)
 	while (n < sound_asset->intrinsic_duration()) {
 		shared_ptr<const libdcp::SoundFrame> sound_frame = sound_asset->get_frame (frame++);
 		uint8_t const * d = sound_frame->data ();
-		
+
 		for (int i = 0; i < sound_frame->size(); i += (3 * sound_asset->channels())) {
 
 			/* Mono input so it will appear on centre */

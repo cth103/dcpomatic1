@@ -44,11 +44,11 @@ class SafeStringStream
 public:
 	SafeStringStream ()
 	{}
-	
+
 	SafeStringStream (std::string s)
 		: _stream (s)
 	{}
-	
+
 	template <class T>
 	std::ostream& operator<< (T val)
 	{

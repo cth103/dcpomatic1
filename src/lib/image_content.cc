@@ -51,7 +51,7 @@ ImageContent::ImageContent (shared_ptr<const Film> f, boost::filesystem::path p)
 		if (_paths.empty()) {
 			throw FileError (_("No valid image files were found in the folder."), p);
 		}
-		       		
+
 		sort (_paths.begin(), _paths.end(), ImageFilenameSorter ());
 	}
 }
@@ -108,7 +108,7 @@ ImageContent::examine (shared_ptr<Job> job)
 
 	shared_ptr<const Film> film = _film.lock ();
 	DCPOMATIC_ASSERT (film);
-	
+
 	shared_ptr<ImageExaminer> examiner (new ImageExaminer (film, shared_from_this(), job));
 
 	take_from_video_examiner (examiner);
@@ -131,7 +131,7 @@ ImageContent::full_length () const
 {
 	shared_ptr<const Film> film = _film.lock ();
 	DCPOMATIC_ASSERT (film);
-	
+
 	FrameRateChange frc (video_frame_rate(), film->video_frame_rate ());
 	return video_length_after_3d_combine() * frc.factor() * TIME_HZ / video_frame_rate();
 }
@@ -159,10 +159,10 @@ ImageContent::set_video_frame_rate (float r)
 		if (_video_frame_rate == r) {
 			return;
 		}
-		
+
 		_video_frame_rate = r;
 	}
-	
+
 	signal_changed (VideoContentProperty::VIDEO_FRAME_RATE);
 }
 

@@ -74,7 +74,7 @@ public:
 	~Writer ();
 
 	bool can_fake_write (int) const;
-	
+
 	void write (boost::shared_ptr<const EncodedData>, int, Eyes);
 	void fake_write (int, Eyes);
 	void write (boost::shared_ptr<const AudioBuffers>);
@@ -131,7 +131,7 @@ private:
 	    due to the limit of frames to be held in memory.
 	*/
 	int _pushed_to_disk;
-	
+
 	boost::shared_ptr<libdcp::PictureAsset> _picture_asset;
 	boost::shared_ptr<libdcp::PictureAssetWriter> _picture_asset_writer;
 	boost::shared_ptr<libdcp::SoundAsset> _sound_asset;

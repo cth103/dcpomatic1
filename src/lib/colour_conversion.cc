@@ -65,7 +65,7 @@ ColourConversion::ColourConversion (
 	, white (white_)
 	, output_gamma (o)
 {
-	
+
 }
 
 ColourConversion::ColourConversion (cxml::NodePtr node)
@@ -159,11 +159,11 @@ string
 ColourConversion::identifier () const
 {
 	MD5Digester digester;
-	
+
 	digester.add (input_gamma);
 	digester.add (input_gamma_linearised);
 	digester.add (yuv_to_rgb);
-	
+
 	digester.add (red.x);
 	digester.add (red.y);
 	digester.add (green.x);
@@ -177,9 +177,9 @@ ColourConversion::identifier () const
 		digester.add (adjusted_white.get().x);
 		digester.add (adjusted_white.get().y);
 	}
-	
+
 	digester.add (output_gamma);
-	
+
 	return digester.get ();
 }
 

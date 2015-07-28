@@ -103,7 +103,7 @@ test (libdcp::Size content_size, libdcp::Size display_size, libdcp::Size film_si
 	}
 	BOOST_CHECK (answer == correct);
 }
-      
+
 /* Test scale and stretch to specified ratio */
 BOOST_AUTO_TEST_CASE (video_content_scale_test_to_ratio)
 {
@@ -130,7 +130,7 @@ BOOST_AUTO_TEST_CASE (video_content_scale_test_to_ratio)
 		true,
 		libdcp::Size (1998, 837)
 		);
-	
+
 	// Flat in scope container
 	test (
 		libdcp::Size (400, 200),
@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE (video_content_scale_test_to_ratio)
 		libdcp::Size (1587, 858)
 		);
 
-	
+
 	/* To player */
 
 	// Flat in flat container
@@ -166,7 +166,7 @@ BOOST_AUTO_TEST_CASE (video_content_scale_test_to_ratio)
 		true,
 		libdcp::Size (185, 78)
 		);
-	
+
 	// Flat in scope container
 	test (
 		libdcp::Size (400, 200),

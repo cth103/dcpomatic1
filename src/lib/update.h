@@ -56,7 +56,7 @@ public:
 		boost::mutex::scoped_lock lm (_data_mutex);
 		return _test;
 	}
-	
+
 	/** @return true if the list signal emission was the first */
 	bool last_emit_was_first () const {
 		boost::mutex::scoped_lock lm (_data_mutex);
@@ -69,9 +69,9 @@ public:
 
 	static UpdateChecker* instance ();
 
-private:	
+private:
 	friend struct update_checker_test;
-	
+
 	static UpdateChecker* _instance;
 
 	static bool version_less_than (std::string const & a, std::string const & b);

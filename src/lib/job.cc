@@ -73,7 +73,7 @@ Job::run_wrapper ()
 		run ();
 
 	} catch (libdcp::FileError& e) {
-		
+
 		string m = String::compose (_("An error occurred whilst handling the file %1."), boost::filesystem::path (e.filename()).leaf());
 
 		try {
@@ -89,7 +89,7 @@ Job::run_wrapper ()
 		set_error (e.what(), m);
 		set_progress (1);
 		set_state (FINISHED_ERROR);
-		
+
 	} catch (OpenFileError& e) {
 
 		set_error (
@@ -109,7 +109,7 @@ Job::run_wrapper ()
 		set_error (_("Out of memory"), _("There was not enough memory to do this."));
 		set_progress (1);
 		set_state (FINISHED_ERROR);
-		
+
 	} catch (std::exception& e) {
 
 		set_error (
@@ -119,7 +119,7 @@ Job::run_wrapper ()
 
 		set_progress (1);
 		set_state (FINISHED_ERROR);
-		
+
 	} catch (...) {
 
 		set_error (
@@ -185,7 +185,7 @@ Job::paused () const
 	boost::mutex::scoped_lock lm (_state_mutex);
 	return _state == PAUSED;
 }
-	
+
 /** Set the state of this job.
  *  @param s New state.
  */
@@ -207,7 +207,7 @@ Job::set_state (State s)
 
 	if (finished && ui_signaller) {
 		ui_signaller->emit (boost::bind (boost::ref (Finished)));
-	}	
+	}
 }
 
 /** @return Time (in seconds) that this sub-job has been running */
@@ -217,7 +217,7 @@ Job::elapsed_time () const
 	if (_start_time == 0) {
 		return 0;
 	}
-	
+
 	return time (0) - _start_time;
 }
 
@@ -289,7 +289,7 @@ Job::set_error (string s, string d)
 {
 	LOG_ERROR_NC (s);
 	LOG_ERROR_NC (d);
-	
+
 	boost::mutex::scoped_lock lm (_state_mutex);
 	_error_summary = s;
 	_error_details = d;
@@ -305,7 +305,7 @@ Job::set_progress_unknown ()
 
 	if (ui_signaller) {
 		ui_signaller->emit (boost::bind (boost::ref (Progress)));
-	}	
+	}
 }
 
 /** @return Human-readable status of this job */
@@ -323,9 +323,9 @@ Job::status () const
 			/* 100% makes it sound like we've finished when we haven't */
 			pc = 99;
 		}
-		
+
 		s << pc << N_("%");
-		
+
 		if (t > 10 && r > 0) {
 			/// TRANSLATORS: remaining here follows an amount of time that is remaining
 			/// on an operation.
@@ -372,7 +372,7 @@ Job::remaining_time () const
 	if (progress().get_value_or(0) == 0) {
 		return elapsed_time ();
 	}
-	
+
 	return elapsed_time() / progress().get() - elapsed_time();
 }
 

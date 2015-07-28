@@ -46,7 +46,7 @@ public:
 	AudioMapping (boost::shared_ptr<const cxml::Node>, int);
 
 	/* Default copy constructor is fine */
-	
+
 	void as_xml (xmlpp::Node *) const;
 
 	void make_default (int use);
@@ -68,10 +68,10 @@ public:
 
 	std::list<libdcp::Channel> mapped_dcp_channels () const;
 	void unmap_all ();
-	
+
 private:
 	void setup (int);
-	
+
 	int _content_channels;
 	std::vector<std::vector<float> > _gain;
 	std::vector<std::string> _name;

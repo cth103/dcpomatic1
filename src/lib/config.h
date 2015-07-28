@@ -87,7 +87,7 @@ public:
 	std::string tms_ip () const {
 		return _tms_ip;
 	}
-	
+
 	/** @return The path on a TMS that we should changed DCPs to */
 	std::string tms_path () const {
 		return _tms_path;
@@ -111,7 +111,7 @@ public:
 	std::list<boost::shared_ptr<Cinema> > cinemas () const {
 		return _cinemas;
 	}
-	
+
 	std::list<int> allowed_dcp_frame_rates () const {
 		return _allowed_dcp_frame_rates;
 	}
@@ -119,7 +119,7 @@ public:
 	bool allow_any_dcp_frame_rate () const {
 		return _allow_any_dcp_frame_rate;
 	}
-	
+
 	ISDCFMetadata default_isdcf_metadata () const {
 		return _default_isdcf_metadata;
 	}
@@ -179,7 +179,7 @@ public:
 	std::string kdm_bcc () const {
 		return _kdm_bcc;
 	}
-	
+
 	std::string kdm_email () const {
 		return _kdm_email;
 	}
@@ -327,7 +327,7 @@ public:
 	void set_kdm_bcc (std::string f) {
 		maybe_set (_kdm_bcc, f);
 	}
-	
+
 	void set_kdm_email (std::string e) {
 		maybe_set (_kdm_email, e);
 	}
@@ -356,7 +356,7 @@ public:
 	}
 
 	void add_to_history (boost::filesystem::path p);
-	
+
 	boost::filesystem::path signer_chain_directory () const;
 
 	/** Set whether or not to write config changes to disk
@@ -365,7 +365,7 @@ public:
 	void set_write_on_change (bool write_on_change) {
 		_write_on_change = write_on_change;
 	}
-	
+
 	void changed ();
 	boost::signals2::signal<void ()> Changed;
 
@@ -381,7 +381,7 @@ private:
 	void write () const;
 	void set_defaults ();
 	void set_kdm_email_to_default ();
-	
+
 	template<class T>
 	void maybe_set (T& member, T new_value) {
 		if (member == new_value) {
@@ -443,7 +443,7 @@ private:
 	std::vector<boost::filesystem::path> _history;
 
 	bool _write_on_change;
-	
+
 	/** Singleton instance, or 0 */
 	static Config* _instance;
 };

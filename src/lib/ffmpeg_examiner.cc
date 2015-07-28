@@ -52,7 +52,7 @@ FFmpegExaminer::FFmpegExaminer (shared_ptr<const FFmpegContent> c, shared_ptr<Jo
 			if (s->codec->channel_layout == 0) {
 				s->codec->channel_layout = av_get_default_channel_layout (s->codec->channels);
 			}
-			
+
 			_audio_streams.push_back (
 				shared_ptr<FFmpegAudioStream> (
 					new FFmpegAudioStream (audio_stream_name (s), s->id, s->codec->sample_rate, s->codec->channels)
@@ -114,7 +114,7 @@ FFmpegExaminer::FFmpegExaminer (shared_ptr<const FFmpegContent> c, shared_ptr<Jo
 		}
 
 		av_free_packet (&_packet);
-		
+
 		if (_first_video && have_all_audio && !need_video_length) {
 			break;
 		}
@@ -125,7 +125,7 @@ optional<double>
 FFmpegExaminer::frame_time (AVStream* s) const
 {
 	optional<double> t;
-	
+
 	int64_t const bet = av_frame_get_best_effort_timestamp (_frame);
 	if (bet != AV_NOPTS_VALUE) {
 		t = bet * av_q2d (s->time_base);
@@ -210,7 +210,7 @@ FFmpegExaminer::stream_name (AVStream* s) const
 		if (lang) {
 			n << lang->value;
 		}
-		
+
 		AVDictionaryEntry const * title = av_dict_get (s->metadata, "title", 0, 0);
 		if (title) {
 			if (!n.str().empty()) {

@@ -63,13 +63,13 @@ PlayerVideoFrame::PlayerVideoFrame (shared_ptr<cxml::Node> node, shared_ptr<Sock
 	_in = image_proxy_factory (node->node_child ("In"), socket, log);
 
 	if (node->optional_number_child<int> ("SubtitleX")) {
-		
+
 		_subtitle_position = Position<int> (node->number_child<int> ("SubtitleX"), node->number_child<int> ("SubtitleY"));
 
 		shared_ptr<Image> image (
 			new Image (PIX_FMT_RGBA, libdcp::Size (node->number_child<int> ("SubtitleWidth"), node->number_child<int> ("SubtitleHeight")), true)
 			);
-		
+
 		image->read_from_socket (socket);
 		_subtitle_image = image;
 	}
@@ -86,7 +86,7 @@ shared_ptr<Image>
 PlayerVideoFrame::image (AVPixelFormat pixel_format) const
 {
 	shared_ptr<Image> im = _in->image ();
-	
+
 	Crop total_crop = _crop;
 	switch (_part) {
 	case PART_LEFT_HALF:
@@ -109,7 +109,7 @@ PlayerVideoFrame::image (AVPixelFormat pixel_format) const
 	if (_colour_conversion) {
 		yuv_to_rgb = _colour_conversion.get().yuv_to_rgb;
 	}
-		
+
 	shared_ptr<Image> out = im->crop_scale_window (total_crop, _inter_size, _out_size, _scaler, yuv_to_rgb, pixel_format, false);
 
 	if (_subtitle_image) {

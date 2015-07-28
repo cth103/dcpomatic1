@@ -102,7 +102,7 @@ print_dump (shared_ptr<Film> film)
 			} else {
 				cout << "\tno colour conversion\n";
 			}
-					
+
 		}
 
 		shared_ptr<AudioContent> audio = dynamic_pointer_cast<AudioContent> (c);
@@ -183,7 +183,7 @@ main (int argc, char* argv[])
 	}
 
 	film_dir = argv[optind];
-			
+
 	dcpomatic_setup ();
 	ui_signaller = new UISignaller ();
 
@@ -208,7 +208,7 @@ main (int argc, char* argv[])
 		print_dump (film);
 		exit (EXIT_SUCCESS);
 	}
-	
+
 	ContentList content = film->content ();
 	for (ContentList::const_iterator i = content.begin(); i != content.end(); ++i) {
 		vector<boost::filesystem::path> paths = (*i)->paths ();
@@ -248,7 +248,7 @@ main (int argc, char* argv[])
 		for (list<shared_ptr<Job> >::iterator i = jobs.begin(); i != jobs.end(); ++i) {
 			if (progress) {
 				cout << (*i)->name() << ": ";
-				
+
 				if ((*i)->progress ()) {
 					cout << (*i)->status() << "			    \n";
 				} else {
@@ -288,8 +288,8 @@ main (int argc, char* argv[])
 	   indirectly holding onto codecs.
 	*/
 	JobManager::drop ();
-	
+
 	return error ? EXIT_FAILURE : EXIT_SUCCESS;
 }
 
-	  
+

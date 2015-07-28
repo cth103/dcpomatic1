@@ -72,14 +72,14 @@ SubtitleContent::SubtitleContent (shared_ptr<const Film> f, vector<shared_ptr<Co
 {
 	shared_ptr<SubtitleContent> ref = dynamic_pointer_cast<SubtitleContent> (c[0]);
 	DCPOMATIC_ASSERT (ref);
-	
+
 	for (size_t i = 0; i < c.size(); ++i) {
 		shared_ptr<SubtitleContent> sc = dynamic_pointer_cast<SubtitleContent> (c[i]);
 
 		if (sc->subtitle_x_offset() != ref->subtitle_x_offset()) {
 			throw JoinError (_("Content to be joined must have the same subtitle X offset."));
 		}
-		
+
 		if (sc->subtitle_y_offset() != ref->subtitle_y_offset()) {
 			throw JoinError (_("Content to be joined must have the same subtitle Y offset."));
 		}

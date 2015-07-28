@@ -264,8 +264,8 @@ public:
 		}
 	}
 
-protected:	
-	
+protected:
+
 	void store_current () {
 		boost::mutex::scoped_lock lm (_mutex);
 		_exception = boost::current_exception ();
@@ -276,6 +276,6 @@ private:
 	mutable boost::mutex _mutex;
 };
 
-	
+
 
 #endif

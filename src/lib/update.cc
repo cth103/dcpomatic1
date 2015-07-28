@@ -61,7 +61,7 @@ UpdateChecker::UpdateChecker ()
 	curl_easy_setopt (_curl, CURLOPT_WRITEFUNCTION, write_callback_wrapper);
 	curl_easy_setopt (_curl, CURLOPT_WRITEDATA, this);
 	curl_easy_setopt (_curl, CURLOPT_TIMEOUT, 20);
-	
+
 	string const agent = "dcpomatic/" + string (dcpomatic_version);
 	curl_easy_setopt (_curl, CURLOPT_USERAGENT, agent.c_str ());
 
@@ -71,7 +71,7 @@ UpdateChecker::UpdateChecker ()
 UpdateChecker::~UpdateChecker ()
 {
 	/* We are not cleaning up our thread, but hey well */
-	
+
 	curl_easy_cleanup (_curl);
 	curl_global_cleanup ();
 	delete[] _buffer;
@@ -95,16 +95,16 @@ UpdateChecker::thread ()
 		}
 		--_to_do;
 		lock.unlock ();
-		
+
 		try {
 			_offset = 0;
-			
+
 			int r = curl_easy_perform (_curl);
 			if (r != CURLE_OK) {
 				set_state (FAILED);
 				return;
 			}
-			
+
 			_buffer[_offset] = '\0';
 			string s (_buffer);
 			cxml::Document doc ("Update");
@@ -114,7 +114,7 @@ UpdateChecker::thread ()
 
 			string stable;
 			string test;
-			
+
 			{
 				boost::mutex::scoped_lock lm (_data_mutex);
 				stable = doc.string_child ("Stable");
@@ -139,7 +139,7 @@ UpdateChecker::thread ()
 		}
 	}
 }
-	
+
 size_t
 UpdateChecker::write_callback (void* data, size_t size, size_t nmemb)
 {
@@ -195,13 +195,13 @@ UpdateChecker::version_less_than (string const & a, string const & b)
 	} else {
 		am = raw_convert<int> (ap[2]);
 	}
-	
+
 	float bm;
 	if (ends_with (bp[2], "devel")) {
 		bm = raw_convert<int> (bp[2].substr (0, bp[2].length() - 5)) + 0.5;
 	} else {
 		bm = raw_convert<int> (bp[2]);
 	}
-	
+
 	return am < bm;
 }

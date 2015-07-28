@@ -52,10 +52,10 @@ public:
 	Position<int> out_position () const {
 		return _out_position;
 	}
-	
+
 private:
 	void check_out_to ();
-	
+
 	boost::weak_ptr<Piece> _piece;
 	boost::shared_ptr<Image> _in_image;
 	/** Area of this subtitle as fractions of the containing video frame */

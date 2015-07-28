@@ -34,7 +34,7 @@ resampler_test_one (int from, int to)
 
 	/* 3 hours */
 	int64_t const N = int64_t (from) * 60 * 60 * 3;
-	
+
 	for (int64_t i = 0; i < N; i += 1000) {
 		shared_ptr<AudioBuffers> a (new AudioBuffers (1, 1000));
 		a->make_silent ();
@@ -42,8 +42,8 @@ resampler_test_one (int from, int to)
 		BOOST_CHECK_EQUAL (r.second, total_out);
 		total_out += r.first->frames ();
 	}
-}	
-		
+}
+
 /** Check that the timings that come back from the resampler correspond
     to the number of samples it generates.
 */

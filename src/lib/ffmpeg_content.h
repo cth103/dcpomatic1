@@ -40,7 +40,7 @@ public:
 		: name (n)
 		, _id (i)
 	{}
-				
+
 	FFmpegStream (boost::shared_ptr<const cxml::Node>);
 
 	void as_xml (xmlpp::Node *) const;
@@ -64,7 +64,7 @@ public:
 
 	friend bool operator== (FFmpegStream const & a, FFmpegStream const & b);
 	friend bool operator!= (FFmpegStream const & a, FFmpegStream const & b);
-	
+
 private:
 	int _id;
 };
@@ -101,7 +101,7 @@ public:
 	FFmpegSubtitleStream (std::string n, int i)
 		: FFmpegStream (n, i)
 	{}
-	
+
 	FFmpegSubtitleStream (boost::shared_ptr<const cxml::Node>);
 
 	void as_xml (xmlpp::Node *) const;
@@ -126,7 +126,7 @@ public:
 	boost::shared_ptr<FFmpegContent> shared_from_this () {
 		return boost::dynamic_pointer_cast<FFmpegContent> (Content::shared_from_this ());
 	}
-	
+
 	void examine (boost::shared_ptr<Job>);
 	std::string summary () const;
 	std::string technical_summary () const;
@@ -137,13 +137,13 @@ public:
 
 	/* VideoContent */
 	void set_default_colour_conversion ();
-	
+
 	/* AudioContent */
 	AudioContent::Frame audio_length () const;
 	std::vector<AudioStreamPtr> audio_streams () const;
 
 	void set_filters (std::vector<Filter const *> const &);
-	
+
 	std::vector<boost::shared_ptr<FFmpegSubtitleStream> > subtitle_streams () const {
 		boost::mutex::scoped_lock lm (_mutex);
 		return _subtitle_streams;
@@ -174,7 +174,7 @@ public:
 private:
 	friend class ffmpeg_pts_offset_test;
 	friend class audio_sampling_rate_test;
-	
+
 	std::vector<boost::shared_ptr<FFmpegSubtitleStream> > _subtitle_streams;
 	boost::shared_ptr<FFmpegSubtitleStream> _subtitle_stream;
 	std::vector<boost::shared_ptr<FFmpegAudioStream> > _audio_streams;
