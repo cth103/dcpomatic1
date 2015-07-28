@@ -23,7 +23,7 @@ def write_installer(bits, version, debug):
         print('outFile "DCP-o-matic Debug %s %d-bit Installer.exe"' % (version, bits), file=f)
     else:
         print('outFile "DCP-o-matic %s %d-bit Installer.exe"' % (version, bits), file=f)
-        
+
     print("""
 !define MUI_ICON "%resources%/dcpomatic.ico"
 !define MUI_UNICON "%resources%/dcpomatic.ico"
@@ -142,7 +142,7 @@ File "%cdist_deps%/bin/ffprobe.exe"
         print('File "%binaries%/src/lib/dcpomatic.dll"', file=f)
 
     print("""
-# I don't know why, but sometimes it seems that 
+# I don't know why, but sometimes it seems that
 # delegates.xml must be in with the binaries, and
 # sometimes in the $PROFILE.  Meh.
 File "%static_deps%/etc/ImageMagick-6/delegates.xml"
@@ -189,6 +189,11 @@ File "%binaries%/src/lib/mo/pl_PL/libdcpomatic.mo"
 File "%binaries%/src/wx/mo/pl_PL/libdcpomatic-wx.mo"
 File "%binaries%/src/tools/mo/pl_PL/dcpomatic.mo"
 File "%static_deps%/share/locale/pl/LC_MESSAGES/wxstd.mo"
+SetOutPath "$INSTDIR\\locale\\da\\LC_MESSAGES"
+File "%binaries%/src/lib/mo/da_DK/libdcpomatic.mo"
+File "%binaries%/src/wx/mo/da_DK/libdcpomatic-wx.mo"
+File "%binaries%/src/tools/mo/da_DK/dcpomatic.mo"
+File "%static_deps%/share/locale/da/LC_MESSAGES/wxstd.mo"
     """, file=f)
 
     if debug:
@@ -207,7 +212,7 @@ File "%static_deps%/share/locale/pl/LC_MESSAGES/wxstd.mo"
         print('Section "DCP-o-matic" SEC_MASTER', file=f)
 
     print('SetOutPath "$INSTDIR\\bin"', file=f)
-    
+
     if debug:
         print('CreateDirectory "$SMPROGRAMS\\DCP-o-matic Debug"', file=f)
     else:
@@ -277,7 +282,7 @@ SectionEnd
     if debug:
         print("""
 Section "Uninstall"
-RMDir /r "$INSTDIR\\*.*"    
+RMDir /r "$INSTDIR\\*.*"
 RMDir "$INSTDIR"
 Delete "$DESKTOP\\DCP-o-matic Debug.lnk"
 Delete "$SMPROGRAMS\\DCP-o-matic Debug\\*.*"
@@ -289,7 +294,7 @@ DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\U
     else:
         print("""
 Section "Uninstall"
-RMDir /r "$INSTDIR\\*.*"    
+RMDir /r "$INSTDIR\\*.*"
 RMDir "$INSTDIR"
 Delete "$DESKTOP\\DCP-o-matic.lnk"
 Delete "$DESKTOP\\DCP-o-matic batch converter.lnk"
