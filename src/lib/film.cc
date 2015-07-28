@@ -1013,6 +1013,8 @@ Film::best_video_frame_rate () const
 void
 Film::playlist_content_changed (boost::weak_ptr<Content> c, int p)
 {
+	_dirty = true;
+
 	if (p == VideoContentProperty::VIDEO_FRAME_RATE) {
 		set_video_frame_rate (_playlist->best_dcp_frame_rate ());
 	} else if (
