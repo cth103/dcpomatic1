@@ -1,3 +1,7 @@
+2015-07-28  c.hetherington  <cth@carlh.net>
+
+	* Recognise .w64 and .flac as audio files.
+
 2015-07-26  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.81.0 released.

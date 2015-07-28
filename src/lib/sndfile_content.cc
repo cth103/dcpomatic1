@@ -49,7 +49,7 @@ SndfileContent::SndfileContent (shared_ptr<const Film> f, shared_ptr<const cxml:
 	, _audio_stream (new AudioStream (node->number_child<int> ("AudioFrameRate"), AudioMapping (node->node_child ("AudioMapping"), version)))
 	, _audio_length (node->number_child<AudioContent::Frame> ("AudioLength"))
 {
-	
+
 }
 
 string
@@ -73,7 +73,7 @@ SndfileContent::valid_file (boost::filesystem::path f)
 	/* XXX: more extensions */
 	string ext = f.extension().string();
 	transform (ext.begin(), ext.end(), ext.begin(), ::tolower);
-	return (ext == ".wav" || ext == ".aif" || ext == ".aiff");
+	return (ext == ".wav" || ext == ".w64" || ext == ".flac" || ext == ".aif" || ext == ".aiff");
 }
 
 void
@@ -94,7 +94,7 @@ SndfileContent::examine (shared_ptr<Job> job)
 	}
 
 	set_default_audio_mapping ();
-	
+
 	signal_changed (AudioContentProperty::AUDIO_CHANNELS);
 	signal_changed (AudioContentProperty::AUDIO_LENGTH);
 	signal_changed (AudioContentProperty::AUDIO_FRAME_RATE);
@@ -123,7 +123,7 @@ SndfileContent::full_length () const
 	OutputAudioFrame const len = divide_with_round (
 		audio_length() * output_audio_frame_rate(), audio_stream()->frame_rate()
 		);
-	
+
 	return film->audio_frames_to_time (len);
 }
 
