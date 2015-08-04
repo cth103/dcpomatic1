@@ -94,7 +94,7 @@ private:
 	{
 		string whole = "<b>" + _job->name() + "</b>: " + _job->sub_name() + " " + _job->status ();
 		if (whole != _last_message) {
-			_message->SetLabelMarkup (whole);
+			_message->SetLabelMarkup (std_to_wx (whole));
 			_last_message = whole;
 		}
 		if (_job->progress ()) {

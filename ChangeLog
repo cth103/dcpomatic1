@@ -1,3 +1,8 @@
+2015-08-04  Carl Hetherington  <cth@carlh.net>
+
+	* Fix incorrectly displayed job details when translated
+	on Windows.
+
 2015-07-29  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.81.2 released.
