@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-11 00:45+0200\n"
-"PO-Revision-Date: 2015-07-29 00:34+0200\n"
+"PO-Revision-Date: 2015-08-02 21:46+0200\n"
 "Last-Translator: FULL NAME &lt;EMAIL@ADDRESS&gt;\n"
 "Language-Team: LANGUAGE &lt;LL@li.org&gt;\n"
 "MIME-Version: 1.0\n"
@@ -95,8 +95,8 @@ msgid ""
 "&lt;i&gt;Only change this if the content's frame rate has been read "
 "incorrectly.&lt;/i&gt;"
 msgstr ""
-"&lt;i&gt;Dette skal kun ændres, hvis indholdets frame rate ikke er blevet "
-"læst korrekt.&lt;/i&gt;"
+"&lt;i&gt;Dette skal kun ændres, hvis indholdets billedhastighed ikke er "
+"blevet læst korrekt.&lt;/i&gt;"
 
 #: src/wx/hints_dialog.cc:110
 msgid ""
@@ -104,9 +104,9 @@ msgid ""
 "a good idea to drop the JPEG2000 bandwidth down to about 200Mbit/s; this is "
 "unlikely to have any visible effect on the image."
 msgstr ""
-"Nogle fremvisere har problemer med at afspille ved meget høje bit-rate DCPs. "
+"Nogle fremvisere har problemer med at afspille meget høje bit-rate DCP'er. "
 "Det vil være en god ide at sænke JPEG2000-båndbredden til omkring 200 Mbit/"
-"s; dette vil sandsynligvis ikke have nogen synlig virkning på billedet."
+"s; dette vil sandsynligvis ikke give nogen synlig virkning for billedet."
 
 #: src/wx/update_dialog.cc:35
 msgid "A new version of DCP-o-matic is available."
@@ -128,8 +128,8 @@ msgstr "Tilføj sal..."
 msgid ""
 "Add a directory of image files which will be used as a moving image sequence."
 msgstr ""
-"Tilføj et bibliotek af billed-filer, der skal bruges til en sekvens med "
-"levende billeder."
+"Tilføj en folder med billedfiler, der skal bruges til en sekvens med levende "
+"billeder."
 
 #: src/wx/film_editor.cc:313
 msgid "Add file(s)..."
@@ -140,8 +140,8 @@ msgid ""
 "Add image\n"
 "sequence..."
 msgstr ""
-"Tilføj billed\n"
-"sekvens"
+"Tilføj billed-\n"
+"sekvens..."
 
 #: src/wx/image_sequence_dialog.cc:25
 msgid "Add image sequence"
@@ -149,7 +149,7 @@ msgstr "Tilføj billedsekvens"
 
 #: src/wx/film_editor.cc:314
 msgid "Add video, image or sound files to the film."
-msgstr "Tilføj video-, billed- eller lyd-filer til filmen."
+msgstr "Tilføj video-, billed- eller lydfiler til filmen."
 
 #: src/wx/editable_list.h:63
 msgid "Add..."
@@ -157,7 +157,7 @@ msgstr "Tilføj..."
 
 #: src/wx/colour_conversion_editor.cc:141
 msgid "Adjust white point to"
-msgstr ""
+msgstr "Juster hvidpunkt til "
 
 #: src/wx/hints_dialog.cc:98
 msgid ""
@@ -178,14 +178,14 @@ msgid ""
 "You may prefer to set your DCP's container to Scope (2.39:1) in the \"DCP\" "
 "tab."
 msgstr ""
-"Alt dit indhold er i Scope format (2.39:1), men din DCP's container er Flat "
+"Alt dit indhold er i Scope (2.39:1), men din DCP's container er Flat "
 "(1.85:1). Dette vil give sorte søjler i top og bund af et Flat (1.85:1) "
-"billede. Du vil måske foretrække at sætte din DCPss container til Scope "
+"billede. Du vil måske foretrække at sætte din DCP's container til Scope "
 "(2.39:1) i fanen \"DCP\"."
 
 #: src/wx/config_dialog.cc:809
 msgid "Allow any DCP frame rate"
-msgstr "Tillad vilkårlig DCP billedhastighed"
+msgstr "Tillad vilkårlig DCP-billedhastighed"
 
 #: src/wx/audio_dialog.cc:38 src/wx/audio_panel.cc:42
 msgid "Audio"
@@ -193,15 +193,15 @@ msgstr "Lyd"
 
 #: src/wx/isdcf_metadata_dialog.cc:35
 msgid "Audio Language (e.g. EN)"
-msgstr "Lyd sprog (f.eks. EN)"
+msgstr "Lyd, sprog (f.eks. EN)"
 
 #: src/wx/content_properties_dialog.cc:65 src/wx/film_editor.cc:193
 msgid "Audio channels"
-msgstr "Lyd kanaler"
+msgstr "Lyd, kanaler"
 
 #: src/wx/content_properties_dialog.cc:73
 msgid "Audio length"
-msgstr "Lyd længde"
+msgstr "Lyd, længde"
 
 #: src/wx/audio_mapping_view.cc:350
 #, c-format
@@ -223,11 +223,11 @@ msgstr "BCC-adresse"
 
 #: src/wx/colour_conversion_editor.cc:108
 msgid "Blue chromaticity"
-msgstr ""
+msgstr "Blå farvetone"
 
 #: src/wx/video_panel.cc:121
 msgid "Bottom crop"
-msgstr ""
+msgstr "Beskæring, bund"
 
 #: src/wx/dir_picker_ctrl.cc:37 src/wx/kdm_dialog.cc:134
 msgid "Browse..."
@@ -235,19 +235,19 @@ msgstr "Gennemse..."
 
 #: src/wx/audio_mapping_view.cc:317
 msgid "BsL"
-msgstr ""
+msgstr "BsV"
 
 #: src/wx/audio_mapping_view.cc:321
 msgid "BsR"
-msgstr ""
+msgstr "BsH"
 
 #: src/wx/gain_calculator_dialog.cc:32
 msgid "But I have to use fader"
-msgstr ""
+msgstr "Men jeg bliver nødt til at bruge fader"
 
 #: src/wx/audio_mapping_view.cc:285
 msgid "C"
-msgstr ""
+msgstr "C"
 
 #: src/wx/config_dialog.cc:684
 msgid "CC address"
@@ -259,11 +259,11 @@ msgstr "CPL"
 
 #: src/wx/kdm_dialog.cc:143
 msgid "CPL ID"
-msgstr "CPL ID"
+msgstr "CPL-ID"
 
 #: src/wx/kdm_dialog.cc:146
 msgid "CPL annotation text"
-msgstr "CPL annotations tekst"
+msgstr "CPL-annotationstekst"
 
 #: src/wx/audio_panel.cc:65
 msgid "Calculate..."
@@ -280,15 +280,15 @@ msgstr "Certifikat"
 #: src/wx/dolby_certificate_dialog.cc:192
 #: src/wx/doremi_certificate_dialog.cc:104
 msgid "Certificate downloaded"
-msgstr "Certifikat downloaded"
+msgstr "Certifikat downloadet"
 
 #: src/wx/isdcf_metadata_dialog.cc:65
 msgid "Chain"
-msgstr ""
+msgstr "Kæde"
 
 #: src/wx/audio_gain_dialog.cc:26
 msgid "Channel gain"
-msgstr "Kanal gain"
+msgstr "Kanalgain"
 
 #: src/wx/audio_dialog.cc:59
 msgid "Channels"
@@ -296,11 +296,11 @@ msgstr "Kanaler"
 
 #: src/wx/config_dialog.cc:173
 msgid "Check for testing updates as well as stable ones"
-msgstr "Kig efter både test og stabile opdateringer."
+msgstr "Søg efter både test- og stabile-opdateringer"
 
 #: src/wx/config_dialog.cc:169
 msgid "Check for updates on startup"
-msgstr "Kig efter opdateringer ved opstart."
+msgstr "Søg efter opdateringer ved opstart."
 
 #: src/wx/content_menu.cc:228
 msgid "Choose a file"
@@ -320,11 +320,11 @@ msgstr "Biograf"
 
 #: src/wx/content_colour_conversion_dialog.cc:35 src/wx/video_panel.cc:162
 msgid "Colour conversion"
-msgstr "Farve konvertering"
+msgstr "Farvekonvertering"
 
 #: src/wx/config_dialog.cc:831
 msgid "Config|Timing"
-msgstr "Config|Timing"
+msgstr "Konfig|Timing"
 
 #: src/wx/film_editor.cc:146
 msgid "Container"
@@ -361,12 +361,12 @@ msgstr "Kunne ikke analysere lyden."
 #: src/wx/film_viewer.cc:338 src/wx/film_viewer.cc:344
 #, c-format
 msgid "Could not decode video for view (%s)"
-msgstr "Kunne ikke decode video til gennemsyn (%s)"
+msgstr "Kunne ikke afkode video til gennemsyn (%s)"
 
 #: src/wx/screen_dialog.cc:95
 #, c-format
 msgid "Could not read certificate file (%s)"
-msgstr "Kunne ikke læse certifikat-fil (%s)"
+msgstr "Kunne ikke læse certifikatfil (%s)"
 
 #: src/wx/dolby_certificate_dialog.cc:39
 msgid "Country"
@@ -378,7 +378,7 @@ msgstr "Opret i folder"
 
 #: src/wx/video_panel.cc:253
 msgid "Custom"
-msgstr ""
+msgstr "Brugerdefineret"
 
 #: src/wx/film_editor.cc:92
 msgid "DCP"
@@ -399,7 +399,7 @@ msgstr "DCP-o-matic"
 #: src/wx/audio_dialog.cc:116
 #, c-format
 msgid "DCP-o-matic audio - %s"
-msgstr "DCP-o-matic lyd - %s"
+msgstr "DCP-o-matic, lyd - %s"
 
 #: src/wx/config_dialog.cc:829
 msgid "Debugging"
@@ -407,39 +407,39 @@ msgstr "Debugging"
 
 #: src/wx/config_dialog.cc:328
 msgid "Default ISDCF name details"
-msgstr "Standard ISDCF navne-detaljer"
+msgstr "Standard ISDCF-navne-detaljer"
 
 #: src/wx/config_dialog.cc:341
 msgid "Default JPEG2000 bandwidth"
-msgstr "Standard JPEG2000 båndbredde"
+msgstr "Standard JPEG2000-båndbredde"
 
 #: src/wx/config_dialog.cc:350
 msgid "Default audio delay"
-msgstr "Standard lydforsinkelse"
+msgstr "Standardlydforsinkelse"
 
 #: src/wx/config_dialog.cc:332
 msgid "Default container"
-msgstr "Standard container"
+msgstr "Standardcontainer"
 
 #: src/wx/config_dialog.cc:336
 msgid "Default content type"
-msgstr "Standard indholdstype"
+msgstr "Standardindholdstype"
 
 #: src/wx/config_dialog.cc:320
 msgid "Default directory for new films"
-msgstr "Standard folder til nye film"
+msgstr "Standardfolder til nye film"
 
 #: src/wx/config_dialog.cc:312
 msgid "Default duration of still images"
-msgstr "Standard varighed af stillbilleder"
+msgstr "Standardvarighed af stillbilleder"
 
 #: src/wx/config_dialog.cc:358
 msgid "Default issuer"
-msgstr "Standard udgiver"
+msgstr "Standardudgiver"
 
 #: src/wx/config_dialog.cc:294
 msgid "Defaults"
-msgstr "Standard-indstillinger"
+msgstr "Standardindstillinger"
 
 #: src/wx/audio_panel.cc:69
 msgid "Delay"
@@ -451,7 +451,7 @@ msgstr "Detaljer..."
 
 #: src/wx/properties_dialog.cc:42
 msgid "Disk space required"
-msgstr "Krævet disk plads"
+msgstr "Krævet diskplads"
 
 #: src/wx/screen_dialog.cc:64 src/wx/screen_dialog.cc:118
 #: src/wx/screen_dialog.cc:135
@@ -465,7 +465,7 @@ msgstr "Doremi"
 
 #: src/wx/doremi_certificate_dialog.cc:50
 msgid "Doremi serial numbers must have 6 digits"
-msgstr "Doremi serienumre skal have 6 tal"
+msgstr "Doremi-serienumre skal have 6 cifre"
 
 #: src/wx/film_editor.cc:329
 msgid "Down"
@@ -486,11 +486,11 @@ msgstr "Downloader certifikat"
 
 #: src/wx/kdm_dialog.cc:81
 msgid "Edit Cinema..."
-msgstr "Rediger Biograf..."
+msgstr "Rediger biograf..."
 
 #: src/wx/kdm_dialog.cc:88
 msgid "Edit Screen..."
-msgstr "Rediger Sal..."
+msgstr "Rediger sal..."
 
 #: src/wx/audio_mapping_view.cc:135 src/wx/config_dialog.cc:329
 #: src/wx/film_editor.cc:187 src/wx/video_panel.cc:155
@@ -500,7 +500,7 @@ msgstr "Rediger..."
 
 #: src/wx/cinema_dialog.cc:31
 msgid "Email address for KDM delivery"
-msgstr "Email-adresse til KDM-levering"
+msgstr "E-mailadresse til KDM-levering"
 
 #: src/wx/servers_list_dialog.cc:30
 msgid "Encoding Servers"
@@ -516,7 +516,7 @@ msgstr "Fejl"
 
 #: src/wx/isdcf_metadata_dialog.cc:50
 msgid "Facility (e.g. DLA)"
-msgstr ""
+msgstr "Facility (f.eks. DLA)"
 
 #: src/wx/dolby_certificate_dialog.cc:76
 #: src/wx/dolby_certificate_dialog.cc:100
@@ -558,7 +558,7 @@ msgstr "Billeder"
 
 #: src/wx/about_dialog.cc:61
 msgid "Free, open-source DCP creation from almost anything."
-msgstr "Gratis, open-source oprettelse af DCP fra næsten alt."
+msgstr "Gratis, open source-oprettelse af DCP fra næsten alt."
 
 #: src/wx/kdm_dialog.cc:104
 msgid "From"
@@ -570,7 +570,7 @@ msgstr "Fra adresse"
 
 #: src/wx/audio_mapping_view.cc:133
 msgid "Full"
-msgstr ""
+msgstr "Fuld"
 
 #: src/wx/timing_panel.cc:78
 msgid "Full length"
@@ -582,7 +582,7 @@ msgstr "Gain"
 
 #: src/wx/gain_calculator_dialog.cc:27
 msgid "Gain Calculator"
-msgstr "Gain beregner"
+msgstr "Gainberegner"
 
 #: src/wx/audio_gain_dialog.cc:28
 #, c-format
@@ -591,7 +591,7 @@ msgstr "Gain til indholdskanal %d i DCP-kanal %d"
 
 #: src/wx/properties_dialog.cc:48
 msgid "Gb"
-msgstr "Gb"
+msgstr "GB"
 
 #: src/wx/config_dialog.cc:823
 msgid "General"
@@ -599,7 +599,7 @@ msgstr "Generelt"
 
 #: src/wx/colour_conversion_editor.cc:101
 msgid "Green chromaticity"
-msgstr ""
+msgstr "Grøn farvetone"
 
 #: src/wx/audio_mapping_view.cc:301
 msgid "HI"
@@ -607,7 +607,7 @@ msgstr ""
 
 #: src/wx/hints_dialog.cc:30
 msgid "Hints"
-msgstr "Hints"
+msgstr "Tips"
 
 #: src/wx/servers_list_dialog.cc:40
 msgid "Host"
@@ -651,15 +651,15 @@ msgstr ""
 
 #: src/wx/film_editor.cc:211
 msgid "JPEG2000 bandwidth"
-msgstr "JPEG2000 båndbredde"
+msgstr "JPEG2000-båndbredde"
 
 #: src/wx/content_menu.cc:55
 msgid "Join"
-msgstr ""
+msgstr "Sammensæt"
 
 #: src/wx/config_dialog.cc:637
 msgid "KDM Email"
-msgstr "KDM-Email"
+msgstr "KDM-e-mail"
 
 #: src/wx/kdm_dialog.cc:162
 msgid "KDM type"
@@ -671,7 +671,7 @@ msgstr "KDM|Timing"
 
 #: src/wx/timeline_dialog.cc:41
 msgid "Keep video in sequence"
-msgstr "Bevar video-sekvens"
+msgstr "Bevar videosekvens"
 
 #: src/wx/film_editor.cc:183 src/wx/key_dialog.cc:26 src/wx/key_dialog.cc:28
 msgid "Key"
@@ -679,19 +679,19 @@ msgstr ""
 
 #: src/wx/audio_mapping_view.cc:277
 msgid "L"
-msgstr ""
+msgstr "V"
 
 #: src/wx/audio_mapping_view.cc:309
 msgid "Lc"
-msgstr ""
+msgstr "Vc"
 
 #: src/wx/video_panel.cc:88
 msgid "Left crop"
-msgstr ""
+msgstr "Beskæring, venstre"
 
 #: src/wx/audio_mapping_view.cc:289
 msgid "Lfe"
-msgstr ""
+msgstr "Lfe"
 
 #: src/wx/colour_conversion_editor.cc:54
 msgid "Linearise input gamma curve for low values"
@@ -735,11 +735,11 @@ msgstr ""
 
 #: src/wx/colour_conversion_editor.cc:91
 msgid "Matrix"
-msgstr ""
+msgstr "Matrix"
 
 #: src/wx/config_dialog.cc:801
 msgid "Maximum JPEG2000 bandwidth"
-msgstr "Maksimal JPEG2000 båndbredde"
+msgstr "Maksimal JPEG2000-båndbredde"
 
 #: src/wx/config_dialog.cc:345 src/wx/config_dialog.cc:805
 #: src/wx/film_editor.cc:215
@@ -760,7 +760,7 @@ msgstr "Flere indholdselementer valgt"
 
 #: src/wx/dir_picker_ctrl.cc:51
 msgid "My Documents"
-msgstr "Mine Dokumenter"
+msgstr "Mine dokumenter"
 
 #: src/wx/cinema_dialog.cc:28 src/wx/film_editor.cc:118
 #: src/wx/screen_dialog.cc:38
@@ -803,7 +803,7 @@ msgstr "Udgående mail server"
 
 #: src/wx/kdm_dialog.cc:156
 msgid "Output"
-msgstr ""
+msgstr "Output"
 
 #: src/wx/colour_conversion_editor.cc:168
 msgid "Output gamma"
@@ -860,7 +860,7 @@ msgstr "Egenskaber..."
 
 #: src/wx/audio_mapping_view.cc:281
 msgid "R"
-msgstr ""
+msgstr "H"
 
 #: src/wx/colour_conversion_editor.cc:87
 msgid "RGB to XYZ conversion"
@@ -880,15 +880,15 @@ msgstr "Censur (f.eks. 15)"
 
 #: src/wx/audio_mapping_view.cc:313
 msgid "Rc"
-msgstr ""
+msgstr "Hc"
 
 #: src/wx/colour_conversion_editor.cc:80
 msgid "Rec. 601"
-msgstr ""
+msgstr "Rec. 601"
 
 #: src/wx/colour_conversion_editor.cc:81
 msgid "Rec. 709"
-msgstr ""
+msgstr "Rec. 709"
 
 #: src/wx/isdcf_metadata_dialog.cc:62
 msgid "Red band"
@@ -896,7 +896,7 @@ msgstr ""
 
 #: src/wx/colour_conversion_editor.cc:94
 msgid "Red chromaticity"
-msgstr ""
+msgstr "Rød farvetone"
 
 #: src/wx/content_menu.cc:59 src/wx/film_editor.cc:321
 #: src/wx/editable_list.h:69
@@ -945,11 +945,11 @@ msgstr "Højreklik for at ændre gain."
 
 #: src/wx/video_panel.cc:99
 msgid "Right crop"
-msgstr ""
+msgstr "Beskæring, højre"
 
 #: src/wx/audio_mapping_view.cc:297
 msgid "Rs"
-msgstr ""
+msgstr "Hs"
 
 #: src/wx/film_editor.cc:256
 msgid "SMPTE"
@@ -993,11 +993,11 @@ msgstr "Server"
 
 #: src/wx/screen_dialog.cc:41
 msgid "Server manufacturer"
-msgstr "Server producent"
+msgstr "Serverproducent"
 
 #: src/wx/doremi_certificate_dialog.cc:37
 msgid "Server serial number"
-msgstr "Server serienummer"
+msgstr "Servers serienummer"
 
 #: src/wx/config_dialog.cc:488
 msgid "Servers"
@@ -1049,7 +1049,7 @@ msgstr "Emne"
 
 #: src/wx/isdcf_metadata_dialog.cc:38
 msgid "Subtitle Language (e.g. FR)"
-msgstr "Underteksters sprog (f.eks. FR)"
+msgstr "Tekstningssprog (f.eks. FR)"
 
 #: src/wx/subtitle_panel.cc:34
 msgid "Subtitles"
@@ -1065,7 +1065,7 @@ msgstr "TMS"
 
 #: src/wx/config_dialog.cc:569
 msgid "Target path"
-msgstr ""
+msgstr "Destinationsfolder"
 
 #: src/wx/isdcf_metadata_dialog.cc:56
 msgid "Temp version"
@@ -1090,11 +1090,11 @@ msgid ""
 "missing content."
 msgstr ""
 "De(n) angivne indholdsfil(er) stemmer ikke med dem, der mangler. Prøv igen "
-"med korrekt indholdsfil eller fjern det manglende indhold fra filmen."
+"med den korrekte indholdsfil eller fjern det manglende indhold fra filmen."
 
 #: src/wx/hints_dialog.cc:130
 msgid "There are no hints: everything looks good!"
-msgstr "Der er ingen hints; det hele ser godt ud!"
+msgstr "Der er ingen tips; det hele ser godt ud!"
 
 #: src/wx/film_viewer.cc:134
 msgid "There is not enough free memory to do that."
@@ -1102,7 +1102,7 @@ msgstr "Der er ikke tilstrækkelig ledig hukommelse til at gøre dette."
 
 #: src/wx/kdm_dialog.cc:555
 msgid "This is not a valid CPL file"
-msgstr "Dette er ikke en gyldig CPL fil."
+msgstr "Dette er ikke en gyldig CPL-fil"
 
 #: src/wx/servers_list_dialog.cc:48
 msgid "Threads"
@@ -1110,7 +1110,7 @@ msgstr "Tråde"
 
 #: src/wx/config_dialog.cc:165
 msgid "Threads to use for encoding on this host"
-msgstr "Antal tråde der kan bruges til at danne filmen på denne maskine."
+msgstr "Antal tråde der kan bruges til at danne filmen på denne maskine"
 
 #: src/wx/audio_plot.cc:165
 msgid "Time"
@@ -1118,11 +1118,11 @@ msgstr "Tid"
 
 #: src/wx/timeline_dialog.cc:32
 msgid "Timeline"
-msgstr "Tidslinie"
+msgstr "Tidslinje"
 
 #: src/wx/film_editor.cc:333
 msgid "Timeline..."
-msgstr "Tidslinie..."
+msgstr "Tidslinje..."
 
 #: src/wx/timing_panel.cc:36
 msgid "Timing|Timing"
@@ -1130,7 +1130,7 @@ msgstr "Timing|Timing"
 
 #: src/wx/video_panel.cc:110
 msgid "Top crop"
-msgstr ""
+msgstr "Beskæring, top"
 
 #: src/wx/about_dialog.cc:116
 msgid "Translated by"
@@ -1198,15 +1198,15 @@ msgstr "Video"
 
 #: src/wx/content_properties_dialog.cc:56 src/wx/timing_panel.cc:92
 msgid "Video frame rate"
-msgstr "Video billedhastighed"
+msgstr "Videobilledhastighed"
 
 #: src/wx/content_properties_dialog.cc:41
 msgid "Video length"
-msgstr "Video længde"
+msgstr "Videolængde"
 
 #: src/wx/content_properties_dialog.cc:51
 msgid "Video size"
-msgstr "Video størrelse"
+msgstr "Videostørrelse"
 
 #: src/wx/config_dialog.cc:825
 msgid "Warnings"
@@ -1214,11 +1214,11 @@ msgstr "Advarsler"
 
 #: src/wx/colour_conversion_editor.cc:115
 msgid "White point"
-msgstr ""
+msgstr "Hvidpunkt"
 
 #: src/wx/colour_conversion_editor.cc:139
 msgid "White point adjustment"
-msgstr ""
+msgstr "Hvidpunktsjustering"
 
 #: src/wx/subtitle_panel.cc:39
 msgid "With Subtitles"
@@ -1284,7 +1284,7 @@ msgid ""
 "Your DCP has fewer than 6 audio channels.  This may cause problems on some "
 "projectors."
 msgstr ""
-"Din DCP har færre end 6 lyd kanaler. Dette kan give problemer på nolge "
+"Din DCP har færre end 6 lydkanaler. Dette kan give problemer på nogle "
 "projektorer."
 
 #: src/wx/timeline_audio_content_view.cc:34
