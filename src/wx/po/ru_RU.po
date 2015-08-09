@@ -322,7 +322,7 @@ msgstr "Конверсия цвета"
 
 #: src/wx/config_dialog.cc:837
 msgid "Config|Timing"
-msgstr "Конфигурация | Тайминг"
+msgstr "Тайминг"
 
 #: src/wx/film_editor.cc:152
 msgid "Container"
@@ -663,7 +663,7 @@ msgstr "Тип KDM"
 
 #: src/wx/kdm_dialog.cc:99
 msgid "KDM|Timing"
-msgstr "KDM | Тайминг"
+msgstr "Тайминг"
 
 #: src/wx/timeline_dialog.cc:41
 #, fuzzy
@@ -1125,7 +1125,7 @@ msgstr "Линейка..."
 
 #: src/wx/timing_panel.cc:36
 msgid "Timing|Timing"
-msgstr "Тайминг | Тайминг"
+msgstr "Тайминг"
 
 #: src/wx/video_panel.cc:111
 msgid "Top crop"
