@@ -1,3 +1,8 @@
+2015-08-09  Carl Hetherington  <cth@carlh.net>
+
+	* Fix various incorrect behaviours with 96kHz
+	audio sources.
+
 2015-08-05  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.81.4 released.

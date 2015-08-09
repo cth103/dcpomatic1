@@ -27,6 +27,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/date_time.hpp>
+#include <boost/foreach.hpp>
 #include <libxml++/libxml++.h>
 #include <libcxml/cxml.h>
 #include <libdcp/signer_chain.h>
@@ -1062,7 +1063,13 @@ Film::video_frames_to_time (OutputVideoFrame f) const
 OutputAudioFrame
 Film::audio_frame_rate () const
 {
-	/* XXX */
+	BOOST_FOREACH (shared_ptr<Content> i, content ()) {
+		shared_ptr<AudioContent> a = dynamic_pointer_cast<AudioContent> (i);
+		if (a && a->has_rate_above_48k ()) {
+			return 96000;
+		}
+	}
+
 	return 48000;
 }
 
@@ -1184,4 +1191,3 @@ Film::active_frame_rate_change (Time t) const
 {
 	return _playlist->active_frame_rate_change (t, video_frame_rate ());
 }
-
