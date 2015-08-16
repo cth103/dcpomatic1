@@ -58,7 +58,6 @@ public:
 	int lines (int) const;
 
 	boost::shared_ptr<Image> scale (libdcp::Size, Scaler const *, YUVToRGB yuv_to_rgb, AVPixelFormat, bool aligned) const;
-	boost::shared_ptr<Image> crop (Crop c, bool aligned) const;
 
 	boost::shared_ptr<Image> crop_scale_window (
 		Crop c, libdcp::Size, libdcp::Size, Scaler const *, YUVToRGB yuv_to_rgb, AVPixelFormat, bool aligned
