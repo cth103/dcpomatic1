@@ -1,3 +1,7 @@
+2015-08-17  Carl Hetherington  <cth@carlh.net>
+
+	* Fix crop of some YUV content.
+
 2015-08-09  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.81.5 released.
