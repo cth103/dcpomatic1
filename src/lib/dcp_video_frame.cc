@@ -391,7 +391,7 @@ EncodedData::write (shared_ptr<const Film> film, int frame, Eyes eyes) const
 void
 EncodedData::write_info (shared_ptr<const Film> film, int frame, Eyes eyes, libdcp::FrameInfo info) const
 {
-	FILE* file = fopen_boost (film->info_file(), "ab");
+	FILE* file = fopen_boost (film->info_file(), "r+b");
 	if (!file) {
 		throw OpenFileError (film->info_file ());
 	}
