@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-09 14:09+0100\n"
-"PO-Revision-Date: 2015-05-15 18:49+0300\n"
+"PO-Revision-Date: 2015-08-29 10:26+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.6\n"
+"X-Generator: Poedit 1.7.5\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
@@ -68,17 +68,14 @@ msgid "Area"
 msgstr "Область"
 
 #: src/lib/audio_content.cc:228
-#, fuzzy
 msgid "Audio will be resampled from %1kHz to %2kHz"
 msgstr "Аудио будет ресэмплировано из %1kHz в %2kHz."
 
 #: src/lib/audio_content.cc:230
-#, fuzzy
 msgid "Audio will be resampled to %1kHz"
 msgstr "Аудио будет ресэмплировано в %1kHz."
 
 #: src/lib/audio_content.cc:219
-#, fuzzy
 msgid "Audio will not be resampled"
 msgstr "Аудио не будет ресэмплировано."
 
@@ -95,7 +92,6 @@ msgid "Cancelled"
 msgstr "Отменено"
 
 #: src/lib/exceptions.cc:60
-#, fuzzy
 msgid "Cannot handle pixel format %1 during %2"
 msgstr "Невозможно обработать формат пикселя %1 во время %2"
 
@@ -247,9 +243,8 @@ msgid "DCP will run at %1%% of the content speed.\n"
 msgstr "DCP будет воспроизводиться на %1%% от скорости контента.\n"
 
 #: src/lib/frame_rate_change.cc:89
-#, fuzzy
 msgid "DCP will use every other frame of the content.\n"
-msgstr "DCP будет использовать разные кадры контента.\n"
+msgstr "DCP будет использовать каждый второй кадр контента.\n"
 
 #: src/lib/job.cc:97
 msgid ""
@@ -457,12 +452,11 @@ msgstr "Сверхполный подавитель шума небольшой 
 
 #: src/lib/colour_conversion.cc:363
 msgid "P3"
-msgstr ""
+msgstr "P3"
 
 #: src/lib/video_content.cc:491
-#, fuzzy
 msgid "Padded with black to fit container %1 (%2x%3)"
-msgstr "Заполнено черным до %1x%2"
+msgstr "Заполнено черным для подгонки контейнера %1 (%2x%3)"
 
 #: src/lib/dcp_content_type.cc:51
 msgid "Policy"
@@ -525,9 +519,8 @@ msgid "Sinc"
 msgstr "Sinc"
 
 #: src/lib/audio_content.cc:223
-#, fuzzy
 msgid "Some audio will be resampled to %1kHz"
-msgstr "Аудио будет ресэмплировано из %1kHz в %2kHz."
+msgstr "Некоторое аудио будет ресемплировано в %1kГц"
 
 #: src/lib/scaler.cc:68
 msgid "Spline"
