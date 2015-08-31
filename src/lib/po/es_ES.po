@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: LIBDCPOMATIC\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-09 14:09+0100\n"
-"PO-Revision-Date: 2015-03-16 19:24-0500\n"
+"PO-Revision-Date: 2015-08-30 15:59-0400\n"
 "Last-Translator: Manuel AC <manuel.acevedo@civantos.>\n"
 "Language-Team: Manuel AC <manuel.acevedo@civantos.com>\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.4\n"
+"X-Generator: Poedit 1.8.4\n"
 
 #: src/lib/sndfile_content.cc:59
 msgid "%1 [audio]"
@@ -66,19 +66,16 @@ msgid "Area"
 msgstr "Área"
 
 #: src/lib/audio_content.cc:228
-#, fuzzy
 msgid "Audio will be resampled from %1kHz to %2kHz"
-msgstr "EL audio será remuestreado de %1kHz a %2kHz."
+msgstr "El audio será remuestreado de %1kHz a %2kHz"
 
 #: src/lib/audio_content.cc:230
-#, fuzzy
 msgid "Audio will be resampled to %1kHz"
-msgstr "EL audio será remuestreado a %1kHz."
+msgstr "EL audio será remuestreado a %1kHz"
 
 #: src/lib/audio_content.cc:219
-#, fuzzy
 msgid "Audio will not be resampled"
-msgstr "El audio no será remuestreado."
+msgstr "El audio no será remuestreado"
 
 #: src/lib/scaler.cc:62
 msgid "Bicubic"
@@ -446,12 +443,11 @@ msgstr "Overcomplete wavelet denoiser"
 
 #: src/lib/colour_conversion.cc:363
 msgid "P3"
-msgstr ""
+msgstr "P3"
 
 #: src/lib/video_content.cc:491
-#, fuzzy
 msgid "Padded with black to fit container %1 (%2x%3)"
-msgstr "Completado con negro hasta %1x%2"
+msgstr "Completado con negro para completar el contenedor %1 (%2x%3)"
 
 #: src/lib/dcp_content_type.cc:51
 msgid "Policy"
@@ -514,9 +510,8 @@ msgid "Sinc"
 msgstr "Sinc"
 
 #: src/lib/audio_content.cc:223
-#, fuzzy
 msgid "Some audio will be resampled to %1kHz"
-msgstr "EL audio será remuestreado de %1kHz a %2kHz."
+msgstr "El audio será remuestreado a %1kHz"
 
 #: src/lib/scaler.cc:68
 msgid "Spline"
@@ -674,7 +669,6 @@ msgid "could not move audio MXF into the DCP (%1)"
 msgstr "no s puedo mover el audio MXF en el DCP (%1)"
 
 #: src/lib/sndfile_decoder.cc:57
-#, fuzzy
 msgid "could not open audio file for reading (%1)"
 msgstr "no se pudo abrir el fichero de audio para lectura (%1)"
 

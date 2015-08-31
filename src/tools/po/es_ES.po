@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: DCPOMATIC\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-09 14:09+0100\n"
-"PO-Revision-Date: 2015-01-07 09:08-0500\n"
+"PO-Revision-Date: 2015-08-30 15:59-0400\n"
 "Last-Translator: Manuel AC <manuel.acevedo@civantos.>\n"
 "Language-Team: Manuel AC <manuel.acevedo@civantos.com>\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.1\n"
+"X-Generator: Poedit 1.8.4\n"
 
 #: src/tools/dcpomatic.cc:312
 msgid "%1 already exists as a file, so you cannot use it for a new film."
@@ -186,9 +186,8 @@ msgid "Film changed"
 msgstr "Película cambiada"
 
 #: src/tools/dcpomatic.cc:674
-#, fuzzy
 msgid "Hints..."
-msgstr "Pistas...\tCtrl-H"
+msgstr "Pistas…"
 
 #: src/tools/dcpomatic.cc:669
 msgid "Make &KDMs...\tCtrl-K"
@@ -200,7 +199,7 @@ msgstr "Nuevo...\tCtrl-N"
 
 #: src/tools/dcpomatic.cc:678
 msgid "Restore default preferences"
-msgstr ""
+msgstr "Restaurar las preferencias por defecto"
 
 #: src/tools/dcpomatic.cc:671
 msgid "S&how DCP"
@@ -224,16 +223,17 @@ msgid "Select film to open"
 msgstr "Selecciona la película a abrir"
 
 #: src/tools/dcpomatic.cc:401
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The DCP and intermediate files for this film will take up about %.1f Gb, and "
 "the disk that you are using only has %.1f Gb available.  You would need half "
 "as much space if the filesystem supported hard links, but it does not.  Do "
 "you want to continue anyway?"
 msgstr ""
-"El DCP de esta película usará aproximadamente %.1f Gb, y el disco "
-"seleccionado solo tiene %.1f Gb disponibles.  Quieres continuar de todas "
-"formas?"
+"El DCP y los ficheros intermedios para esta película necesitarán "
+"aproximadamente %.1f Gb, y el disco seleccionado solo tiene %.1f Gb "
+"disponibles. Necesitarías la mitad de espacio si el sistema de ficheros "
+"soportara enlaces duros, pero no es así. Quieres continuar de todas formas?"
 
 #: src/tools/dcpomatic.cc:399
 #, c-format
