@@ -194,10 +194,10 @@ FFmpegDecoder::pass ()
 
 	if (si == _video_stream && _decode_video) {
 		decode_video_packet ();
-	} else if (_decode_audio) {
-		decode_audio_packet ();
 	} else if (_ffmpeg_content->subtitle_stream() && _ffmpeg_content->subtitle_stream()->uses_index (_format_context, si) && film->with_subtitles ()) {
 		decode_subtitle_packet ();
+	} else if (_decode_audio) {
+		decode_audio_packet ();
 	}
 
 	av_free_packet (&_packet);
