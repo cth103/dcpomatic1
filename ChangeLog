@@ -1,3 +1,9 @@
+2015-09-07  Carl Hetherington  <cth@carlh.net>
+
+	* Fix enormous memory usage when analysing the
+	audio of a piece of content which comes
+	another (large) piece in film.
+
 2015-09-04  Carl Hetherington  <cth@carlh.net>
 
 	* Version 1.82.4 released.

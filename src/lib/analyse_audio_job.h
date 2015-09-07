@@ -36,7 +36,7 @@ public:
 private:
 	void audio (boost::shared_ptr<const AudioBuffers>, Time);
 
-	boost::weak_ptr<AudioContent> _content;
+	boost::shared_ptr<AudioContent> _content;
 	OutputAudioFrame _done;
 	int64_t _samples_per_point;
 	std::vector<AudioPoint> _current;
@@ -49,4 +49,3 @@ private:
 
 	static const int _num_points;
 };
-

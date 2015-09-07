@@ -32,6 +32,7 @@ using std::max;
 using std::min;
 using std::cout;
 using boost::shared_ptr;
+using boost::dynamic_pointer_cast;
 
 #define LOG_DEBUG_NC(...) _film->log()->log (__VA_ARGS__, Log::TYPE_DEBUG);
 #define LOG_DEBUG(...) _film->log()->log (String::compose (__VA_ARGS__), Log::TYPE_DEBUG);
@@ -41,7 +42,7 @@ int const AnalyseAudioJob::_num_points = 1024;
 
 AnalyseAudioJob::AnalyseAudioJob (shared_ptr<const Film> f, shared_ptr<AudioContent> c)
 	: Job (f)
-	, _content (c)
+	, _content (dynamic_pointer_cast<AudioContent> (c->clone ()))
 	, _done (0)
 	, _samples_per_point (1)
 	, _overall_peak (0)
@@ -65,13 +66,9 @@ AnalyseAudioJob::json_name () const
 void
 AnalyseAudioJob::run ()
 {
-	shared_ptr<AudioContent> content = _content.lock ();
-	if (!content) {
-		return;
-	}
-
 	shared_ptr<Playlist> playlist (new Playlist);
-	playlist->add (content);
+	_content->set_position (0);
+	playlist->add (_content);
 	shared_ptr<Player> player (new Player (_film, playlist));
 	player->disable_video ();
 
@@ -89,7 +86,7 @@ AnalyseAudioJob::run ()
 	}
 
 	_analysis->set_peak (_overall_peak, _film->audio_frames_to_time (_overall_peak_frame));
-	_analysis->write (content->audio_analysis_path ());
+	_analysis->write (_content->audio_analysis_path ());
 
 	set_progress (1);
 	set_state (FINISHED_OK);
@@ -128,4 +125,3 @@ AnalyseAudioJob::audio (shared_ptr<const AudioBuffers> b, Time)
 		++_done;
 	}
 }
-
